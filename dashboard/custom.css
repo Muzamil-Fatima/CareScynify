@@ -1,0 +1,91 @@
+Main container .react-datepicker {
+  background-color: #000;
+  color: #fff;
+ width: 25rem;
+height: 18rem;
+
+  font-family: "Inter", sans-serif;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 13px;
+}
+.react-datepicker__day {
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  border: 2px solid transparent;
+  box-sizing: border-box;
+  border-radius: 50%;
+  transition: all 0.2s ease-in-out;
+  color: #fff;
+  cursor: pointer;
+  background-color: transparent !important;
+}
+.react-datepicker__day:hover {
+  border: 2px dashed #f15c36;
+  color: #f15c36;
+  background-color: transparent !important;
+}
+.react-datepicker__week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  height: auto;
+  background-color: #000;
+}
+.react-datepicker__header {
+  background-color: #000;
+  border: none;
+}
+.react-datepicker__current-month {
+  font-weight: 600;
+  text-align: center;
+  color: #fff;
+}
+.react-datepicker__navigation {
+  top: 0.6rem;
+}
+.react-datepicker__navigation--previous {
+  left: 8px;
+}
+.react-datepicker__navigation--next {
+  right: 8px;
+}
+.react-datepicker__navigation-icon::before {
+  border-color: #f15c36;
+}
+.react-datepicker__day-names {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin: 0.3rem 0 0.2rem;
+}
+.react-datepicker__day-name {
+  text-align: center;
+  color: #f15c36;
+}
+.react-datepicker__day--selected:not(.react-datepicker__day--today) {
+  background-color: #f15c36 !important;
+  color: #fff !important;
+  font-weight: bold;
+  border: none;
+}
+.react-datepicker__day--today {
+  border: 2px dashed #f15c36;
+  color: #f15c36;
+}
+.react-datepicker__day--today.react-datepicker__day--selected {
+  background-color: #f15c36 !important;
+  color: #fff !important;
+  border: none;
+}
+.react-datepicker__day--disabled {
+  color: #666;
+  opacity: 0.4;
+  cursor: not-allowed;
+  background-color: transparent !important;
+}
+.react-datepicker__month {
+  margin: 0 !important;
+  padding: 0 !important;
+}

@@ -1,0 +1,76 @@
+@import "tailwindcss";
+/* Custom Fonts */
+@font-face {
+  font-family: "Hanson";
+  src: url("./Hanson-Bold.otf") format("truetype");
+  font-weight: bold;
+}
+
+/* Root Variables for Fonts & Project Colors */
+:root {
+  --font-primary: "Hanson", sans-serif;
+  --font-secondary: "Poppins", sans-serif;
+
+  /* Main Brand Colors */
+  --color-primary: #9810fa; /* matches your SVG & Apply Now button */
+  --color-secondary: #f15c36; /* optional accent color */
+  --color-gradient-start: #4f46e5; /* indigo for gradients */
+  --color-gradient-mid: #7c3aed; /* purple */
+  --color-gradient-end: #ec4899; /* pink */
+
+  /* Dark & Light */
+  --color-dark: #272727;
+  --color-darked: #121212;
+  --color-darker: #191919;
+  --color-light: #f1f1f1;
+  --color-white: #ffffff;
+
+  /* Other */
+  --color-red: #ff0004;
+  --color-gray: #8e8e8e;
+  --color-gray-light: #f3f4f6; /* for gray backgrounds */
+}
+
+/* Font Utility Classes */
+.font-primary {
+  font-family: var(--font-primary);
+}
+
+.font-secondary {
+  font-family: var(--font-secondary);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-darked);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary);
+  border-radius: 4px;
+  border: 2px solid var(--color-darked);
+}
+
+/* Optional: Background gradients */
+.bg-gradient-project {
+  background: linear-gradient(
+    to right,
+    var(--color-gradient-start),
+    var(--color-gradient-mid),
+    var(--color-gradient-end)
+  );
+}
+
+/* Text Gradient Utility */
+.text-gradient-project {
+  background: linear-gradient(
+    to right,
+    var(--color-gradient-start),
+    var(--color-gradient-mid),
+    var(--color-gradient-end)
+  );
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

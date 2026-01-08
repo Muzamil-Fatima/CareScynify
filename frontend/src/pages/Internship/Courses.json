@@ -1,0 +1,218 @@
+[
+  {
+    "id": 1,
+    "title": "Web Development",
+    "subtitle": "Full Stack Developer Intern",
+    "description": "Master frontend & backend with hands-on projects.",
+    "shortDetail": [
+      "Learn HTML, CSS, JavaScript fundamentals",
+      "Build dynamic UIs with React.js",
+      "Work with Node.js & Express backend"
+    ],
+    "FullDetails": [
+      "Integrate REST APIs and databases",
+      "Hands-on real-world projects",
+      "Version control with Git/GitHub",
+      "Duration: 1 month"
+    ],
+    "images": ["/images/WebDev.jpg"]
+  },
+  {
+    "id": 2,
+    "title": "Data Science",
+    "subtitle": "Python & Machine Learning",
+    "description": "Analyze data and build predictive models.",
+    "shortDetail": [
+      "Learn Python, NumPy, Pandas",
+      "Data visualization with Matplotlib & Seaborn",
+      "Introduction to machine learning"
+    ],
+    "FullDetails": [
+      "Hands-on projects with real datasets",
+      "Build ML models with Scikit-learn",
+      "Data cleaning and preprocessing",
+      "Duration: 1.5 months"
+    ],
+    "images": ["/images/DataScience.jpg"]
+  },
+  {
+    "id": 3,
+    "title": "UI/UX Design",
+    "subtitle": "Design Stunning Interfaces",
+    "description": "Create user-friendly and visually appealing designs.",
+    "shortDetail": [
+      "Learn Figma & Adobe XD",
+      "Wireframing and prototyping",
+      "User research and usability testing"
+    ],
+    "FullDetails": [
+      "Design responsive websites & apps",
+      "Understand design principles & accessibility",
+      "Portfolio-building projects",
+      "Duration: 1 month"
+    ],
+    "images": ["/images/UiUx.jpg"]
+  },
+  {
+    "id": 4,
+    "title": "Mobile App Development",
+    "subtitle": "React Native Developer",
+    "description": "Build cross-platform mobile apps using React Native.",
+    "shortDetail": [
+      "Learn React Native basics",
+      "Connect apps to APIs & databases",
+      "Debugging & performance optimization"
+    ],
+    "FullDetails": [
+      "Deploy apps to Play Store & App Store",
+      "Hands-on real-world app projects",
+      "State management with Redux",
+      "Duration: 1.5 months"
+    ],
+    "images": ["/images/mobileApp.jpg"]
+  },
+  {
+    "id": 5,
+    "title": "Cybersecurity",
+    "subtitle": "Ethical Hacking & Security",
+    "description": "Learn to protect systems and networks.",
+    "shortDetail": [
+      "Network security fundamentals",
+      "Ethical hacking basics",
+      "Web application security testing"
+    ],
+    "FullDetails": [
+      "Hands-on penetration testing projects",
+      "Learn tools like Wireshark & Kali Linux",
+      "Understand security protocols & encryption",
+      "Duration: 2 months"
+    ],
+    "images": ["/images/Cybersecurity.jpg"]
+  },
+  {
+    "id": 6,
+    "title": "Cloud Computing",
+    "subtitle": "AWS & DevOps",
+    "description": "Deploy and manage applications in the cloud.",
+    "shortDetail": [
+      "Learn AWS services & architecture",
+      "Containerization with Docker",
+      "CI/CD pipelines & DevOps basics"
+    ],
+    "FullDetails": [
+      "Deploy apps using AWS EC2 & S3",
+      "Automate workflows with Jenkins",
+      "Hands-on cloud projects",
+      "Duration: 1.5 months"
+    ],
+    "images": ["/images/Cloud_Computing.jpg"]
+  },
+  {
+    "id": 7,
+    "title": "Artificial Intelligence",
+    "subtitle": "AI & Deep Learning",
+    "description": "Understand AI concepts and build neural networks.",
+    "shortDetail": [
+      "Learn AI fundamentals",
+      "Introduction to deep learning with TensorFlow",
+      "Build image & text models"
+    ],
+    "FullDetails": [
+      "Hands-on AI projects",
+      "Train models using real datasets",
+      "Learn model evaluation & optimization",
+      "Duration: 2 months"
+    ],
+    "images": ["/images/Ai.jpg"]
+  },
+  {
+    "id": 8,
+    "title": "Blockchain Development",
+    "subtitle": "Smart Contracts & DApps",
+    "description": "Build decentralized applications on blockchain networks.",
+    "shortDetail": [
+      "Learn Solidity & Ethereum basics",
+      "Create smart contracts",
+      "Deploy decentralized apps (DApps)"
+    ],
+    "FullDetails": [
+      "Understand blockchain principles",
+      "Hands-on project: NFT marketplace",
+      "Interact with blockchain via Web3.js",
+      "Duration: 1.5 months"
+    ],
+    "images": ["/images/BlockChain.PNG"]
+  },
+  {
+    "id": 9,
+    "title": "Digital Marketing",
+    "subtitle": "SEO, Ads & Social Media",
+    "description": "Promote businesses effectively online.",
+    "shortDetail": [
+      "Search engine optimization basics",
+      "Social media marketing strategies",
+      "Google Ads & paid campaigns"
+    ],
+    "FullDetails": [
+      "Analyze campaigns with metrics & analytics",
+      "Create content for marketing channels",
+      "Hands-on digital marketing projects",
+      "Duration: 1 month"
+    ],
+    "images": ["/images/Digital_Marketing.jpg"]
+  },
+  {
+    "id": 10,
+    "title": "Game Development",
+    "subtitle": "Unity & C#",
+    "description": "Create interactive 2D & 3D games.",
+    "shortDetail": [
+      "Learn Unity engine basics",
+      "C# scripting for games",
+      "Game physics & animations"
+    ],
+    "FullDetails": [
+      "Develop full games with levels & scoring",
+      "Deploy games on PC & mobile",
+      "Hands-on game projects",
+      "Duration: 2 months"
+    ],
+    "images": ["/images/Game_Development.jpg"]
+  },
+  {
+    "id": 11,
+    "title": "Internet of Things (IoT)",
+    "subtitle": "Smart Devices & Sensors",
+    "description": "Connect devices & build smart solutions.",
+    "shortDetail": [
+      "Learn IoT concepts & architecture",
+      "Work with sensors & microcontrollers",
+      "IoT data management"
+    ],
+    "FullDetails": [
+      "Build smart device projects",
+      "Integrate IoT with cloud platforms",
+      "Hands-on IoT applications",
+      "Duration: 1.5 months"
+    ],
+    "images": ["/images/IOT.PNG"]
+  },
+  {
+    "id": 12,
+    "title": "Robotics",
+    "subtitle": "Automation & Control",
+    "description": "Design and program robots for automation tasks.",
+    "shortDetail": [
+      "Learn robotics fundamentals",
+      "Programming microcontrollers",
+      "Sensor integration & motion control"
+    ],
+    "FullDetails": [
+      "Build autonomous robotic projects",
+      "Simulate robotics in software",
+      "Hands-on robotics projects",
+      "Duration: 2 months"
+    ],
+    "images": ["/images/Robotics.jpg"]
+  }
+]
