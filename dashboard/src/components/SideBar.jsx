@@ -203,6 +203,23 @@ const SideBar = () => {
       }`}
     >
       <div className="flex justify-between items-center mb-2 p-4">
+        {" "}
+        <button onClick={() => setToggle(!toggle)} className=" text-3xl">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
         <span>
           {" "}
           <svg
@@ -227,22 +244,6 @@ const SideBar = () => {
             <path d="M49 58 L51 58" stroke="#fff" strokeWidth="2" />
           </svg>
         </span>
-        <button onClick={() => setToggle(!toggle)} className=" text-3xl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
       </div>
 
       <ul className="space-y-4">
