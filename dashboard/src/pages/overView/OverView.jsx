@@ -1,13 +1,11 @@
-import AppointmentsList from "./AppointmentsList";
-import StatsCard from "./StatsCard";
+import PatientType from "./PatientType";
 
-const Overview=() =>{
+const Overview = () => {
   return (
     <>
       <h2 className="font-bold text-[40px] font-secondary mt-4">Overview</h2>
-      <StatsCard />
-      <AppointmentsList />
+      <PatientType />
     </>
   );
-}
+};
 export default Overview;

@@ -7,6 +7,7 @@ import HelpCenter from "./pages/helpCenter/HelpCenter";
 import Laboratory from "./pages/laboratory/Laboratory";
 import Patients from "./pages/patients/Patients";
 import Settings from "./pages/setting/Settings";
+import SideIcon from "./components/SideIcon";
 function App() {
   return (
     <div className="flex min-h-screen">
@@ -22,6 +23,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
+      <SideIcon />
     </div>
   );
 }
