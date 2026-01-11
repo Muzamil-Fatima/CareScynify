@@ -8,6 +8,7 @@ import Laboratory from "./pages/laboratory/Laboratory";
 import Patients from "./pages/patients/Patients";
 import Settings from "./pages/setting/Settings";
 import SideIcon from "./components/SideIcon";
+import Receptionists from "./pages/receptionists/Receptionists";
 function App() {
   return (
     <div className="flex min-h-screen">
@@ -20,6 +21,7 @@ function App() {
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/laboratory" element={<Laboratory />} />
           <Route path="/patients" element={<Patients />} />
+          <Route path="/receptionists" element={<Receptionists />} />
           <Route path="/settings" element={<Settings />} />
         </Routes>
       </div>
