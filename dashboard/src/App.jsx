@@ -11,9 +11,9 @@ import SideIcon from "./components/SideIcon";
 import Receptionists from "./pages/receptionists/Receptionists";
 function App() {
   return (
-    <div className="flex min-h-screen">
+    <div className="grid  grid-cols-[auto_1fr] min-h-screen">
       <SideBar />
-      <div className="flex-1 p-6 bg-gray-100">
+      <div className=" p-6 bg-gray-100 overflow-auto">
         <Routes>
           <Route path="/overview" element={<Overview />} />
           <Route path="/appointment" element={<Appointment />} />
