@@ -18,13 +18,13 @@ const AddNewDr = () => {
           {/* Picture Upload */}
           <div
             onClick={handleBrowseClick}
-            className="relative group w-36 h-38 rounded-full  overflow-hidden cursor-pointer border-2 border-blue-500"
+            className="relative group w-40 h-40 rounded-full  overflow-hidden cursor-pointer border-2 border-blue-500"
           >
             {selectedFile ? (
               <img
                 src={URL.createObjectURL(selectedFile)}
                 alt="Preview"
-                className="w-full h-full object-contain object-top"
+                className="w-full h-full object-top rounded-full"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-500 text-center">
@@ -58,26 +58,26 @@ const AddNewDr = () => {
 
         {/* Personal Information */}
         <div>
-          <h2 className="text-2xl font-semibold mb-6 text-gray-700">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800">
             Personal Information
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Dr Name</label>
+              <label className="mb-2 text-gray-700">Dr Name</label>
               <input
                 type="text"
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">DOB</label>
+              <label className="mb-2 text-gray-700">DOB</label>
               <input
                 type="date"
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">CNIC</label>
+              <label className="mb-2 text-gray-700">CNIC</label>
               <input
                 type="text"
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -86,7 +86,7 @@ const AddNewDr = () => {
 
             {/* Phone split into Country Code + Number */}
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Phone</label>
+              <label className="mb-2 text-gray-700">Phone</label>
               <div className="flex gap-2">
                 <input
                   type="text"
@@ -102,14 +102,14 @@ const AddNewDr = () => {
             </div>
 
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Email</label>
+              <label className="mb-2 text-gray-700">Email</label>
               <input
                 type="email"
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Address</label>
+              <label className="mb-2 text-gray-700">Address</label>
               <textarea
                 type="text"
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -119,7 +119,7 @@ const AddNewDr = () => {
         </div>
         {/* Professional Details */}
         <div>
-          <h2 className="text-2xl font-semibold mb-6 text-gray-700">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800">
             Professional Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -133,7 +133,7 @@ const AddNewDr = () => {
               "Password",
             ].map((field) => (
               <div key={field} className="flex flex-col">
-                <label className="mb-2 text-gray-600">{field}</label>
+                <label className="mb-2 text-gray-700">{field}</label>
                 <input
                   type={field === "Password" ? "password" : "text"}
                   className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -144,12 +144,12 @@ const AddNewDr = () => {
         </div>
         {/* Appointment Details */}
         <div>
-          <h2 className="text-2xl font-semibold mb-6 text-gray-700">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800">
             Appointment Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Available Days</label>
+              <label className="mb-2 text-gray-700">Available Days</label>
               <input
                 type="text"
                 placeholder="e.g., Mon, Wed, Fri"
@@ -157,7 +157,7 @@ const AddNewDr = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Consultation Hours</label>
+              <label className="mb-2 text-gray-700">Consultation Hours</label>
               <input
                 type="text"
                 placeholder="e.g., 10:00 AM - 2:00 PM"
@@ -165,14 +165,14 @@ const AddNewDr = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Room No.</label>
+              <label className="mb-2 text-gray-700">Room No.</label>
               <input
                 type="text"
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Appointment Duration</label>
+              <label className="mb-2 text-gray-700">Appointment Duration</label>
               <input
                 type="text"
                 placeholder="e.g., 30 mins"
@@ -180,11 +180,22 @@ const AddNewDr = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label className="mb-2 text-gray-600">Status</label>
+              <label className="mb-2 text-gray-700">Status</label>
               <select className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                 <option>Active</option>
                 <option>Inactive</option>
               </select>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="" className="mb-2 text-gray-700">
+                Note
+              </label>
+              <textarea
+                name=""
+                id=""
+                placeholder="Enter a short note for patients"
+                className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              ></textarea>
             </div>
           </div>
         </div>

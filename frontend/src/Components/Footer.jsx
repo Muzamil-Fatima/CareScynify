@@ -1,11 +1,11 @@
 import React from "react";
-
+import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <div className="bg-gray-900 text-white p-4 sm:px-8 lg-px-16 py-10 space-y-10 font-medium">
       <div className="space-y-2">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-6 ">
-          TecHub
+          ClinicFlow
         </h2>
         <p>Address xyz.</p>
         <p>
@@ -16,10 +16,18 @@ const Footer = () => {
         <div className="space-y-2">
           <h3 className="text-white font-semibold text-xl">Quick Link</h3>
           <ul className="text-gray-500 space-y-1">
-            <li>Home</li>
-            <li>About</li>
-            <li>Internship</li>
-            <li>Contact</li>
+            <li>
+              <Link to="/doctor">Doctor</Link>
+            </li>
+            <li>
+              <Link to="/about">About</Link>
+            </li>
+            <li>
+              <Link to="/clinic">Clinic</Link>
+            </li>
+            <li>
+              <Link to="/contact">Contact</Link>
+            </li>
             <li>FAQ</li>
           </ul>
         </div>
@@ -47,7 +55,7 @@ const Footer = () => {
       <div className="space-y-3">
         <h6 className="text-white font-semibold text-xl">NewsLetter</h6>
         <p className="text-gray-500 ">
-          Subscribe to get the latest updates, offers, and news from TecHub.
+          Subscribe to get the latest updates, offers, and news from ClinicFlow.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
           <input
