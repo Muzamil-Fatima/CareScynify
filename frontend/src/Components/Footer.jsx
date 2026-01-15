@@ -28,7 +28,9 @@ const Footer = () => {
             <li>
               <Link to="/contact">Contact</Link>
             </li>
-            <li>FAQ</li>
+            <li>
+              <Link to="/why">Why choose</Link>
+            </li>
           </ul>
         </div>
         <div className="space-y-2">

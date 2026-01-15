@@ -18,10 +18,12 @@ const Appointment = ()=> {
       <div className="flex justify-between">
         <Search />
         <Buttons pendingAppointment={() => setPendingAppointment(true)} />
-      </div>
+      </div >
+      <div className="mt-2 border border-gray-300/30 rounded-[15px] bg-white shadow-sm">
+
       <Decide grid={() => setGrid(true)} />
       {/* Conditional Render  */}
-      <div>
+      <div >
         {pendingAppointment ? (
           <PendingAppointment />
         ) : grid ? (
@@ -29,6 +31,11 @@ const Appointment = ()=> {
         ) : (
           <AllAppointment />
         )}
+      </div>
+      </div>
+
+      <div className="mt-2 border border-gray-300/30 rounded-[15px] bg-white shadow-sm">
+
       </div>
     </>
   );

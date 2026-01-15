@@ -11,15 +11,16 @@ import Signup from "./pages/Auth/SignUp";
 import Forget from "./pages/Auth/Forget";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import ResetPassword from "./pages/Auth/ResetPassword";
+import WhyChoose from "./Components/WhyChoose";
 function App() {
   return (
     <>
       <Toaster
-        position="top-right" 
-        gutter={12} 
+        position="top-right"
+        gutter={12}
         containerClassName=""
         toastOptions={{
-          duration: 4000, 
+          duration: 4000,
           style: {
             fontSize: "14px",
             borderRadius: "8px",
@@ -40,6 +41,7 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactInfo />} />
           <Route path="/clinic" element={<Opportunity />} />
+          <Route path="/why" element={<WhyChoose />} />
         </Routes>
         <Footer />
       </div>

@@ -1,6 +1,6 @@
 import React from "react";
 
-const TecHub = () => {
+const WhyChoose = () => {
   const tec = [
     {
       title: "Trusted & Secure",
@@ -119,7 +119,7 @@ const TecHub = () => {
         <h2 className=" text-2xl sm:text-3xl md-text-4xl lg:text-5xl font-bold text-center mb-6 p-4 sm:p-10">
           Why Choose{" "}
           <span className="bg-linear-to-r from-indigo-500 via-purple-500 to-blue-700 bg-clip-text text-transparent">
-            TecHub?
+            ClinicFlow?
           </span>{" "}
         </h2>
         <p className=" text-center m-auto mb-8 px-4 sm:px-6 md:px-0 max-w-2xl">
@@ -150,4 +150,4 @@ const TecHub = () => {
   );
 };
 
-export default TecHub;
+export default WhyChoose;
