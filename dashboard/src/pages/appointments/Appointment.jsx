@@ -37,7 +37,7 @@ const Appointment = ()=> {
       <div className="mt-2 border border-gray-300/30 rounded-[15px] bg-white shadow-sm">
 
       </div>
-    </>
+    </div>
   );
 }
 export default Appointment;
