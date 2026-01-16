@@ -11,7 +11,7 @@ const Appointment = ()=> {
   const [grid, setGrid] = useState(false);
 
   return (
-    <>
+    <div>
       <h2 className="font-bold text-[40px] font-secondary mt-4">
         Appointments
       </h2>
