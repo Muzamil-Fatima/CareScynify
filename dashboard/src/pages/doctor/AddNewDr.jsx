@@ -1,8 +1,9 @@
 import React, { useRef, useState } from "react";
+import PhoneInput from "../../components/PhoneInput";
 const AddNewDr = () => {
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null); // Ref for hidden file input
-
+  const [phone, setPhone] = useState("");
   // Function trigger file input click
   const handleBrowseClick = () => {
     fileInputRef.current.click();
@@ -83,9 +84,8 @@ const AddNewDr = () => {
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
-
             {/* Phone split into Country Code + Number */}
-            <div className="flex flex-col">
+            {/* <div className="flex flex-col">
               <label className="mb-2 text-gray-700">Phone</label>
               <div className="flex gap-2">
                 <input
@@ -99,8 +99,8 @@ const AddNewDr = () => {
                   className="flex-1 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
-            </div>
-
+            </div> */}
+            <PhoneInput value={phone} onChange={setPhone} />
             <div className="flex flex-col">
               <label className="mb-2 text-gray-700">Email</label>
               <input
