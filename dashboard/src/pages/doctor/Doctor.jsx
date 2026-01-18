@@ -1,12 +1,12 @@
-import React from 'react'
-import AddNewDr from './AddNewDr'
+import React from "react";
+import DrDashboard from "./DrDashboard";
 
 const Doctor = () => {
   return (
     <div>
-      <AddNewDr />
+      <DrDashboard />
     </div>
-  )
-}
+  );
+};
 
-export default Doctor
+export default Doctor;
