@@ -9,6 +9,7 @@ import Patients from "./pages/patients/Patients";
 import Settings from "./pages/setting/Settings";
 import SideIcon from "./components/SideIcon";
 import Receptionists from "./pages/receptionists/Receptionists";
+import Chat from "./pages/chat/Chat";
 function App() {
   return (
     <div className="grid  grid-cols-[auto_1fr] min-h-screen">
@@ -23,6 +24,7 @@ function App() {
           <Route path="/patients" element={<Patients />} />
           <Route path="/receptionists" element={<Receptionists />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/chat" element={<Chat />} />
         </Routes>
       </div>
       <SideIcon />
