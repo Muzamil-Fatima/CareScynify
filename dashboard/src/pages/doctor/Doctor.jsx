@@ -4,7 +4,7 @@ import DrDashboard from "./DrDashboard";
 const Doctor = () => {
   return (
     <div>
-      <h2 className="text-3xl">Doctor</h2>
+      <h2 className="font-bold text-3xl font-secondary mt-4">Doctor</h2>
       <DrDashboard />
     </div>
   );
