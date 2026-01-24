@@ -3,7 +3,7 @@ import Search from "../../components/SearchBox";
 import AllAppointment from "./AllAppointment";
 import Buttons from "./Buttons";
 import PendingAppointment from "./PendingAppointment";
-import Decide from "./Decide";
+import Toggle from "./Toggle";
 import GridAppointment from "./GridAppointment";
 
 const Appointment = () => {
@@ -18,7 +18,7 @@ const Appointment = () => {
         <Buttons pendingAppointment={() => setActiveTab("pending")} />
       </div>
       <div className="mt-2">
-        <Decide
+        <Toggle
           grid={() => setActiveTab("grid")}
           row={() => setActiveTab("all")}
 
