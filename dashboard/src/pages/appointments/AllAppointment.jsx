@@ -8,22 +8,22 @@ const AllAppointment = () => {
     const fetchAppointment = async () => {
       try {
         const res = await axios.get(
-          `${BASE_URL}/api/appointment/allAppointments`
+          `${BASE_URL}/api/appointment/allAppointments`,
         );
-             console.log("Appointments Response:", res.data);
+        console.log("Appointments Response:", res.data);
         setAppointment(res.data.data);
       } catch (error) {
         toast.error(
-          "Error: " + (error.response?.data.message || error.message)
+          "Error: " + (error.response?.data.message || error.message),
         );
       }
     };
     fetchAppointment();
   }, []);
   return (
-    <>
+    <div className="border border-gray-300/30 rounded-lg shadow-sm bg-white">
       <p>Total Appointments: {appointment?.length || 0}</p>
-    </>
+    </div>
   );
-}
+};
 export default AllAppointment;

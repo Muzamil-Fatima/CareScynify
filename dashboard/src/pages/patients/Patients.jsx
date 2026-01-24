@@ -25,7 +25,7 @@ const Patients = () => {
 
   return (
     <div className="font-secondary font-medium text-[13px] mr-4">
-      <h2 className="font-bold text-[40px] mt-2 text-gray-900">Patients</h2>
+      <h2 className="font-bold text-3xl mt-2 text-gray-900">Patients</h2>
 
       <Search />
 

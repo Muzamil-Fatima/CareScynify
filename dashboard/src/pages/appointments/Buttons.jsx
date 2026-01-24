@@ -11,7 +11,7 @@ const Buttons = ({ pendingAppointment }) => {
         <span className="text-[16px] ml-1.5">Pending</span>
       </button>
       <button className="w-47.5 h-13.75 rounded-[15px] bg-(--color-primary) flex justify-center items-center mr-2">
-        {/* <img src={add} className="h-6 w-6" />{" "} */}
+        <span>+</span>
         <span className="text-[16px] ml-1.5">New Appointment</span>
       </button>
     </div>
