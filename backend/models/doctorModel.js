@@ -28,3 +28,6 @@ const drSchema = new mongoose.Schema({
   // extra filed
   drFee: { type: Number },
 });
+
+const Doctor = mongoose.model("Doctor", drSchema);
+export default Doctor;
