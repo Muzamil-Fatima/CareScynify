@@ -7,7 +7,7 @@ const Navbar = () => {
   return (
     <div className=" flex flex-row mt-1.5 space-x-2.5 justify-between items-center px-4 sm:px-6 py-4 border-b-2 border-gray-200 fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md">
       <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-        ClinicFlow
+        CareScynify
       </h1>
       <div>
         <ul className="hidden font-semibold md:flex flex-row ml-10 space-x-8 text-xl lg:text-xl">

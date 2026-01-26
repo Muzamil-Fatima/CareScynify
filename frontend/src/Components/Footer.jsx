@@ -5,7 +5,7 @@ const Footer = () => {
     <div className="bg-gray-900 text-white p-4 sm:px-8 lg-px-16 py-10 space-y-10 font-medium">
       <div className="space-y-2">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-6 ">
-          ClinicFlow
+          CareScynify
         </h2>
         <p>Address xyz.</p>
         <p>
@@ -57,7 +57,7 @@ const Footer = () => {
       <div className="space-y-3">
         <h6 className="text-white font-semibold text-xl">NewsLetter</h6>
         <p className="text-gray-500 ">
-          Subscribe to get the latest updates, offers, and news from ClinicFlow.
+          Subscribe to get the latest updates, offers, and news from CareScynify.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
           <input

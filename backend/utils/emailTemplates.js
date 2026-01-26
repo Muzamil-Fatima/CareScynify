@@ -11,13 +11,13 @@ export const verificationEmail = (name, verifyUrl) => {
           -webkit-text-fill-color: transparent; 
           margin-bottom: 20px;
         ">
-        TecHub
+        CareScynify
       </h1>
 
       <p style="font-size: 16px;">Hello <strong>${name}</strong>,</p>
 
       <p style="font-size: 16px; margin-bottom: 30px;">
-        Thank you for signing up at <strong>TecHub</strong>!  
+        Thank you for signing up at <strong>CareScynify</strong>!  
         Please verify your email address to activate your account.
       </p>
 
@@ -48,13 +48,8 @@ export const verificationEmail = (name, verifyUrl) => {
       <br />
 
       <p style="font-size: 14px; color: #999;">
-<<<<<<< HEAD
         Sent with ❤️ by Muzamil
-=======
-        Sent with ❤️ by Muzamil-Fatima
->>>>>>> cc65fcec34579783f7610b01d8b0e755330a2a56
       </p>
-
     </div>
   `;
 };
@@ -70,7 +65,7 @@ export const forgotPasswordEmail = (name, otp) => {
           -webkit-text-fill-color: transparent; 
           margin-bottom: 20px;
         ">
-        TecHub
+        CareScynify
       </h1>
       
       <p style="font-size: 16px;">Hello <strong>${name}</strong>,</p>
@@ -91,11 +86,7 @@ export const forgotPasswordEmail = (name, otp) => {
 
       <br />
       <p style="font-size: 14px; color: #999;">
-<<<<<<< HEAD
         Sent with ❤️ by Muzamil
-=======
-        Sent with ❤️ by Muzamil-Fatima
->>>>>>> cc65fcec34579783f7610b01d8b0e755330a2a56
       </p>
     </div>
   `;

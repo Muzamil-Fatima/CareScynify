@@ -42,7 +42,7 @@ const signup = asyncHandler(async (req, res) => {
 
   await sendEmail({
     to: newUser.email,
-    subject: "Verify your email for TecHub",
+    subject: "Verify your email for CareScynify",
     html: verificationEmail(newUser.name, verifyUrl),
   });
 
