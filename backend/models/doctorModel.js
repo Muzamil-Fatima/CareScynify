@@ -6,7 +6,7 @@ const drSchema = new mongoose.Schema({
   drImage: { type: String },
   drName: { type: String },
   drCNIC: { type: Number, unique: true },
-  drEmail: { type: String, unique:true },
+  drEmail: { type: String, unique: true },
   drDOB: { type: Date },
   drPhone: { type: Number, unique: true },
   drAddress: { type: String },
@@ -19,7 +19,13 @@ const drSchema = new mongoose.Schema({
   drPassword: { type: String },
   drLicenseNo: { type: String, unique: true },
   //   dr appointment details
-  drAvailableDays: { type: String },
+  drAvailableDays: [
+    {
+      day: { type: String },
+      startTime: { type: String },
+      endTime: { type: String },
+    },
+  ],
   drConsultationTime: { type: String },
   drRoomNo: { type: String },
   drAppointmentDuration: { type: String },
