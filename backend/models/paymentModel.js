@@ -1,8 +1,4 @@
-// 2️⃣ Payment Model
-// Payment
-// - appointmentId
-// - amount
-// - status
+
 import mongoose from "mongoose";
 // define the schema
 const paymentSchema = new mongoose.Schema({

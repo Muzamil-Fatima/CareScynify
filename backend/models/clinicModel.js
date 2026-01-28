@@ -1,12 +1,4 @@
-// 4️⃣ Clinic Model
 
-// Hospitals can have multiple clinics/branches
-
-// Clinic
-// - hospitalId
-// - name
-// - location
-// - timings
 import mongoose from "mongoose";
 // define the schema
 const clinicSchema = new mongoose.Schema({
