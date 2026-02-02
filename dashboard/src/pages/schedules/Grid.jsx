@@ -2,7 +2,9 @@ import React from 'react'
 
 const Grid = () => {
   return (
-    <div>Grid</div>
+    <div>
+      <h2>Grid</h2>
+    </div>
   )
 }
 
