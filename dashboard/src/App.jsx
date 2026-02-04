@@ -11,6 +11,7 @@ import SideIcon from "./components/SideIcon";
 import Receptionists from "./pages/receptionists/Receptionists";
 import Chat from "./pages/chat/Chat";
 import Inventory from "./pages/inventory/Inventory";
+import Billing from "./pages/billing/Billing";
 function App() {
   return (
     <div className="grid  grid-cols-[auto_1fr] min-h-screen">
@@ -27,6 +28,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/inventory" element={<Inventory />} />
+          <Route path="/billing" element={<Billing />} />
         </Routes>
       </div>
       <SideIcon />
