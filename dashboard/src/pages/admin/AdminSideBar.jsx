@@ -2,7 +2,11 @@ import React from 'react'
 
 const AdminSideBar = () => {
   return (
-    <div>AdminSideBar</div>
+    <div>
+      <h2>
+        AdminSideBar
+      </h2>
+    </div>
   )
 }
 
