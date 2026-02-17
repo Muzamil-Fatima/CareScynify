@@ -4,6 +4,18 @@ const AddNewDr = () => {
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null); // Ref for hidden file input
   const [phone, setPhone] = useState("");
+  const [availableDays, setAvailableDays] = useState([]);
+
+const handleDayChange = (e) => {
+  const { value, checked } = e.target;
+
+  if (checked) {
+    setAvailableDays([...availableDays, value]);
+  } else {
+    setAvailableDays(availableDays.filter(day => day !== value));
+  }
+};
+
   // Function trigger file input click
   const handleBrowseClick = () => {
     fileInputRef.current.click();
@@ -148,14 +160,32 @@ const AddNewDr = () => {
             Appointment Details
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col">
+            {/* <div className="flex flex-col">
               <label className="mb-2 text-gray-700">Available Days</label>
               <input
                 type="text"
                 placeholder="e.g., Mon, Wed, Fri"
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
-            </div>
+            </div> */}
+            <div className="flex flex-col">
+  <label className="mb-2 text-gray-700">Available Days</label>
+
+  <div className="grid grid-cols-3 gap-2">
+    {["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map((day) => (
+      <label key={day} className="flex items-center space-x-2">
+        <input
+          type="checkbox"
+          value={day}
+          className="accent-blue-500"
+          onChange={handleDayChange}
+        />
+        <span>{day}</span>
+      </label>
+    ))}
+  </div>
+</div>
+
             <div className="flex flex-col">
               <label className="mb-2 text-gray-700">Consultation Hours</label>
               <input
