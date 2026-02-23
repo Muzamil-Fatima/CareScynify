@@ -1,4 +1,14 @@
 @import "tailwindcss";
+
+
+.open-width {
+  width: 16rem; /* 64 in Tailwind = 16rem */
+}
+
+.close-width {
+  width: 4rem; /* small collapsed width */
+}
+
 /* Custom Fonts */
 @font-face {
   font-family: "Hanson";

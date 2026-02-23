@@ -13,6 +13,7 @@ import Chat from "./pages/chat/Chat";
 import Inventory from "./pages/inventory/Inventory";
 import Billing from "./pages/billing/Billing";
 import Payments from "./pages/payments/Payments";
+import Login from "./pages/auth/Login";
 function App() {
   return (
     <div className="grid  grid-cols-[auto_1fr] min-h-screen">
@@ -31,6 +32,7 @@ function App() {
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/billing" element={<Billing />} />
           <Route path="/payments" element={<Payments />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
       <SideIcon />

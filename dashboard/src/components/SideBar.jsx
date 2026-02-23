@@ -1,8 +1,6 @@
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-const SideBar = () => {
-  const [toggle, setToggle] = useState(true);
+const SideBar = ({ setActiveSidebar }) => {
   const menuItem = [
     {
       name: "Overview",
@@ -19,6 +17,7 @@ const SideBar = () => {
       ),
     },
     {
+      id: "dr",
       name: "Doctor",
       path: "/doctor",
       icon: (
@@ -175,7 +174,7 @@ const SideBar = () => {
     },
     {
       name: "Logout",
-      path: "/logout",
+      path: "/login",
       icon: (
         <svg
           width="27"
@@ -198,13 +197,11 @@ const SideBar = () => {
   ];
   return (
     <div
-      className={` min-h-screen bg-slate-950 text-white p-2 transition-all duration-300 ${
-        toggle ? "w-64" : "w-16"
-      }`}
+      className={` min-h-screen bg-slate-950 text-white p-2 transition-all duration-300 w-64`}
     >
       <div className="flex justify-between items-center mb-2 p-4">
         {" "}
-        <button onClick={() => setToggle(!toggle)} className=" text-3xl">
+        <button className=" text-3xl">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-6 h-6"
@@ -220,35 +217,12 @@ const SideBar = () => {
             />
           </svg>
         </button>
-        <span>
-          {" "}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 100 100"
-            className="w-10 h-10"
-          >
-            {/* Green circle */}
-            <circle cx="50" cy="35" r="30" fill="#a3e635" />
-
-            {/* Road/path */}
-            <path
-              d="M35 35 L50 70 L65 35"
-              stroke="#60a5fa"
-              strokeWidth="6"
-              fill="none"
-            />
-
-            {/* Road dashed lines */}
-            <path d="M49 42 L51 42" stroke="#fff" strokeWidth="2" />
-            <path d="M49 50 L51 50" stroke="#fff" strokeWidth="2" />
-            <path d="M49 58 L51 58" stroke="#fff" strokeWidth="2" />
-          </svg>
-        </span>
       </div>
 
       <ul className="space-y-4">
         {menuItem.map((item) => (
           <NavLink
+            onClick={() => setActiveSidebar(item.id || null)}
             key={item.name}
             to={item.path}
             className={({ isActive }) =>
@@ -261,9 +235,7 @@ const SideBar = () => {
             }
           >
             {item.icon}
-            <span className={`ml-2 ${toggle ? "block" : "hidden"}`}>
-              {item.name}
-            </span>
+            <span className={`ml-2 }`}>{item.name}</span>
           </NavLink>
         ))}
       </ul>

@@ -33,7 +33,7 @@ const Patients = () => {
         {/* Header */}
         <div className="flex py-2 px-2 items-center justify-between border-b border-gray-300/30">
           <div className="text-[16px] font-semibold text-gray-800">
-            All Clients
+            All Patients
           </div>
           <div className="flex gap-3 items-center justify-end">
             <button className="flex items-center justify-center px-3 w-33 h-8.5 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white gap-1.5 transition">
