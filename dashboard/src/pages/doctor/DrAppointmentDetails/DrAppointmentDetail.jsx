@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import DrConsultation from "./DrConsultation";
 const DrAppointmentDetails = () => {
   const [availableDays, setAvailableDays] = useState([]);
   const handleDayChange = (e) => {
@@ -34,15 +35,7 @@ const DrAppointmentDetails = () => {
               ))}
             </div>
           </div>
-
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700">Consultation Hours</label>
-            <input
-              type="text"
-              placeholder="e.g., 10:00 AM - 2:00 PM"
-              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
+          <DrConsultation />
           <div className="flex flex-col">
             <label className="mb-2 text-gray-700">Room No.</label>
             <input
@@ -51,13 +44,28 @@ const DrAppointmentDetails = () => {
             />
           </div>
           <div className="flex flex-col">
-            <label className="mb-2 text-gray-700">Appointment Duration</label>
-            <input
-              type="text"
-              placeholder="e.g., 30 mins"
-              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
+  <label className="mb-2 text-gray-700">Appointment Duration</label>
+
+  <div className="flex gap-2">
+    
+    {/* Number input */}
+    <input
+      type="number"
+      min="1"
+      placeholder="Enter value"
+      className="border border-gray-300 rounded-lg p-2 w-24 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    />
+
+    {/* Unit select */}
+    <select
+      className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+    >
+      <option value="minutes">Minutes</option>
+      <option value="hours">Hours</option>
+    </select>
+
+  </div>
+</div>
           <div className="flex flex-col">
             <label className="mb-2 text-gray-700">Status</label>
             <select className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400">

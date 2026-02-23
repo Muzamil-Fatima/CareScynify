@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import PhoneInput from "../../components/PhoneInput";
+import PhoneInput from "../../../components/PhoneInput";
 const DrPersonalInfo = () => {
   const [phone, setPhone] = useState("");
 

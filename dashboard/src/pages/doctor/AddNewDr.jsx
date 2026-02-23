@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import DrPersonalInfo from "./DrPersonalInfo";
-import DrProfessionalDetail from "./DrProfessionalDetail";
-import DrAppointmentDetails from "./DrAppointmentDetails";
+import DrPersonalInfo from "./Personalinformation/DrPersonalInfo";
+import DrProfessionalDetail from "./ProfessionalDetail/DrProfessionalDetail";
+import DrAppointmentDetails from "./DrAppointmentDetails/DrAppointmentDetail";
 const AddNewDr = () => {
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null); // Ref for hidden file input
