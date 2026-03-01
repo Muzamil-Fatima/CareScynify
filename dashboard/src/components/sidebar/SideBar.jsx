@@ -150,8 +150,9 @@ const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
       ),
     },
     {
+      id: "settings",
       name: "Setting",
-      path: "/setting",
+      path: "/settings",
       icon: (
         <svg
           width="25"
