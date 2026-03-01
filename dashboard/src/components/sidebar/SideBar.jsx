@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
+import ToggleButton from "./ToggleButton";
 
-const SideBar = ({ setActiveSidebar }) => {
+const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
   const menuItem = [
     {
       name: "Overview",
@@ -82,6 +83,7 @@ const SideBar = ({ setActiveSidebar }) => {
       ),
     },
     {
+      id: "appointment",
       name: "Appointment",
       path: "/appointment",
       icon: (
@@ -114,6 +116,7 @@ const SideBar = ({ setActiveSidebar }) => {
       ),
     },
     {
+      id: "lab",
       name: "Laboratory",
       path: "/laboratory",
       icon: (
@@ -197,32 +200,18 @@ const SideBar = ({ setActiveSidebar }) => {
   ];
   return (
     <div
-      className={` min-h-screen bg-slate-950 text-white p-2 transition-all duration-300 w-64`}
+      className={`${isOpen ? "w-64" : "w-0"} min-h-screen bg-slate-950 text-white p-2 transition-all duration-300`}
     >
-      <div className="flex justify-between items-center mb-2 p-4">
-        {" "}
-        <button className=" text-3xl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-      </div>
+      <ToggleButton isOpen={isOpen} setIsOpen={setIsOpen} />
 
       <ul className="space-y-4">
         {menuItem.map((item) => (
           <NavLink
-            onClick={() => setActiveSidebar(item.id || null)}
+            onClick={() => {
+              if (item.id) {
+                setActiveSidebar(item.id);
+              }
+            }}
             key={item.name}
             to={item.path}
             className={({ isActive }) =>

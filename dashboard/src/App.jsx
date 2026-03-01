@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import SideBar from "./components/SideBar";
+import ToggleSideBar from "./components/sidebar/ToggleSideBar";
 import Overview from "./pages/overView/OverView";
 import Appointment from "./pages/appointments/Appointment";
 import Doctor from "./pages/doctor/Doctor";
@@ -14,10 +14,19 @@ import Inventory from "./pages/inventory/Inventory";
 import Billing from "./pages/billing/Billing";
 import Payments from "./pages/payments/Payments";
 import Login from "./pages/auth/Login";
+import { useState } from "react";
 function App() {
+  const [isOpen, setIsOpen] = useState(true);
+  const [activeSidebar, setActiveSidebar] = useState("");
   return (
     <div className="grid  grid-cols-[auto_1fr] min-h-screen">
-      <SideBar />
+      <ToggleSideBar
+        activeSidebar={activeSidebar}
+        setActiveSidebar={setActiveSidebar}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+      {/* <SideBar isOpen={isOpen} setIsOpen={setIsOpen} /> */}
       <div className=" p-6 bg-gray-100 overflow-auto">
         <Routes>
           <Route path="/overview" element={<Overview />} />
