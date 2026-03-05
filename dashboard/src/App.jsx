@@ -15,6 +15,10 @@ import Billing from "./pages/billing/Billing";
 import Payments from "./pages/payments/Payments";
 import Login from "./pages/auth/Login";
 import { useState } from "react";
+import DrDashboard from "./pages/doctor/DrDashboard";
+import DrSchedule from "./pages/doctor/DrSchedule";
+import AllAppointment from "./pages/appointments/AllAppointment";
+import AddNewDr from "./pages/doctor/AddNewDr";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -31,7 +35,13 @@ function App() {
         <Routes>
           <Route path="/overview" element={<Overview />} />
           <Route path="/appointment" element={<Appointment />} />
+          {/* Doctor  */}
           <Route path="/doctor" element={<Doctor />} />
+          <Route path="/doctor/dashboard" element={<DrDashboard />} />
+          <Route path="/doctor/schedule" element={<DrSchedule />} />
+          <Route path="/doctor/appointments" element={<AllAppointment />} />
+          <Route path="/doctor/profile" element={<AddNewDr />} />
+
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/laboratory" element={<Laboratory />} />
           <Route path="/patients" element={<Patients />} />

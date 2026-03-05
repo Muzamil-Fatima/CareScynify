@@ -4,7 +4,7 @@ const DrSideBar = ({ isOpen, setIsOpen }) => {
   const menuItem = [
     {
       name: "Dashboard",
-      path: "/dashboard",
+      path: "/doctor/dashboard",
       icon: (
         <svg
           viewBox="0 0 23 25"
@@ -16,7 +16,6 @@ const DrSideBar = ({ isOpen, setIsOpen }) => {
         </svg>
       ),
     },
-    { name: "My Clinics / Hospital", path: "/clinics", icon: "clinic-icon" },
     {
       name: "My Schedule",
       path: "/schedule",
@@ -36,7 +35,7 @@ const DrSideBar = ({ isOpen, setIsOpen }) => {
     },
     {
       name: "Appointments",
-      path: "/appointments",
+      path: "/doctor/appointments",
       icon: (
         <svg
           width="25"
@@ -151,7 +150,7 @@ const DrSideBar = ({ isOpen, setIsOpen }) => {
     },
     {
       name: "Profile",
-      path: "/profile",
+      path: "/doctor/profile",
       icon: (
         <svg
           width="24px"
