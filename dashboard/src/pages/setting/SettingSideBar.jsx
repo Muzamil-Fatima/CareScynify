@@ -1,52 +1,78 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+
+import PersonIcon from "@mui/icons-material/Person";
+import SecurityIcon from "@mui/icons-material/Security";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import BusinessIcon from "@mui/icons-material/Business";
+import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
+
 const SettingSideBar = () => {
   const [toggle, setToggle] = React.useState(true);
-  const menuItem = [{ permission: "Admin" }];
+
+  const menuItem = [
+    {
+      name: "Profile Settings",
+      path: "/settings/profile",
+      icon: <PersonIcon />,
+    },
+    {
+      name: "Security",
+      path: "/settings/security",
+      icon: <SecurityIcon />,
+    },
+    {
+      name: "Notifications",
+      path: "/settings/notifications",
+      icon: <NotificationsIcon />,
+    },
+    {
+      name: "Clinic Information",
+      path: "/settings/clinic",
+      icon: <BusinessIcon />,
+    },
+    {
+      name: "System Settings",
+      path: "/settings/system",
+      icon: <SettingsApplicationsIcon />,
+    },
+  ];
+
   return (
     <div
-      className={` min-h-screen bg-slate-950 text-white p-2 transition-all duration-300 ${
+      className={`min-h-screen bg-slate-950 text-white transition-all duration-300 ${
         toggle ? "w-64" : "w-16"
       }`}
     >
-      <div className="flex justify-between items-center mb-2 p-4">
-        {" "}
-        <button onClick={() => setToggle(!toggle)} className=" text-3xl">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
+      {/* Toggle Button */}
+      <div className="flex justify-between items-center p-4 border-b border-slate-700">
+        {toggle && <h2 className="text-lg font-bold">Settings</h2>}
+
+        <button onClick={() => setToggle(!toggle)} className="text-2xl">
+          ☰
         </button>
       </div>
 
-      <ul className="space-y-4">
+      {/* Menu */}
+      <ul className="mt-4 space-y-2 px-2">
         {menuItem.map((item) => (
           <NavLink
             key={item.name}
             to={item.path}
             className={({ isActive }) =>
-              `w-full pl-2 h-13 flex items-center rounded-lg
-     ${
-       isActive
-         ? "bg-blue-600 text-white"
-         : "text-white hover:text-indigo-500 hover:border-2 hover:border-dashed hover:border-indigo-500"
-     }`
+              `flex items-center gap-3 p-3 rounded-lg transition-all
+              ${
+                isActive
+                  ? "bg-blue-600 shadow-md"
+                  : "hover:bg-slate-800 hover:pl-4"
+              }`
             }
           >
-            {item.icon}
-            <span className={`ml-2 ${toggle ? "block" : "hidden"}`}>
-              {item.name}
-            </span>
+            <span className="text-xl">{item.icon}</span>
+
+            {toggle && (
+              <span className="text-sm font-medium">{item.name}</span>
+            )}
           </NavLink>
         ))}
       </ul>

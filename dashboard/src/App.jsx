@@ -19,6 +19,10 @@ import DrDashboard from "./pages/doctor/DrDashboard";
 import DrSchedule from "./pages/doctor/DrSchedule";
 import AllAppointment from "./pages/appointments/AllAppointment";
 import AddNewDr from "./pages/doctor/AddNewDr";
+import DrReview from "./pages/doctor/DrReview";
+import ProfileSetting from "./pages/setting/ProfileSetting";
+import SecuritySetting from "./pages/setting/SecuritySetting";
+import NotificationSetting from "./pages/setting/NotificationSetting";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -41,12 +45,19 @@ function App() {
           <Route path="/doctor/schedule" element={<DrSchedule />} />
           <Route path="/doctor/appointments" element={<AllAppointment />} />
           <Route path="/doctor/profile" element={<AddNewDr />} />
+          <Route path="/doctor/reviews" element={<DrReview />} />
 
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/laboratory" element={<Laboratory />} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/receptionists" element={<Receptionists />} />
+          {/* setting */}
           <Route path="/settings" element={<Settings />} />
+          <Route path="/settings/profile" element={<ProfileSetting />} />
+          <Route path="/settings/security" element={<SecuritySetting />} />
+          <Route path="/settings/notifications" element={<NotificationSetting />} />
+
+
           <Route path="/chat" element={<Chat />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/billing" element={<Billing />} />
