@@ -12,6 +12,7 @@ import Forget from "./pages/Auth/Forget";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import WhyChoose from "./Components/WhyChoose";
+import PatientProfile from "./pages/profile/PatientProfile";
 function App() {
   return (
     <>
@@ -42,6 +43,7 @@ function App() {
           <Route path="/contact" element={<ContactInfo />} />
           <Route path="/clinic" element={<Opportunity />} />
           <Route path="/why" element={<WhyChoose />} />
+          <Route path="/profile" element={<PatientProfile />}/>
         </Routes>
         <Footer />
       </div>
