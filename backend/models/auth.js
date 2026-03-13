@@ -37,8 +37,8 @@ const userSchema = new mongoose.Schema(
     status: { type: String, enum: ["Finished", "Active"], default: "Active" },
     role: {
       type: String,
-      enum: ["teacher", "student", "admin"],
-      default: "student",
+      enum: ["patient", "doctor", "admin", "hospital", "clinic"],
+      default: "patient",
     },
   },
   { timestamps: true }
