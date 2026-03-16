@@ -1,5 +1,5 @@
-import Patient from "../models/patientModel";
-import User from "../models/User.js";
+import Patient from "../models/patientModel.js";
+import User from "../models/user.js";
 // get patient profile
 export const getPatientProfile = async (req, res) => {
   try {
@@ -65,6 +65,19 @@ export const updatePatientProfile = async (req, res) => {
       emergencyContact: populatedPatient.emergencyContact || {},
       status: populatedPatient.status,
     });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get all patients
+export const getAllPatients = async (req, res) => {
+  try {
+    const patients = await Patient.find({}).populate(
+      "userId",
+      "name email avatar"
+    );
+    res.status(200).json(patients);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

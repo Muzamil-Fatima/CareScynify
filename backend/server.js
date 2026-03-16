@@ -8,6 +8,7 @@ import cookiesParser from "cookie-parser";
 import connectDB from "./config/database.js";
 import userRoutes from "./router/userRoutes.js";
 import authRouter from "./router/authRoutes.js";
+import patientsRoutes from "./router/patientsRoutes.js"
 import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 
 //Configuration
@@ -38,6 +39,8 @@ app.use(
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRouter);
 
+// use patient routes
+app.use("/api/patients", patientsRoutes)
 // server listen
 const port = process.env.PORT || 8000;
 app.listen(port, () => {

@@ -1,26 +1,40 @@
 import { useEffect, useState } from "react";
 import Search from "../../components/SearchBox";
 import { FaPaperPlane, FaTrash, FaUsers, FaChevronUp } from "react-icons/fa";
-
+import { BASE_URL } from "../../utils/api.js";
 const Patients = () => {
-  const [clients, setClients] = useState([]);
+  const [patients, setPatients] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(clients.length / rowsPerPage);
+  const totalPages = Math.ceil(patients.length / rowsPerPage);
 
   // Paginate data
-  const paginatedClients = clients.slice(
+  const paginatedPatients = patients.slice(
     (currentPage - 1) * rowsPerPage,
-    currentPage * rowsPerPage
+    currentPage * rowsPerPage,
   );
 
   // Fetch data from API
+  // useEffect(() => {
+  //   fetch(  `${BASE_URL}/api/patients/`,)
+  //     .then((response) => response.json())
+  //     .then((data) => setPatients(data))
+  //     .catch((error) => console.error("Error fetching patients: ", error));
+  // }, []);
   useEffect(() => {
-    fetch("http://localhost:3000/clients")
-      .then((response) => response.json())
-      .then((data) => setClients(data))
-      .catch((error) => console.error("Error fetching clients: ", error));
+    const fetchPatients = async () => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/patients`);
+        const data = await res.json();
+
+        setPatients(Array.isArray(data) ? data : []); // <-- safe fallback
+      } catch (error) {
+        console.error("Error fetching patients: ", error);
+        setPatients([]);
+      }
+    };
+    fetchPatients();
   }, []);
 
   return (
@@ -43,7 +57,7 @@ const Patients = () => {
               <FaTrash className="w-4 h-4" />
             </button>
             <p className="text-[14px] text-gray-600">
-              1-10 <span className="opacity-50">of {clients.length}</span>
+              1-10 <span className="opacity-50">of {patients.length}</span>
             </p>
           </div>
         </div>
@@ -66,14 +80,15 @@ const Patients = () => {
                         {title} <FaUsers className="w-3 h-3 text-gray-400" />
                       </div>
                     </th>
-                  )
+                  ),
                 )}
               </tr>
             </thead>
+
             <tbody>
-              {paginatedClients.map((client, index) => (
+              {paginatedPatients.map((patient, index) => (
                 <tr
-                  key={client.id}
+                  key={patient._id}
                   className={`text-[13px] font-medium ${
                     index % 2 !== 0 ? "bg-gray-50" : ""
                   }`}
@@ -83,22 +98,22 @@ const Patients = () => {
                       type="checkbox"
                       className="w-4 h-4 accent-indigo-500 border border-gray-300 rounded focus:ring-indigo-500/20 mr-2"
                     />
-                    {client.id}
+                    {patient._id}
                   </td>
                   <td className="px-4 py-3 flex items-center gap-2">
                     <img
-                      src={client.profile}
-                      alt={client.name}
+                      src={patient.userId.avatar}
+                      alt={patient.userId.name}
                       className="w-6 h-6 rounded-full"
                     />
-                    {client.name}
+                    {patient.userId.name}
                   </td>
-                  <td className="px-4 py-3">{client.email}</td>
-                  <td className="px-4 py-3">{client.sessions}</td>
-                  <td className="px-4 py-3">{client.classes}</td>
+                  <td className="px-4 py-3">{patient.userId.email}</td>
+                  <td className="px-4 py-3">{patient.sessions || "-"}</td>
+                  <td className="px-4 py-3">{patient.classes || "-"}</td>
                   <td className="px-4 py-3">
                     <button className="w-17 h-6 rounded-full text-green-600 bg-green-100 border border-green-400 text-sm">
-                      {client.status}
+                      {patient.status}
                     </button>
                   </td>
                 </tr>
@@ -112,8 +127,8 @@ const Patients = () => {
       <div className="mt-6 mb-6 flex justify-between items-center text-gray-700">
         <p>
           {(currentPage - 1) * rowsPerPage + 1}-
-          {Math.min(currentPage * rowsPerPage, clients.length)} of{" "}
-          {clients.length}
+          {Math.min(currentPage * rowsPerPage, patients.length)} of{" "}
+          {patients.length}
         </p>
 
         <div className="flex items-center gap-4">

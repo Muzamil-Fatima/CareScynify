@@ -1,4 +1,4 @@
-import User from "../models/auth.js";
+import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import asyncHandler from "../middleware/catchAsyncError.js";
