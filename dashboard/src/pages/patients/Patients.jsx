@@ -25,7 +25,7 @@ const Patients = () => {
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/api/patients`);
+        const res = await fetch(`${BASE_URL}/api/user/`);
         const data = await res.json();
 
         setPatients(Array.isArray(data) ? data : []); // <-- safe fallback
@@ -67,7 +67,7 @@ const Patients = () => {
           <table className="w-full border-collapse text-gray-700">
             <thead>
               <tr className="border-b border-gray-300/30">
-                {["ID", "Name", "Email", "Sessions", "Classes", "Status"].map(
+                {["ID", "Name", "Email", "Disease", "Time", "Status"].map(
                   (title) => (
                     <th key={title} className="px-4 py-3 text-left">
                       <div className="flex items-center gap-1">
@@ -109,8 +109,8 @@ const Patients = () => {
                     {patient.userId.name}
                   </td>
                   <td className="px-4 py-3">{patient.userId.email}</td>
-                  <td className="px-4 py-3">{patient.sessions || "-"}</td>
-                  <td className="px-4 py-3">{patient.classes || "-"}</td>
+                  <td className="px-4 py-3">{patient.Disease || "-"}</td>
+                  <td className="px-4 py-3">{patient.Time || "-"}</td>
                   <td className="px-4 py-3">
                     <button className="w-17 h-6 rounded-full text-green-600 bg-green-100 border border-green-400 text-sm">
                       {patient.status}
