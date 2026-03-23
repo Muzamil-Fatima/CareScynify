@@ -23,6 +23,7 @@ import DrReview from "./pages/doctor/DrReview";
 import ProfileSetting from "./pages/setting/ProfileSetting";
 import SecuritySetting from "./pages/setting/SecuritySetting";
 import NotificationSetting from "./pages/setting/NotificationSetting";
+import TopBar from "./components/TopBar";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -65,7 +66,8 @@ function App() {
           <Route path="/login" element={<Login />} />
         </Routes>
       </div>
-      <SideIcon />
+      {/* <SideIcon /> */}
+      <TopBar />
     </div>
   );
 }
