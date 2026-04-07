@@ -1,16 +1,5 @@
-import React, { useState } from "react";
 import DrConsultation from "./DrConsultation";
-const DrAppointmentDetails = () => {
-  const [availableDays, setAvailableDays] = useState([]);
-  const handleDayChange = (e) => {
-    const { value, checked } = e.target;
-
-    if (checked) {
-      setAvailableDays([...availableDays, value]);
-    } else {
-      setAvailableDays(availableDays.filter((day) => day !== value));
-    }
-  };
+const DrAppointmentDetails = ({ drForm, setDrForm }) => {
   return (
     <>
       <div>
@@ -27,48 +16,71 @@ const DrAppointmentDetails = () => {
                   <input
                     type="checkbox"
                     value={day}
+                    checked={drForm.availableDays?.includes(day) || false}
+                    onChange={(e) => {
+                      const { checked } = e.target;
+                      let newDays = drForm.availableDays
+                        ? [...drForm.availableDays]
+                        : [];
+                      if (checked) newDays.push(day);
+                      else newDays = newDays.filter((d) => d !== day);
+                      setDrForm({ ...drForm, availableDays: newDays });
+                    }}
                     className="accent-blue-500"
-                    onChange={handleDayChange}
                   />
                   <span>{day}</span>
                 </label>
               ))}
             </div>
           </div>
-          <DrConsultation />
+          <DrConsultation drForm={drForm} setDrForm={setDrForm} />
           <div className="flex flex-col">
             <label className="mb-2 text-gray-700">Room No.</label>
             <input
+              value={drForm.drRoomNo}
+              onChange={(e) => {
+                setDrForm({ ...drForm, drRoomNo: e.target.value });
+              }}
               type="text"
               className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
           <div className="flex flex-col">
-  <label className="mb-2 text-gray-700">Appointment Duration</label>
+            <label className="mb-2 text-gray-700">Appointment Duration</label>
 
-  <div className="flex gap-2">
-    
-    {/* Number input */}
-    <input
-      type="number"
-      min="1"
-      placeholder="Enter value"
-      className="border border-gray-300 rounded-lg p-2 w-24 focus:outline-none focus:ring-2 focus:ring-blue-400"
-    />
+            <div className="flex gap-2">
+              {/* Number input */}
+              <input
+                value={drForm.duration}
+                onChange={(e) => {
+                  setDrForm({ ...drForm, duration: e.target.value });
+                }}
+                type="number"
+                min="1"
+                placeholder="Enter value"
+                className="border border-gray-300 rounded-lg p-2 w-24 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
 
-    {/* Unit select */}
-    <select
-      className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-    >
-      <option value="minutes">Minutes</option>
-      <option value="hours">Hours</option>
-    </select>
-
-  </div>
-</div>
+              {/* Unit select */}
+              <select
+                value={drForm.durationUnit || "minutes"}
+                onChange={(e) =>
+                  setDrForm({ ...drForm, durationUnit: e.target.value })
+                }
+                className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                <option value="minutes">Minutes</option>
+                <option value="hours">Hours</option>
+              </select>
+            </div>
+          </div>
           <div className="flex flex-col">
             <label className="mb-2 text-gray-700">Status</label>
-            <select className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <select
+              value={drForm.status || "Active"}
+              onChange={(e) => setDrForm({ ...drForm, status: e.target.value })}
+              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
               <option>Active</option>
               <option>Inactive</option>
             </select>
@@ -78,6 +90,10 @@ const DrAppointmentDetails = () => {
               Note
             </label>
             <textarea
+              value={drForm.note}
+              onChange={(e) => {
+                setDrForm({ ...drForm, note: e.target.value });
+              }}
               name=""
               id=""
               placeholder="Enter a short note for patients"

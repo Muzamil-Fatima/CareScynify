@@ -1,6 +1,6 @@
 import React from "react";
 import DrSpecialization from "./DrSpecialization";
-const DrProfessionalDetail = () => {
+const DrProfessionalDetail = ({ drForm, setDrForm }) => {
   const fields = [
     { name: "ID", type: "text" },
     { name: "Specialization", type: "specialization" },
@@ -22,10 +22,19 @@ const DrProfessionalDetail = () => {
             <label className="mb-2 text-gray-700">{field.name}</label>
 
             {field.type === "specialization" ? (
-              <DrSpecialization />
+              <DrSpecialization
+                value={drForm[field.name] || ""}
+                onChange={(e) =>
+                  setDrForm({ ...drForm, [field.name]: e.target.value })
+                }
+              />
             ) : (
               <input
-                type={field.type}
+                value={drForm[field.name] || ""}
+                onChange={(e) => {
+                  setDrForm({ ...drForm, [field.name]: e.target.value });
+                }}
+                type={field.type === "password" ? "password" : "text"}
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             )}
