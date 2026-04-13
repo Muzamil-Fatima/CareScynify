@@ -1,0 +1,409 @@
+/* 🌐 Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+html, body {
+  width: 100%;
+  overflow-x: hidden; /* Side scroll khatam karne ke liye */
+  background-color: #f5f7fb;
+  color: #333;
+}
+
+/* 🌐 Navbar */
+header {
+  background: #0b7285;
+  padding: 15px 40px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 25px;
+}
+
+.nav-links li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav-links li a:hover {
+  color: #ffd43b;
+}
+
+/* 🌟 Hero Section Fixed */
+.hero {
+  position: relative;
+  width: 100%;
+  min-height: 90vh; /* Browser height ka 90% */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Image path path check karlein - yahan linear-gradient text ko clear dikhata hai */
+  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+              url('pic.png/banner.jpg'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.hero-content {
+  text-align: center;
+  padding: 40px;
+  border-radius: 12px;
+  color: #fff;
+  max-width: 800px;
+  width: 90%;
+}
+
+.hero-content h1 {
+  font-size: 42px;
+  margin-bottom: 15px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.hero-content p {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+}
+
+.search-bar input {
+  padding: 15px;
+  width: 300px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.search-bar button {
+  padding: 15px 25px;
+  border: none;
+  border-radius: 6px;
+  background: #ffd43b;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.btn {
+  display: inline-block;
+  padding: 15px 35px;
+  background: #20c997;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 30px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+.btn {
+  background: #ffeb3b;
+  color: #000;
+  padding: 10px 25px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+
+.btn:hover {
+  background: #12b886;
+}
+.subscribe-btn {
+    width: 100%;
+    max-width: 220px;   /* button ka size control */
+    padding: 10px 20px; /* height kam */
+    font-size: 15px;
+    border-radius: 6px;
+    background-color: #FFD43B; /* yellow */
+    color: #000;
+    border: none;
+    display: block;
+    margin: 15px auto;  /* center align */
+    cursor: pointer;
+}
+
+/* 🧬 Features */
+/* 🧬 Features */
+.features {
+  padding: 80px 20px;
+  text-align: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.features h2 {
+  font-size: 36px;
+  margin-bottom: 50px;
+  color: #0b7285;
+  font-weight: bold;
+}
+
+/* Horizontal cards */
+.feature-container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 25px;
+  flex-wrap: wrap; /* mobile pe wrap ho jayenge */
+  margin-top: 30px;
+}
+
+/* Animated Feature Cards */
+.feature-box {
+  background: #fff;
+  padding: 30px 20px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  width: 260px;
+  min-height: 190px;
+  transition: all 0.4s ease;
+  animation: fadeUp 0.8s ease forwards;
+  opacity: 0;
+  transform: translateY(30px);
+  cursor: pointer;
+}
+
+/* Hover Animation */
+.feature-box:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 18px 35px rgba(11, 114, 133, 0.18);
+  background: linear-gradient(135deg, #ffffff, #e6fcf5);
+}
+
+/* Card Heading */
+.feature-box h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #0b7285;
+}
+
+/* Card Text */
+.feature-box p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #555;
+}
+
+/* Stagger animation delay */
+.feature-box:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.feature-box:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.feature-box:nth-child(3) {
+  animation-delay: 0.6s;
+}
+.feature-box:nth-child(4) {
+  animation-delay: 0.8s;
+}
+
+/* Fade Up Animation */
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.feature-box {
+  background: #fff;
+  padding: 40px 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* 🧫 About Section */
+.about {
+  padding: 90px 20px;
+  background: linear-gradient(135deg, #e7f5ff, #d0ebff);
+  text-align: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.about-content {
+  max-width: 900px;
+  width: 100%;
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  animation: fadeUp 0.8s ease;
+}
+
+.about-content h2 {
+  font-size: 34px;
+  color: #0b7285;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.about-content p {
+  font-size: 18px;
+  line-height: 1.8;
+  color: #444;
+}
+
+/* 💬 Testimonials */
+.testimonials {
+  padding: 80px 20px;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.testi-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  margin-top: 40px;
+}
+
+.testi-box {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ✉️ Newsletter */
+/* ✉️ Newsletter */
+.newsletter {
+  padding: 90px 20px;
+  background: linear-gradient(135deg, #0b7285, #1098ad);
+  text-align: center;
+  color: #fff;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.newsletter-content {
+  max-width: 900px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 40px 30px;
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.newsletter-content h2 {
+  font-size: 34px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.newsletter-content p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  color: #e6fcf5;
+}
+
+/* Form Alignment */
+.newsletter-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.newsletter-form input {
+  padding: 15px 18px;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.newsletter-form button {
+  padding: 15px 28px;
+  border: none;
+  border-radius: 30px;
+  background: #ffd43b;
+  color: #000;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.newsletter-form button:hover {
+  background: #fcc419;
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(255, 212, 59, 0.35);
+}
+/* 📞 Footer */
+footer {
+  padding: 40px 20px;
+  text-align: center;
+  background: #343a40;
+  color: #fff;
+}
+
+/* 📱 Mobile Responsive */
+@media (max-width: 768px) {
+  .navbar { padding: 0 20px; }
+  .nav-links { display: none; }
+  .hero-content h1 { font-size: 28px; }
+  .search-bar input { width: 100%; }
+}
+
+/* Get Started Button */
+.btn-get-started {
+  display: inline-block;
+  padding: 12px 28px;       /* vertical & horizontal padding */
+  background: #0b7285;      /* teal-ish color, you can change */
+  color: #fff;              /* text color */
+  font-size: 16px;          /* font size */
+  font-weight: 600;         /* slightly bold */
+  border-radius: 8px;       /* rounded corners */
+  text-decoration: none;    /* remove underline */
+  transition: all 0.3s ease; /* smooth hover transition */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* subtle shadow */
+}
+
+.btn-get-started:hover {
+  background: #09535a;       /* darker shade on hover */
+  transform: translateY(-2px); /* slight lift effect */
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
