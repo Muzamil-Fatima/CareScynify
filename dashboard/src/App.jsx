@@ -28,7 +28,7 @@ function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
   return (
-    <div className="grid  grid-cols-[auto_1fr] min-h-screen">
+    <div className="grid grid-cols-[auto_1fr] min-h-screen">
       <ToggleSideBar
         activeSidebar={activeSidebar}
         setActiveSidebar={setActiveSidebar}
@@ -36,38 +36,43 @@ function App() {
         setIsOpen={setIsOpen}
       />
       {/* <SideBar isOpen={isOpen} setIsOpen={setIsOpen} /> */}
-      <div className=" p-6 bg-gray-100 overflow-auto">
-        <Routes>
-          <Route path="/overview" element={<Overview />} />
-          <Route path="/appointment" element={<Appointment />} />
-          {/* Doctor  */}
-          <Route path="/doctor" element={<Doctor />} />
-          <Route path="/doctor/dashboard" element={<DrDashboard />} />
-          <Route path="/doctor/schedule" element={<DrSchedule />} />
-          <Route path="/doctor/appointments" element={<AllAppointment />} />
-          <Route path="/doctor/profile" element={<AddNewDr />} />
-          <Route path="/doctor/reviews" element={<DrReview />} />
+      <div className="flex flex-col h-screen">
+        <div className=" p-6 bg-gray-100 overflow-auto flex-1">
+          <TopBar />
 
-          <Route path="/help-center" element={<HelpCenter />} />
-          <Route path="/laboratory" element={<Laboratory />} />
-          <Route path="/patients" element={<Patients />} />
-          <Route path="/receptionists" element={<Receptionists />} />
-          {/* setting */}
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/settings/profile" element={<ProfileSetting />} />
-          <Route path="/settings/security" element={<SecuritySetting />} />
-          <Route path="/settings/notifications" element={<NotificationSetting />} />
+          <Routes>
+            <Route path="/overview" element={<Overview />} />
+            <Route path="/appointment" element={<Appointment />} />
+            {/* Doctor  */}
+            <Route path="/doctor" element={<Doctor />} />
+            <Route path="/doctor/dashboard" element={<DrDashboard />} />
+            <Route path="/doctor/schedule" element={<DrSchedule />} />
+            <Route path="/doctor/appointments" element={<AllAppointment />} />
+            <Route path="/doctor/profile" element={<AddNewDr />} />
+            <Route path="/doctor/reviews" element={<DrReview />} />
 
+            <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/laboratory" element={<Laboratory />} />
+            <Route path="/patients" element={<Patients />} />
+            <Route path="/receptionists" element={<Receptionists />} />
+            {/* setting */}
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings/profile" element={<ProfileSetting />} />
+            <Route path="/settings/security" element={<SecuritySetting />} />
+            <Route
+              path="/settings/notifications"
+              element={<NotificationSetting />}
+            />
 
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/billing" element={<Billing />} />
-          <Route path="/payments" element={<Payments />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/inventory" element={<Inventory />} />
+            <Route path="/billing" element={<Billing />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </div>
       </div>
       {/* <SideIcon /> */}
-      <TopBar />
     </div>
   );
 }
