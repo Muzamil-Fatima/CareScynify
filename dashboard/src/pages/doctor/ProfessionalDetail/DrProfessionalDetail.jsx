@@ -15,7 +15,6 @@ const DrProfessionalDetail = ({ drForm, setDrForm }) => {
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Professional Details
       </h2>
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {fields.map((field) => (
           <div key={field.name} className="flex flex-col">
@@ -44,5 +43,4 @@ const DrProfessionalDetail = ({ drForm, setDrForm }) => {
     </div>
   );
 };
-
 export default DrProfessionalDetail;
