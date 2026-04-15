@@ -6,6 +6,7 @@ import cors from "cors";
 import cookiesParser from "cookie-parser";
 //Files
 import connectDB from "./config/database.js";
+import connectCloudinary from "./config/cloudinary.js";
 import userRoutes from "./router/userRoutes.js";
 import authRouter from "./router/authRoutes.js";
 import patientsRoutes from "./router/patientsRoutes.js";
@@ -14,7 +15,7 @@ import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 
 //Configuration
 connectDB();
-
+connectCloudinary();
 //Building Server
 const app = express();
 removeUnverifiedAccount();
