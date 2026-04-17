@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import HomeIcon from "@mui/icons-material/Home";
-import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
-import WorkIcon from "@mui/icons-material/Work";
-import InfoIcon from "@mui/icons-material/Info";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
+import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import MedicalServicesOutlinedIcon from "@mui/icons-material/MedicalServicesOutlined";
 
+import { useAuth } from "../context/useAuth.js";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
 
   return (
     <div className="flex flex-row mt-1.5 space-x-2.5 justify-between items-center px-4 sm:px-6 py-4 border-b-2 border-gray-200 fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md">
@@ -25,7 +28,7 @@ const Navbar = () => {
               }`
             }
           >
-            <HomeIcon />
+            <MedicalServicesOutlinedIcon />
             <span>Doctor</span>
             <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
           </NavLink>
@@ -40,8 +43,22 @@ const Navbar = () => {
               }`
             }
           >
-            <LocalHospitalIcon />
+            <LocalHospitalOutlinedIcon />
             <span>Clinic</span>
+            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
+          </NavLink>
+        </li>
+        <li className="flex items-center gap-2 hover:text-purple-700 cursor-pointer">
+          <NavLink
+            to="/hospital"
+            className={({ isActive }) =>
+              `flex items-center pb-1 relative group space-x-1.5 ${
+                isActive ? "text-purple-700" : "text-gray-800"
+              }`
+            }
+          >
+            <LocalHospitalOutlinedIcon />
+            <span>Hospital</span>
             <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
           </NavLink>
         </li>
@@ -55,7 +72,7 @@ const Navbar = () => {
               }`
             }
           >
-            <WorkIcon />
+            <WorkOutlineOutlinedIcon />
             <span>Jobs</span>
             <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
           </NavLink>
@@ -70,7 +87,7 @@ const Navbar = () => {
               }`
             }
           >
-            <InfoIcon />
+            <InfoOutlinedIcon />
             <span>About</span>
             <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
           </NavLink>
@@ -79,16 +96,38 @@ const Navbar = () => {
 
       {/* Buttons */}
       <div className="hidden md:flex space-x-4">
-        <Link to="/login">
-          <button className="border-purple-800 text-black border hover:bg-purple-600 rounded-2xl px-4 py-2 hover:text-white font-semibold cursor-pointer">
-            Login
-          </button>
-        </Link>
-        <Link to="/signup">
-          <button className="bg-purple-600 hover:bg-transparent hover:border hover:border-purple-800 rounded-2xl px-4 py-2 text-white hover:text-purple-700 font-semibold cursor-pointer">
-            SignUp
-          </button>
-        </Link>
+        {user ? (
+          <Link
+            to="/profile"
+            className="flex items-center gap-2 cursor-pointer"
+          >
+            {user.avatar ? (
+              <img
+                src={user.avatar}
+                alt="Avatar"
+                className="w-10 h-10 rounded-full object-cover border"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">
+                {user.name?.charAt(0).toUpperCase() || "U"}
+              </div>
+            )}
+          </Link>
+        ) : (
+          <>
+            <Link to="/login">
+              <button className="border-purple-800 text-black border hover:bg-purple-600 rounded-2xl px-4 py-2 hover:text-white font-semibold cursor-pointer">
+                Login
+              </button>
+            </Link>
+
+            <Link to="/signup">
+              <button className="bg-purple-600 hover:bg-transparent hover:border hover:border-purple-800 rounded-2xl px-4 py-2 text-white hover:text-purple-700 font-semibold cursor-pointer">
+                Become a Provider
+              </button>
+            </Link>
+          </>
+        )}
       </div>
 
       {/* Mobile Toggle */}

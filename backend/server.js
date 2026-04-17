@@ -41,7 +41,7 @@ app.use("/api/user", userRoutes);
 app.use("/api/auth", authRouter);
 
 // use patient routes
-app.use("/api/patients", patientsRoutes);
+app.use("/api/patient", patientsRoutes);
 // dr router
 app.use("/api/doctor", doctorRouter);
 // server listen

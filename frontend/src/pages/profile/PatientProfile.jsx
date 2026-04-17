@@ -1,32 +1,32 @@
-// import React from "react";
-// import usePatientProfile from "../../hooks/usePatientProfile";
-// import ProfileCard from "./ProfileCard";
-// import EditProfileForm from "./EditProfileForm";
-// import MedicalHistory from "./MedicalHistory";
-// import EmergencyContact from "./EmergencyContact";
+import React from "react";
+import usePatientProfile from "../../hooks/usePatientProfile";
+import ProfileCard from "./ProfileCard";
+import EditProfileForm from "./EditProfileForm";
+import MedicalHistory from "./MedicalHistory";
+import EmergencyContact from "./EmergencyContact";
 
-// const PatientProfile = () => {
-//   const { patient, loading, updatePatient } = usePatientProfile();
+const PatientProfile = () => {
+  const { patient, loading, updatePatient } = usePatientProfile();
 
-//   if (loading) return <p>Loading...</p>;
-//   if (!patient) return <p>No profile data</p>;
+  if (loading) return <p>Loading...</p>;
+  if (!patient) return <p>No profile data</p>;
 
-//   return (
-//     <div className="max-w-5xl mx-auto p-6 space-y-6">
+  return (
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
 
-//       <ProfileCard patient={patient} />
+      <ProfileCard patient={patient} />
 
-//       <EditProfileForm
-//         patient={patient}
-//         updatePatient={updatePatient}
-//       />
+      <EditProfileForm
+        patient={patient}
+        updatePatient={updatePatient}
+      />
 
-//       <MedicalHistory patient={patient} />
+      <MedicalHistory patient={patient} />
 
-//       <EmergencyContact patient={patient} />
+      <EmergencyContact patient={patient} />
 
-//     </div>
-//   );
-// };
+    </div>
+  );
+};
 
-// export default PatientProfile;
+export default PatientProfile;

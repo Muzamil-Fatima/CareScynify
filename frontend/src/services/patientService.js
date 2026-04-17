@@ -1,31 +1,18 @@
-// import { useEffect, useState } from "react";
-// import { getPatientProfile, updatePatientProfile } from "../services/patientService";
+export const getPatientProfile = async () => {
+  const res = await fetch("/api/patient/profile", {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`
+    }
+  });
+  return res.json();
+};
 
-// const usePatientProfile = () => {
-//   const [patient, setPatient] = useState(null);
-//   const [loading, setLoading] = useState(true);
+export const updatePatientProfile = async (data) => {
+  const res = await fetch("/api/patient/profile", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
 
-//   const fetchPatient = async () => {
-//     try {
-//       const data = await getPatientProfile();
-//       setPatient(data);
-//     } catch (error) {
-//       console.error("Error fetching patient profile", error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const updatePatient = async (updatedData) => {
-//     const data = await updatePatientProfile(updatedData);
-//     setPatient(data);
-//   };
-
-//   useEffect(() => {
-//     fetchPatient();
-//   }, []);
-
-//   return { patient, loading, updatePatient };
-// };
-
-// export default usePatientProfile;
+  return res.json();
+};
