@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { useState } from "react";
 import ToggleSideBar from "./components/sidebar/ToggleSideBar";
 import Overview from "./pages/overView/OverView";
 import Appointment from "./pages/appointments/Appointment";
@@ -7,14 +8,12 @@ import HelpCenter from "./pages/helpCenter/HelpCenter";
 import Laboratory from "./pages/laboratory/Laboratory";
 import Patients from "./pages/patients/Patients";
 import Settings from "./pages/setting/Settings";
-import SideIcon from "./components/SideIcon";
 import Receptionists from "./pages/receptionists/Receptionists";
 import Chat from "./pages/chat/Chat";
 import Inventory from "./pages/inventory/Inventory";
 import Billing from "./pages/billing/Billing";
 import Payments from "./pages/payments/Payments";
 import Login from "./pages/auth/Login";
-import { useState } from "react";
 import DrDashboard from "./pages/doctor/DrDashboard";
 import DrSchedule from "./pages/doctor/DrSchedule";
 import AllAppointment from "./pages/appointments/AllAppointment";
@@ -35,7 +34,6 @@ function App() {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
       />
-      {/* <SideBar isOpen={isOpen} setIsOpen={setIsOpen} /> */}
       <div className="flex flex-col h-screen">
         <div className=" p-6 bg-gray-100 overflow-auto flex-1">
           <TopBar />
@@ -72,7 +70,6 @@ function App() {
           </Routes>
         </div>
       </div>
-      {/* <SideIcon /> */}
     </div>
   );
 }
