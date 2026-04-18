@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Utils/api.js";
 import axios from "axios";
-
+import { useAuth } from "../../context/auth/useAuth.js";
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,6 +15,7 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
+  const { login } = useAuth();
   const handleSignup = async (e) => {
     e.preventDefault();
     if (!name || !email || !password || !confirmPassword)
@@ -30,11 +31,15 @@ const Signup = () => {
         email,
         password,
       });
-      if (res.data.success) {
-        toast.success(`Welcome ${name}!`);
-        localStorage.setItem("user", JSON.stringify({ name, email }));
-        navigate("/");
-      }
+
+      login({
+        name: res.data.name,
+        email: res.data.email,
+        token: res.data.token,
+        role: res.data.role || "patient",
+      });
+
+      navigate("/");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }

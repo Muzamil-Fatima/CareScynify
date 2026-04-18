@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 
 const EditProfileForm = ({ patient, updatePatient }) => {
-
   const [form, setForm] = useState({
-    name: patient.name,
-    age: patient.age,
-    phone: patient.phone,
-    address: patient.address
+    name: patient?.name || "",
+    age: patient?.age || "",
+    phone: patient?.phone || "",
+    address: patient?.address || "",
   });
 
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -26,7 +25,6 @@ const EditProfileForm = ({ patient, updatePatient }) => {
       onSubmit={handleSubmit}
       className="bg-white shadow rounded p-5 space-y-3"
     >
-
       <h2 className="text-xl font-bold">Edit Profile</h2>
 
       <input
@@ -67,7 +65,6 @@ const EditProfileForm = ({ patient, updatePatient }) => {
       >
         Update
       </button>
-
     </form>
   );
 };

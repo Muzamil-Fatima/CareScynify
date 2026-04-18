@@ -6,7 +6,7 @@ import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import MedicalServicesOutlinedIcon from "@mui/icons-material/MedicalServicesOutlined";
 
-import { useAuth } from "../context/useAuth.js";
+import { useAuth } from "../context/auth/useAuth.js";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();

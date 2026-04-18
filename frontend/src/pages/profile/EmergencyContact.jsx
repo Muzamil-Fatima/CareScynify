@@ -2,7 +2,7 @@ import React from "react";
 
 const EmergencyContact = ({ patient }) => {
 
-  const contact = patient.emergencyContact || {};
+  const contact = patient?.emergencyContact || {};
 
   return (
     <div className="bg-white shadow rounded p-5">

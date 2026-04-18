@@ -1,12 +1,12 @@
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Utils/api.js";
+import { useAuth } from "../../context/auth/useAuth.js";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +14,7 @@ const Login = () => {
 
   const navigate = useNavigate();
 
+  const { login } = useAuth();
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -25,14 +26,14 @@ const Login = () => {
         },
         { withCredentials: true },
       );
+      // complete data save in context and localStorage
+      login({
+        name: res.data.name,
+        email: res.data.email,
+        token: res.data.token,
+        role: res.data.role || "patient",
+      });
       toast.success(`${res.data.name} login successfully.`);
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          name: res.data.name,
-          email: res.data.email,
-        }),
-      );
       // Redirect to home page
       navigate("/");
     } catch (error) {

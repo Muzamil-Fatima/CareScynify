@@ -46,8 +46,9 @@ const VerifyEmail = () => {
 
       if (response.data.success) {
         toast.success("OTP verified successfully");
-        const resetToken = response.data.resetToken; // temporary token
-        navigate("/reset-password", { state: { email, resetToken } });
+        // const resetToken = response.data.resetToken; // temporary token
+        localStorage.setItem("resetToken", response.data.resetToken);
+        navigate("/reset-password");
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Invalid or expired OTP");
