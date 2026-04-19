@@ -1,29 +1,17 @@
-// view_patient
-// create_patient
-// edit_patient
-// delete_patient
+const roleSchema = new mongoose.Schema({
+  name: { type: String, required: true }, // Doctor, Lab, etc.
 
-// view_appointment
-// create_appointment
-
-import mongoose from "mongoose";
-const roleSchema = new mongoose.Schema(
-  {
-    // role like Doctor,Receptionist,Admin
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    //   is it role of any hospital or clinic
-    organizationId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization",
-      required: true,
-    },
-    // permission list
-    permissions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Permission" }],
+  organizationId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Organization",
+    required: true,
   },
-  { timestamps: true },
-);
+
+  permissions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Permission",
+    },
+  ],
+});
 export default mongoose.model("Role", roleSchema);

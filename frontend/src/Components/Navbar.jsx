@@ -1,172 +1,122 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+
+import MedicalServicesOutlinedIcon from "@mui/icons-material/MedicalServicesOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
+import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
+import LocalPharmacyOutlinedIcon from "@mui/icons-material/LocalPharmacyOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import MedicalServicesOutlinedIcon from "@mui/icons-material/MedicalServicesOutlined";
 
 import { useAuth } from "../context/auth/useAuth.js";
+
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { user } = useAuth();
 
+  const navItemClass = ({ isActive }) =>
+    `flex items-center gap-2 px-2 py-1 rounded-md transition ${
+      isActive ? "text-purple-700" : "text-gray-700 hover:text-purple-700"
+    }`;
+
   return (
-    <div className="flex flex-row mt-1.5 space-x-2.5 justify-between items-center px-4 sm:px-6 py-4 border-b-2 border-gray-200 fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md">
-      <h1 className="text-xl sm:text-3xl lg:text-3xl font-bold bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-        <NavLink to="/">CareScynify</NavLink>
-      </h1>
+    <div className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b">
 
-      {/* Desktop Menu */}
-      <ul className="hidden font-semibold md:flex flex-row ml-10 space-x-8 text-xl lg:text-xl">
-        <li className="flex items-center gap-2 hover:text-purple-700 cursor-pointer">
-          <NavLink
-            to="/doctor"
-            className={({ isActive }) =>
-              `flex items-center pb-1 relative group space-x-1.5 ${
-                isActive ? "text-purple-700" : "text-gray-800"
-              }`
-            }
-          >
-            <MedicalServicesOutlinedIcon />
-            <span>Doctor</span>
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-          </NavLink>
-        </li>
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3">
 
-        <li className="flex items-center gap-2 hover:text-purple-700 cursor-pointer">
-          <NavLink
-            to="/clinic"
-            className={({ isActive }) =>
-              `flex items-center pb-1 relative group space-x-1.5 ${
-                isActive ? "text-purple-700" : "text-gray-800"
-              }`
-            }
-          >
-            <LocalHospitalOutlinedIcon />
-            <span>Clinic</span>
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-          </NavLink>
-        </li>
-        <li className="flex items-center gap-2 hover:text-purple-700 cursor-pointer">
-          <NavLink
-            to="/hospital"
-            className={({ isActive }) =>
-              `flex items-center pb-1 relative group space-x-1.5 ${
-                isActive ? "text-purple-700" : "text-gray-800"
-              }`
-            }
-          >
-            <LocalHospitalOutlinedIcon />
-            <span>Hospital</span>
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-          </NavLink>
-        </li>
+        {/* Logo */}
+        <h1 className="text-xl font-bold bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <Link to="/">CareScynify</Link>
+        </h1>
 
-        <li className="flex items-center gap-2 hover:text-purple-700 cursor-pointer">
-          <NavLink
-            to="/jobs"
-            className={({ isActive }) =>
-              `flex items-center pb-1 relative group space-x-1.5 ${
-                isActive ? "text-purple-700" : "text-gray-800"
-              }`
-            }
-          >
-            <WorkOutlineOutlinedIcon />
-            <span>Jobs</span>
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-          </NavLink>
-        </li>
+        {/* Desktop Menu */}
+        <ul className="hidden md:flex items-center gap-5 font-medium text-sm">
 
-        <li className="flex items-center gap-2 hover:text-purple-700 cursor-pointer">
-          <NavLink
-            to="/about"
-            className={({ isActive }) =>
-              `flex items-center pb-1 relative group space-x-1.5 ${
-                isActive ? "text-purple-700" : "text-gray-800"
-              }`
-            }
-          >
-            <InfoOutlinedIcon />
-            <span>About</span>
-            <span className="absolute left-0 bottom-0 w-full h-0.5 bg-purple-700 scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></span>
-          </NavLink>
-        </li>
-      </ul>
+          <li>
+            <NavLink to="/doctor" className={navItemClass}>
+              <MedicalServicesOutlinedIcon fontSize="small" />
+              Doctor
+            </NavLink>
+          </li>
 
-      {/* Buttons */}
-      <div className="hidden md:flex space-x-4">
-        {user ? (
-          <Link
-            to="/profile"
-            className="flex items-center gap-2 cursor-pointer"
-          >
-            {user.avatar ? (
-              <img
-                src={user.avatar}
-                alt="Avatar"
-                className="w-10 h-10 rounded-full object-cover border"
-              />
-            ) : (
-              <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">
+          <li>
+            <NavLink to="/clinic" className={navItemClass}>
+              <LocalHospitalOutlinedIcon fontSize="small" />
+              Clinic
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/hospital" className={navItemClass}>
+              <LocalHospitalOutlinedIcon fontSize="small" />
+              Hospital
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/jobs" className={navItemClass}>
+              <WorkOutlineOutlinedIcon fontSize="small" />
+              Jobs
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/laboratory" className={navItemClass}>
+              <ScienceOutlinedIcon fontSize="small" />
+              Laboratory
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink to="/pharmacy" className={navItemClass}>
+              <LocalPharmacyOutlinedIcon fontSize="small" />
+              Pharmacy
+            </NavLink>
+          </li>
+
+        </ul>
+
+        {/* Auth */}
+        <div className="hidden md:flex items-center gap-4">
+
+          {user ? (
+            <Link to="/profile">
+              <div className="w-9 h-9 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">
                 {user.name?.charAt(0).toUpperCase() || "U"}
               </div>
-            )}
-          </Link>
-        ) : (
-          <>
-            <Link to="/login">
-              <button className="border-purple-800 text-black border hover:bg-purple-600 rounded-2xl px-4 py-2 hover:text-white font-semibold cursor-pointer">
-                Login
-              </button>
             </Link>
+          ) : (
+            <>
+              <Link to="/login" className="text-sm">Login</Link>
+              <Link to="/signup" className="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm">
+                Join
+              </Link>
+            </>
+          )}
 
-            <Link to="/signup">
-              <button className="bg-purple-600 hover:bg-transparent hover:border hover:border-purple-800 rounded-2xl px-4 py-2 text-white hover:text-purple-700 font-semibold cursor-pointer">
-                Become a Provider
-              </button>
-            </Link>
-          </>
-        )}
+        </div>
+
+        {/* Mobile */}
+        <button onClick={() => setOpen(!open)} className="md:hidden text-2xl">
+          ☰
+        </button>
+
       </div>
-
-      {/* Mobile Toggle */}
-      <button onClick={() => setOpen(!open)} className="md:hidden text-3xl">
-        ☰
-      </button>
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg">
-          <ul className="flex flex-col space-y-4 p-6 font-semibold text-lg">
-            <li>
-              <Link to="/doctor">Doctor</Link>
-            </li>
-            <li>
-              <Link to="/clinic">Clinic</Link>
-            </li>
-            <li>
-              <Link to="/jobs">Jobs</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
+        <div className="md:hidden px-6 pb-4 space-y-2 bg-white border-t text-sm">
 
-            <div className="flex flex-col space-y-3 pt-4">
-              <Link to="/login">
-                <button className="w-full border border-purple-800 rounded-xl py-2 font-semibold">
-                  Login
-                </button>
-              </Link>
-              <Link to="/signup">
-                <button className="w-full bg-purple-600 text-white rounded-xl py-2 font-semibold">
-                  Sign Up
-                </button>
-              </Link>
-            </div>
-          </ul>
+          <NavLink to="/doctor" className="block py-2">Doctor</NavLink>
+          <NavLink to="/clinic" className="block py-2">Clinic</NavLink>
+          <NavLink to="/hospital" className="block py-2">Hospital</NavLink>
+          <NavLink to="/laboratory" className="block py-2">Laboratory</NavLink>
+          <NavLink to="/pharmacy" className="block py-2">Pharmacy</NavLink>
+          <NavLink to="/jobs" className="block py-2">Jobs</NavLink>
+
         </div>
       )}
+
     </div>
   );
 };

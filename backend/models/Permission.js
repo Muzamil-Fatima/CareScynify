@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// define the schema
 const permissionSchema = new mongoose.Schema(
   {
     name: {
@@ -13,12 +12,15 @@ const permissionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    //    grouping helps in UI/admin panel
     module: {
       type: String,
       enum: ["patient", "appointment", "lab", "doctor", "setting"],
       required: true,
     },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
+
+const Permission = mongoose.models.Permission || mongoose.model("Permission", permissionSchema);
+
+export default Permission;

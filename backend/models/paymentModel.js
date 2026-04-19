@@ -1,14 +1,42 @@
-
 import mongoose from "mongoose";
-// define the schema
-const paymentSchema = new mongoose.Schema({
-  appointmentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Appointment",
-    required: true,
+
+const paymentSchema = new mongoose.Schema(
+  {
+    appointmentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Appointment",
+      required: true,
+    },
+
+    patientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+
+    amount: {
+      type: Number,
+      required: true,
+    },
+
+    paymentMethod: {
+      type: String,
+      enum: ["cash", "card", "online"],
+      required: true,
+    },
+
+    status: {
+      type: String,
+      enum: ["pending", "paid", "failed", "refunded"],
+      default: "pending",
+    },
+
+    transactionId: {
+      type: String,
+    },
   },
-  amount: { type: Number, required: true },
-  status: { type: String, required: true },
-});
+  { timestamps: true }
+);
+
 const Payment = mongoose.model("Payment", paymentSchema);
 export default Payment;

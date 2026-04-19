@@ -1,39 +1,72 @@
 import mongoose from "mongoose";
 
-// define the schema
-const drSchema = new mongoose.Schema({
+const drSchema = new mongoose.Schema(
+  {
   // personal information
-  drImage: { type: String },
-  drName: { type: String },
-  drCNIC: { type: Number, unique: true },
-  drEmail: { type: String, unique: true },
-  drDOB: { type: Date },
-  drPhone: { type: Number, unique: true },
-  drAddress: { type: String },
-  // Professional Details
-  drId: { type: Number, unique: true },
-  drSpecialization: { type: String },
-  drExperience: { type: Number },
-  drQualifications: { type: String },
-  drUserName: { type: String, unique: true },
-  drPassword: { type: String },
-  drLicenseNo: { type: String, unique: true },
-  //   dr appointment details
-  drAvailableDays: [
-    {
-      day: { type: String },
-      startTime: { type: String },
-      endTime: { type: String },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-  ],
-  drConsultationTime: { type: String },
-  drRoomNo: { type: String },
-  drAppointmentDuration: { type: String },
-  drStatus: { type: String },
-  drNote: { type: String },
-  // extra filed
-  drFee: { type: Number },
-});
+  // Professional Details
+    specialization: {
+      type: String,
+      required: true,
+    },
+
+    experience: {
+      type: Number,
+      default: 0,
+    },
+
+    qualifications: {
+      type: String,
+    },
+
+    licenseNo: {
+      type: String,
+      unique: true,
+      required: true,
+    },
+
+    fee: {
+      type: Number,
+      required: true,
+    },
+  //   dr appointment details
+    availableDays: [
+      {
+        day: String,
+        startTime: String,
+        endTime: String,
+      },
+    ],
+
+    consultationTime: {
+      type: String,
+    },
+
+    roomNo: {
+      type: String,
+    },
+AppointmentDuration: { type: String },
+    status: {
+      type: String,
+      enum: ["active", "inactive", "on_leave"],
+      default: "active",
+    },
+
+    note: {
+      type: String,
+    },
+
+    organizationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+    },
+  },
+  { timestamps: true }
+);
 
 const Doctor = mongoose.model("Doctor", drSchema);
 export default Doctor;

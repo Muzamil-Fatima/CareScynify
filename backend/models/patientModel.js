@@ -19,7 +19,11 @@ const patientSchema = new mongoose.Schema(
     // Emergency contact
 
     emergencyContact: { name: { type: String }, phone: { type: String } },
-    status: { type: String, enum: ["Active", "Finished"], default: "Active" },
+    status: {
+      type: String,
+      enum: ["active", "inactive", "deceased"],
+      default: "active",
+    },
   },
   { timestamps: true },
 );

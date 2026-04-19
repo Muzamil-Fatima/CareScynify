@@ -1,7 +1,4 @@
 import mongoose from "mongoose";
-import mongooseSequence from "mongoose-sequence";
-
-// const AutoIncrement = mongooseSequence(mongoose);
 
 // define the schema
 const userSchema = new mongoose.Schema(
@@ -10,14 +7,24 @@ const userSchema = new mongoose.Schema(
     name: { type: String, required: [true, "Name is required"] },
     password: {
       type: String,
-     
-      minlength: [6, "Password must be 6 character long"],
+      required: true,
+      minlength: [8, "Password must be at least 8 characters long"],
     },
     email: {
       type: String,
       required: [true, "Email is required"],
       unique: true,
+      index: true,
+      sparse: true,
     },
+    cnic: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    dob: Date,
+    phone: String,
+    address: String,
     accountVerified: { type: Boolean, default: false },
     resetTokenExpire: Date,
     resetToken: String,
@@ -27,23 +34,34 @@ const userSchema = new mongoose.Schema(
     resetPasswordExpire: Date,
     googleId: { type: String },
     authProvider: { type: String },
-    isLoggedIn: { type: Boolean, default: false },
 
     // verificationCode: Number,
     avatar: {
       type: String,
       required: false,
     },
-    status: { type: String, enum: ["Finished", "Active"], default: "Active" },
-    role: {
+    status: {
       type: String,
-      enum: ["patient", "doctor", "admin", "hospital", "clinic"],
-      default: "patient",
+      enum: ["active", "inactive", "suspended"],
+      default: "active",
+    },
+    roleId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Role",
+      required: true,
+    },
+    organizationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Organization",
+    },
+
+    department: {
+      type: String,
+      enum: ["hospital", "clinic", "lab", "pharmacy"],
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
-// userSchema.plugin(AutoIncrement, { inc_field: "userId", start_seq: 1 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);
 export default User;
