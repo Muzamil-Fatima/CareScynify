@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { JobsContext } from "./JobsContext";
-import jobsData from "../data/jobsData";
+import jobsData from "../../data/jobsData";
 
 const JobsProvider = ({ children }) => {
   const [jobs, setJobs] = useState(jobsData);

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { HospitalContext } from "./HospitalContext";
-import hospitalsData from "../data/hospitalData";
+import hospitalsData from "../../data/hospitalData";
 
 const HospitalProvider = ({ children }) => {
   const [hospitals] = useState(hospitalsData);
