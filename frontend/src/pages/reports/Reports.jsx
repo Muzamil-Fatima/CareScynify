@@ -1,32 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+import AddIcon from "@mui/icons-material/Add";
+import {toast} from "react-toastify";
+import { reportsData } from "../../data/reportData";
+import { reportCategories } from "./reportCategories";
 
 const Reports = () => {
-  const reports = [
-    {
-      id: 1,
-      title: "Blood Test Report",
-      doctor: "Dr. Ahmed Khan",
-      date: "2026-04-10",
-      status: "Normal",
-    },
-    {
-      id: 2,
-      title: "X-Ray Chest Report",
-      doctor: "Dr. Sarah Ali",
-      date: "2026-03-28",
-      status: "Pending",
-    },
-    {
-      id: 3,
-      title: "MRI Brain Scan",
-      doctor: "Dr. Usman Tariq",
-      date: "2026-02-15",
-      status: "Critical",
-    },
-  ];
+  const [activeTab, setActiveTab] = useState("Lab");
 
+  const filteredReports = reportsData.filter((r) => r.category === activeTab);
+  // function download file
+ const handleDownload = async (fileUrl, title) => {
+  if (!fileUrl) {
+    toast.error("No file available for this report");
+    return;
+  }
+
+  try {
+    const response = await fetch(fileUrl);
+
+    if (!response.ok) {
+      throw new Error("File not accessible");
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = title || "report.pdf";
+
+    document.body.appendChild(link);
+    link.click();
+
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+    toast.success("Download started");
+  } catch (error) {
+    console.error(error);
+    toast.error("Download failed");
+  }
+};
   const getStatusStyle = (status) => {
     switch (status) {
       case "Normal":
@@ -42,22 +58,45 @@ const Reports = () => {
 
   return (
     <div className="p-6">
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-semibold text-gray-800">
+          Medical Reports
+        </h1>
 
-      {/* Header */}
-      <h1 className="text-2xl font-semibold text-gray-800 mb-6">
-        Medical Reports
-      </h1>
+        <button className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition">
+          <AddIcon fontSize="small" />
+          Add Report
+        </button>
+      </div>
 
-      {/* Grid */}
+      {/* TABS */}
+      <div className="flex gap-3 flex-wrap mb-6">
+        {reportCategories.map((cat) => (
+          <button
+            key={cat.name}
+            onClick={() => setActiveTab(cat.name)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm transition
+              ${
+                activeTab === cat.name
+                  ? "bg-purple-600 text-white"
+                  : "bg-white text-gray-600 hover:bg-gray-100"
+              }`}
+          >
+            {cat.icon}
+            {cat.name}
+          </button>
+        ))}
+      </div>
+
+      {/* CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        {reports.map((report) => (
+        {filteredReports.map((report) => (
           <div
             key={report.id}
-            className="bg-white border border-gray-100 rounded-2xl shadow-sm p-5 hover:shadow-md transition"
+            className="bg-white border rounded-2xl shadow-sm p-5 hover:shadow-md transition"
           >
-
-            {/* Top */}
+            {/* TITLE */}
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-purple-100 rounded-xl">
                 <DescriptionOutlinedIcon className="text-purple-600" />
@@ -68,37 +107,39 @@ const Reports = () => {
               </h2>
             </div>
 
-            {/* Info */}
-            <div className="space-y-2 text-sm text-gray-600">
+            {/* INFO */}
+            <div className="text-sm text-gray-600 space-y-1">
               <p>
-                <span className="font-medium">Doctor:</span> {report.doctor}
+                <b>Doctor:</b> {report.doctor}
               </p>
               <p>
-                <span className="font-medium">Date:</span> {report.date}
+                <b>Date:</b> {report.date}
+              </p>
+              <p>
+                <b>Category:</b> {report.category}
               </p>
             </div>
 
-            {/* Bottom */}
+            {/* FOOTER */}
             <div className="flex justify-between items-center mt-4">
-
-              {/* Status */}
               <span
                 className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyle(
-                  report.status
+                  report.status,
                 )}`}
               >
                 {report.status}
               </span>
 
-              {/* Download */}
-              <button className="flex items-center gap-1 text-purple-600 hover:text-purple-800 font-medium text-sm">
+              <button
+                onClick={() => handleDownload(report.fileUrl, report.title)}
+                className="flex items-center gap-1 text-purple-600 hover:text-purple-800 text-sm font-medium"
+              >
                 <DownloadOutlinedIcon fontSize="small" />
                 Download
               </button>
             </div>
           </div>
         ))}
-
       </div>
     </div>
   );

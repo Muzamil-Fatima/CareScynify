@@ -4,12 +4,12 @@ import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/auth/AuthProvider.jsx";
-import DoctorProvider from "./context/DoctorProvider.jsx";
-import ClinicProvider from "./context/ClinicProvider.jsx";
-import HospitalProvider from "./context/HospitalProvider.jsx";
-import LabProvider from "./context/LabProvider.jsx";
-import PharmacyProvider from "./context/PharmacyProvider.jsx";
-import JobsProvider from "./context/JobsProvider.jsx";
+import DoctorProvider from "./context/doctor/DoctorProvider.jsx";
+import ClinicProvider from "./context/clinic/ClinicProvider.jsx";
+import HospitalProvider from "./context/hospital/HospitalProvider.jsx";
+import LabProvider from "./context/lab/LabProvider.jsx";
+import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
+import JobsProvider from "./context/jobs/JobsProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
   <JobsProvider>

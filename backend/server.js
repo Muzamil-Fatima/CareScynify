@@ -8,9 +8,10 @@ import cookiesParser from "cookie-parser";
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
 import userRoutes from "./router/userRoutes.js";
-import authRouter from "./router/authRoutes.js";
+import authRoutes from "./router/authRoutes.js";
 import patientsRoutes from "./router/patientsRoutes.js";
-import doctorRouter from "./router/doctorRouter.js";
+import doctorRoutes from "./router/doctorRoutes.js";
+import reportRoutes from "./router/reportRoutes.js";
 import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 
 //Configuration
@@ -38,12 +39,14 @@ app.use(
 
 // Routes
 app.use("/api/user", userRoutes);
-app.use("/api/auth", authRouter);
+app.use("/api/auth", authRoutes);
 
 // use patient routes
 app.use("/api/patient", patientsRoutes);
 // dr router
-app.use("/api/doctor", doctorRouter);
+app.use("/api/doctor", doctorRoutes);
+// report router
+app.use("/api/report", reportRoutes);
 // server listen
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
