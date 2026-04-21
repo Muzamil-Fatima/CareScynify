@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema(
 
     department: {
       type: String,
-      enum: ["hospital", "clinic", "lab", "pharmacy"],
+      enum: ["hospital", "clinic", "lab", "pharmacy", "staff", "admin"],
     },
   },
   { timestamps: true },
