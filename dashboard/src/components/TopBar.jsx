@@ -1,61 +1,43 @@
-import React from "react";
-import { useContext } from "react";
-import { ColorModeContext, tokens } from "../theme";
-import { Box, IconButton, InputBase, useTheme } from "@mui/material";
+import React, { useContext } from "react";
+import { ColorModeContext } from "../theme";
+
 import SearchIcon from "@mui/icons-material/Search";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 
 const TopBar = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+
   return (
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      p={2}
-      sx={{
-        background: colors.primary[400],
-        borderBottom: `1px solid ${colors.grey[700]}`,
-      }}
-    >
-      {/* Search Bar */}
-      <Box
-        ml="14px"
-        display="flex"
-        backgroundColor={colors.primary[400]}
-        borderRadius="3px"
-        sx={{ border: `1px solid ${colors.grey[700]}` }}
-      >
-        <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search here " />
-        <IconButton type="button" sx={{ p: 1 }}>
-          <SearchIcon />
-        </IconButton>
-      </Box>
-      {/* icons */}
-      <Box display="flex" alignItems="center" gap={1}>
-        <IconButton onClick={colorMode.toggleColorMode}>
-          {theme.palette.mode === "dark" ? (
-            <DarkModeOutlinedIcon />
-          ) : (
-            <LightModeOutlinedIcon />
-          )}
-        </IconButton>
-        <IconButton>
+    <div className="flex justify-between items-center p-4 bg-white/80 backdrop-blur-md border-b border-gray-200">
+      {/* Search */}
+      <div className="flex items-center bg-gray-50 border border-gray-200 rounded-lg px-2">
+        <input
+          type="text"
+          placeholder="Search..."
+          className="ml-2 bg-transparent outline-none py-1 text-sm"
+        />
+        <button className="p-2">
+          <SearchIcon fontSize="small" />
+        </button>
+      </div>
+
+      {/* Icons */}
+      <div className="flex items-center gap-2">
+        <button onClick={colorMode.toggleColorMode} className="p-2">
+          <DarkModeOutlinedIcon />
+        </button>
+
+        <button className="p-2">
           <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
-        <IconButton>
+        </button>
+
+        <button className="p-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition">
           <PersonOutlinedIcon />
-        </IconButton>
-      </Box>
-    </Box>
+        </button>
+      </div>
+    </div>
   );
 };
 

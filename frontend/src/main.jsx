@@ -10,30 +10,34 @@ import HospitalProvider from "./context/hospital/HospitalProvider.jsx";
 import LabProvider from "./context/lab/LabProvider.jsx";
 import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
 import JobsProvider from "./context/jobs/JobsProvider.jsx";
+import { AppointmentProvider } from "./context/AppointmentContext.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <JobsProvider>
-    <PharmacyProvider>
-      <LabProvider>
-        <HospitalProvider>
-          <ClinicProvider>
-            <DoctorProvider>
-              <AuthProvider>
-                <BrowserRouter>
-                  <StrictMode>
-                    <App />
-                  </StrictMode>
-                </BrowserRouter>
-              </AuthProvider>
-            </DoctorProvider>
+  <AppointmentProvider>
+    <JobsProvider>
+      <PharmacyProvider>
+        <LabProvider>
+          <HospitalProvider>
+            <ClinicProvider>
+              <DoctorProvider>
+                <AuthProvider>
+                  <BrowserRouter>
+                    <StrictMode>
+                      <App />
+                    </StrictMode>
+                  </BrowserRouter>
+                </AuthProvider>
+              </DoctorProvider>
+              ,
+            </ClinicProvider>
             ,
-          </ClinicProvider>
+          </HospitalProvider>
           ,
-        </HospitalProvider>
+        </LabProvider>
         ,
-      </LabProvider>
+      </PharmacyProvider>
       ,
-    </PharmacyProvider>
+    </JobsProvider>
     ,
-  </JobsProvider>,
+  </AppointmentProvider>,
 );

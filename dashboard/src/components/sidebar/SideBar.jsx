@@ -8,9 +8,9 @@ import EventIcon from "@mui/icons-material/Event";
 import ScienceIcon from "@mui/icons-material/Science";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MedicationIcon from "@mui/icons-material/Medication";
 
 const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
-
   const menuItem = [
     {
       name: "Overview",
@@ -39,6 +39,12 @@ const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
       name: "Laboratory",
       path: "/laboratory",
       icon: <ScienceIcon />,
+    },
+    {
+      id: "lab",
+      name: "pharmacy",
+      path: "/pharmacy",
+      icon: <MedicationIcon />,
     },
     {
       id: "settings",
@@ -82,9 +88,7 @@ const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
           >
             <span className="text-xl">{item.icon}</span>
 
-            {isOpen && (
-              <span className="text-sm font-medium">{item.name}</span>
-            )}
+            {isOpen && <span className="text-sm font-medium">{item.name}</span>}
           </NavLink>
         ))}
       </ul>

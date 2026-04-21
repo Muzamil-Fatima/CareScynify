@@ -6,6 +6,7 @@ import Appointment from "./pages/appointments/Appointment";
 import Doctor from "./pages/doctor/Doctor";
 import HelpCenter from "./pages/helpCenter/HelpCenter";
 import Laboratory from "./pages/laboratory/Laboratory";
+import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Patients from "./pages/patients/Patients";
 import Settings from "./pages/setting/Settings";
 import Receptionists from "./pages/receptionists/Receptionists";
@@ -35,9 +36,8 @@ function App() {
         setIsOpen={setIsOpen}
       />
       <div className="flex flex-col h-screen">
+        <TopBar className="" />
         <div className=" p-6 bg-gray-100 overflow-auto flex-1">
-          <TopBar />
-
           <Routes>
             <Route path="/overview" element={<Overview />} />
             <Route path="/appointment" element={<Appointment />} />
@@ -51,6 +51,7 @@ function App() {
 
             <Route path="/help-center" element={<HelpCenter />} />
             <Route path="/laboratory" element={<Laboratory />} />
+            <Route path="/pharmacy" element={<Pharmacy />} />
             <Route path="/patients" element={<Patients />} />
             <Route path="/receptionists" element={<Receptionists />} />
             {/* setting */}

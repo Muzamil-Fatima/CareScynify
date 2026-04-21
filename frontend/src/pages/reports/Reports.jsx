@@ -5,7 +5,6 @@ import AddIcon from "@mui/icons-material/Add";
 import {toast} from "react-toastify";
 import { reportsData } from "../../data/reportData";
 import { reportCategories } from "./reportCategories";
-
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("Lab");
 
