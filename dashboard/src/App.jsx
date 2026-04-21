@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import { useState } from "react";
-import ToggleSideBar from "./components/sidebar/ToggleSideBar";
 import Overview from "./pages/overView/OverView";
 import Appointment from "./pages/appointments/Appointment";
 import Doctor from "./pages/doctor/Doctor";
@@ -24,12 +23,13 @@ import ProfileSetting from "./pages/setting/ProfileSetting";
 import SecuritySetting from "./pages/setting/SecuritySetting";
 import NotificationSetting from "./pages/setting/NotificationSetting";
 import TopBar from "./components/TopBar";
+import SideBar from "./components/sidebar/SideBar";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
   return (
     <div className="grid grid-cols-[auto_1fr] min-h-screen">
-      <ToggleSideBar
+      <SideBar
         activeSidebar={activeSidebar}
         setActiveSidebar={setActiveSidebar}
         isOpen={isOpen}

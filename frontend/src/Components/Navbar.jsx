@@ -8,7 +8,7 @@ import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
 import LocalPharmacyOutlinedIcon from "@mui/icons-material/LocalPharmacyOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
-import { useAuth } from "../context/auth/useAuth.js";
+import { useAuth } from "../hooks/useAuth.js";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);

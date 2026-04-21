@@ -1,64 +1,15 @@
 import { NavLink } from "react-router-dom";
 import ToggleButton from "./ToggleButton";
+import  {menuByRole} from "../../config/menuConfig"
+import { useAuth } from "../../context/AuthContext";
 
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
-import PeopleIcon from "@mui/icons-material/People";
-import EventIcon from "@mui/icons-material/Event";
-import ScienceIcon from "@mui/icons-material/Science";
-import SettingsIcon from "@mui/icons-material/Settings";
-import LogoutIcon from "@mui/icons-material/Logout";
-import MedicationIcon from "@mui/icons-material/Medication";
 
 const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
-  const menuItem = [
-    {
-      name: "Overview",
-      path: "/overview",
-      icon: <DashboardIcon />,
-    },
-    {
-      id: "dr",
-      name: "Doctor",
-      path: "/doctor",
-      icon: <MedicalServicesIcon />,
-    },
-    {
-      name: "Patients",
-      path: "/patients",
-      icon: <PeopleIcon />,
-    },
-    {
-      id: "appointment",
-      name: "Appointment",
-      path: "/appointment",
-      icon: <EventIcon />,
-    },
-    {
-      id: "lab",
-      name: "Laboratory",
-      path: "/laboratory",
-      icon: <ScienceIcon />,
-    },
-    {
-      id: "lab",
-      name: "pharmacy",
-      path: "/pharmacy",
-      icon: <MedicationIcon />,
-    },
-    {
-      id: "settings",
-      name: "Setting",
-      path: "/settings",
-      icon: <SettingsIcon />,
-    },
-    {
-      name: "Logout",
-      path: "/login",
-      icon: <LogoutIcon />,
-    },
-  ];
+ 
+ const { user } = useAuth();
+  const role = user?.role;
 
+  const menuItem = menuByRole[role] || [];
   return (
     <div
       className={`${
