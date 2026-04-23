@@ -6,4 +6,3 @@ Team Members & Responsibilities:
 - Ayesha Fasial → Pharmacy Module
 
 This project is for academic use only.
-Unauthorized selling is not allowed.
