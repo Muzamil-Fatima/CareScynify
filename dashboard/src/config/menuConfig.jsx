@@ -17,7 +17,7 @@ export const menuByRole = {
   doctor: [
     {
       name: "Dashboard",
-      path: "/doctor/dashboard",
+      path: "/doctor-dashboard",
       icon: <DashboardIcon />,
     },
     {

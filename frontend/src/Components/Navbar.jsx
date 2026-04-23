@@ -88,7 +88,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login" className="text-sm">Login</Link>
-              <Link to="/signup" className="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm">
+              <Link to="/role-selection" className="bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm">
                 Join
               </Link>
             </>

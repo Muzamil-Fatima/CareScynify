@@ -45,19 +45,18 @@ const userSchema = new mongoose.Schema(
       enum: ["active", "inactive", "suspended"],
       default: "active",
     },
-    roleId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Role",
-      required: true,
-    },
-    organizationId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization",
-    },
-
-    department: {
+    role: {
       type: String,
-      enum: ["hospital", "clinic", "lab", "pharmacy", "staff", "admin"],
+      enum: [
+        "doctor",
+        "hospital",
+        "clinic",
+        "pharmacy",
+        "laboratory",
+        "patient",
+      ],
+      default: "patient",
+      required: true,
     },
   },
   { timestamps: true },

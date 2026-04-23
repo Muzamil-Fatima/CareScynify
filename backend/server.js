@@ -1,8 +1,8 @@
+import cors from "cors";
 import "dotenv/config";
 import "./config/passport.js";
 import passport from "passport";
 import express from "express";
-import cors from "cors";
 import cookiesParser from "cookie-parser";
 //Files
 import connectDB from "./config/database.js";
@@ -19,6 +19,7 @@ connectDB();
 connectCloudinary();
 //Building Server
 const app = express();
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
 removeUnverifiedAccount();
 app.use(passport.initialize());
 
@@ -31,9 +32,17 @@ app.use(cookiesParser());
 // allow request
 app.use(
   cors({
-    origin: [process.env.FRONTEND_URL],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   }),
 );
 

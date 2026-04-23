@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Utils/api.js";
 import axios from "axios";
-import { useAuth } from "../../context/auth/useAuth.js";
+import { useAuth } from "../../hooks/useAuth.js";
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -14,6 +14,7 @@ const Signup = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
+  const role = localStorage.getItem("selectedRole");
 
   const { login } = useAuth();
   const handleSignup = async (e) => {
@@ -30,6 +31,7 @@ const Signup = () => {
         name,
         email,
         password,
+        role,
       });
 
       login({
@@ -39,7 +41,8 @@ const Signup = () => {
         role: res.data.role || "patient",
       });
 
-      navigate("/");
+      navigate("/login");
+      localStorage.removeItem("selectedRole");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }

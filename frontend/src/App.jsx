@@ -18,6 +18,7 @@ import ClinicDrProfile from "./pages/clinic/ClinicDrProfile";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Jobs from "./pages/jobs/Jobs";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
+import RoleSelection from "./pages/RoleSelection";
 //  auth pages
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/SignUp";
@@ -68,6 +69,7 @@ function App() {
           <Route path="/laboratory" element={<Laboratory />} />
           <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/role-selection" element={<RoleSelection />} />
 
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />

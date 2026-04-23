@@ -24,6 +24,7 @@ import SecuritySetting from "./pages/setting/SecuritySetting";
 import NotificationSetting from "./pages/setting/NotificationSetting";
 import TopBar from "./components/TopBar";
 import SideBar from "./components/sidebar/SideBar";
+import ProtectedRoute from "./routes/ProtectedRoute";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -43,7 +44,7 @@ function App() {
             <Route path="/appointment" element={<Appointment />} />
             {/* Doctor  */}
             <Route path="/doctor" element={<Doctor />} />
-            <Route path="/doctor/dashboard" element={<DrDashboard />} />
+            <Route path="/doctor-dashboard" element={ <ProtectedRoute> <DrDashboard /> </ProtectedRoute>} />
             <Route path="/doctor/schedule" element={<DrSchedule />} />
             <Route path="/doctor/appointments" element={<AllAppointment />} />
             <Route path="/doctor/profile" element={<AddNewDr />} />

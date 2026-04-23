@@ -4,41 +4,51 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../Utils/api.js";
-import { useAuth } from "../../context/auth/useAuth.js";
+import { useAuth } from "../../hooks/useAuth.js";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const { login } = useAuth();
   const handleLogin = async (e) => {
     e.preventDefault();
+
     try {
       const res = await axios.post(
         `${BASE_URL}/api/auth/login`,
-        {
-          email,
-          password,
-        },
+        { email, password },
         { withCredentials: true },
       );
-      // complete data save in context and localStorage
+
+      const role = res.data.role || "patient";
+
       login({
         name: res.data.name,
         email: res.data.email,
         token: res.data.token,
-        role: res.data.role || "patient",
+        role,
       });
+
       toast.success(`${res.data.name} login successfully.`);
-      // Redirect to home page
-      navigate("/");
+
+      // 🔥 CROSS-APP REDIRECT
+      const roleRoutes = {
+        patient: "http://localhost:5173/",
+        doctor: "http://localhost:5174/doctor-dashboard",
+        hospital: "http://localhost:5174/hospital-dashboard",
+        clinic: "http://localhost:5174/clinic-dashboard",
+        pharmacy: "http://localhost:5174/pharmacy-dashboard",
+        laboratory: "http://localhost:5174/lab-dashboard",
+      };
+
+      window.location.href = roleRoutes[role] || "http://localhost:5173/";
     } catch (error) {
       console.error(error);
-      console.log(error.response);
       toast.error(error.response?.data?.message || "Failed to login");
     }
   };

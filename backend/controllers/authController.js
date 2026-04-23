@@ -12,7 +12,7 @@ import {
 } from "../utils/emailTemplates.js";
 // ------------------------------- signup
 const signup = asyncHandler(async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role } = req.body;
 
   if (!name || !email || !password) {
     throw new Error("Please provide all required fields");
@@ -33,6 +33,7 @@ const signup = asyncHandler(async (req, res) => {
     name,
     email,
     password: hashPassword,
+     role: role || "patient", 
     verificationToken,
     verificationCodeExpire: Date.now() + 15 * 60 * 1000, // 15 minutes
      authProvider: "manual",
