@@ -1,5 +1,5 @@
 import express from "express";
-import { addDr } from "../controllers/doctorController.js";
+import { addDr, getDoctorById } from "../controllers/doctorController.js";
 
 const router = express.Router();
 

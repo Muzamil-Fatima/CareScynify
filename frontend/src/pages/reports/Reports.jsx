@@ -2,46 +2,122 @@ import React, { useState } from "react";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import AddIcon from "@mui/icons-material/Add";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import { reportsData } from "../../data/reportData";
 import { reportCategories } from "./reportCategories";
+
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("Lab");
-
-  const filteredReports = reportsData.filter((r) => r.category === activeTab);
-  // function download file
- const handleDownload = async (fileUrl, title) => {
-  if (!fileUrl) {
-    toast.error("No file available for this report");
-    return;
-  }
-
-  try {
-    const response = await fetch(fileUrl);
-
-    if (!response.ok) {
-      throw new Error("File not accessible");
+  const [openModel, setOpenModel] = useState(false);
+  const [file, setFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState(null);
+  const [reports, setReports] = useState(reportsData);
+  const filteredReports =
+    activeTab === "All"
+      ? reports
+      : reports.filter((r) => r.category === activeTab);
+  // DOWNLOAD FUNCTION
+  const handleDownload = async (fileUrl, title) => {
+    if (!fileUrl) {
+      toast.error("No file available for this report");
+      return;
     }
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+    try {
+      const response = await fetch(fileUrl);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = title || "report.pdf";
+      if (!response.ok) {
+        throw new Error("File not accessible");
+      }
 
-    document.body.appendChild(link);
-    link.click();
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
 
-    link.remove();
-    window.URL.revokeObjectURL(url);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = title || "report.pdf";
 
-    toast.success("Download started");
-  } catch (error) {
-    console.error(error);
-    toast.error("Download failed");
-  }
-};
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success("Download started");
+    } catch (error) {
+      console.error(error);
+      toast.error("Download failed");
+    }
+  };
+
+  // UPLOAD + AI SIMULATION
+  const handleUpload = async (file) => {
+    if (!file) return;
+    //  TYPE CHECK
+    const allowedTypes = ["application/pdf", "image/png", "image/jpeg"];
+
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Only PDF, PNG, JPG allowed");
+      return;
+    }
+
+    // SIZE CHECK (10MB)
+    const maxSize = 10 * 1024 * 1024;
+
+    if (file.size > maxSize) {
+      toast.error("File too large (Max 10MB)");
+      return;
+    }
+    const newReport = {
+      id: Date.now(),
+      title: file.name,
+      doctor: "Pending AI...",
+      date: new Date().toISOString().split("T")[0],
+      category: "Pending",
+      status: "Pending",
+      fileUrl: URL.createObjectURL(file),
+    };
+
+    setReports((prev) => [newReport, ...prev]);
+
+    setUploadStatus({
+      type: "uploading",
+      message: "Uploading report...",
+    });
+
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("id", newReport.id);
+
+    // BACKEND api CALL
+    const res = await fetch("/api/analyze-report", {
+      method: "POST",
+      body: formData,
+    });
+
+    const data = await res.json();
+
+    setReports((prev) =>
+      prev.map((r) =>
+        r.id === newReport.id
+          ? {
+              ...r,
+              doctor: data.doctor,
+              category: data.category,
+              status: data.status,
+              title: data.title,
+            }
+          : r,
+      ),
+    );
+
+    setUploadStatus({
+      type: "done",
+      message: "Report processed successfully!",
+    });
+
+    setTimeout(() => setUploadStatus(null), 2000);
+  };
   const getStatusStyle = (status) => {
     switch (status) {
       case "Normal":
@@ -63,10 +139,55 @@ const Reports = () => {
           Medical Reports
         </h1>
 
-        <button className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition">
+        <button
+          onClick={() => setOpenModel(true)}
+          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition"
+        >
           <AddIcon fontSize="small" />
           Add Report
         </button>
+
+        {/* MODAL */}
+        {openModel && (
+          <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+            <div className="bg-white rounded-2xl p-6 w-[400px] shadow-xl">
+              <h2 className="text-xl font-semibold mb-4">Upload Report</h2>
+
+              <p className="text-sm text-gray-500 mb-4">
+                AI will automatically analyze and categorize this report.
+              </p>
+
+              {/* FILE INPUT */}
+              <input
+                type="file"
+                onChange={(e) => setFile(e.target.files[0])}
+                className="w-full border p-2 rounded mb-4"
+              />
+              <p className="text-xs text-gray-400 mt-2">
+                Supported: PDF, JPG, PNG (Max 10MB)
+              </p>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setOpenModel(false)}
+                  className="px-4 py-2 rounded bg-gray-200"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={() => {
+                    setOpenModel(false);
+                    if (file) handleUpload(file);
+                  }}
+                  className="px-4 py-2 rounded bg-purple-600 text-white"
+                >
+                  Upload
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* TABS */}
@@ -115,7 +236,10 @@ const Reports = () => {
                 <b>Date:</b> {report.date}
               </p>
               <p>
-                <b>Category:</b> {report.category}
+                <b>Category:</b>{" "}
+                {report.category === "Pending"
+                  ? "Analyzing..."
+                  : report.category}
               </p>
             </div>
 
@@ -140,6 +264,19 @@ const Reports = () => {
           </div>
         ))}
       </div>
+
+      {/* STATUS TOAST (GOOGLE DRIVE STYLE) */}
+      {uploadStatus && (
+        <div className="fixed bottom-5 left-5 z-50">
+          <div className="bg-purple-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3">
+            {uploadStatus.type === "processing" && (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            )}
+
+            <span className="text-sm font-medium">{uploadStatus.message}</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
