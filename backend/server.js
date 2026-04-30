@@ -7,7 +7,6 @@ import cookiesParser from "cookie-parser";
 //Files
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
-import userRoutes from "./router/userRoutes.js";
 import authRoutes from "./router/authRoutes.js";
 import patientsRoutes from "./router/patientsRoutes.js";
 import doctorRoutes from "./router/doctorRoutes.js";
@@ -47,7 +46,6 @@ app.use(
 );
 
 // Routes
-app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 
 // use patient routes

@@ -26,11 +26,9 @@ const PatientProfile = () => {
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-
       {/* Profile Image (MUI) */}
       <div className="flex justify-center">
         <Box position="relative" display="inline-block">
-
           {/* Avatar */}
           <Avatar
             src={selectedFile ? URL.createObjectURL(selectedFile) : ""}
@@ -77,10 +75,8 @@ const PatientProfile = () => {
       <PersonalInfo />
       <MedicalHistory />
       <EmergencyContact />
-
     </div>
   );
 };
 
 export default PatientProfile;
-

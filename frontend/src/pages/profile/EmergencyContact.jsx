@@ -1,24 +1,49 @@
 import React from "react";
+import { usePatient } from "../../context/patients/PatientContext";
 
-const EmergencyContact = ({ patient }) => {
+const EmergencyContact = () => {
+  const { profile, setProfile } = usePatient();
 
-  const contact = patient?.emergencyContact || {};
+  const contact = profile?.emergencyContact || {};
+
+  const inputClass =
+    "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
 
   return (
     <div className="bg-white shadow rounded p-5">
-
-      <h2 className="text-xl font-bold mb-3">
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Emergency Contact
       </h2>
 
-      <p>
-        <strong>Name:</strong> {contact.name || "Not Added"}
-      </p>
+      <input
+        value={contact.name || ""}
+        onChange={(e) =>
+          setProfile({
+            ...profile,
+            emergencyContact: {
+              ...contact,
+              name: e.target.value,
+            },
+          })
+        }
+        className={inputClass}
+        placeholder="Name"
+      />
 
-      <p>
-        <strong>Phone:</strong> {contact.phone || "Not Added"}
-      </p>
-
+      <input
+        value={contact.phone || ""}
+        onChange={(e) =>
+          setProfile({
+            ...profile,
+            emergencyContact: {
+              ...contact,
+              phone: e.target.value,
+            },
+          })
+        }
+        className={inputClass}
+        placeholder="Phone"
+      />
     </div>
   );
 };

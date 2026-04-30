@@ -7,13 +7,11 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // LOGIN
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem("user", JSON.stringify(userData));
   };
 
-  // LOGOUT
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");

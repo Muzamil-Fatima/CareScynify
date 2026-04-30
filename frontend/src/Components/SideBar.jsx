@@ -1,6 +1,5 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-
+import { NavLink, useNavigate } from "react-router-dom";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
@@ -10,6 +9,11 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
 const SideBar = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // clear auth
+    navigate("/login"); // redirect to login page
+  };
   const menuItems = [
     { name: "Dashboard", icon: <HomeOutlinedIcon />, path: "/dashboard" },
     { name: "Profile", icon: <PersonOutlineOutlinedIcon />, path: "/profile" },
@@ -56,7 +60,10 @@ const SideBar = () => {
 
       {/* Bottom Section */}
       <div className="p-5 border-t">
-        <div className="flex items-center gap-3 cursor-pointer text-gray-700 hover:text-red-500 transition">
+        <div
+          onClick={handleLogout}
+          className="flex items-center gap-3 cursor-pointer text-gray-700 hover:text-red-500 transition"
+        >
           <LogoutOutlinedIcon />
           <span className="font-medium">Logout</span>
         </div>

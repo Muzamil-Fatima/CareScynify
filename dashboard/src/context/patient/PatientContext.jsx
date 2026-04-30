@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { BASE_URL } from "../utils/api";
+import { BASE_URL } from "../../utils/api";
 
 const PatientContext = createContext();
 

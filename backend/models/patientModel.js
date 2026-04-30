@@ -1,24 +1,43 @@
 import mongoose from "mongoose";
 
-// Patient Schema
 const patientSchema = new mongoose.Schema(
   {
-    // Link to the User account
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    //   Basic info
-    age: { type: Number },
-    phone: { type: String },
-    address: { type: String },
-    //   Medical info
-    allergies: [{ type: String }],
-    medications: [{ type: String }],
-    // Emergency contact
 
-    emergencyContact: { name: { type: String }, phone: { type: String } },
+    // Personal Info
+    dob: Date,
+    cnic: String,
+    gender: { type: String, enum: ["male", "female", "other"] },
+    bloodGroup: String,
+    address: String,
+
+    // Medical Info
+    allergies: [String],
+    medications: [String],
+
+    medicalHistory: {
+      diseases: [String],
+      surgeries: [String],
+      familyHistory: String,
+      smoking: String,
+      alcohol: String,
+    },
+
+    // Emergency Contact
+    emergencyContact: {
+      name: String,
+      phone: String,
+      relation: String,
+    },
+
+    // Optional enhancements
+    chronicDiseases: [String],
+    notes: String,
+
     status: {
       type: String,
       enum: ["active", "inactive", "deceased"],
@@ -28,5 +47,6 @@ const patientSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const Patient = mongoose.model("Patient", patientSchema);
+const Patient =
+  mongoose.models.Patient || mongoose.model("Patient", patientSchema);
 export default Patient;
