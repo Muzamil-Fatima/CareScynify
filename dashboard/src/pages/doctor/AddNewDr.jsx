@@ -106,7 +106,7 @@ const AddNewDr = () => {
           {/* Appointment Details */}
           <DrAppointmentDetails drForm={drForm} setDrForm={setDrForm} />
           {/* Action Buttons */}
-          <div className="flex justify-end space-x-4">
+          {/* <div className="flex justify-end space-x-4">
             {["Add", "Update", "Clear", "Delete"].map((btn) => (
               <button
                 key={btn}
@@ -119,7 +119,7 @@ const AddNewDr = () => {
                 {btn}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
       </form>
     </div>

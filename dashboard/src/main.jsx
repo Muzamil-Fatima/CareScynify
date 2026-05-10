@@ -5,7 +5,7 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/auth/AuthProvider";
 import { DrProvider } from "./context/doctor/DrProvider";
-import { PatientProvider } from "./context/patient/PatientContext.jsx";
+import { PatientProvider } from "./context/patient/PatientProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <PatientProvider>

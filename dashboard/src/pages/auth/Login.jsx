@@ -36,7 +36,7 @@ const Login = () => {
 
       toast.success(`${res.data.name} login successfully.`);
 
-      // 🔥 CROSS-APP REDIRECT
+      //  CROSS-APP REDIRECT
       const roleRoutes = {
         patient: "http://localhost:5173/",
         doctor: "http://localhost:5174/doctor-dashboard",
