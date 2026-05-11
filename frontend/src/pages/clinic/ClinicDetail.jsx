@@ -1,53 +1,84 @@
 import React from "react";
-import { useClinic } from "../../hooks/useClinic";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
+import { useClinicProfile } from "../../hooks/useClinicProfile";
+
+import ClinicProfileHeader from "../../Components/clinic/ClinicProfileHeader";
+import ClinicAbout from "../../Components/clinic/ClinicAbout";
+import ClinicServices from "../../Components/clinic/ClinicServices";
+import ClinicDoctors from "../../Components/clinic/ClinicDoctors";
+import ClinicFacilities from "../../Components/clinic/ClinicFacilities";
+import ClinicGallery from "../../Components/clinic/ClinicGallery";
+import ClinicLocation from "../../Components/clinic/ClinicLocation";
+import ClinicReviews from "../../Components/clinic/ClinicReviews";
+import ClinicAppointmentCard from "../../Components/clinic/ClinicAppointmentCard";
 
 const ClinicDetail = () => {
-  const { selectedClinic } = useClinic();
-  const navigate = useNavigate();
+  const { id } = useParams();
+  const { clinic, loading, error } = useClinicProfile(id);
 
-  if (!selectedClinic) {
-    return <div className="p-10 text-center">No clinic selected</div>;
+  if (loading) {
+    return (
+      <div className="text-center py-20 text-gray-500">
+        Loading clinic details...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-20 text-red-500">
+        {error}
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 mt-20">
 
-      {/* Clinic Info */}
-      <div className="bg-white p-6 rounded-xl shadow-md">
-        <h1 className="text-2xl font-bold">{selectedClinic.name}</h1>
-        <p className="text-gray-500">{selectedClinic.address}</p>
-        <p className="mt-2">📞 {selectedClinic.phone}</p>
-        <p>⭐ {selectedClinic.rating}</p>
-      </div>
+      {/* Header */}
+      <ClinicProfileHeader
+        clinic={clinic}
+        onBook={() => alert("Book appointment clicked")}
+      />
 
-      {/* Doctors List */}
-      <h2 className="text-xl font-bold mt-6 mb-3">
-        Doctors in this Clinic
-      </h2>
+      {/* Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
 
-      <div className="grid gap-4">
-        {selectedClinic.doctors.map((doc) => (
-          <div
-            key={doc.id}
-            className="bg-white p-4 rounded-xl shadow-md flex justify-between items-center"
-          >
-            <div>
-              <h3 className="font-semibold">{doc.name}</h3>
-              <p className="text-sm text-gray-500">{doc.specialization}</p>
-              <p className="text-sm">{doc.experience}</p>
-            </div>
+        {/* LEFT SIDE (MAIN CONTENT) */}
+        <div className="lg:col-span-2 space-y-6">
 
-            <button
-              onClick={() => navigate(`/doctor/${doc.id}`)}
-              className="bg-green-600 text-white px-4 py-2 rounded-lg"
-            >
-              View & Book
-            </button>
+          <ClinicAbout clinic={clinic} />
+
+          <ClinicServices services={clinic?.services} />
+
+          <ClinicDoctors doctors={clinic?.doctors} />
+
+          <ClinicFacilities facilities={clinic?.facilities} />
+
+          <ClinicGallery images={clinic?.images} />
+
+          <ClinicLocation clinic={clinic} />
+
+          <ClinicReviews reviews={clinic?.reviews} />
+
+        </div>
+
+        {/* RIGHT SIDE (BOOKING CARD) */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-24">
+
+            <ClinicAppointmentCard
+              clinic={clinic}
+              onBook={(data) =>
+                console.log("Booking data:", data)
+              }
+            />
+
           </div>
-        ))}
-      </div>
+        </div>
 
+      </div>
     </div>
   );
 };

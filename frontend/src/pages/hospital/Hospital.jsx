@@ -1,44 +1,34 @@
 import React from "react";
-import { useHospital } from "../../hooks/useHospital";
-import { useNavigate } from "react-router-dom";
+
+import HospitalProfileHeader from "../../Components/hospital/HospitalProfileHeader";
+import HospitalSearchBar from "../../Components/hospital/HospitalSearchBar";
+import HospitalFilters from "../../Components/hospital/HospitalFilters";
+import HospitalList from "../../Components/hospital/HospitalList";
+import HospitalDepartments from "../../Components/hospital/HospitalDepartments";
+import HospitalServices from "../../Components/hospital/HospitalServices";
 
 const Hospital = () => {
-  const { hospitals, setSelectedHospital } = useHospital();
-  const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen bg-gray-100 px-6 py-10">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Hospitals
-      </h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Profile Header */}
+      <HospitalProfileHeader />
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {hospitals.map((hospital) => (
-          <div
-            key={hospital.id}
-            className="bg-white p-5 rounded-xl shadow-md hover:shadow-lg transition"
-          >
-            <h2 className="text-xl font-semibold">{hospital.name}</h2>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+        {/* Search */}
+        <HospitalSearchBar />
 
-            <p className="text-blue-600">📍 {hospital.location}</p>
-            <p className="text-gray-500 text-sm">{hospital.address}</p>
+        {/* Filters */}
+        <HospitalFilters />
 
-            <div className="mt-2 text-sm text-gray-600">
-              <p>⭐ Rating: {hospital.rating}</p>
-              <p>📞 {hospital.phone}</p>
-            </div>
+        {/* Hospital List */}
+        <HospitalList />
 
-            <button
-              onClick={() => {
-                setSelectedHospital(hospital);
-                navigate(`/hospital/${hospital.id}`);
-              }}
-              className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-            >
-              View Hospital
-            </button>
-          </div>
-        ))}
+        {/* Departments */}
+        <HospitalDepartments />
+
+        {/* Services */}
+        <HospitalServices />
       </div>
     </div>
   );

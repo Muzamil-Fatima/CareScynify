@@ -1,37 +1,79 @@
-import React from "react";
-import { useClinic } from "../../hooks/useClinic";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+
+import ClinicSearchBar from "../../Components/clinic/ClinicSearchBar";
+import ClinicFilters from "../../Components/clinic/ClinicFilters";
+import ClinicList from "../../Components/clinic/ClinicList";
+
+import { useClinics } from "../../hooks/useClinic";
 
 const Clinic = () => {
-  const { clinics, setSelectedClinic } = useClinic();
-  const navigate = useNavigate();
+  const [filters, setFilters] = useState({
+    search: "",
+    type: "",
+    location: "",
+    rating: "",
+    service: "",
+    openNow: false,
+  });
+
+  const { clinics, loading, error } = useClinics(filters);
 
   return (
-    <div className="min-h-screen bg-gray-100 px-6 py-10">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Clinics
+    <div className="max-w-7xl mx-auto px-4 py-6 mt-20">
+
+      {/* Page Title */}
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">
+        Find Clinics
       </h1>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {clinics.map((clinic) => (
-          <div
-            key={clinic.id}
-            className="bg-white p-5 rounded-xl shadow-md"
-          >
-            <h2 className="text-xl font-semibold">{clinic.name}</h2>
-            <p className="text-gray-500">{clinic.location}</p>
+      {/* Search */}
+      <div className="mb-4">
+        <ClinicSearchBar
+          onSearch={(value) =>
+            setFilters((prev) => ({ ...prev, search: value }))
+          }
+        />
+      </div>
 
-            <button
-              className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg"
-              onClick={() => {
-                setSelectedClinic(clinic);
-                navigate(`/clinic/${clinic.id}`);
-              }}
-            >
-              View Clinic
-            </button>
-          </div>
-        ))}
+      {/* Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+        {/* Filters */}
+        <div className="lg:col-span-1">
+          <ClinicFilters onFilterChange={setFilters} />
+        </div>
+
+        {/* Clinic List */}
+        <div className="lg:col-span-3 space-y-4">
+
+          {/* Loading */}
+          {loading && (
+            <p className="text-center text-gray-500 py-10">
+              Loading clinics...
+            </p>
+          )}
+
+          {/* Error */}
+          {error && (
+            <p className="text-center text-red-500 py-10">
+              {error}
+            </p>
+          )}
+
+          {/* List */}
+          {!loading && !error && (
+            <ClinicList
+              clinics={clinics}
+              onView={(clinic) =>
+                (window.location.href = `/clinic/${clinic.id}`)
+              }
+              onBook={(clinic) =>
+                alert(`Book appointment with ${clinic.name}`)
+              }
+            />
+          )}
+
+        </div>
       </div>
     </div>
   );

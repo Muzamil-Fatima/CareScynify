@@ -1,67 +1,42 @@
 import React from "react";
-import { useHospital } from "../../hooks/useHospital";
-import { useNavigate } from "react-router-dom";
+
+import HospitalProfileHeader from "../../Components/hospital/HospitalProfileHeader";
+import HospitalServices from "../../Components/hospital/HospitalServices";
+import HospitalDoctors from "../../Components/hospital/HospitalDoctors";
+import HospitalReviews from "../../Components/hospital/HospitalReviews";
+import HospitalLocation from "../../Components/hospital/HospitalLocation";
 
 const HospitalDetail = () => {
-  const { selectedHospital } = useHospital();
-  const navigate = useNavigate();
-
-  if (!selectedHospital) {
-    return <div className="p-10 text-center">No hospital selected</div>;
-  }
-
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <HospitalProfileHeader />
 
-      {/* Hospital Info */}
-      <div className="bg-white p-6 rounded-xl shadow-md">
-        <h1 className="text-2xl font-bold">{selectedHospital.name}</h1>
-        <p className="text-gray-500">{selectedHospital.address}</p>
-        <p className="mt-2">📞 {selectedHospital.phone}</p>
-        <p>⭐ {selectedHospital.rating}</p>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-10">
+        {/* About Section */}
+        <div className="bg-white p-6 rounded-2xl shadow-md">
+          <h2 className="text-xl font-bold text-blue-600 mb-2">
+            About Hospital
+          </h2>
+          <p className="text-gray-600">
+            This hospital provides advanced healthcare services with modern
+            facilities, experienced doctors, and 24/7 emergency support.
+          </p>
+        </div>
+
+        {/* Services */}
+        <HospitalServices />
+
+        {/* Doctors */}
+        <HospitalDoctors />
+
+        {/* Location */}
+        <HospitalLocation />
+
+        {/* Reviews */}
+        <HospitalReviews />
       </div>
-
-      {/* Departments */}
-      <h2 className="text-xl font-bold mt-6 mb-3">
-        Departments
-      </h2>
-
-      <div className="space-y-4">
-        {selectedHospital.departments.map((dept) => (
-          <div key={dept.id} className="bg-white p-4 rounded-xl shadow">
-
-            <h3 className="font-semibold text-lg">
-              🏥 {dept.name}
-            </h3>
-
-            {/* Doctors */}
-            <div className="mt-3 space-y-2">
-              {dept.doctors.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="flex justify-between items-center border-b py-2"
-                >
-                  <div>
-                    <p className="font-medium">{doc.name}</p>
-                    <p className="text-sm text-gray-500">
-                      {doc.specialization} • {doc.experience}
-                    </p>
-                  </div>
-
-                  <button
-                    onClick={() => navigate(`/doctor/${doc.id}`)}
-                    className="bg-green-600 text-white px-4 py-2 rounded-lg"
-                  >
-                    Book
-                  </button>
-                </div>
-              ))}
-            </div>
-
-          </div>
-        ))}
-      </div>
-
     </div>
   );
 };

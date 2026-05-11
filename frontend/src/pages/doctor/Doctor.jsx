@@ -1,20 +1,64 @@
-import React from "react";
-import { useDoctor } from "../../hooks/useDoctor";
-import DoctorCard from "../../Components/DoctorCard";
+import React, { useState } from "react";
+import DoctorSearchBar from "../../Components/doctor/DoctorSearchBar";
+import DoctorFilters from "../../Components/doctor/DoctorFilters";
+import DoctorList from "../../Components/doctor/DoctorList";
+import { useDoctors } from "../../hooks/useDoctor";
 
 const Doctor = () => {
-  const { doctors } = useDoctor();
+  const [filters, setFilters] = useState({
+    specialty: "",
+    rating: "",
+    experience: "",
+    available: false,
+    search: "",
+  });
+
+  const { doctors, loading, error } = useDoctors(filters);
 
   return (
-    <div className="min-h-screen bg-gray-100 px-6 py-10">
-      <h1 className="text-3xl font-bold text-center mb-8">
-        Find Doctors
-      </h1>
+    <div className="max-w-7xl mx-auto px-4 py-6 mt-20">
+      {/* Page Title */}
+      <h1 className="text-2xl font-bold text-gray-800 mb-4">Find Doctors</h1>
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {doctors.map((doc) => (
-          <DoctorCard key={doc.id} doc={doc} />
-        ))}
+      {/* Search */}
+      <div className="mb-4">
+        <DoctorSearchBar
+          onSearch={(value) =>
+            setFilters((prev) => ({ ...prev, search: value }))
+          }
+        />
+      </div>
+
+      {/* Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Filters */}
+        <div className="lg:col-span-1">
+          <DoctorFilters onFilterChange={setFilters} />
+        </div>
+
+        {/* Doctor List */}
+        <div className="lg:col-span-3 space-y-4">
+          {/* Loading */}
+          {loading && (
+            <p className="text-gray-500 text-center py-10">
+              Loading doctors...
+            </p>
+          )}
+
+          {/* Error */}
+          {error && <p className="text-red-500 text-center py-10">{error}</p>}
+
+          {/* List */}
+          {!loading && !error && (
+            <DoctorList
+              doctors={doctors}
+              onViewProfile={(doctor) =>
+                (window.location.href = `/doctor/${doctor.id}`)
+              }
+              onBook={(doctor) => alert(`Book appointment with ${doctor.name}`)}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

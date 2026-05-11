@@ -14,7 +14,6 @@ import Hospital from "./pages/hospital/Hospital";
 import HospitalDetail from "./pages/hospital/HospitalDetail";
 import Clinic from "./pages/clinic/Clinic";
 import ClinicDetail from "./pages/clinic/ClinicDetail";
-import ClinicDrProfile from "./pages/clinic/ClinicDrProfile";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Jobs from "./pages/jobs/Jobs";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
@@ -60,7 +59,6 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/doctor" element={<Doctor />} />
-          <Route path="/doctor/:id" element={<ClinicDrProfile />} />
           <Route path="/clinic" element={<Clinic />} />
           <Route path="/clinic/:id" element={<ClinicDetail />} />
           <Route path="/doctor/:id" element={<DoctorProfile />} />

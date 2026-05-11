@@ -1,59 +1,68 @@
 import React from "react";
-import { useDoctor } from "../../hooks/useDoctor";
+import { useParams } from "react-router-dom";
+
+import { useDoctorProfile } from "../../hooks/useDoctorProfile";
+
+import DoctorProfileHeader from "../../Components/doctor/DoctorProfileHeader";
+import DoctorAbout from "../../Components/doctor/DoctorAbout";
+import DoctorExperience from "../../Components/doctor/DoctorExperience";
+import DoctorAvailability from "../../Components/doctor/DoctorAvailability";
+import DoctorReviews from "../../Components/doctor/DoctorReviews";
+import DoctorQuestions from "../../Components/doctor/DoctorQuestions";
+import AppointmentCard from "../../Components/doctor/AppointmentCard";
 
 const DoctorProfile = () => {
-  const { selectedDoctor } = useDoctor();
+  const { id } = useParams();
+  const { doctor, loading, error } = useDoctorProfile(id);
 
-  if (!selectedDoctor) {
-    return <div className="p-10 text-center">No doctor selected</div>;
+  if (loading) {
+    return (
+      <div className="text-center py-20 text-gray-500">
+        Loading doctor profile...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-20 text-red-500">
+        {error}
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 mt-20">
+      
+      {/* Header */}
+      <DoctorProfileHeader
+        doctor={doctor}
+        onBook={() => alert("Book Appointment Clicked")}
+      />
 
-        {/* Top Section */}
-        <div className="flex gap-6">
-          <img
-            src={selectedDoctor.image}
-            alt={selectedDoctor.name}
-            className="w-32 h-32 rounded-xl"
-          />
+      {/* Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
 
-          <div>
-            <h1 className="text-2xl font-bold">{selectedDoctor.name}</h1>
-            <p className="text-blue-600">{selectedDoctor.specialization}</p>
-            <p className="text-gray-500">{selectedDoctor.experience}</p>
-            <p className="mt-2">⭐ {selectedDoctor.rating}</p>
+        {/* LEFT SIDE (MAIN CONTENT) */}
+        <div className="lg:col-span-2 space-y-6">
+
+          <DoctorAbout doctor={doctor} />
+
+          <DoctorExperience doctor={doctor} />
+
+          <DoctorAvailability doctor={doctor} />
+
+          <DoctorReviews doctor={doctor} />
+
+          <DoctorQuestions doctor={doctor} />
+
+        </div>
+
+        {/* RIGHT SIDE (BOOKING CARD) */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-24">
+            <AppointmentCard doctor={doctor} />
           </div>
-        </div>
-
-        {/* About */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">About</h2>
-          <p className="text-gray-600">{selectedDoctor.about}</p>
-        </div>
-
-        {/* Services */}
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Services</h2>
-          <ul className="list-disc ml-6 text-gray-600">
-            {selectedDoctor.services.map((s, i) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Bottom Fiverr-style CTA */}
-        <div className="mt-8 border-t pt-6 flex justify-between items-center">
-          <div>
-            <p className="text-gray-500">Consultation Fee</p>
-            <h3 className="text-xl font-bold">Rs. 2000</h3>
-          </div>
-
-          <button className="bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700">
-            Book Appointment
-          </button>
         </div>
 
       </div>
