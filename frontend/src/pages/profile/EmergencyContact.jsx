@@ -4,7 +4,7 @@ import { usePatient } from "../../context/patients/PatientContext";
 const EmergencyContact = () => {
   const { profile, setProfile } = usePatient();
 
-  const contact = profile?.emergencyContact || {};
+  const contact = profile.patient?.emergencyContact || {};
 
   const inputClass =
     "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
@@ -18,13 +18,16 @@ const EmergencyContact = () => {
       <input
         value={contact.name || ""}
         onChange={(e) =>
-          setProfile({
-            ...profile,
-            emergencyContact: {
-              ...contact,
-              name: e.target.value,
+          setProfile((prev) => ({
+            ...prev,
+            patient: {
+              ...prev.patient,
+              emergencyContact: {
+                ...prev.patient.emergencyContact,
+                name: e.target.value,
+              },
             },
-          })
+          }))
         }
         className={inputClass}
         placeholder="Name"
@@ -33,13 +36,16 @@ const EmergencyContact = () => {
       <input
         value={contact.phone || ""}
         onChange={(e) =>
-          setProfile({
-            ...profile,
-            emergencyContact: {
-              ...contact,
-              phone: e.target.value,
+          setProfile((prev) => ({
+            ...prev,
+            patient: {
+              ...prev.patient,
+              emergencyContact: {
+                ...prev.patient.emergencyContact,
+                name: e.target.value,
+              },
             },
-          })
+          }))
         }
         className={inputClass}
         placeholder="Phone"

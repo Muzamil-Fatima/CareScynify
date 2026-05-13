@@ -3,31 +3,31 @@ import User from "../models/user.js";
 // get patient profile
 export const getPatientProfile = async (req, res) => {
   try {
-    const patient = await Patient.findOne({ userId: req.userId })
+    const patient = await Patient.findOne({ userId: req.user._id })
       .lean()
       .populate("userId", "name email avatar dob phone address");
 
     if (!patient) return res.status(404).json({ message: "Patient not found" });
 
-    res.json({
-      profile: {
-        // USER DATA
-        name: patient.userId.name,
-        email: patient.userId.email,
-        avatar: patient.userId.avatar,
-        dob: patient.userId.dob,
-        phone: patient.userId.phone,
-        address: patient.userId.address,
+  res.json({
+  user: {
+    name: patient.userId.name,
+    email: patient.userId.email,
+    avatar: patient.userId.avatar,
+    phone: patient.userId.phone,
+    address: patient.userId.address,
+    dob: patient.userId.dob,
+  },
 
-        // PATIENT DATA
-        patientId: patient._id,
-        allergies: patient.allergies || [],
-        medications: patient.medications || [],
-        emergencyContact: patient.emergencyContact || {},
-        medicalHistory: patient.medicalHistory || {},
-        status: patient.status,
-      },
-    });
+  patient: {
+    patientId: patient._id,
+    allergies: patient.allergies || [],
+    medications: patient.medications || [],
+    emergencyContact: patient.emergencyContact || {},
+    medicalHistory: patient.medicalHistory || {},
+    status: patient.status,
+  }
+});
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -37,8 +37,8 @@ export const getPatientProfile = async (req, res) => {
 export const updatePatientProfile = async (req, res) => {
   try {
     // not only update improving performance
-    const patient = await Patient.findOne({ userId: req.userId }).lean();
-    const user = await User.findById(req.userId);
+    const patient = await Patient.findOne({ userId: req.user._id });
+    const user = await User.findById(req.user._id);
 
     if (!patient || !user)
       return res.status(404).json({ message: "User/Patient not found" });

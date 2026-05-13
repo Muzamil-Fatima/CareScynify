@@ -3,7 +3,7 @@ import PhoneInput from "../../Components/PhoneInput";
 import { usePatient } from "../../context/patients/PatientContext";
 
 const PersonalInfo = () => {
-  const { patient, setPatient, user } = usePatient();
+  const { profile, setProfile, user } = usePatient();
 
   const inputClass =
     "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
@@ -11,12 +11,15 @@ const PersonalInfo = () => {
   const labelClass = "mb-2 text-sm font-medium text-gray-600";
 
   // handle update helper
-  const handleChange = (field, value) => {
-    setPatient((prev) => ({
-      ...prev,
+ const handleChange = (field, value) => {
+  setProfile((prev) => ({
+    ...prev,
+    patient: {
+      ...prev.patient,
       [field]: value,
-    }));
-  };
+    },
+  }));
+};
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
@@ -43,7 +46,7 @@ const PersonalInfo = () => {
           <input
             type="date"
             className={inputClass}
-            value={patient?.dob || ""}
+            value={profile?.dob || ""}
             onChange={(e) => handleChange("dob", e.target.value)}
           />
         </div>
@@ -54,7 +57,7 @@ const PersonalInfo = () => {
           <input
             type="text"
             className={inputClass}
-            value={patient?.cnic || ""}
+            value={profile?.cnic || ""}
             onChange={(e) => handleChange("cnic", e.target.value)}
           />
         </div>
@@ -63,7 +66,7 @@ const PersonalInfo = () => {
         <div>
           <label className={labelClass}>Phone</label>
           <PhoneInput
-            value={patient?.phone || ""}
+            value={profile?.phone || ""}
             onChange={(val) => handleChange("phone", val)}
           />
         </div>
@@ -84,7 +87,7 @@ const PersonalInfo = () => {
           <label className={labelClass}>Gender</label>
           <select
             className={inputClass}
-            value={patient?.gender || ""}
+            value={profile?.gender || ""}
             onChange={(e) => handleChange("gender", e.target.value)}
           >
             <option value="">Select Gender</option>
@@ -99,7 +102,7 @@ const PersonalInfo = () => {
           <label className={labelClass}>Blood Group</label>
           <select
             className={inputClass}
-            value={patient?.bloodGroup || ""}
+            value={profile?.bloodGroup || ""}
             onChange={(e) => handleChange("bloodGroup", e.target.value)}
           >
             <option value="">Select Blood Group</option>
@@ -120,7 +123,7 @@ const PersonalInfo = () => {
           <textarea
             rows={3}
             className={inputClass}
-            value={patient?.address || ""}
+            value={profile?.address || ""}
             onChange={(e) => handleChange("address", e.target.value)}
           />
         </div>

@@ -3,7 +3,10 @@ import PatientContext from "./PatientContext";
 import { getPatientProfile, updatePatientProfile } from "../../api/patientApi";
 
 const PatientProvider = ({ children }) => {
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState({
+    user: {},
+    patient: {},
+  });
   const [loading, setLoading] = useState(true);
 
   // FETCH
@@ -16,7 +19,10 @@ const PatientProvider = ({ children }) => {
 
         console.log("API DATA:", data);
 
-        setProfile(data);
+        setProfile({
+          user: data.user,
+          patient: data.patient,
+        });
       } catch (err) {
         console.error("Fetch error:", err);
       } finally {
@@ -33,7 +39,7 @@ const PatientProvider = ({ children }) => {
 
     const timeout = setTimeout(async () => {
       try {
-        await updatePatientProfile(profile);
+        await updatePatientProfile(profile.patient);
       } catch (err) {
         console.error("Auto-save error:", err);
       }

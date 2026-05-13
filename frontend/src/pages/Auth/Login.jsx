@@ -24,7 +24,7 @@ const Login = () => {
         { email, password },
         { withCredentials: true },
       );
-
+console.log("LOGIN RESPONSE:", res.data);
       const role = res.data.role || "patient";
 
       login({

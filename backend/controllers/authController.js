@@ -81,27 +81,29 @@ const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const existingUsr = await User.findOne({ email });
-  if (existingUsr) {
-    const isPasswordValid = await bcrypt.compare(
-      password,
-      existingUsr.password
-    );
 
-    if (isPasswordValid) {
-      generateToken(res, existingUsr._id);
-
-      res.status(201).json({
-        _id: existingUsr._id,
-        name: existingUsr.name,
-        email: existingUsr.email,
-        role: existingUsr.role,
-      });
-    } else {
-      res.status(401).json({ message: "Invalid Password" });
-    }
-  } else {
-    res.status(401).json({ message: "User not found" });
+  if (!existingUsr) {
+    return res.status(401).json({ message: "User not found" });
   }
+
+  const isPasswordValid = await bcrypt.compare(
+    password,
+    existingUsr.password
+  );
+
+  if (!isPasswordValid) {
+    return res.status(401).json({ message: "Invalid Password" });
+  }
+
+  const token = generateToken(res, existingUsr._id);
+
+  res.status(200).json({
+    _id: existingUsr._id,
+    name: existingUsr.name,
+    email: existingUsr.email,
+    role: existingUsr.role,
+    token,
+  });
 });
 // ---------------------------- logout user
 const logoutCurrentUser = asyncHandler(async (req, res) => {
