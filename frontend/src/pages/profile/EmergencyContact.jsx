@@ -1,3 +1,60 @@
+// import React from "react";
+// import { usePatient } from "../../context/patients/PatientContext";
+
+// const EmergencyContact = () => {
+//   const { profile, setProfile } = usePatient();
+
+//   const contact = profile.patient?.emergencyContact || {};
+
+//   const inputClass =
+//     "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
+
+//   return (
+//     <div className="bg-white shadow rounded p-5">
+//       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+//         Emergency Contact
+//       </h2>
+
+//       <input
+//         value={contact.name || ""}
+//         onChange={(e) =>
+//           setProfile((prev) => ({
+//             ...prev,
+//             patient: {
+//               ...prev.patient,
+//               emergencyContact: {
+//                 ...prev.patient.emergencyContact,
+//                 name: e.target.value,
+//               },
+//             },
+//           }))
+//         }
+//         className={inputClass}
+//         placeholder="Name"
+//       />
+
+//       <input
+//         value={contact.phone || ""}
+//         onChange={(e) =>
+//           setProfile((prev) => ({
+//             ...prev,
+//             patient: {
+//               ...prev.patient,
+//               emergencyContact: {
+//                 ...prev.patient.emergencyContact,
+//                 phone: e.target.value,
+//               },
+//             },
+//           }))
+//         }
+//         className={inputClass}
+//         placeholder="Phone"
+//       />
+//     </div>
+//   );
+// };
+
+// export default EmergencyContact;
 import React from "react";
 import { usePatient } from "../../context/patients/PatientContext";
 
@@ -9,6 +66,19 @@ const EmergencyContact = () => {
   const inputClass =
     "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
 
+  const handleChange = (field, value) => {
+    setProfile((prev) => ({
+      ...prev,
+      patient: {
+        ...prev.patient,
+        emergencyContact: {
+          ...prev.patient?.emergencyContact,
+          [field]: value,
+        },
+      },
+    }));
+  };
+
   return (
     <div className="bg-white shadow rounded p-5">
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
@@ -17,36 +87,14 @@ const EmergencyContact = () => {
 
       <input
         value={contact.name || ""}
-        onChange={(e) =>
-          setProfile((prev) => ({
-            ...prev,
-            patient: {
-              ...prev.patient,
-              emergencyContact: {
-                ...prev.patient.emergencyContact,
-                name: e.target.value,
-              },
-            },
-          }))
-        }
+        onChange={(e) => handleChange("name", e.target.value)}
         className={inputClass}
         placeholder="Name"
       />
 
       <input
         value={contact.phone || ""}
-        onChange={(e) =>
-          setProfile((prev) => ({
-            ...prev,
-            patient: {
-              ...prev.patient,
-              emergencyContact: {
-                ...prev.patient.emergencyContact,
-                name: e.target.value,
-              },
-            },
-          }))
-        }
+        onChange={(e) => handleChange("phone", e.target.value)}
         className={inputClass}
         placeholder="Phone"
       />

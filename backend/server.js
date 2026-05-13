@@ -7,10 +7,10 @@ import cookiesParser from "cookie-parser";
 //Files
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
-import authRoutes from "./router/authRoutes.js";
-import patientsRoutes from "./router/patientsRoutes.js";
-import doctorRoutes from "./router/doctorRoutes.js";
-import reportRoutes from "./router/reportRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import patientsRoutes from "./routes/patientsRoutes.js";
+import doctorRoutes from "./routes/doctorRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 
 //Configuration
@@ -50,6 +50,7 @@ app.use("/api/auth", authRoutes);
 
 // use patient routes
 app.use("/api/patient", patientsRoutes);
+
 // dr router
 app.use("/api/doctor", doctorRoutes);
 // report router

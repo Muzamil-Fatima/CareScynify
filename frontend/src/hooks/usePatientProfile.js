@@ -13,9 +13,8 @@ const usePatientProfile = () => {
 
       setPatient({
         ...user,
-        ...data
+        ...data,
       });
-
     } catch (error) {
       console.error("Error fetching patient profile:", error);
 
@@ -27,7 +26,7 @@ const usePatientProfile = () => {
         address: "",
         allergies: [],
         medications: [],
-        emergencyContact: {}
+        emergencyContact: {},
       });
     } finally {
       setLoading(false);

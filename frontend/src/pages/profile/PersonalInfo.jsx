@@ -3,23 +3,25 @@ import PhoneInput from "../../Components/PhoneInput";
 import { usePatient } from "../../context/patients/PatientContext";
 
 const PersonalInfo = () => {
-  const { profile, setProfile, user } = usePatient();
+  const { profile, setProfile } = usePatient();
+
+  const user = profile?.user || {};
+  const patient = profile?.patient || {};
 
   const inputClass =
     "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
 
   const labelClass = "mb-2 text-sm font-medium text-gray-600";
 
-  // handle update helper
- const handleChange = (field, value) => {
-  setProfile((prev) => ({
-    ...prev,
-    patient: {
-      ...prev.patient,
-      [field]: value,
-    },
-  }));
-};
+  const handleChange = (field, value) => {
+    setProfile((prev) => ({
+      ...prev,
+      patient: {
+        ...(prev.patient || {}),
+        [field]: value,
+      },
+    }));
+  };
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
@@ -29,7 +31,7 @@ const PersonalInfo = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {/* Full Name (from USER model) */}
+        {/* NAME (USER) */}
         <div>
           <label className={labelClass}>Full Name</label>
           <input
@@ -46,7 +48,7 @@ const PersonalInfo = () => {
           <input
             type="date"
             className={inputClass}
-            value={profile?.dob || ""}
+            value={patient?.dob || ""}
             onChange={(e) => handleChange("dob", e.target.value)}
           />
         </div>
@@ -57,21 +59,21 @@ const PersonalInfo = () => {
           <input
             type="text"
             className={inputClass}
-            value={profile?.cnic || ""}
+            value={patient?.cnic || ""}
             onChange={(e) => handleChange("cnic", e.target.value)}
           />
         </div>
 
-        {/* Phone */}
+        {/* PHONE */}
         <div>
           <label className={labelClass}>Phone</label>
           <PhoneInput
-            value={profile?.phone || ""}
+            value={patient?.phone || ""}
             onChange={(val) => handleChange("phone", val)}
           />
         </div>
 
-        {/* Email (USER model) */}
+        {/* EMAIL (USER) */}
         <div>
           <label className={labelClass}>Email</label>
           <input
@@ -82,12 +84,12 @@ const PersonalInfo = () => {
           />
         </div>
 
-        {/* Gender */}
+        {/* GENDER */}
         <div>
           <label className={labelClass}>Gender</label>
           <select
             className={inputClass}
-            value={profile?.gender || ""}
+            value={patient?.gender || ""}
             onChange={(e) => handleChange("gender", e.target.value)}
           >
             <option value="">Select Gender</option>
@@ -97,12 +99,12 @@ const PersonalInfo = () => {
           </select>
         </div>
 
-        {/* Blood Group */}
+        {/* BLOOD GROUP */}
         <div>
           <label className={labelClass}>Blood Group</label>
           <select
             className={inputClass}
-            value={profile?.bloodGroup || ""}
+            value={patient?.bloodGroup || ""}
             onChange={(e) => handleChange("bloodGroup", e.target.value)}
           >
             <option value="">Select Blood Group</option>
@@ -117,13 +119,13 @@ const PersonalInfo = () => {
           </select>
         </div>
 
-        {/* Address */}
+        {/* ADDRESS */}
         <div className="md:col-span-2">
           <label className={labelClass}>Address</label>
           <textarea
             rows={3}
             className={inputClass}
-            value={profile?.address || ""}
+            value={patient?.address || ""}
             onChange={(e) => handleChange("address", e.target.value)}
           />
         </div>
