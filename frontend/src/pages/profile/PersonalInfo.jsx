@@ -46,14 +46,18 @@ const PersonalInfo = () => {
     return calculateAge(patient?.dob);
   }, [patient?.dob]);
 
-const handlePatientChange = (field, value) => {
-  setProfile((prev) => ({
-    ...prev,
-    patient: {
-      ...prev.patient,
-      [field]: value,
-    },
-  }));
+const handlePatientChange = (field, value, section) => {
+  setProfile((prev) => {
+    const updated = {
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value,
+      },
+    };
+
+    return updated;
+  });
 
   setIsDirty(true);
 };

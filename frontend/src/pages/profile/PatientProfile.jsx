@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-
 import { Avatar, IconButton, Box } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 
@@ -7,38 +6,63 @@ import MedicalHistory from "./MedicalHistory";
 import EmergencyContact from "./EmergencyContact";
 import PersonalInfo from "./PersonalInfo";
 
+import { updateUserProfile } from "../../api/userApi";
+import { getPatientProfile } from "../../api/patientApi";
+import { usePatient } from "../../context/patients/PatientContext";
+
 const PatientProfile = () => {
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
+
+  const { profile, setProfile } = usePatient();
 
   // Open file picker
   const handleBrowseClick = () => {
     fileInputRef.current.click();
   };
 
-  // Handle file selection
-  const handleFileChange = (e) => {
+  // Handle file selection + upload
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
+
+    if (!file) return;
+
+    setSelectedFile(file);
+
+    // 🔥 SEND TO BACKEND
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      await updateUserProfile(formData);
+
+      // 🔥 REFRESH PROFILE AFTER UPLOAD
+      const data = await getPatientProfile();
+
+      setProfile({
+        user: data.user || {},
+        patient: data.patient || {},
+      });
+
+      console.log("Avatar uploaded and profile refreshed");
+    } catch (error) {
+      console.error("Upload failed:", error);
     }
   };
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
-      {/* Profile Image (MUI) */}
+      {/* Profile Image */}
       <div className="flex justify-center">
         <Box position="relative" display="inline-block">
           {/* Avatar */}
           <Avatar
-            src={selectedFile ? URL.createObjectURL(selectedFile) : ""}
-            sx={{
-              width: 140,
-              height: 140,
-              bgcolor: "#e5e7eb",
-              fontSize: 40,
-              boxShadow: 3,
-            }}
+            src={
+              selectedFile
+                ? URL.createObjectURL(selectedFile)
+                : profile?.user?.avatar || ""
+            }
+            sx={{ width: 140, height: 140 }}
           >
             {!selectedFile && "U"}
           </Avatar>

@@ -40,12 +40,11 @@ const PatientProvider = ({ children }) => {
 
     const timeout = setTimeout(async () => {
       try {
-        const payload = {
-          ...profile.user,
+        const patientPayload = {
           ...profile.patient,
         };
 
-        await updatePatientProfile(payload);
+        await updatePatientProfile(patientPayload);
 
         toast.success("Information saved successfully");
         setIsDirty(false);

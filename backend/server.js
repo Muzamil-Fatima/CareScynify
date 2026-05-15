@@ -12,6 +12,7 @@ import patientsRoutes from "./routes/patientsRoutes.js";
 import doctorRoutes from "./routes/doctorRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
+import userRouter from "./routes/userRoutes.js";
 
 //Configuration
 connectDB();
@@ -47,7 +48,8 @@ app.use(
 
 // Routes
 app.use("/api/auth", authRoutes);
-
+//  user routes
+app.use("/api/user", userRouter);
 // use patient routes
 app.use("/api/patient", patientsRoutes);
 

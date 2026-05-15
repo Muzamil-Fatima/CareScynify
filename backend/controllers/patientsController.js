@@ -1,9 +1,7 @@
 import Patient from "../models/patientModel.js";
 import User from "../models/user.js";
 
-/**
- * GET PATIENT PROFILE
- */
+// GET PATIENT PROFILE
 export const getPatientProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select(
@@ -25,7 +23,6 @@ export const getPatientProfile = async (req, res) => {
         avatar: user.avatar,
         phone: user.phone,
       },
-
       patient: patient || {
         patientId: null,
         dob: "",
@@ -37,6 +34,8 @@ export const getPatientProfile = async (req, res) => {
         medications: [],
         medicalHistory: {},
         emergencyContact: {},
+        chronicDiseases: [],
+        notes: "",
         status: "active",
       },
     });
@@ -45,9 +44,7 @@ export const getPatientProfile = async (req, res) => {
   }
 };
 
-/**
- * UPDATE PATIENT + USER PROFILE
- */
+//  UPDATE PATIENT + USER PROFILE
 export const updatePatientProfile = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -63,12 +60,14 @@ export const updatePatientProfile = async (req, res) => {
       patient = new Patient({ userId });
     }
 
+    // FILE (AVATAR FROM MULTER)
+    const file = req.file;
+
     const {
       // USER FIELDS
       name,
       email,
       phone,
-      avatar,
 
       // PATIENT FIELDS
       dob,
@@ -85,21 +84,17 @@ export const updatePatientProfile = async (req, res) => {
       status,
     } = req.body;
 
-    /**
-     * =========================
-     * UPDATE USER MODEL
-     * =========================
-     */
+    // UPDATE USER MODEL
     if (name !== undefined) user.name = name;
     if (email !== undefined) user.email = email;
     if (phone !== undefined) user.phone = phone;
-    if (avatar !== undefined) user.avatar = avatar;
 
-    /**
-     * =========================
-     * UPDATE PATIENT MODEL
-     * =========================
-     */
+    //  AVATAR HANDLING
+    if (file) {
+      user.avatar = file.path;
+    }
+
+    // UPDATE PATIENT MODEL
     if (dob !== undefined) patient.dob = dob;
     if (cnic !== undefined) patient.cnic = cnic;
     if (gender !== undefined) patient.gender = gender;
@@ -107,20 +102,24 @@ export const updatePatientProfile = async (req, res) => {
     if (address !== undefined) patient.address = address;
     if (allergies !== undefined) patient.allergies = allergies;
     if (medications !== undefined) patient.medications = medications;
+
     if (medicalHistory !== undefined) {
-  patient.medicalHistory = {
-    ...patient.medicalHistory,
-    ...medicalHistory,
-  };
-}
+      patient.medicalHistory = {
+        ...patient.medicalHistory,
+        ...medicalHistory,
+      };
+    }
+
     if (emergencyContact !== undefined) {
       patient.emergencyContact = {
         ...patient.emergencyContact,
         ...emergencyContact,
       };
     }
+
     if (chronicDiseases !== undefined)
       patient.chronicDiseases = chronicDiseases;
+
     if (notes !== undefined) patient.notes = notes;
     if (status !== undefined) patient.status = status;
 
@@ -136,9 +135,7 @@ export const updatePatientProfile = async (req, res) => {
   }
 };
 
-/**
- * GET ALL PATIENTS
- */
+// GET ALL PATIENTS
 export const getAllPatients = async (req, res) => {
   try {
     const patients = await Patient.find({}).populate(
