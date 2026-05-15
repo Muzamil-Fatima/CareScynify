@@ -1,22 +1,15 @@
 import PhoneInputLib from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 
-const PhoneInput = ({ value, onChange, label = "Phone" }) => {
+const PhoneInput = ({ value, onChange }) => {
   return (
     <div className="flex flex-col">
-
-      {/* Label */}
-      <label className="mb-2 text-sm font-medium text-gray-600">
-        {label}
-      </label>
-
       {/* Phone Input */}
       <PhoneInputLib
         country="pk"
         value={value}
         onChange={onChange}
         containerClass="w-full"
-
         inputStyle={{
           width: "100%",
           height: "48px",
@@ -26,18 +19,15 @@ const PhoneInput = ({ value, onChange, label = "Phone" }) => {
           fontSize: "14px",
           boxShadow: "0 1px 2px rgba(0,0,0,0.05)",
         }}
-
         buttonStyle={{
           border: "none",
           background: "transparent",
           width: "55px",
           borderRadius: "12px 0 0 12px",
         }}
-
         dropdownStyle={{
           borderRadius: "10px",
         }}
-
         inputClass="focus:ring-2 focus:ring-purple-400 focus:border-purple-400"
       />
     </div>

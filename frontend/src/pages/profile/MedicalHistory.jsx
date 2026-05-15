@@ -1,34 +1,58 @@
-import React, { useState } from "react";
+import React from "react";
+import { usePatient } from "../../context/patients/PatientContext";
 
 const MedicalHistory = () => {
-  const [formData, setFormData] = useState({
-    diseases: "",
-    allergies: "",
-    medications: "",
-    surgeries: "",
-    familyHistory: "",
-    smoking: "",
-    alcohol: "",
-  });
+  const { profile, setProfile } = usePatient();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // API call later
-    console.log("Medical History:", formData);
-  };
+  const patient = profile?.patient || {};
+  const medicalHistory = patient?.medicalHistory || {};
 
   const inputClass =
     "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
 
-  const labelClass = "mb-2 text-sm font-medium text-gray-600";
+  const labelClass =
+    "mb-2 text-sm font-medium text-gray-600";
+
+  const handlePatientChange = (
+    field,
+    value,
+    isArray = false
+  ) => {
+    setProfile((prev) => ({
+      ...prev,
+      patient: {
+        ...prev.patient,
+        [field]: isArray
+          ? value
+              .split(",")
+              .map((v) => v.trim())
+              .filter(Boolean)
+          : value,
+      },
+    }));
+  };
+
+  const handleMedicalChange = (
+    field,
+    value,
+    isArray = false
+  ) => {
+    setProfile((prev) => ({
+      ...prev,
+      patient: {
+        ...prev.patient,
+        medicalHistory: {
+          ...prev.patient?.medicalHistory,
+          [field]: isArray
+            ? value
+                .split(",")
+                .map((v) => v.trim())
+                .filter(Boolean)
+            : value,
+        },
+      },
+    }));
+  };
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
@@ -36,107 +60,175 @@ const MedicalHistory = () => {
         Medical History
       </h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-6"
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
         {/* Diseases */}
         <div className="md:col-span-2">
-          <label className={labelClass}>Diseases</label>
+          <label className={labelClass}>
+            Diseases
+          </label>
           <textarea
-            name="diseases"
-            value={formData.diseases}
-            onChange={handleChange}
-            className={inputClass}
             rows={3}
-            placeholder="e.g. Diabetes, Blood Pressure"
+            className={inputClass}
+            placeholder="Diabetes, Blood Pressure"
+            value={
+              medicalHistory?.diseases?.join(", ") ||
+              ""
+            }
+            onChange={(e) =>
+              handleMedicalChange(
+                "diseases",
+                e.target.value,
+                true
+              )
+            }
           />
         </div>
 
         {/* Allergies */}
         <div className="md:col-span-2">
-          <label className={labelClass}>Allergies</label>
+          <label className={labelClass}>
+            Allergies
+          </label>
           <textarea
-            name="allergies"
-            value={formData.allergies}
-            onChange={handleChange}
-            className={inputClass}
             rows={3}
-            placeholder="e.g. Dust, Penicillin"
+            className={inputClass}
+            placeholder="Dust, Penicillin"
+            value={
+              patient?.allergies?.join(", ") || ""
+            }
+            onChange={(e) =>
+              handlePatientChange(
+                "allergies",
+                e.target.value,
+                true
+              )
+            }
           />
         </div>
 
         {/* Medications */}
         <div className="md:col-span-2">
-          <label className={labelClass}>Current Medications</label>
+          <label className={labelClass}>
+            Current Medications
+          </label>
           <textarea
-            name="medications"
-            value={formData.medications}
-            onChange={handleChange}
-            className={inputClass}
             rows={3}
-            placeholder="Ongoing medicines"
+            className={inputClass}
+            placeholder="Panadol, Vitamins"
+            value={
+              patient?.medications?.join(", ") ||
+              ""
+            }
+            onChange={(e) =>
+              handlePatientChange(
+                "medications",
+                e.target.value,
+                true
+              )
+            }
           />
         </div>
 
         {/* Surgeries */}
         <div className="md:col-span-2">
-          <label className={labelClass}>Past Surgeries</label>
+          <label className={labelClass}>
+            Past Surgeries
+          </label>
           <textarea
-            name="surgeries"
-            value={formData.surgeries}
-            onChange={handleChange}
-            className={inputClass}
             rows={3}
-            placeholder="If any surgery done"
+            className={inputClass}
+            placeholder="Appendix surgery"
+            value={
+              medicalHistory?.surgeries?.join(
+                ", "
+              ) || ""
+            }
+            onChange={(e) =>
+              handleMedicalChange(
+                "surgeries",
+                e.target.value,
+                true
+              )
+            }
           />
         </div>
 
         {/* Family History */}
         <div className="md:col-span-2">
-          <label className={labelClass}>Family History</label>
+          <label className={labelClass}>
+            Family History
+          </label>
           <textarea
-            name="familyHistory"
-            value={formData.familyHistory}
-            onChange={handleChange}
-            className={inputClass}
             rows={3}
-            placeholder="Genetic diseases in family"
+            className={inputClass}
+            placeholder="Genetic diseases"
+            value={
+              medicalHistory?.familyHistory ||
+              ""
+            }
+            onChange={(e) =>
+              handleMedicalChange(
+                "familyHistory",
+                e.target.value
+              )
+            }
           />
         </div>
 
         {/* Smoking */}
         <div>
-          <label className={labelClass}>Smoking</label>
+          <label className={labelClass}>
+            Smoking
+          </label>
           <select
-            name="smoking"
-            value={formData.smoking}
-            onChange={handleChange}
             className={inputClass}
+            value={
+              medicalHistory?.smoking || ""
+            }
+            onChange={(e) =>
+              handleMedicalChange(
+                "smoking",
+                e.target.value
+              )
+            }
           >
             <option value="">Select</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
-            <option value="occasionally">Occasionally</option>
+            <option value="occasionally">
+              Occasionally
+            </option>
           </select>
         </div>
 
         {/* Alcohol */}
         <div>
-          <label className={labelClass}>Alcohol</label>
+          <label className={labelClass}>
+            Alcohol
+          </label>
           <select
-            name="alcohol"
-            value={formData.alcohol}
-            onChange={handleChange}
             className={inputClass}
+            value={
+              medicalHistory?.alcohol || ""
+            }
+            onChange={(e) =>
+              handleMedicalChange(
+                "alcohol",
+                e.target.value
+              )
+            }
           >
             <option value="">Select</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
-            <option value="occasionally">Occasionally</option>
+            <option value="occasionally">
+              Occasionally
+            </option>
           </select>
         </div>
-      </form>
+
+      </div>
     </div>
   );
 };

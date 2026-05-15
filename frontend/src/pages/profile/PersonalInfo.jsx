@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PhoneInput from "../../Components/PhoneInput";
 import { usePatient } from "../../context/patients/PatientContext";
 
 const PersonalInfo = () => {
-  const { profile, setProfile } = usePatient();
+  const { profile, setProfile, setIsDirty } = usePatient();
 
   const user = profile?.user || {};
   const patient = profile?.patient || {};
@@ -13,15 +13,51 @@ const PersonalInfo = () => {
 
   const labelClass = "mb-2 text-sm font-medium text-gray-600";
 
-  const handleChange = (field, value) => {
-    setProfile((prev) => ({
-      ...prev,
-      patient: {
-        ...(prev.patient || {}),
-        [field]: value,
-      },
-    }));
+  // AGE CALCULATION (DAYS + YEARS)
+  const calculateAge = (dob) => {
+    if (!dob) return "";
+
+    const birth = new Date(dob);
+    const today = new Date();
+
+    let years = today.getFullYear() - birth.getFullYear();
+    let months = today.getMonth() - birth.getMonth();
+    let days = today.getDate() - birth.getDate();
+
+    if (days < 0) {
+      months--;
+      days += 30;
+    }
+
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // if less than 1 year show days
+    if (years < 1) {
+      return `${months} month(s) ${days} day(s)`;
+    }
+
+    return `${years} year(s)`;
   };
+
+  const age = useMemo(() => {
+    return calculateAge(patient?.dob);
+  }, [patient?.dob]);
+
+const handlePatientChange = (field, value) => {
+  setProfile((prev) => ({
+    ...prev,
+    patient: {
+      ...prev.patient,
+      [field]: value,
+    },
+  }));
+
+  setIsDirty(true);
+};
+  const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
@@ -30,15 +66,14 @@ const PersonalInfo = () => {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        {/* NAME (USER) */}
+        {/* NAME */}
         <div>
           <label className={labelClass}>Full Name</label>
           <input
             type="text"
             className={inputClass}
             value={user?.name || ""}
-            readOnly
+            onChange={(e) => handlePatientChange("name", e.target.value, "user")}
           />
         </div>
 
@@ -48,9 +83,15 @@ const PersonalInfo = () => {
           <input
             type="date"
             className={inputClass}
-            value={patient?.dob || ""}
-            onChange={(e) => handleChange("dob", e.target.value)}
+            value={patient?.dob ? patient.dob.split("T")[0] : ""}
+            onChange={(e) => handlePatientChange("dob", e.target.value, "patient")}
           />
+        </div>
+
+        {/* AGE (AUTO) */}
+        <div>
+          <label className={labelClass}>Age</label>
+          <input type="text" className={inputClass} value={age || ""} />
         </div>
 
         {/* CNIC */}
@@ -60,7 +101,7 @@ const PersonalInfo = () => {
             type="text"
             className={inputClass}
             value={patient?.cnic || ""}
-            onChange={(e) => handleChange("cnic", e.target.value)}
+            onChange={(e) => handlePatientChange("cnic", e.target.value)}
           />
         </div>
 
@@ -68,19 +109,19 @@ const PersonalInfo = () => {
         <div>
           <label className={labelClass}>Phone</label>
           <PhoneInput
-            value={patient?.phone || ""}
-            onChange={(val) => handleChange("phone", val)}
+            value={user?.phone || ""}
+            onChange={(value) => handlePatientChange("phone", value, "user")}
           />
         </div>
 
-        {/* EMAIL (USER) */}
+        {/* EMAIL */}
         <div>
           <label className={labelClass}>Email</label>
           <input
             type="email"
             className={inputClass}
             value={user?.email || ""}
-            readOnly
+            onChange={(e) => handlePatientChange("email", e.target.value, "user")}
           />
         </div>
 
@@ -90,7 +131,7 @@ const PersonalInfo = () => {
           <select
             className={inputClass}
             value={patient?.gender || ""}
-            onChange={(e) => handleChange("gender", e.target.value)}
+            onChange={(e) => handlePatientChange("gender", e.target.value)}
           >
             <option value="">Select Gender</option>
             <option value="male">Male</option>
@@ -99,23 +140,20 @@ const PersonalInfo = () => {
           </select>
         </div>
 
-        {/* BLOOD GROUP */}
+        {/* BLOOD GROUP (MAP) */}
         <div>
           <label className={labelClass}>Blood Group</label>
           <select
             className={inputClass}
             value={patient?.bloodGroup || ""}
-            onChange={(e) => handleChange("bloodGroup", e.target.value)}
+            onChange={(e) => handlePatientChange("bloodGroup", e.target.value)}
           >
             <option value="">Select Blood Group</option>
-            <option value="A+">A+</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B-">B-</option>
-            <option value="AB+">AB+</option>
-            <option value="AB-">AB-</option>
-            <option value="O+">O+</option>
-            <option value="O-">O-</option>
+            {bloodGroups.map((bg) => (
+              <option key={bg} value={bg}>
+                {bg}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -126,10 +164,9 @@ const PersonalInfo = () => {
             rows={3}
             className={inputClass}
             value={patient?.address || ""}
-            onChange={(e) => handleChange("address", e.target.value)}
+            onChange={(e) => handlePatientChange("address", e.target.value)}
           />
         </div>
-
       </div>
     </div>
   );

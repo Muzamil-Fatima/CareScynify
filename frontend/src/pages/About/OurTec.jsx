@@ -2,24 +2,24 @@ import React from "react";
 
 const OurTec = () => {
   return (
-    <div className="bg-blue-50 grid grid-cols-1 md:grid-cols-2 p-6 gap-6 md-p-16 mt-16">
-      <div className="px-4 md:px-6">
-        <h7 className="text-2xl sm:text-2xl md:text-3xl font-bold mb-4">
-          Our Mission
-        </h7>
-        <p className="text-sm sm:text-base md:text-lg">
-          To bridge the gap between students and industry by creating an
-          ecosystem of learning, collaboration, and real-world exposure.
+    <div className="grid md:grid-cols-2 gap-10 py-16">
+
+      <div className="p-8 rounded-2xl bg-linear-to-br from-purple-50 to-white shadow-lg border">
+        <h2 className="text-2xl font-bold mb-3">Our Mission</h2>
+        <p className="text-gray-600 leading-relaxed">
+          To revolutionize healthcare by connecting patients and doctors
+          through intelligent, fast, and secure digital systems.
         </p>
       </div>
-      <div className="px-4 md:px-6">
-        <h7 className="text-2xl font-bold mb-4">Our Vision</h7>
-        <p className="text-sm sm:text-base md:text-lg">
-          To become India’s leading student-focused tech hub that fosters
-          innovation through internships, hackathons, and hands-on projects,
-          making youth industry-ready.
+
+      <div className="p-8 rounded-2xl bg-linear-to-br from-indigo-50 to-white shadow-lg border">
+        <h2 className="text-2xl font-bold mb-3">Our Vision</h2>
+        <p className="text-gray-600 leading-relaxed">
+          To become a leading AI-powered healthcare platform that improves
+          accessibility, efficiency, and patient care worldwide.
         </p>
       </div>
+
     </div>
   );
 };

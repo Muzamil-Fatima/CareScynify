@@ -8,36 +8,106 @@ const patientSchema = new mongoose.Schema(
       required: true,
     },
 
-    // Personal Info
-    dob: Date,
-    cnic: String,
-    gender: { type: String, enum: ["male", "female", "other"] },
-    bloodGroup: String,
-    address: String,
+    // PERSONAL INFO
+    dob: {
+      type: Date,
+      default: null,
+    },
+  
+    cnic: {
+      type: String,
+      default: "",
+    },
 
-    // Medical Info
-    allergies: [String],
-    medications: [String],
+    gender: {
+      type: String,
+      enum: ["male", "female", "other"],
+      default: "other",
+    },
+
+    bloodGroup: {
+      type: String,
+      default: "",
+    },
+
+    address: {
+      type: String,
+      default: "",
+    },
+
+    // MEDICAL INFO
+    allergies: {
+      type: [String],
+      default: [],
+    },
+
+    medications: {
+      type: [String],
+      default: [],
+    },
 
     medicalHistory: {
-      diseases: [String],
-      surgeries: [String],
-      familyHistory: String,
-      smoking: String,
-      alcohol: String,
+      diseases: {
+        type: [String],
+        default: [],
+      },
+
+      surgeries: {
+        type: [String],
+        default: [],
+      },
+
+      familyHistory: {
+        type: String,
+        default: "",
+      },
+
+      smoking: {
+        type: String,
+        default: "",
+      },
+
+      alcohol: {
+        type: String,
+        default: "",
+      },
     },
 
-    // Emergency Contact
+    // EMERGENCY CONTACT
     emergencyContact: {
-      name: String,
-      phone: String,
-      relation: String,
+      name: {
+        type: String,
+        default: "",
+      },
+
+      phone: {
+        type: String,
+        default: "",
+      },
+
+      relation: {
+        type: String,
+        default: "",
+      },
+
+      address: {
+        type: String,
+        default: "",
+      },
     },
 
-    // Optional enhancements
-    chronicDiseases: [String],
-    notes: String,
+    // OPTIONAL FIELDS
+    chronicDiseases: {
+      type: [String],
+      default: [],
+    },
 
+    notes: {
+      type: String,
+      default: "",
+    },
+
+    // STATUS
     status: {
       type: String,
       enum: ["active", "inactive", "deceased"],
@@ -49,4 +119,5 @@ const patientSchema = new mongoose.Schema(
 
 const Patient =
   mongoose.models.Patient || mongoose.model("Patient", patientSchema);
+
 export default Patient;
