@@ -16,9 +16,7 @@ export const useClinics = (filters) => {
 
       let result = Array.isArray(data) ? data : data?.clinics || [];
 
-      // =========================
       // FILTER LOGIC (frontend demo)
-      // =========================
 
       if (filters?.search) {
         result = result.filter((c) =>

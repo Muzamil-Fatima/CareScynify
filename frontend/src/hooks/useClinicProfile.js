@@ -12,7 +12,7 @@ export const useClinicProfile = (id) => {
       setLoading(true);
       setError(null);
 
-      // 🔥 Replace with real API
+      //  Replace with real API
       const response = await fetch(`/api/clinics/${id}`);
       const data = await response.json();
 

@@ -20,7 +20,6 @@ const PatientProfile = () => {
   const handleBrowseClick = () => {
     fileInputRef.current.click();
   };
-
   // Handle file selection + upload
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -29,14 +28,14 @@ const PatientProfile = () => {
 
     setSelectedFile(file);
 
-    // 🔥 SEND TO BACKEND
+    // SEND TO BACKEND
     const formData = new FormData();
     formData.append("avatar", file);
 
     try {
       await updateUserProfile(formData);
 
-      // 🔥 REFRESH PROFILE AFTER UPLOAD
+      //  REFRESH PROFILE AFTER UPLOAD
       const data = await getPatientProfile();
 
       setProfile({

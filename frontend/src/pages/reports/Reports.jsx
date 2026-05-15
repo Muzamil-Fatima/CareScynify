@@ -3,7 +3,6 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import { toast } from "react-toastify";
-import { reportsData } from "../../data/reportData";
 import { reportCategories } from "./reportCategories";
 
 const Reports = () => {
@@ -11,7 +10,7 @@ const Reports = () => {
   const [openModel, setOpenModel] = useState(false);
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(null);
-  const [reports, setReports] = useState(reportsData);
+  const [reports, setReports] = useState();
   const filteredReports =
     activeTab === "All"
       ? reports

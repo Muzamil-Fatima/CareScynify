@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 
 export const useDoctors = (filters = {}) => {
@@ -6,19 +6,36 @@ export const useDoctors = (filters = {}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchDoctors = async () => {
+  // Destructure filters
+  const {
+    specialty,
+    rating,
+    experience,
+    available,
+    search,
+  } = filters;
+
+  const fetchDoctors = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Build query params from filters
       const params = new URLSearchParams();
 
-      if (filters.specialty) params.append("specialty", filters.specialty);
-      if (filters.rating) params.append("rating", filters.rating);
-      if (filters.experience) params.append("experience", filters.experience);
-      if (filters.available) params.append("available", filters.available);
-      if (filters.search) params.append("search", filters.search);
+      if (specialty)
+        params.append("specialty", specialty);
+
+      if (rating)
+        params.append("rating", rating);
+
+      if (experience)
+        params.append("experience", experience);
+
+      if (available)
+        params.append("available", available);
+
+      if (search)
+        params.append("search", search);
 
       const { data } = await axios.get(
         `/api/doctors?${params.toString()}`
@@ -30,11 +47,11 @@ export const useDoctors = (filters = {}) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [specialty, rating, experience, available, search]);
 
   useEffect(() => {
     fetchDoctors();
-  }, [JSON.stringify(filters)]);
+  }, [fetchDoctors]);
 
   return {
     doctors,

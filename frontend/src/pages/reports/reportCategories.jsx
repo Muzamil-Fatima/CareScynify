@@ -5,6 +5,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import MedicationIcon from "@mui/icons-material/Medication";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import AppsIcon from "@mui/icons-material/Apps";
+import CategoryIcon from "@mui/icons-material/Category";
 
 export const reportCategories = [
   { name: "All", icon: <AppsIcon /> },
@@ -14,4 +15,5 @@ export const reportCategories = [
   { name: "Pathology", icon: <DescriptionOutlinedIcon /> },
   { name: "Pharmacy", icon: <MedicationIcon /> },
   { name: "Vitals", icon: <MonitorHeartIcon /> },
+  { name: "Other", icon: <CategoryIcon /> },
 ];

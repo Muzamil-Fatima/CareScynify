@@ -1,8 +1,8 @@
 import { useState } from "react";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 
-import AppointmentTabs from "../../Components/AppointmentTabs";
-import AppointmentCard from "../../Components/AppointmentCard";
+import AppointmentTabs from "../../Components/appointment/AppointmentTabs";
+import AppointmentCard from "../../Components/appointment/AppointmentCard";
 import { appointmentData } from "../../data/appointmentData";
 
 const Appointments = () => {
