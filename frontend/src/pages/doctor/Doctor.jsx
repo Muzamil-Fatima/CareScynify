@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import DoctorSearchBar from "../../Components/doctor/DoctorSearchBar";
 import DoctorFilters from "../../Components/doctor/DoctorFilters";
 import DoctorList from "../../Components/doctor/DoctorList";
-import { useDoctors } from "../../hooks/useDoctor";
+import { useDoctor} from "../../hooks/useDoctor";
 
 const Doctor = () => {
   const [filters, setFilters] = useState({
@@ -13,7 +13,7 @@ const Doctor = () => {
     search: "",
   });
 
-  const { doctors, loading, error } = useDoctors(filters);
+  const { doctors, loading, error } = useDoctor(filters);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 mt-20">
