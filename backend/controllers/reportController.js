@@ -1,23 +1,40 @@
 import Report from "../models/reportModel.js";
 
-export const createReport = async (req, res) => {
+// SAVE REPORT
+export const addReport = async (req, res) => {
   try {
-    const { patientId, title, testType, notes, uploadedByRole } = req.body;
+    // console.log(req.body);
 
-    const fileUrl = req.file.path;
+    const { title, category, fileUrl } = req.body;
+
+    const userId = req.userId; //  GET FROM JWT (NOT FRONTEND)
 
     const report = await Report.create({
-      patientId,
+      userId,
       title,
-      testType,
-      notes,
-      uploadedByRole,
-      uploadedBy: req.user._id,
+      category,
       fileUrl,
+      status: "Pending",
+      doctor: "Pending AI",
     });
 
     res.status(201).json(report);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getReports = async (req, res) => {
+  try {
+    const userId = req.userId; //  from JWT
+
+    const reports = await Report.find({ userId }).sort({
+      createdAt: -1,
+    });
+
+    res.json(reports);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

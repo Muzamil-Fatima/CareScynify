@@ -1,8 +1,10 @@
 import express from "express";
-import { createReport } from "../controllers/reportController.js";
-import upload from "../middleware/upload.js";
+import { addReport, getReports } from "../controllers/reportController.js";
+import { protect } from "../middleware/auth.js";
+
 const router = express.Router();
 
-router.post("/upload", upload.single("file"), createReport);
+router.post("/add-report", protect, addReport);
+router.get("/get-report", protect, getReports);
 
 export default router;

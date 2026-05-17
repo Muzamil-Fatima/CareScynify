@@ -125,7 +125,7 @@ const Footer = () => {
       <hr />
       <div>
         <p className="text-center text-sm text-gray-400">
-          © 2025-26 Muzamil. All right reserved
+          © 2025-26 CareScynify. All right reserved
         </p>
       </div>
     </div>

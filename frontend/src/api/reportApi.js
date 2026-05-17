@@ -1,13 +1,13 @@
 import { api } from "./axios";
 
-// UPLOAD REPORT
-export const uploadReport = async (formData) => {
-  const res = await api.post("api/reports/add-report", formData);
+// SAVE REPORT
+export const addReport = async (data) => {
+  const res = await api.post("/api/report/add-report", data);
   return res.data;
 };
 
 // GET REPORTS
 export const getReports = async () => {
-  const res = await api.post("api/reports/get-reports");
+  const res = await api.get(`/api/report/get-report`);
   return res.data;
 };

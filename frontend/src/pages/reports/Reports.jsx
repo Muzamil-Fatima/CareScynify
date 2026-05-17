@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import { toast } from "react-toastify";
 import { reportCategories } from "./reportCategories";
-
+import { addReport, getReports } from "../../api/reportApi";
 const Reports = () => {
   const [activeTab, setActiveTab] = useState("Lab");
   const [openModel, setOpenModel] = useState(false);
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(null);
-  const [reports, setReports] = useState();
+
+  const [reports, setReports] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getReports();
+        console.log("REPORTS FROM API:", data);
+        setReports(data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    fetchData();
+  }, []);
   const filteredReports =
     activeTab === "All"
       ? reports
-      : reports.filter((r) => r.category === activeTab);
+      : (reports || []).filter((r) => r.category === activeTab);
   // DOWNLOAD FUNCTION
   const handleDownload = async (fileUrl, title) => {
     if (!fileUrl) {
@@ -84,31 +99,56 @@ const Reports = () => {
       message: "Uploading report...",
     });
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("id", newReport.id);
+    try {
+      setUploadStatus({
+        type: "uploading",
+        message: "Uploading report...",
+      });
 
-    // BACKEND api CALL
-    const res = await fetch("/api/analyze-report", {
-      method: "POST",
-      body: formData,
-    });
+      // 1. Cloudinary upload
+      const cloudinaryForm = new FormData();
+      cloudinaryForm.append("file", file);
+      cloudinaryForm.append(
+        "upload_preset",
+        import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
+      );
 
-    const data = await res.json();
+      const cloudRes = await fetch(
+        `https://api.cloudinary.com/v1_1/${
+          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
+        }/auto/upload`,
+        {
+          method: "POST",
+          body: cloudinaryForm,
+        },
+      );
 
-    setReports((prev) =>
-      prev.map((r) =>
-        r.id === newReport.id
-          ? {
-              ...r,
-              doctor: data.doctor,
-              category: data.category,
-              status: data.status,
-              title: data.title,
-            }
-          : r,
-      ),
-    );
+      const cloudData = await cloudRes.json();
+
+      // 2. Save in MongoDB
+      const savedReport = await addReport({
+        title: file.name,
+        category: "Other", // temporary
+        fileUrl: cloudData.secure_url,
+      });
+
+      // 3. Update UI
+      setReports((prev) => [savedReport, ...prev]);
+
+      setUploadStatus({
+        type: "done",
+        message: "Report uploaded successfully!",
+      });
+    } catch (error) {
+      console.log(error);
+
+      toast.error("Upload failed");
+
+      setUploadStatus({
+        type: "error",
+        message: "Upload failed",
+      });
+    }
 
     setUploadStatus({
       type: "done",
