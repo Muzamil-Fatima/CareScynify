@@ -10,7 +10,7 @@ export const useClinics = (filters) => {
       setLoading(true);
       setError(null);
 
-      // 🔥 Replace this with real API later
+      //  Replace this with real API later
       const response = await fetch("/api/clinics");
       const data = await response.json();
 
