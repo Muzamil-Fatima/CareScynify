@@ -1,20 +1,27 @@
 import React from "react";
 import DrSpecialization from "./DrSpecialization";
-const DrProfessionalDetail = ({ drForm, setDrForm }) => {
+import { useDoctor } from "../../../context/doctor/DoctorContext";
+
+const DrProfessionalDetail = () => {
+  const { profile, setProfile, setIsDirty } = useDoctor();
+
+  const doctor = profile.doctor || {};
+
   const fields = [
-    { name: "ID", type: "text" },
-    { name: "Specialization", type: "specialization" },
-    { name: "Qualification", type: "text" },
-    { name: "License No", type: "text" },
-    { name: "Experience", type: "text" },
-    { name: "UserName", type: "text" },
-    { name: "Password", type: "password" },
+    { name: "ID", type: "text", key: "ID" },
+    { name: "Specialization", type: "specialization", key: "specialization" },
+    { name: "Qualification", type: "text", key: "qualification" },
+    { name: "License No", type: "text", key: "licenseNo" },
+    { name: "Experience", type: "text", key: "experience" },
+    { name: "UserName", type: "text", key: "userName" }
   ];
+
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-6 text-gray-800">
         Professional Details
       </h2>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {fields.map((field) => (
           <div key={field.name} className="flex flex-col">
@@ -22,18 +29,36 @@ const DrProfessionalDetail = ({ drForm, setDrForm }) => {
 
             {field.type === "specialization" ? (
               <DrSpecialization
-                value={drForm[field.name] || ""}
-                onChange={(e) =>
-                  setDrForm({ ...drForm, [field.name]: e.target.value })
-                }
+                value={doctor[field.key] || ""}
+                onChange={(value) => {
+                  setProfile((prev) => ({
+                    ...prev,
+                    doctor: {
+                      ...prev.doctor,
+                      [field.key]: value,
+                    },
+                  }));
+
+                  setIsDirty(true);
+                }}
               />
             ) : (
               <input
-                value={drForm[field.name] || ""}
+                value={doctor[field.key] || ""}
                 onChange={(e) => {
-                  setDrForm({ ...drForm, [field.name]: e.target.value });
+                  const value = e.target.value;
+
+                  setProfile((prev) => ({
+                    ...prev,
+                    doctor: {
+                      ...prev.doctor,
+                      [field.key]: value,
+                    },
+                  }));
+
+                  setIsDirty(true);
                 }}
-                type={field.type === "password" ? "password" : "text"}
+                type="text"
                 className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             )}
@@ -43,4 +68,5 @@ const DrProfessionalDetail = ({ drForm, setDrForm }) => {
     </div>
   );
 };
+
 export default DrProfessionalDetail;

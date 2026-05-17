@@ -1,45 +1,14 @@
-import { useEffect } from "react";
-import axios from "axios";
-import { BASE_URL } from "../utils/api";
-import { useDoctorContext } from "../context/DoctorContext";
+import { useContext } from "react";
+import DoctorContext from "../context/doctor/DoctorContext";
 
-const useDoctorProfile = () => {
-  const { doctor, setDoctor, loading, setLoading } = useDoctorContext();
+const useDoctor = () => {
+  const context = useContext(DoctorContext);
 
-  useEffect(() => {
-    let isMounted = true;
+  if (!context) {
+    throw new Error("useDoctor must be used inside DoctorProvider");
+  }
 
-    const fetchDoctor = async () => {
-      try {
-        setLoading(true);
-
-        const res = await axios.get(
-          `${BASE_URL}/api/doctor/getDoctor/${id}`,
-          { withCredentials: true }
-        );
-
-        if (isMounted) {
-          setDoctor(res.data);
-        }
-      } catch (error) {
-        console.log("Doctor fetch error:", error);
-      } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
-      }
-    };
-
-    if (!doctor) {
-      fetchDoctor();
-    }
-
-    return () => {
-      isMounted = false;
-    };
-  }, [doctor, setDoctor, setLoading]);
-
-  return { doctor, loading };
+  return context;
 };
 
-export default useDoctorProfile;
+export default useDoctor;

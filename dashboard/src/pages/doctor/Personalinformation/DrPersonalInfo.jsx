@@ -1,73 +1,151 @@
-import React, { useState } from "react";
+import React from "react";
 import PhoneInput from "../../../components/PhoneInput";
-const DrPersonalInfo = ({ drForm, setDrForm }) => {
-  const [phone, setPhone] = useState("");
+import { useDoctor } from "../../../context/doctor/DoctorContext";
+
+const DrPersonalInfo = () => {
+  const { profile, setProfile, setIsDirty } = useDoctor();
+
+  const doctor = profile.doctor || {};
+  const user = profile.user || {};
 
   return (
     <div>
-      <div>
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-          Personal Information
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700">Dr Name</label>
-            <input
-              value={drForm.drName}
-              onChange={(e) => {
-                setDrForm({ ...drForm, drName: e.target.value });
-              }}
-              type="text"
-              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700">DOB</label>
-            <input
-              value={drForm.drDob}
-              onChange={(e) => {
-                setDrForm({ ...drForm, drDob: e.target.value });
-              }}
-              type="date"
-              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700">CNIC</label>
-            <input
-              value={drForm.drCnic}
-              onChange={(e) => {
-                setDrForm({ ...drForm, drCnic: e.target.value });
-              }}
-              type="text"
-              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-          <div>
-            <PhoneInput value={phone} onChange={setPhone} />
-          </div>
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700">Email</label>
-            <input
-              value={drForm.drEmail}
-              onChange={(e) => {
-                setDrForm({ ...drForm, drEmail: e.target.value });
-              }}
-              type="email"
-              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="mb-2 text-gray-700">Address</label>
-            <textarea
-              value={drForm.drAddress}
-              onChange={(e) => {
-                setDrForm({ ...drForm, drAddress: e.target.value });
-              }}
-              type="text"
-              className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
+      <h2 className="text-2xl font-semibold mb-6 text-gray-800">
+        Personal Information
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Name */}
+        <div className="flex flex-col">
+          <label className="mb-2 text-gray-700">Dr Name</label>
+          <input
+            value={user.name || ""}
+            value={user.name || ""}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              setProfile((prev) => ({
+                ...prev,
+                user: {
+                  ...prev.user,
+                  name: value,
+                },
+              }));
+
+              setIsDirty(true);
+            }}
+            type="text"
+            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        {/* DOB */}
+        <div className="flex flex-col">
+          <label className="mb-2 text-gray-700">DOB</label>
+          <input
+            value={doctor.drDob || ""}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              setProfile((prev) => ({
+                ...prev,
+                doctor: {
+                  ...prev.doctor,
+                  drDob: value,
+                },
+              }));
+
+              setIsDirty(true);
+            }}
+            type="date"
+            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        {/* CNIC */}
+        <div className="flex flex-col">
+          <label className="mb-2 text-gray-700">CNIC</label>
+          <input
+            value={doctor.drCnic || ""}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              setProfile((prev) => ({
+                ...prev,
+                doctor: {
+                  ...prev.doctor,
+                  drCnic: value,
+                },
+              }));
+
+              setIsDirty(true);
+            }}
+            type="text"
+            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        {/* Phone */}
+        <div>
+          <PhoneInput
+            value={user.phone || ""}
+            onChange={(value) => {
+              setProfile((prev) => ({
+                ...prev,
+                user: {
+                  ...prev.user,
+                  phone: value,
+                },
+              }));
+
+              setIsDirty(true);
+            }}
+          />
+        </div>
+
+        {/* Email */}
+        <div className="flex flex-col">
+          <label className="mb-2 text-gray-700">Email</label>
+          <input
+            value={user.email || ""}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              setProfile((prev) => ({
+                ...prev,
+                user: {
+                  ...prev.user,
+                  email: value,
+                },
+              }));
+
+              setIsDirty(true);
+            }}
+            type="email"
+            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        {/* Address */}
+        <div className="flex flex-col">
+          <label className="mb-2 text-gray-700">Address</label>
+          <textarea
+            value={user.address || ""}
+            onChange={(e) => {
+              const value = e.target.value;
+
+              setProfile((prev) => ({
+                ...prev,
+                user: {
+                  ...prev.user,
+                  address: value,
+                },
+              }));
+
+              setIsDirty(true);
+            }}
+            className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
         </div>
       </div>
     </div>

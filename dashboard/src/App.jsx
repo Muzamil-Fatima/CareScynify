@@ -25,11 +25,28 @@ import NotificationSetting from "./pages/setting/NotificationSetting";
 import TopBar from "./components/TopBar";
 import SideBar from "./components/sidebar/SideBar";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import { Toaster } from "react-hot-toast";
+
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
+
   return (
     <div className="grid grid-cols-[auto_1fr] min-h-screen">
+      {/* Toast Notifications */}
+      <Toaster
+        position="top-right"
+        gutter={12}
+        toastOptions={{
+          duration: 4000,
+          style: {
+            fontSize: "14px",
+            borderRadius: "8px",
+            background: "#333",
+            color: "#fff",
+          },
+        }}
+      />
       <SideBar
         activeSidebar={activeSidebar}
         setActiveSidebar={setActiveSidebar}
@@ -44,7 +61,15 @@ function App() {
             <Route path="/appointment" element={<Appointment />} />
             {/* Doctor  */}
             <Route path="/doctor" element={<Doctor />} />
-            <Route path="/doctor-dashboard" element={ <ProtectedRoute> <DrDashboard /> </ProtectedRoute>} />
+            <Route
+              path="/doctor-dashboard"
+              element={
+                <ProtectedRoute>
+                  {" "}
+                  <DrDashboard />{" "}
+                </ProtectedRoute>
+              }
+            />
             <Route path="/doctor/schedule" element={<DrSchedule />} />
             <Route path="/doctor/appointments" element={<AllAppointment />} />
             <Route path="/doctor/profile" element={<AddNewDr />} />

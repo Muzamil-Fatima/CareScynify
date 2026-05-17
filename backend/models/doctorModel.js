@@ -2,16 +2,15 @@ import mongoose from "mongoose";
 
 const drSchema = new mongoose.Schema(
   {
-  // personal information
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-  // Professional Details
+
+    // Professional Details
     specialization: {
       type: String,
-      required: true,
     },
 
     experience: {
@@ -26,14 +25,13 @@ const drSchema = new mongoose.Schema(
     licenseNo: {
       type: String,
       unique: true,
-      required: true,
     },
 
     fee: {
       type: Number,
-      required: true,
     },
-  //   dr appointment details
+
+    // Appointment Details
     availableDays: [
       {
         day: String,
@@ -46,10 +44,10 @@ const drSchema = new mongoose.Schema(
       type: String,
     },
 
-    roomNo: {
-      type: String,
+    drRoomNo: {
+      type: Number,
     },
-AppointmentDuration: { type: String },
+
     status: {
       type: String,
       enum: ["active", "inactive", "on_leave"],
@@ -59,13 +57,16 @@ AppointmentDuration: { type: String },
     note: {
       type: String,
     },
-
+  
+    drCnic: {
+      type: String,
+    },
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organization",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Doctor = mongoose.model("Doctor", drSchema);

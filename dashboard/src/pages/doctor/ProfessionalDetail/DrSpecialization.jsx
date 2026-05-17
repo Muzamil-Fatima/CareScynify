@@ -15,10 +15,11 @@ const DrSpecialization = ({ value, onChange }) => {
   return (
     <select
       value={value}
-      onChange={onChange}
+      onChange={(e) => onChange(e.target.value)}
       className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
     >
       <option value="">Select specialization</option>
+
       {specializations.map((spec) => (
         <option key={spec} value={spec}>
           {spec}
