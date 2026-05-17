@@ -26,10 +26,7 @@ const drSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-   appointmentDuration: {
-  value: { type: Number, default: 30 },
-  unit: { type: String, enum: ["minutes", "hours"], default: "minutes" },
-},
+   
     fee: {
       type: Number,
     },
@@ -61,9 +58,7 @@ const drSchema = new mongoose.Schema(
       type: String,
     },
 
-    drCnic: {
-      type: String,
-    },
+  
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organization",

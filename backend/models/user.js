@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema(
   {
     userId: { type: Number },
-    username: { type: String, unique: true },
+    // username: { type: String, unique: true },
     name: { type: String, required: [true, "Name is required"] },
     password: {
       type: String,
@@ -18,12 +18,16 @@ const userSchema = new mongoose.Schema(
       index: true,
       sparse: true,
     },
-    cnic: {
-      type: String,
-      unique: true,
-      sparse: true,
+
+    dob: {
+      type: Date,
+      default: null,
     },
-    dob: Date,
+
+    cnic: {
+      type: Number,
+      unique: true,
+    },
     phone: String,
     address: String,
     accountVerified: { type: Boolean, default: false },

@@ -20,7 +20,7 @@ const protect = asyncHandler(async (req, res, next) => {
       req.userId = decoded.id; 
 
       // Attach user to request (exclude password)
-      // req.user = await User.findById(decoded.id).select("-password");
+      req.user = await User.findById(decoded.id).select("-password");
 
       next();
     } catch (error) {

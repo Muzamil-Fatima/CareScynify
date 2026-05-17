@@ -5,7 +5,6 @@ import { useDoctor } from "../../../context/doctor/DoctorContext";
 const DrPersonalInfo = () => {
   const { profile, setProfile, setIsDirty } = useDoctor();
 
-  const doctor = profile.doctor || {};
   const user = profile.user || {};
 
   return (
@@ -19,7 +18,6 @@ const DrPersonalInfo = () => {
         <div className="flex flex-col">
           <label className="mb-2 text-gray-700">Dr Name</label>
           <input
-            value={user.name || ""}
             value={user.name || ""}
             onChange={(e) => {
               const value = e.target.value;
@@ -43,15 +41,15 @@ const DrPersonalInfo = () => {
         <div className="flex flex-col">
           <label className="mb-2 text-gray-700">DOB</label>
           <input
-            value={doctor.drDob || ""}
+            value={user.dob || ""}
             onChange={(e) => {
               const value = e.target.value;
 
               setProfile((prev) => ({
                 ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  drDob: value,
+                user: {
+                  ...prev.user,
+                  dob: value,
                 },
               }));
 
@@ -66,21 +64,21 @@ const DrPersonalInfo = () => {
         <div className="flex flex-col">
           <label className="mb-2 text-gray-700">CNIC</label>
           <input
-            value={doctor.drCnic || ""}
+            value={user.cnic || ""}
             onChange={(e) => {
               const value = e.target.value;
 
               setProfile((prev) => ({
                 ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  drCnic: value,
+                user: {
+                  ...prev.user,
+                  cnic: value,
                 },
               }));
 
               setIsDirty(true);
             }}
-            type="text"
+            type="number"
             className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>

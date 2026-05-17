@@ -9,15 +9,7 @@ const patientSchema = new mongoose.Schema(
     },
 
     // PERSONAL INFO
-    dob: {
-      type: Date,
-      default: null,
-    },
   
-    cnic: {
-      type: String,
-      default: "",
-    },
 
     gender: {
       type: String,

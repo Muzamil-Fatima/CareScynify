@@ -4,14 +4,14 @@ import User from "../models/user.js";
 // GET DOCTOR PROFILE
 export const getDoctorProfile = async (req, res) => {
   try {
-    const userId = req.userId || req.user?.id || req.user;
+    const userId = req.userId;
 
     if (!userId) {
       return res.status(401).json({ message: "UserId not found" });
     }
 
     const user = await User.findById(userId).select(
-      "name email avatar phone address",
+      "name email avatar phone address cnic dob",
     );
 
     const doctor = await Doctor.findOne({ userId });
@@ -24,11 +24,14 @@ export const getDoctorProfile = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
 // UPDATE DOCTOR PROFILE (FIXED + MATCH FRONTEND)
 export const updateDoctorProfile = async (req, res) => {
   try {
     const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: "UserId not found" });
+    }
 
     const user = await User.findById(userId);
     if (!user) {
@@ -41,17 +44,20 @@ export const updateDoctorProfile = async (req, res) => {
       doctor = new Doctor({ userId });
     }
 
-    // ================= USER FIELDS =================
-    const { name, email, phone, address } = req.body;
+    // USER FIELDS
+    const { name, email, phone, address, avatar, dob, cnic } = req.body;
 
     if (name !== undefined) user.name = name;
     if (email !== undefined) user.email = email;
     if (phone !== undefined) user.phone = phone;
     if (address !== undefined) user.address = address;
+    if (avatar !== undefined) user.avatar = avatar;
+    if (dob !== undefined) user.dob = dob;
+    if (cnic !== undefined) user.cnic = cnic;
 
     await user.save();
 
-    // ================= DOCTOR FIELDS =================
+    // DOCTOR FIELDS
     const {
       specialization,
       experience,
@@ -64,16 +70,17 @@ export const updateDoctorProfile = async (req, res) => {
       drRoomNo,
       status,
       note,
-      drCnic,
       appointmentDuration,
       durationUnit,
     } = req.body;
-if (appointmentDuration !== undefined) {
-  doctor.appointmentDuration = {
-    value: Number(appointmentDuration) || 30,
-    unit: durationUnit || "minutes",
-  };
-}
+
+    if (appointmentDuration !== undefined) {
+      doctor.appointmentDuration = {
+        value: Number(appointmentDuration) || 30,
+        unit: durationUnit || "minutes",
+      };
+    }
+
     if (specialization) doctor.specialization = specialization;
     if (qualifications) doctor.qualifications = qualifications;
     if (licenseNo && licenseNo !== doctor.licenseNo) {
@@ -87,30 +94,23 @@ if (appointmentDuration !== undefined) {
 
       doctor.licenseNo = licenseNo;
     }
+
     if (experience !== undefined && experience !== "") {
-      const exp = Number(experience);
-      if (!isNaN(exp)) doctor.experience = exp;
-    }
-    if (drCnic !== undefined && drCnic !== "") {
-      const cleanCnic = String(drCnic).trim();
-      doctor.drCnic = cleanCnic;
+      doctor.experience = Number(experience);
     }
 
     if (fee !== undefined && fee !== "") {
-      const f = Number(fee);
-      if (!isNaN(f)) doctor.fee = f;
+      doctor.fee = Number(fee);
     }
-    if (availableDays !== undefined) {
-      doctor.availableDays = Array.isArray(availableDays)
-        ? availableDays.map((d) =>
-            typeof d === "string" ? { day: d, startTime: "", endTime: "" } : d,
-          )
-        : doctor.availableDays;
-    }
+
+  if (availableDays !== undefined) {
+  doctor.availableDays = availableDays;
+}
 
     if (consultStart && consultEnd) {
       doctor.consultationTime = `${consultStart}-${consultEnd}`;
     }
+
     if (drRoomNo !== undefined) doctor.drRoomNo = drRoomNo;
     if (status) doctor.status = status.toLowerCase();
     if (note) doctor.note = note;

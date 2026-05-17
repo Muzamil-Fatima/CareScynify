@@ -1,10 +1,10 @@
-import { createContext, useContext } from "react";
+// import { createContext, useContext } from "react";
 
-const PatientContext = createContext(null);
+// const PatientContext = createContext(null);
 
-export default PatientContext;
+// export default PatientContext;
 
-// custom hook (clean usage)
-export const usePatient = () => {
-  return useContext(PatientContext);
-};
+// // custom hook (clean usage)
+// export const usePatient = () => {
+//   return useContext(PatientContext);
+// };
