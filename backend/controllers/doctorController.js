@@ -65,8 +65,15 @@ export const updateDoctorProfile = async (req, res) => {
       status,
       note,
       drCnic,
+      appointmentDuration,
+      durationUnit,
     } = req.body;
-
+if (appointmentDuration !== undefined) {
+  doctor.appointmentDuration = {
+    value: Number(appointmentDuration) || 30,
+    unit: durationUnit || "minutes",
+  };
+}
     if (specialization) doctor.specialization = specialization;
     if (qualifications) doctor.qualifications = qualifications;
     if (licenseNo && licenseNo !== doctor.licenseNo) {

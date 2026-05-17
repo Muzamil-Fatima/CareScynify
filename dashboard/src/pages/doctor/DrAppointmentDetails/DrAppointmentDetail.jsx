@@ -69,7 +69,7 @@ const DrAppointmentDetails = () => {
                 ...prev,
                 doctor: {
                   ...prev.doctor,
-                  drRoomNo: value, 
+                  drRoomNo: value,
                 },
               }));
 
@@ -86,7 +86,7 @@ const DrAppointmentDetails = () => {
 
           <div className="flex gap-2">
             <input
-              value={doctor.duration || ""}
+              value={doctor.appointmentDuration?.value || ""}
               onChange={(e) => {
                 const value = e.target.value;
 
@@ -94,7 +94,10 @@ const DrAppointmentDetails = () => {
                   ...prev,
                   doctor: {
                     ...prev.doctor,
-                    duration: value,
+                    appointmentDuration: {
+                      ...prev.doctor.appointmentDuration,
+                      value: Number(value),
+                    },
                   },
                 }));
 
@@ -107,7 +110,7 @@ const DrAppointmentDetails = () => {
             />
 
             <select
-              value={doctor.durationUnit || "minutes"}
+              value={doctor.appointmentDuration?.unit || "minutes"}
               onChange={(e) => {
                 const value = e.target.value;
 
@@ -115,7 +118,10 @@ const DrAppointmentDetails = () => {
                   ...prev,
                   doctor: {
                     ...prev.doctor,
-                    durationUnit: value,
+                    appointmentDuration: {
+                      ...prev.doctor.appointmentDuration,
+                      unit: value,
+                    },
                   },
                 }));
 

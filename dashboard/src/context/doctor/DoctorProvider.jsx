@@ -49,6 +49,8 @@ const DoctorProvider = ({ children }) => {
           address: profile.user.address,
 
           // DOCTOR
+          appointmentDuration: profile.doctor.appointmentDuration?.value,
+durationUnit: profile.doctor.appointmentDuration?.unit,
           drCnic: profile.doctor.drCnic,
           specialization: profile.doctor.specialization,
           experience: profile.doctor.experience,
@@ -58,7 +60,7 @@ const DoctorProvider = ({ children }) => {
           availableDays: profile.doctor.availableDays,
           consultStart: profile.doctor.consultStart,
           consultEnd: profile.doctor.consultEnd,
-          roomNo: profile.doctor.roomNo,
+          drRoomNo: profile.doctor.drRoomNo,
           status: profile.doctor.status,
           note: profile.doctor.note,
         };
