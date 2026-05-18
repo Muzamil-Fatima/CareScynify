@@ -65,8 +65,7 @@ function App() {
               path="/doctor-dashboard"
               element={
                 <ProtectedRoute>
-                  {" "}
-                  <DrDashboard />{" "}
+                  <DrDashboard />
                 </ProtectedRoute>
               }
             />

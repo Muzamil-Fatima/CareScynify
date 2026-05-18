@@ -16,7 +16,7 @@ const Doctor = () => {
   const { doctors, loading, error } = useDoctor(filters);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 mt-20">
+    <div className="max-w-7xl mx-auto px-4 py-6 mt-10">
       {/* Page Title */}
       <h1 className="text-2xl font-bold text-gray-800 mb-4">Find Doctors</h1>
 
