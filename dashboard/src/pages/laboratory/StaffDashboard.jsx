@@ -74,7 +74,7 @@ function RegisterModal({ onClose, onSaved }) {
     e.preventDefault(); setSaving(true); setError('');
     try {
       await api.post('/patients', { ...form, status:'New' });
-      onSaved('✅ Patient register ho gaya!');
+      onSaved(' Patient register ho gaya!');
     } catch (err) { setError(err.response?.data?.message || 'Error hua'); }
     finally { setSaving(false); }
   };
