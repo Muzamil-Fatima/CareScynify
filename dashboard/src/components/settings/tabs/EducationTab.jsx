@@ -130,7 +130,7 @@ const EducationTab = () => {
 
             <button
               type="submit"
-              className="bg-purple-600 hover:bg-purple-700 text-white font-medium p-3 rounded-xl transition shadow-xs flex items-center justify-center cursor-pointer h-[42px]"
+              className="bg-purple-600 hover:bg-purple-700 text-white font-medium p-3 rounded-xl transition shadow-xs flex items-center justify-center cursor-pointer h-10.5"
             >
               Add
             </button>

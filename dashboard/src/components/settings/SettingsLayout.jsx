@@ -10,6 +10,7 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 
 import PersonalInfoTab from "./tabs/PersonalInfoTab";
 import VerificationTab from "./tabs/VerificationTab";
