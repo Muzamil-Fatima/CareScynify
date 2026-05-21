@@ -8,31 +8,36 @@ import GridAppointment from "./GridAppointment";
 
 const Appointment = () => {
   const [activeTab, setActiveTab] = useState("all");
+
   return (
-    <div>
-      <h2 className="font-bold text-3xl font-secondary mt-4">
-        Appointments
-      </h2>
-      <div className="flex justify-between">
-        <Search />
-        <Buttons pendingAppointment={() => setActiveTab("pending")} />
-      </div>
-      <div className="mt-2">
-        <Toggle
-          grid={() => setActiveTab("grid")}
-          row={() => setActiveTab("all")}
-
-        />
-        {/* Conditional Render  */}
+    <div className="p-1 w-full overflow-x-hidden box-border">
+      {/* Top Banner Control Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 mt-1">
         <div>
-          {activeTab === "grid" && <GridAppointment />}
-          {activeTab === "all" && <AllAppointment />}
-          {activeTab === "pending" && <PendingAppointment />}
+          <h2 className="text-3xl font-bold font-secondary text-slate-900 tracking-tight">
+            Appointments Matrix
+          </h2>
+          <p className="text-sm text-slate-500 mt-1 font-medium">
+            Review real-time scheduling channels, manage pipeline queries, and alter system entries.
+          </p>
         </div>
+        
+        <Buttons setActiveTab={setActiveTab} activeTab={activeTab} />
       </div>
 
-      <div className="mt-2 border border-gray-300/30 rounded-[15px] bg-white shadow-sm"></div>
+      {/* View Engine Selector Bar */}
+      <div className="mb-6">
+        <Toggle activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
+
+      {/* Dynamic Render Switch Matrix */}
+      <div className="mt-2">
+        {activeTab === "grid" && <GridAppointment />}
+        {activeTab === "all" && <AllAppointment />}
+        {activeTab === "pending" && <PendingAppointment />}
+      </div>
     </div>
   );
 };
+
 export default Appointment;

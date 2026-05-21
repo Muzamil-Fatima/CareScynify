@@ -16,12 +16,12 @@ const Patients = () => {
   );
 
   // Fetch data from API
-  // useEffect(() => {
-  //   fetch(  `${BASE_URL}/api/patients/`,)
-  //     .then((response) => response.json())
-  //     .then((data) => setPatients(data))
-  //     .catch((error) => console.error("Error fetching patients: ", error));
-  // }, []);
+  useEffect(() => {
+    fetch(  `${BASE_URL}/api/patient/`,)
+      .then((response) => response.json())
+      .then((data) => setPatients(data))
+      .catch((error) => console.error("Error fetching patients: ", error));
+  }, []);
   useEffect(() => {
     const fetchPatients = async () => {
       try {
