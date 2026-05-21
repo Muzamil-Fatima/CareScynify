@@ -4,7 +4,8 @@ import { toast } from "react-hot-toast";
 
 import DrPersonalInfo from "./Personalinformation/DrPersonalInfo";
 import DrProfessionalDetail from "./ProfessionalDetail/DrProfessionalDetail";
-import DrAppointmentDetails from "./DrAppointmentDetails/DrAppointmentDetail";
+// import DrAppointmentDetails from "./DrAppointmentDetails/DrAppointmentDetail";
+import TotalWorkPlaces from "./TotalWorkPlaces";
 
 import { updateUserProfile } from "../../api/userApi";
 import { useDoctor } from "../../context/doctor/DoctorContext";
@@ -93,7 +94,8 @@ const AddNewDr = () => {
         {/* SECTIONS */}
         <DrPersonalInfo />
         <DrProfessionalDetail />
-        <DrAppointmentDetails />
+        <TotalWorkPlaces />
+        {/* <DrAppointmentDetails /> */}
 
       </div>
     </div>

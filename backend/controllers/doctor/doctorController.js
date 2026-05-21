@@ -1,0 +1,4 @@
+// doctorController
+// │── getDoctorProfile
+// │── getAllDoctors
+// │── searchDoctor
