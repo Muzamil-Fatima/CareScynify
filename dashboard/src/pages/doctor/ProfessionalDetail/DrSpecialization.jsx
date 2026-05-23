@@ -16,7 +16,7 @@ const DrSpecialization = ({ value, onChange }) => {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
     >
       <option value="">Select specialization</option>
 

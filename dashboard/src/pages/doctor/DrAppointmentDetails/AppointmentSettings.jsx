@@ -8,9 +8,8 @@ const AppointmentSettings = () => {
   return (
     <div
       className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6
-                 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-blue-200"
+                 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200"
     >
-
       {/* Appointment Duration */}
       <div>
         <label className="block mb-2 text-gray-700 font-medium">
@@ -36,7 +35,7 @@ const AppointmentSettings = () => {
               setIsDirty(true);
             }}
             className="w-24 px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                       focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-300
+                       focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                        transition-all duration-200 hover:border-gray-300"
           />
 
@@ -56,7 +55,7 @@ const AppointmentSettings = () => {
               setIsDirty(true);
             }}
             className="px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                       focus:bg-white focus:ring-2 focus:ring-blue-400
+                       focus:bg-white focus:ring-2 focus:ring-purple-400
                        transition-all duration-200 hover:border-gray-300"
           >
             <option value="minutes">Minutes</option>
@@ -87,7 +86,7 @@ const AppointmentSettings = () => {
               setIsDirty(true);
             }}
             className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                       focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-300
+                       focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                        transition-all duration-200 hover:border-gray-300"
           />
           <span className="text-gray-500 font-medium">PKR</span>
@@ -102,7 +101,7 @@ const AppointmentSettings = () => {
 
         <select
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-blue-400
+                     focus:bg-white focus:ring-2 focus:ring-purple-400
                      transition-all duration-200 hover:border-gray-300"
         >
           <option>Online + Clinic</option>
@@ -121,7 +120,7 @@ const AppointmentSettings = () => {
           type="number"
           placeholder="e.g. 20"
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-300
+                     focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
         />
       </div>
@@ -136,7 +135,7 @@ const AppointmentSettings = () => {
           type="number"
           placeholder="e.g. 10"
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-300
+                     focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
         />
       </div>
@@ -151,7 +150,7 @@ const AppointmentSettings = () => {
           type="number"
           placeholder="e.g. 7"
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-300
+                     focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
         />
       </div>
@@ -166,11 +165,10 @@ const AppointmentSettings = () => {
           type="number"
           placeholder="e.g. 500"
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-blue-400 focus:border-blue-300
+                     focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
         />
       </div>
-
     </div>
   );
 };

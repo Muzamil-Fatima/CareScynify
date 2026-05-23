@@ -61,7 +61,7 @@ const AddNewDr = () => {
         <div className="flex justify-center">
           <div
             onClick={handleBrowseClick}
-            className="relative group w-40 h-40 rounded-full overflow-hidden cursor-pointer border-2 border-blue-500"
+            className="relative group w-40 h-40 rounded-full overflow-hidden cursor-pointer border-2 border-purple-400"
           >
             {avatarSrc ? (
               <img
