@@ -21,7 +21,6 @@ const DrPersonalInfo = () => {
             value={user.name || ""}
             onChange={(e) => {
               const value = e.target.value;
-
               setProfile((prev) => ({
                 ...prev,
                 user: {
@@ -29,7 +28,6 @@ const DrPersonalInfo = () => {
                   name: value,
                 },
               }));
-
               setIsDirty(true);
             }}
             type="text"
@@ -44,7 +42,6 @@ const DrPersonalInfo = () => {
             value={user.dob || ""}
             onChange={(e) => {
               const value = e.target.value;
-
               setProfile((prev) => ({
                 ...prev,
                 user: {
@@ -52,7 +49,6 @@ const DrPersonalInfo = () => {
                   dob: value,
                 },
               }));
-
               setIsDirty(true);
             }}
             type="date"
@@ -67,7 +63,6 @@ const DrPersonalInfo = () => {
             value={user.cnic || ""}
             onChange={(e) => {
               const value = e.target.value;
-
               setProfile((prev) => ({
                 ...prev,
                 user: {

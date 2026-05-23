@@ -47,10 +47,10 @@ const DoctorProvider = ({ children }) => {
           email: profile.user.email,
           phone: profile.user.phone,
           address: profile.user.address,
-          cnic: profile.doctor.cnic,
+          dob: profile.user.dob,
+          cnic: profile.user.cnic,
 
           // DOCTOR
-          drDob: profile.doctor.drDob,
           appointmentDuration: profile.doctor.appointmentDuration?.value,
           durationUnit: profile.doctor.appointmentDuration?.unit,
           specialization: profile.doctor.specialization,
