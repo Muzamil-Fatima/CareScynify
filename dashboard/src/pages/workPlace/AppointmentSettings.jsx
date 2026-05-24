@@ -1,5 +1,5 @@
 import React from "react";
-import { useDoctor } from "../../../context/doctor/DoctorContext";
+import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const AppointmentSettings = () => {
   const { profile, setProfile, setIsDirty } = useDoctor();

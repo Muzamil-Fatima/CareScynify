@@ -31,6 +31,7 @@ import Schedule from "./components/settings/doctor/Schedule";
 import Credentials from "./components/settings/doctor/Credentials";
 import Security from "./components/settings/doctor/Security";
 import Notifications from "./components/settings/doctor/Notifications";
+import WorkPlaceSchedule from "./pages/workPlace/WorkPlaceSchedule";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -94,7 +95,7 @@ function App() {
             <Route path="/doctor/appointments" element={<AllAppointment />} />
             <Route path="/doctor/profile" element={<AddNewDr />} />
             <Route path="/doctor/reviews" element={<DrReview />} />
-
+            <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
             <Route path="/help-center" element={<HelpCenter />} />
             <Route path="/laboratory" element={<Laboratory />} />
             <Route path="/pharmacy" element={<Pharmacy />} />

@@ -2,7 +2,7 @@ import React from "react";
 import DrConsultation from "./DrConsultation";
 import AppointmentSettings from "./AppointmentSettings";
 
-const DrAppointmentDetails = () => {
+const DrAvailabilityDetails = () => {
   return (
     <div className="space-y-8">
 
@@ -34,4 +34,4 @@ const DrAppointmentDetails = () => {
   );
 };
 
-export default DrAppointmentDetails;
+export default DrAvailabilityDetails;

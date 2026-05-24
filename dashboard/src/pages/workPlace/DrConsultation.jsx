@@ -1,5 +1,5 @@
 import React from "react";
-import { useDoctor } from "../../../context/doctor/DoctorContext";
+import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const daysList = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 

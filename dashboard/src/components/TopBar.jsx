@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 // import { ColorModeContext } from "../theme";
 import { useAuth } from "../hooks/useAuth"; 
-import ProfileDropdown from "./ProfileDropdown"; // Importing your new component
+import ProfileDropdown from "./ProfileDropdown"; 
 
 // Material UI Icons
 import SearchIcon from "@mui/icons-material/Search";
@@ -47,7 +47,6 @@ const TopBar = () => {
       {/* Action System Buttons */}
       <div className="flex items-center gap-2">
         <button 
-          // onClick={colorMode.toggleColorMode} 
           className="p-2 text-slate-500 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition"
         >
           <DarkModeOutlinedIcon fontSize="small" />

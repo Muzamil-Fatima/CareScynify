@@ -41,8 +41,8 @@ export const menuByRole = {
       icon: <PeopleIcon />,
     },
     {
-      name: "Prescriptions",
-      path: "/prescriptions",
+      name: "Workplace Schedule",
+      path: "/workplace/schedule",
       icon: <MedicationIcon />,
     },
     {
