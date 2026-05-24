@@ -50,26 +50,21 @@ const DoctorProvider = ({ children }) => {
           dob: profile.user.dob,
           cnic: profile.user.cnic,
 
-          // DOCTOR
-          appointmentDuration: profile.doctor.appointmentDuration?.value,
-          durationUnit: profile.doctor.appointmentDuration?.unit,
+          // DOCTOR (ONLY USED FIELDS)
           specialization: profile.doctor.specialization,
           experience: profile.doctor.experience,
           qualifications: profile.doctor.qualifications,
           licenseNo: profile.doctor.licenseNo,
-          fee: profile.doctor.fee,
-          availableDays: profile.doctor.availableDays,
-          consultStart: profile.doctor.consultStart,
-          consultEnd: profile.doctor.consultEnd,
-          drRoomNo: profile.doctor.drRoomNo,
-          status: profile.doctor.status,
-          note: profile.doctor.note,
         };
 
-        await updateDoctorProfile(payload);
+        const res = await updateDoctorProfile(payload);
 
-        toast.success("Doctor profile saved");
-        setIsDirty(false);
+        if (res?.success) {
+          toast.success("Doctor profile saved");
+          setIsDirty(false);
+        } else {
+          toast.error(res?.message || "Failed to save profile");
+        }
       } catch (err) {
         console.error(err);
         toast.error("Failed to save doctor profile");

@@ -24,7 +24,7 @@ export const getDoctorProfile = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-// UPDATE DOCTOR PROFILE (FIXED + MATCH FRONTEND)
+// UPDATE DOCTOR PROFILE
 export const updateDoctorProfile = async (req, res) => {
   try {
     const userId = req.userId;
@@ -44,7 +44,7 @@ export const updateDoctorProfile = async (req, res) => {
       doctor = new Doctor({ userId });
     }
 
-    // USER FIELDS
+    // USER FIELDS (ONLY USED)
     const { name, email, phone, address, avatar, dob, cnic } = req.body;
 
     if (name !== undefined) user.name = name;
@@ -57,36 +57,25 @@ export const updateDoctorProfile = async (req, res) => {
 
     await user.save();
 
-    // DOCTOR FIELDS
-    const {
-      specialization,
-      experience,
-      qualifications,
-      licenseNo,
-      fee,
-      availableDays,
-      consultStart,
-      consultEnd,
-      drRoomNo,
-      status,
-      note,
-      appointmentDuration,
-      durationUnit,
-    } = req.body;
+    // DOCTOR FIELDS (ONLY UI USED)
+    const { specialization, experience, qualifications, licenseNo } = req.body;
 
-    if (appointmentDuration !== undefined) {
-      doctor.appointmentDuration = {
-        value: Number(appointmentDuration) || 30,
-        unit: durationUnit || "minutes",
-      };
+    if (specialization !== undefined) {
+      doctor.specialization = specialization;
     }
 
-    if (specialization) doctor.specialization = specialization;
-    if (qualifications) doctor.qualifications = qualifications;
-    if (licenseNo && licenseNo !== doctor.licenseNo) {
+    if (qualifications !== undefined) {
+      doctor.qualifications = qualifications;
+    }
+
+    if (experience !== undefined) {
+      doctor.experience = experience;
+    }
+
+    if (licenseNo !== undefined) {
       const exists = await Doctor.findOne({ licenseNo });
 
-      if (exists) {
+      if (exists && exists.userId.toString() !== userId.toString()) {
         return res.status(400).json({
           message: "License number already exists",
         });
@@ -95,32 +84,28 @@ export const updateDoctorProfile = async (req, res) => {
       doctor.licenseNo = licenseNo;
     }
 
-    if (experience !== undefined && experience !== "") {
-      doctor.experience = Number(experience);
-    }
-
-    if (fee !== undefined && fee !== "") {
-      doctor.fee = Number(fee);
-    }
-
-  if (availableDays !== undefined) {
-  doctor.availableDays = availableDays;
-}
-
-    if (consultStart && consultEnd) {
-      doctor.consultationTime = `${consultStart}-${consultEnd}`;
-    }
-
-    if (drRoomNo !== undefined) doctor.drRoomNo = drRoomNo;
-    if (status) doctor.status = status.toLowerCase();
-    if (note) doctor.note = note;
-
     await doctor.save();
 
     return res.json({
       success: true,
       message: "Doctor profile updated successfully",
     });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// search Doctor
+export const searchDoctor = async (req, res) => {
+  try {
+    let doctor = await Doctor.findOne({ userId, email, name, location });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// get all doctor is specfic clinic
+export const clinicAllDoctor = async (req, res) => {
+  try {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

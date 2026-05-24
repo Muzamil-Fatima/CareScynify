@@ -39,7 +39,7 @@ const DrPersonalInfo = () => {
         <div className="flex flex-col">
           <label className="mb-2 text-gray-700">DOB</label>
           <input
-            value={user.dob || ""}
+            value={user.dob ? user.dob.slice(0, 10) : ""}
             onChange={(e) => {
               const value = e.target.value;
               setProfile((prev) => ({
@@ -73,7 +73,7 @@ const DrPersonalInfo = () => {
 
               setIsDirty(true);
             }}
-            type="number"
+            type="text"
             className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
         </div>

@@ -4,7 +4,6 @@ import { toast } from "react-hot-toast";
 
 import DrPersonalInfo from "./Personalinformation/DrPersonalInfo";
 import DrProfessionalDetail from "./ProfessionalDetail/DrProfessionalDetail";
-// import DrAppointmentDetails from "./DrAppointmentDetails/DrAppointmentDetail";
 import TotalWorkPlaces from "./TotalWorkPlaces";
 
 import { updateUserProfile } from "../../api/userApi";
@@ -56,8 +55,7 @@ const AddNewDr = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center py-10">
       <div className="bg-white shadow-lg rounded-xl w-full max-w-4xl p-8 space-y-8">
-
-        {/* AVATAR (PATIENT STYLE MATCHED) */}
+        {/* AVATAR */}
         <div className="flex justify-center">
           <div
             onClick={handleBrowseClick}
@@ -95,8 +93,6 @@ const AddNewDr = () => {
         <DrPersonalInfo />
         <DrProfessionalDetail />
         <TotalWorkPlaces />
-        {/* <DrAppointmentDetails /> */}
-
       </div>
     </div>
   );

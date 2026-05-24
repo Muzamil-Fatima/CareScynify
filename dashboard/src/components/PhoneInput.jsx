@@ -25,7 +25,7 @@ const PhoneInput = ({ value, onChange, label = "Phone" }) => {
         }}
         value={value}
         onChange={onChange}
-        containerClass="w-full border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-400"
+        containerClass="w-full border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-purple-400"
         inputClass="w-full h-[42px] px-3 pl-[48px] border-none focus:outline-none"
       />
     </div>

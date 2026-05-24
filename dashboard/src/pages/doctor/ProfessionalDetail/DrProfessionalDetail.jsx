@@ -8,12 +8,10 @@ const DrProfessionalDetail = () => {
   const doctor = profile.doctor || {};
 
   const fields = [
-    { name: "ID", type: "text", key: "ID" },
     { name: "Specialization", type: "specialization", key: "specialization" },
-    { name: "Qualification", type: "text", key: "qualification" },
+    { name: "Qualification", type: "text", key: "qualifications" },
     { name: "License No", type: "text", key: "licenseNo" },
     { name: "Experience", type: "text", key: "experience" },
-    { name: "UserName", type: "text", key: "userName" }
   ];
 
   return (
