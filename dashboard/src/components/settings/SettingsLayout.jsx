@@ -1,119 +1,97 @@
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
-// Fixed & Added Missing Icon Imports
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
-import PhoneAndroidOutlinedIcon from "@mui/icons-material/PhoneAndroidOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
-import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
-import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
-import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
-import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
+import { NavLink } from "react-router-dom";
+import ToggleButton from "../sidebar/ToggleButton";
+import { settingByRole } from "../../config/settingsConfig";
+import { useAuth } from "../../hooks/useAuth";
 
-import PersonalInfoTab from "./tabs/PersonalInfoTab";
-import VerificationTab from "./tabs/VerificationTab";
-import ContactVerifyTab from "./tabs/ContactVerifyTab";
-import SecurityTab from "./tabs/SecurityTab";
-import NotificationsTab from "./tabs/NotificationsTab";
-import ClinicInfoTab from "./tabs/ClinicInfoTab";
-import ScheduleTab from "./tabs/ScheduleTab";
-import ProfessionalTab from "./tabs/ProfessionalTab";
-import CredentialsTab from "./tabs/CredentialsTab";
-import EducationTab from "./tabs/EducationTab";
-const SettingsLayout = () => {
-  const navigate = useNavigate();
-  const { tab } = useParams();
-
-  const activeTab = tab || "personal";
-
-  const tabs = [
-    {
-      id: "verification",
-      label: "Identity Verification",
-      icon: <BadgeOutlinedIcon />,
-    },
-   
-    {
-      id: "security",
-      label: "Account Security",
-      icon: <SecurityOutlinedIcon />,
-    },
-    {
-      id: "notifications",
-      label: "Notifications",
-      icon: <NotificationsNoneOutlinedIcon />,
-    },
-    { id: "clinic", label: "Clinic Info", icon: <LocalHospitalOutlinedIcon /> },
-    { id: "schedule", label: "Schedule", icon: <CalendarMonthOutlinedIcon /> },
-
-    { id: "personal", label: "Personal Info", icon: <PersonOutlinedIcon /> },
-    {
-      id: "credentials",
-      label: "Medical Credentials",
-      icon: <VerifiedUserOutlinedIcon />,
-    },
-  ];
-
-  const renderTab = () => {
-    switch (activeTab) {
-      case "verification":
-        return <VerificationTab />;
-      case "security":
-        return <SecurityTab />;
-      case "notifications":
-        return <NotificationsTab />;
-      case "clinic":
-        return <ClinicInfoTab />;
-      case "schedule":
-        return <ScheduleTab />;
-
-      case "personal":
-        return <PersonalInfoTab />;
-      case "credentials":
-        return <CredentialsTab />;
-
-      default:
-        return <PersonalInfoTab />;
-    }
-  };
+const SettingsLayout = ({ setActiveSidebar, isOpen, setIsOpen }) => {
+  const { user } = useAuth();
+  const role = user?.role;
+  const menuItem = settingByRole[role] || [];
 
   return (
-    <div className="h-screen w-full bg-[#f8fafc] grid grid-cols-[288px_1fr] overflow-hidden">
-      {/* LEFT SIDEBAR */}
-      <aside className="w-72 bg-white border-r border-slate-200 p-6 flex flex-col gap-6 h-full shrink-0">
-        <h2 className="text-xl font-bold text-slate-900 tracking-tight pl-2">
-          Account Settings
-        </h2>
+    <div
+      className={`
+        fixed inset-y-0 left-0 z-40 md:relative
+        ${isOpen ? "w-64 translate-x-0" : "w-16 md:translate-x-0 -translate-x-full"}
+        flex flex-col h-screen overflow-hidden
+        bg-white border-r border-purple-100 text-gray-600
+        transition-all duration-300 ease-in-out shadow-xl shadow-purple-900/5
+      `}
+    >
+      {/* Header matching the CareScynify Brand Gradient */}
+      <div className="flex h-16 items-center justify-between px-4 border-b border-purple-50/80">
+        {isOpen && (
+          <span className="text-base font-extrabold tracking-tight bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+            CareScynify
+          </span>
+        )}
+        <div className={!isOpen ? "mx-auto" : ""}>
+          <ToggleButton isOpen={isOpen} setIsOpen={setIsOpen} />
+        </div>
+      </div>
 
-        <div className="space-y-1">
-          {tabs.map((tabItem) => (
-            <button
-              key={tabItem.id}
-              onClick={() => navigate(`/settings/${tabItem.id}`)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-left transition-all duration-150 cursor-pointer
-                ${
-                  activeTab === tabItem.id
-                    ? "bg-purple-600 text-white shadow-xs"
-                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-900"
-                }`}
-            >
-              {tabItem.icon}
-              <span>{tabItem.label}</span>
-            </button>
+      {/* Navigation list featuring the brand identity */}
+      <nav className="flex-1 overflow-y-auto py-4 px-3 scrollbar-none">
+        <ul className="space-y-1.5">
+          {menuItem.map((item) => (
+            <li key={item.name}>
+              <NavLink
+                to={item.path}
+                onClick={() => {
+                  if (item.id) {
+                    setActiveSidebar(item.id);
+                  }
+                }}
+                className={({ isActive }) => `
+                  flex items-center gap-4 px-3 py-2.5 rounded-xl
+                  font-medium text-sm transition-all duration-200 group relative
+                  ${
+                    isActive
+                      ? "bg-purple-50/80 text-purple-700 font-semibold"
+                      : "hover:bg-gray-50 hover:text-gray-900"
+                  }
+                `}
+              >
+                {/* Active Indicator Bar */}
+                <span className={({ isActive }) => `
+                  absolute left-0 top-1/4 bottom-1/4 w-1 rounded-r-md transition-all duration-200
+                  ${isActive ? "bg-purple-600" : "bg-transparent group-hover:bg-gray-200"}
+                `} />
+
+                {/* Icon Layout container */}
+                <span
+                  className={`
+                    text-lg transition-colors duration-200 min-w-6 flex justify-center
+                    ${isOpen ? "" : "mx-auto"}
+                  `}
+                >
+                  {item.icon}
+                </span>
+
+                {/* Animated Text label view toggling */}
+                <span
+                  className={`
+                    whitespace-nowrap transition-all duration-200
+                    ${isOpen ? "opacity-100 visible" : "opacity-0 invisible w-0 overflow-hidden"}
+                  `}
+                >
+                  {item.name}
+                </span>
+
+                {/* Hover Flyout Tooltip bubble when sidebar structure collapsed */}
+                {!isOpen && (
+                  <div className="absolute left-20 scale-0 group-hover:scale-100 transition-all duration-150 origin-left bg-gray-900 text-white text-xs font-semibold px-2.5 py-1.5 rounded-lg shadow-xl pointer-events-none whitespace-nowrap z-50">
+                    {item.name}
+                  </div>
+                )}
+              </NavLink>
+            </li>
           ))}
-        </div>
-      </aside>
-
-      {/* RIGHT CONTENT */}
-      <main className="h-full overflow-y-auto p-10 flex flex-col items-center justify-start w-full">
-        <div className="bg-white border border-slate-200 rounded-3xl p-8 w-full max-w-5xl shadow-xs">
-          {renderTab()}
-        </div>
-      </main>
+        </ul>
+      </nav>
     </div>
   );
 };
 
-export default SettingsLayout;
+export default SettingsLayout;;

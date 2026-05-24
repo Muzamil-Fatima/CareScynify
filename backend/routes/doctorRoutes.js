@@ -2,8 +2,10 @@ import express from "express";
 import {
   getDoctorProfile,
   updateDoctorProfile,
-  updateEducation,
-  updateWorkplaces,
+  updateDoctorEducation,
+  updateDoctorWorkplaces,
+  updateDoctorLanguages,
+  updateDoctorExperience,
 } from "../controllers/doctorController.js";
 import { protect } from "../middleware/auth.js";
 const router = express.Router();
@@ -13,8 +15,13 @@ router.get("/profile", protect, getDoctorProfile);
 // Update profile (AUTO-SAVE USE)
 router.put("/profile", protect, updateDoctorProfile);
 // Update doctor education
-router.put("/education", protect, updateEducation);
+router.put("/education", protect, updateDoctorEducation);
 // Update doctor workplaces
-router.put("/workplaces", protect, updateWorkplaces);
+router.put("/workplaces", protect, updateDoctorWorkplaces);
+
+// Update doctor languages
+router.put("/languages", protect, updateDoctorLanguages);
+// Update doctor experience
+router.put("/experience", protect, updateDoctorExperience);
 
 export default router;

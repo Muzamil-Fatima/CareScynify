@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
-const SecurityTab = () => {
+const Security = () => {
   const [twoFactor, setTwoFactor] = useState(true);
 
   return (
@@ -54,4 +54,4 @@ const SecurityTab = () => {
   );
 };
 
-export default SecurityTab;
+export default Security;

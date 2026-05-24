@@ -6,7 +6,7 @@ import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutl
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import WorkspacePremiumOutlinedIcon from "@mui/icons-material/WorkspacePremiumOutlined";
 
-const CredentialsTab = () => {
+const Credentials = () => {
   // Mock data for existing credentials
   const [documents, setDocuments] = useState([
     {
@@ -173,4 +173,4 @@ const CredentialsTab = () => {
   );
 };
 
-export default CredentialsTab;
+export default Credentials;

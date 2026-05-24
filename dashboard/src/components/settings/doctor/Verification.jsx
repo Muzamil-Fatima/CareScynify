@@ -3,7 +3,7 @@ import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import ContactVerifyTab from "./ContactVerifyTab";
 
-const VerificationTab = () => {
+const Verification = () => {
   const [documents, setDocuments] = useState({ front: null, back: null });
 
   const handleFileChange = (side, file) => {
@@ -72,4 +72,4 @@ const VerificationTab = () => {
   );
 };
 
-export default VerificationTab;
+export default Verification;

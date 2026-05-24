@@ -4,7 +4,7 @@ import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import HourglassEmptyOutlinedIcon from "@mui/icons-material/HourglassEmptyOutlined";
 
-const ScheduleTab = () => {
+const Schedule = () => {
   // Days of the week data layout
   const daysOfWeek = [
     { key: "monday", label: "Monday" },
@@ -228,4 +228,4 @@ const ScheduleTab = () => {
   );
 };
 
-export default ScheduleTab;
+export default Schedule;

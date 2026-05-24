@@ -5,7 +5,7 @@ import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 
-const ClinicInfoTab = () => {
+const ClinicInfo = () => {
   const [clinicDetails, setClinicDetails] = useState({
     clinicName: "CareScynify General Clinic",
     consultationFee: "1500",
@@ -222,4 +222,4 @@ const ClinicInfoTab = () => {
   );
 };
 
-export default ClinicInfoTab;
+export default ClinicInfo;

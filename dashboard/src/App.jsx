@@ -1,103 +1,4 @@
-// import { Route, Routes, useLocation } from "react-router-dom";
-// import { useState } from "react";
-// import Overview from "./pages/overView/OverView";
-// import Appointment from "./pages/appointments/Appointment";
-// import Doctor from "./pages/doctor/Doctor";
-// import HelpCenter from "./pages/helpCenter/HelpCenter";
-// import Laboratory from "./pages/laboratory/Laboratory";
-// import Pharmacy from "./pages/pharmacy/Pharmacy";
-// import Patients from "./pages/patients/Patients";
-// import Receptionists from "./pages/receptionists/Receptionists";
-// import Chat from "./pages/chat/Chat";
-// import Inventory from "./pages/inventory/Inventory";
-// import Billing from "./pages/billing/Billing";
-// import Payments from "./pages/payments/Payments";
-// import Login from "./pages/auth/Login";
-// import DrDashboard from "./pages/doctor/DrDashboard";
-// import DrSchedule from "./pages/doctor/DrSchedule";
-// import AllAppointment from "./pages/appointments/AllAppointment";
-// import AddNewDr from "./pages/doctor/AddNewDr";
-// import DrReview from "./pages/doctor/DrReview";
-// import TopBar from "./components/TopBar";
-// import SideBar from "./components/sidebar/SideBar";
-// import ProtectedRoute from "./routes/ProtectedRoute";
-// import { Toaster } from "react-hot-toast";
-// import SettingsLayout from "./components/settings/SettingsLayout";
 
-// function App() {
-//   const [isOpen, setIsOpen] = useState(true);
-//   const [activeSidebar, setActiveSidebar] = useState("");
-//   const location = useLocation();
-//   const isSettingsPage = location.pathname.startsWith("/settings");
-//   return (
-//     <div className="grid grid-cols-[auto_1fr] min-h-screen">
-//       {/* Toast Notifications */}
-//       <Toaster
-//         position="top-right"
-//         gutter={12}
-//         toastOptions={{
-//           duration: 4000,
-//           style: {
-//             fontSize: "14px",
-//             borderRadius: "8px",
-//             background: "#333",
-//             color: "#fff",
-//           },
-//         }}
-//       />
-  
-//       {!isSettingsPage && (
-//         <SideBar
-//           activeSidebar={activeSidebar}
-//           setActiveSidebar={setActiveSidebar}
-//           isOpen={isOpen}
-//           setIsOpen={setIsOpen}
-//         />
-//       )}
-//       <div className="flex flex-col h-screen">
-//         {!isSettingsPage && <TopBar />}
-//         <div className=" p-6 bg-gray-100 overflow-auto flex-1">
-//           <Routes>
-//             <Route path="/overview" element={<Overview />} />
-//             <Route path="/appointment" element={<Appointment />} />
-//             {/* Doctor  */}
-//             <Route path="/doctor" element={<Doctor />} />
-//             <Route
-//               path="/doctor-dashboard"
-//               element={
-//                 <ProtectedRoute>
-//                   <DrDashboard />
-//                 </ProtectedRoute>
-//               }
-//             />
-//             <Route path="/doctor/schedule" element={<DrSchedule />} />
-//             <Route path="/doctor/appointments" element={<AllAppointment />} />
-//             <Route path="/doctor/profile" element={<AddNewDr />} />
-//             <Route path="/doctor/reviews" element={<DrReview />} />
-
-//             <Route path="/help-center" element={<HelpCenter />} />
-//             <Route path="/laboratory" element={<Laboratory />} />
-//             <Route path="/pharmacy" element={<Pharmacy />} />
-//             <Route path="/patients" element={<Patients />} />
-//             <Route path="/receptionists" element={<Receptionists />} />
-//             {/* setting */}
-//             <Route path="/settings/:tab?" element={<SettingsLayout />} />
-//             {/* <Route path="/settings" element={<SettingsLayout />} /> */}
-
-//             <Route path="/chat" element={<Chat />} />
-//             <Route path="/inventory" element={<Inventory />} />
-//             <Route path="/billing" element={<Billing />} />
-//             <Route path="/payments" element={<Payments />} />
-//             <Route path="/login" element={<Login />} />
-//             <Route path="/" element={<Login />} />
-//           </Routes>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default App;
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Overview from "./pages/overView/OverView";
@@ -123,7 +24,13 @@ import SideBar from "./components/sidebar/SideBar";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 import SettingsLayout from "./components/settings/SettingsLayout";
-
+import ProfileInfo from "./pages/settings/ProfileInfo";
+import Verification from "./components/settings/doctor/Verification";
+import ClinicInfo from "./components/settings/doctor/ClinicInfo";
+import Schedule from "./components/settings/doctor/Schedule";
+import Credentials from "./components/settings/doctor/Credentials";
+import Security from "./components/settings/doctor/Security";
+import Notifications from "./components/settings/doctor/Notifications";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -131,7 +38,13 @@ function App() {
   const isSettingsPage = location.pathname.startsWith("/settings");
 
   return (
-    <div className={isSettingsPage ? "block w-full min-h-screen bg-[#f8fafc]" : "grid grid-cols-[auto_1fr] min-h-screen"}>
+    <div
+      className={
+        isSettingsPage
+          ? "block w-full min-h-screen bg-[#f8fafc]"
+          : "grid grid-cols-[auto_1fr] min-h-screen"
+      }
+    >
       {/* Toast Notifications */}
       <Toaster
         position="top-right"
@@ -146,7 +59,7 @@ function App() {
           },
         }}
       />
-  
+
       {!isSettingsPage && (
         <SideBar
           activeSidebar={activeSidebar}
@@ -157,7 +70,13 @@ function App() {
       )}
       <div className="flex flex-col h-screen">
         {!isSettingsPage && <TopBar />}
-        <div className={isSettingsPage ? "h-screen bg-[#f8fafc] w-full" : "p-6 bg-gray-100 overflow-auto flex-1"}>
+        <div
+          className={
+            isSettingsPage
+              ? "h-screen bg-[#f8fafc] w-full"
+              : "p-6 bg-gray-100 overflow-auto flex-1"
+          }
+        >
           <Routes>
             <Route path="/overview" element={<Overview />} />
             <Route path="/appointment" element={<Appointment />} />
@@ -182,7 +101,14 @@ function App() {
             <Route path="/patients" element={<Patients />} />
             <Route path="/receptionists" element={<Receptionists />} />
             {/* setting */}
-            <Route path="/settings/:tab?" element={<SettingsLayout />} />
+            <Route path="/settings" element={<SettingsLayout />} />
+            <Route path="/settings/personal" element={<ProfileInfo />} />
+            <Route path="/settings/verification" element={<Verification />} />
+            <Route path="/settings/security" element={<Security />} />
+            <Route path="/settings/notifications" element={<Notifications />} />
+            <Route path="/settings/clinic" element={<ClinicInfo />} />
+            <Route path="/settings/schedule" element={<Schedule />} />
+            <Route path="/settings/credentials" element={<Credentials />} />
 
             <Route path="/chat" element={<Chat />} />
             <Route path="/inventory" element={<Inventory />} />

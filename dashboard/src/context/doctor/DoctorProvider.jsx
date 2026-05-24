@@ -5,6 +5,8 @@ import {
   updateDoctorProfile,
   updateDoctorEducation,
   updateDoctorWorkplaces,
+  updateDoctorLanguages,
+  updateDoctorExperience,
 } from "../../api/doctorApi";
 
 import toast from "react-hot-toast";
@@ -12,22 +14,33 @@ import toast from "react-hot-toast";
 const DoctorProvider = ({ children }) => {
   const [profile, setProfile] = useState({
     user: {},
-    doctor: {},
+    doctor: {
+      education: [],
+      workplaces: [],
+      languages: [],
+      experience: [],
+    },
   });
 
   const [loading, setLoading] = useState(true);
 
+  // =========================
   // FETCH PROFILE
+  // =========================
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
         const data = await getDoctorProfile();
 
         setProfile({
           user: data.user || {},
-          doctor: data.doctor || {},
+          doctor: {
+            education: data.doctor?.education || [],
+            workplaces: data.doctor?.workplaces || [],
+            languages: data.doctor?.languages || [],
+            experience: data.doctor?.experience || [],
+          },
         });
       } catch (err) {
         console.error("Doctor fetch error:", err);
@@ -39,151 +52,217 @@ const DoctorProvider = ({ children }) => {
     fetchData();
   }, []);
 
-  // SAVE PROFILE (BASIC INFO)
+  // =========================
+  // PROFILE UPDATE
+  // =========================
   const saveProfile = async () => {
     try {
       const payload = {
-        name: profile.user.name,
-        email: profile.user.email,
-        phone: profile.user.phone,
-        address: profile.user.address,
-        dob: profile.user.dob,
-        cnic: profile.user.cnic,
-
-        specialization: profile.doctor.specialization,
-        experience: profile.doctor.experience,
-        licenseNo: profile.doctor.licenseNo,
+        ...profile.user,
+        ...profile.doctor,
       };
 
       const res = await updateDoctorProfile(payload);
 
-      if (res?.success) {
-        toast.success("Profile updated");
-      } else {
-        toast.error(res?.message || "Update failed");
-      }
+      if (res?.success) toast.success("Profile updated");
+      else toast.error(res?.message || "Update failed");
     } catch (err) {
-      console.error(err);
+      console.error("Profile update error:", err);
       toast.error("Profile update failed");
     }
   };
 
   // =========================
-// EDUCATION CRUD
-// =========================
-
-// ADD EDUCATION
-const addEducation = async (newItem) => {
-  try {
-    const current = profile?.doctor?.education || [];
-
-    const updated = [
-      { id: Date.now(), ...newItem },
-      ...current,
-    ];
-
-    const res = await updateDoctorEducation({ education: updated });
-
-    if (res?.success) {
-      setProfile((prev) => ({
-        ...prev,
-        doctor: {
-          ...prev.doctor,
-          education: updated,
-        },
-      }));
-
-      toast.success("Education added");
-      return true;
-    }
-
-    toast.error(res?.message || "Add failed");
-    return false;
-  } catch (err) {
-    console.error(err);
-    toast.error("Add education failed");
-    return false;
-  }
-};
-
-// UPDATE EDUCATION
-const updateEducation = async (id, updatedData) => {
-  try {
-    const current = profile?.doctor?.education || [];
-
-    const updated = current.map((item) =>
-      item.id === id ? { ...item, ...updatedData } : item
-    );
-
-    const res = await updateDoctorEducation({ education: updated });
-
-    if (res?.success) {
-      setProfile((prev) => ({
-        ...prev,
-        doctor: {
-          ...prev.doctor,
-          education: updated,
-        },
-      }));
-
-      toast.success("Education updated");
-      return true;
-    }
-
-    toast.error(res?.message || "Update failed");
-    return false;
-  } catch (err) {
-    console.error(err);
-    toast.error("Update education failed");
-    return false;
-  }
-};
-
-// DELETE EDUCATION
-const deleteEducation = async (id) => {
-  try {
-    const current = profile?.doctor?.education || [];
-
-    const updated = current.filter((item) => item.id !== id);
-
-    const res = await updateDoctorEducation({ education: updated });
-
-    if (res?.success) {
-      setProfile((prev) => ({
-        ...prev,
-        doctor: {
-          ...prev.doctor,
-          education: updated,
-        },
-      }));
-
-      toast.success("Education deleted");
-      return true;
-    }
-
-    toast.error(res?.message || "Delete failed");
-    return false;
-  } catch (err) {
-    console.error(err);
-    toast.error("Delete education failed");
-    return false;
-  }
-};
-
-  // SAVE WORKPLACES
-  const saveWorkplaces = async (workplaces) => {
+  // GENERIC HELPER
+  // =========================
+  const updateModule = async (key, apiCall, updatedArray, successMsg) => {
     try {
-      const res = await updateDoctorWorkplaces({ workplaces });
+      const res = await apiCall({ [key]: updatedArray });
 
       if (res?.success) {
-        toast.success("Workplaces updated");
-      } else {
-        toast.error(res?.message || "Update failed");
+        setProfile((prev) => ({
+          ...prev,
+          doctor: {
+            ...prev.doctor,
+            [key]: updatedArray,
+          },
+        }));
+
+        toast.success(successMsg);
+        return true;
       }
+
+      toast.error(res?.message || "Operation failed");
+      return false;
     } catch (err) {
-      console.error(err);
-      toast.error("Workplaces update failed");
+      console.error("Module update error:", err);
+      toast.error("Server error");
+      return false;
     }
+  };
+
+  // =========================
+  // EDUCATION CRUD
+  // =========================
+  const addEducation = (data) => {
+    const updated = [
+      { id: Date.now(), ...data },
+      ...profile.doctor.education,
+    ];
+
+    return updateModule(
+      "education",
+      updateDoctorEducation,
+      updated,
+      "Education added"
+    );
+  };
+
+  const updateEducation = (id, data) => {
+    const updated = profile.doctor.education.map((item) =>
+      item.id === id ? { ...item, ...data } : item
+    );
+
+    return updateModule(
+      "education",
+      updateDoctorEducation,
+      updated,
+      "Education updated"
+    );
+  };
+
+  const deleteEducation = (id) => {
+    const updated = profile.doctor.education.filter((i) => i.id !== id);
+
+    return updateModule(
+      "education",
+      updateDoctorEducation,
+      updated,
+      "Education deleted"
+    );
+  };
+
+  // =========================
+  // WORKPLACES CRUD
+  // =========================
+  const addWorkplace = (data) => {
+    const updated = [
+      { id: Date.now(), ...data },
+      ...profile.doctor.workplaces,
+    ];
+
+    return updateModule(
+      "workplaces",
+      updateDoctorWorkplaces,
+      updated,
+      "Workplace added"
+    );
+  };
+
+  const updateWorkplace = (id, data) => {
+    const updated = profile.doctor.workplaces.map((item) =>
+      item.id === id ? { ...item, ...data } : item
+    );
+
+    return updateModule(
+      "workplaces",
+      updateDoctorWorkplaces,
+      updated,
+      "Workplace updated"
+    );
+  };
+
+  const deleteWorkplace = (id) => {
+    const updated = profile.doctor.workplaces.filter((i) => i.id !== id);
+
+    return updateModule(
+      "workplaces",
+      updateDoctorWorkplaces,
+      updated,
+      "Workplace deleted"
+    );
+  };
+
+  // =========================
+  // LANGUAGES CRUD
+  // =========================
+  const addLanguage = (data) => {
+    const updated = [
+      { id: Date.now(), ...data },
+      ...profile.doctor.languages,
+    ];
+
+    return updateModule(
+      "languages",
+      updateDoctorLanguages,
+      updated,
+      "Language added"
+    );
+  };
+
+  const updateLanguage = (id, data) => {
+    const updated = profile.doctor.languages.map((item) =>
+      item.id === id ? { ...item, ...data } : item
+    );
+
+    return updateModule(
+      "languages",
+      updateDoctorLanguages,
+      updated,
+      "Language updated"
+    );
+  };
+
+  const deleteLanguage = (id) => {
+    const updated = profile.doctor.languages.filter((i) => i.id !== id);
+
+    return updateModule(
+      "languages",
+      updateDoctorLanguages,
+      updated,
+      "Language deleted"
+    );
+  };
+
+  // =========================
+  // EXPERIENCE CRUD
+  // =========================
+  const addExperience = (data) => {
+    const updated = [
+      { id: Date.now(), ...data },
+      ...profile.doctor.experience,
+    ];
+
+    return updateModule(
+      "experience",
+      updateDoctorExperience,
+      updated,
+      "Experience added"
+    );
+  };
+
+  const updateExperience = (id, data) => {
+    const updated = profile.doctor.experience.map((item) =>
+      item.id === id ? { ...item, ...data } : item
+    );
+
+    return updateModule(
+      "experience",
+      updateDoctorExperience,
+      updated,
+      "Experience updated"
+    );
+  };
+
+  const deleteExperience = (id) => {
+    const updated = profile.doctor.experience.filter((i) => i.id !== id);
+
+    return updateModule(
+      "experience",
+      updateDoctorExperience,
+      updated,
+      "Experience deleted"
+    );
   };
 
   return (
@@ -193,12 +272,27 @@ const deleteEducation = async (id) => {
         setProfile,
         loading,
 
-        // actions
         saveProfile,
+
+        // education
         addEducation,
         updateEducation,
         deleteEducation,
-        saveWorkplaces,
+
+        // workplace
+        addWorkplace,
+        updateWorkplace,
+        deleteWorkplace,
+
+        // language
+        addLanguage,
+        updateLanguage,
+        deleteLanguage,
+
+        // experience
+        addExperience,
+        updateExperience,
+        deleteExperience,
       }}
     >
       {children}
