@@ -9,6 +9,15 @@ export const getDoctorProfile = async () => {
 // UPDATE DOCTOR PROFILE
 export const updateDoctorProfile = async (payload) => {
   const res = await api.put("/api/doctor/profile", payload);
-
+  return res.data;
+};
+// update doctor education
+export const updateDoctorEducation = async (payload) => {
+  const res = await api.put("/api/doctor/education", payload);
+  return res.data;
+};
+// update doctor workplaces
+export const updateDoctorWorkplaces = async (payload) => {
+  const res = await api.put("/api/doctor/workplaces", payload);
   return res.data;
 };

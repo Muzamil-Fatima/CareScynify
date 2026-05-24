@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import ContactVerifyTab from "./ContactVerifyTab";
 
 const VerificationTab = () => {
   const [documents, setDocuments] = useState({ front: null, back: null });
@@ -66,6 +67,7 @@ const VerificationTab = () => {
           </p>
         </div>
       </div>
+      <ContactVerifyTab />
     </div>
   );
 };

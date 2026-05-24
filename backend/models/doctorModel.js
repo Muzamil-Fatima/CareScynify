@@ -26,7 +26,33 @@ const drSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-   
+    workplaces: [
+      {
+        name: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        location: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        type: {
+          type: String,
+          enum: ["clinic", "hospital"],
+          default: "clinic",
+        },
+      },
+    ],
+    education: [
+      {
+        degree: String,
+        institute: String,
+        passingYear: String,
+        description: String,
+      },
+    ],
     fee: {
       type: Number,
     },
@@ -58,7 +84,6 @@ const drSchema = new mongoose.Schema(
       type: String,
     },
 
-  
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Organization",

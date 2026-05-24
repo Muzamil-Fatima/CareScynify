@@ -34,11 +34,7 @@ const SettingsLayout = () => {
       label: "Identity Verification",
       icon: <BadgeOutlinedIcon />,
     },
-    {
-      id: "contact",
-      label: "Contact Verification",
-      icon: <PhoneAndroidOutlinedIcon />,
-    },
+   
     {
       id: "security",
       label: "Account Security",
@@ -51,26 +47,19 @@ const SettingsLayout = () => {
     },
     { id: "clinic", label: "Clinic Info", icon: <LocalHospitalOutlinedIcon /> },
     { id: "schedule", label: "Schedule", icon: <CalendarMonthOutlinedIcon /> },
-    {
-      id: "professional",
-      label: "Professional Details",
-      icon: <BadgeOutlinedIcon />,
-    },
+
     { id: "personal", label: "Personal Info", icon: <PersonOutlinedIcon /> },
     {
       id: "credentials",
       label: "Medical Credentials",
       icon: <VerifiedUserOutlinedIcon />,
     },
-    { id: "education", label: "Education", icon: <SchoolOutlinedIcon /> },
   ];
 
   const renderTab = () => {
     switch (activeTab) {
       case "verification":
         return <VerificationTab />;
-      case "contact":
-        return <ContactVerifyTab />;
       case "security":
         return <SecurityTab />;
       case "notifications":
@@ -79,14 +68,12 @@ const SettingsLayout = () => {
         return <ClinicInfoTab />;
       case "schedule":
         return <ScheduleTab />;
-      case "professional":
-        return <ProfessionalTab />;
+
       case "personal":
         return <PersonalInfoTab />;
       case "credentials":
         return <CredentialsTab />;
-      case "education":
-        return <EducationTab />;
+
       default:
         return <PersonalInfoTab />;
     }

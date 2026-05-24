@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
+import EducationTab from "./EducationTab";
+import ProfessionalTab from "./ProfessionalTab";
+import LanguagesTab from "./LanguagesTab";
 
 const PersonalInfoTab = () => {
   const [formData, setFormData] = useState({
@@ -78,6 +81,9 @@ const PersonalInfoTab = () => {
           <SaveOutlinedIcon fontSize="small" /> Save Details
         </button>
       </div>
+      <EducationTab />
+      <ProfessionalTab />
+      <LanguagesTab />
     </form>
   );
 };
