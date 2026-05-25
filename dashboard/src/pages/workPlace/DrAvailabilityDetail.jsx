@@ -2,7 +2,7 @@ import React from "react";
 import DrConsultation from "./DrConsultation";
 import AppointmentSettings from "./AppointmentSettings";
 
-const DrAvailabilityDetails = () => {
+const DrAvailabilityDetail = ({ workplace }) => {
   return (
     <div className="space-y-8">
 
@@ -21,12 +21,12 @@ const DrAvailabilityDetails = () => {
 
         {/* Left */}
         <div className="md:col-span-2">
-          <DrConsultation />
+          <DrConsultation workplace={workplace} />
         </div>
 
         {/* Right */}
         <div className="md:col-span-1">
-          <AppointmentSettings />
+          <AppointmentSettings workplace={workplace} />
         </div>
 
       </div>
@@ -34,4 +34,4 @@ const DrAvailabilityDetails = () => {
   );
 };
 
-export default DrAvailabilityDetails;
+export default DrAvailabilityDetail;
