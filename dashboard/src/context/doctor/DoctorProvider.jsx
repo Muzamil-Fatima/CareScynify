@@ -11,7 +11,7 @@ import {
 
 import toast from "react-hot-toast";
 
-const DoctorProvider = ({ children }) => {
+const DoctorProv_ider = ({ children }) => {
   const [profile, setProfile] = useState({
     user: {},
     doctor: {
@@ -24,9 +24,7 @@ const DoctorProvider = ({ children }) => {
 
   const [loading, setLoading] = useState(true);
 
-  // =========================
   // FETCH PROFILE
-  // =========================
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -52,9 +50,7 @@ const DoctorProvider = ({ children }) => {
     fetchData();
   }, []);
 
-  // =========================
   // PROFILE UPDATE
-  // =========================
   const saveProfile = async () => {
     try {
       const payload = {
@@ -72,9 +68,7 @@ const DoctorProvider = ({ children }) => {
     }
   };
 
-  // =========================
   // GENERIC HELPER
-  // =========================
   const updateModule = async (key, apiCall, updatedArray, successMsg) => {
     try {
       const res = await apiCall({ [key]: updatedArray });
@@ -101,53 +95,46 @@ const DoctorProvider = ({ children }) => {
     }
   };
 
-  // =========================
   // EDUCATION CRUD
-  // =========================
   const addEducation = (data) => {
-    const updated = [
-      { id: Date.now(), ...data },
-      ...profile.doctor.education,
-    ];
+    const updated = [{ _id: Date.now(), ...data }, ...profile.doctor.education];
 
     return updateModule(
       "education",
       updateDoctorEducation,
       updated,
-      "Education added"
+      "Education added",
     );
   };
 
-  const updateEducation = (id, data) => {
+  const updateEducation = (_id, data) => {
     const updated = profile.doctor.education.map((item) =>
-      item.id === id ? { ...item, ...data } : item
+      item._id === _id ? { ...item, ...data } : item,
     );
 
     return updateModule(
       "education",
       updateDoctorEducation,
       updated,
-      "Education updated"
+      "Education updated",
     );
   };
 
-  const deleteEducation = (id) => {
-    const updated = profile.doctor.education.filter((i) => i.id !== id);
+  const deleteEducation = (_id) => {
+    const updated = profile.doctor.education.filter((i) => i._id !== _id);
 
     return updateModule(
       "education",
       updateDoctorEducation,
       updated,
-      "Education deleted"
+      "Education deleted",
     );
   };
 
-  // =========================
   // WORKPLACES CRUD
-  // =========================
   const addWorkplace = (data) => {
     const updated = [
-      { id: Date.now(), ...data },
+      { _id: Date.now().toString(), ...data },
       ...profile.doctor.workplaces,
     ];
 
@@ -155,72 +142,67 @@ const DoctorProvider = ({ children }) => {
       "workplaces",
       updateDoctorWorkplaces,
       updated,
-      "Workplace added"
+      "Workplace added",
     );
   };
 
   const updateWorkplace = (id, data) => {
     const updated = profile.doctor.workplaces.map((item) =>
-      item.id === id ? { ...item, ...data } : item
+      item._id === id ? { ...item, ...data } : item,
     );
 
     return updateModule(
       "workplaces",
       updateDoctorWorkplaces,
       updated,
-      "Workplace updated"
+      "Workplace updated",
     );
   };
 
   const deleteWorkplace = (id) => {
-    const updated = profile.doctor.workplaces.filter((i) => i.id !== id);
+    const updated = profile.doctor.workplaces.filter((i) => i._id !== id);
 
     return updateModule(
       "workplaces",
       updateDoctorWorkplaces,
       updated,
-      "Workplace deleted"
+      "Workplace deleted",
     );
   };
 
-  // =========================
   // LANGUAGES CRUD
-  // =========================
   const addLanguage = (data) => {
-    const updated = [
-      { id: Date.now(), ...data },
-      ...profile.doctor.languages,
-    ];
+    const updated = [{ _id: Date.now(), ...data }, ...profile.doctor.languages];
 
     return updateModule(
       "languages",
       updateDoctorLanguages,
       updated,
-      "Language added"
+      "Language added",
     );
   };
 
-  const updateLanguage = (id, data) => {
+  const updateLanguage = (_id, data) => {
     const updated = profile.doctor.languages.map((item) =>
-      item.id === id ? { ...item, ...data } : item
+      item._id === _id ? { ...item, ...data } : item,
     );
 
     return updateModule(
       "languages",
       updateDoctorLanguages,
       updated,
-      "Language updated"
+      "Language updated",
     );
   };
 
-  const deleteLanguage = (id) => {
-    const updated = profile.doctor.languages.filter((i) => i.id !== id);
+  const deleteLanguage = (_id) => {
+    const updated = profile.doctor.languages.filter((i) => i._id !== _id);
 
     return updateModule(
       "languages",
       updateDoctorLanguages,
       updated,
-      "Language deleted"
+      "Language deleted",
     );
   };
 
@@ -229,7 +211,7 @@ const DoctorProvider = ({ children }) => {
   // =========================
   const addExperience = (data) => {
     const updated = [
-      { id: Date.now(), ...data },
+      { _id: Date.now(), ...data },
       ...profile.doctor.experience,
     ];
 
@@ -237,36 +219,36 @@ const DoctorProvider = ({ children }) => {
       "experience",
       updateDoctorExperience,
       updated,
-      "Experience added"
+      "Experience added",
     );
   };
 
-  const updateExperience = (id, data) => {
+  const updateExperience = (_id, data) => {
     const updated = profile.doctor.experience.map((item) =>
-      item.id === id ? { ...item, ...data } : item
+      item._id === _id ? { ...item, ...data } : item,
     );
 
     return updateModule(
       "experience",
       updateDoctorExperience,
       updated,
-      "Experience updated"
+      "Experience updated",
     );
   };
 
-  const deleteExperience = (id) => {
-    const updated = profile.doctor.experience.filter((i) => i.id !== id);
+  const deleteExperience = (_id) => {
+    const updated = profile.doctor.experience.filter((i) => i._id !== _id);
 
     return updateModule(
       "experience",
       updateDoctorExperience,
       updated,
-      "Experience deleted"
+      "Experience deleted",
     );
   };
 
   return (
-    <DoctorContext.Provider
+    <DoctorContext.Prov_ider
       value={{
         profile,
         setProfile,
@@ -296,8 +278,8 @@ const DoctorProvider = ({ children }) => {
       }}
     >
       {children}
-    </DoctorContext.Provider>
+    </DoctorContext.Prov_ider>
   );
 };
 
-export default DoctorProvider;
+export default DoctorProv_ider;

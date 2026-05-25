@@ -6,7 +6,7 @@
 // │── updateNotifications
 // │── updateSecurity
 
-import Doctor from "../../models/doctorModel";
+import Doctor from "../../models/doctorModel.js";
 //  update education
 export const updateDoctorEducation = async (req, res) => {
   try {
