@@ -1,9 +1,8 @@
-
 import React from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const AppointmentSettings = ({ workplace }) => {
-  const { profile, setProfile, setIsDirty } = useDoctor();
+  const { profile, setProfile, setIsDirty, saveProfile } = useDoctor();
 
   const workplaceData =
     profile.doctor?.workplaces?.find((w) => w._id === workplace?._id) || {};
@@ -54,6 +53,7 @@ const AppointmentSettings = ({ workplace }) => {
 
               setIsDirty(true);
             }}
+            onBlur={saveProfile}
             className="w-24 px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                        focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                        transition-all duration-200 hover:border-gray-300"
@@ -89,6 +89,7 @@ const AppointmentSettings = ({ workplace }) => {
 
               setIsDirty(true);
             }}
+            onBlur={saveProfile}
             className="px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                        focus:bg-white focus:ring-2 focus:ring-purple-400
                        transition-all duration-200 hover:border-gray-300"
@@ -135,6 +136,7 @@ const AppointmentSettings = ({ workplace }) => {
 
               setIsDirty(true);
             }}
+            onBlur={saveProfile}
             className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                        focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                        transition-all duration-200 hover:border-gray-300"
@@ -150,6 +152,33 @@ const AppointmentSettings = ({ workplace }) => {
         </label>
 
         <select
+          value={settings.consultationType || ""}
+          onChange={(e) => {
+            setProfile((prev) => {
+              const updated = prev.doctor.workplaces.map((w) => {
+                if (w._id !== workplace._id) return w;
+
+                return {
+                  ...w,
+                  settings: {
+                    ...w.settings,
+                    consultationType: e.target.value,
+                  },
+                };
+              });
+
+              return {
+                ...prev,
+                doctor: {
+                  ...prev.doctor,
+                  workplaces: updated,
+                },
+              };
+            });
+
+            setIsDirty(true);
+          }}
+          onBlur={saveProfile}
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400
                      transition-all duration-200 hover:border-gray-300"
@@ -170,6 +199,33 @@ const AppointmentSettings = ({ workplace }) => {
         <input
           type="number"
           placeholder="e.g. 20"
+          value={settings.maxPatientsPerDay || ""}
+          onChange={(e) => {
+            setProfile((prev) => {
+              const updated = prev.doctor.workplaces.map((w) => {
+                if (w._id !== workplace._id) return w;
+
+                return {
+                  ...w,
+                  settings: {
+                    ...w.settings,
+                    maxPatientsPerDay: Number(e.target.value),
+                  },
+                };
+              });
+
+              return {
+                ...prev,
+                doctor: {
+                  ...prev.doctor,
+                  workplaces: updated,
+                },
+              };
+            });
+
+            setIsDirty(true);
+          }}
+          onBlur={saveProfile}
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
@@ -185,6 +241,33 @@ const AppointmentSettings = ({ workplace }) => {
         <input
           type="number"
           placeholder="e.g. 10"
+          value={settings.breakTime || ""}
+          onChange={(e) => {
+            setProfile((prev) => {
+              const updated = prev.doctor.workplaces.map((w) => {
+                if (w._id !== workplace._id) return w;
+
+                return {
+                  ...w,
+                  settings: {
+                    ...w.settings,
+                    breakTime: Number(e.target.value),
+                  },
+                };
+              });
+
+              return {
+                ...prev,
+                doctor: {
+                  ...prev.doctor,
+                  workplaces: updated,
+                },
+              };
+            });
+
+            setIsDirty(true);
+          }}
+          onBlur={saveProfile}
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
@@ -200,6 +283,33 @@ const AppointmentSettings = ({ workplace }) => {
         <input
           type="number"
           placeholder="e.g. 7"
+          value={settings.bookingWindow || ""}
+          onChange={(e) => {
+            setProfile((prev) => {
+              const updated = prev.doctor.workplaces.map((w) => {
+                if (w._id !== workplace._id) return w;
+
+                return {
+                  ...w,
+                  settings: {
+                    ...w.settings,
+                    bookingWindow: Number(e.target.value),
+                  },
+                };
+              });
+
+              return {
+                ...prev,
+                doctor: {
+                  ...prev.doctor,
+                  workplaces: updated,
+                },
+              };
+            });
+
+            setIsDirty(true);
+          }}
+          onBlur={saveProfile}
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
@@ -215,6 +325,33 @@ const AppointmentSettings = ({ workplace }) => {
         <input
           type="number"
           placeholder="e.g. 500"
+          value={settings.followUpFee || ""}
+          onChange={(e) => {
+            setProfile((prev) => {
+              const updated = prev.doctor.workplaces.map((w) => {
+                if (w._id !== workplace._id) return w;
+
+                return {
+                  ...w,
+                  settings: {
+                    ...w.settings,
+                    followUpFee: Number(e.target.value),
+                  },
+                };
+              });
+
+              return {
+                ...prev,
+                doctor: {
+                  ...prev.doctor,
+                  workplaces: updated,
+                },
+              };
+            });
+
+            setIsDirty(true);
+          }}
+          onBlur={saveProfile}
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"

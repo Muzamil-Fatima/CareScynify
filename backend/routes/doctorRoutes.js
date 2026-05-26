@@ -11,7 +11,7 @@ import {
 import { updateDoctorEducation } from "../controllers/doctor/doctorEducationController.js";
 import {
   addSchedule,
-  updateSchedule,
+  // updateSchedule,
   deleteSchedule,
   getDoctorSchedule,
   getAvailableSlots,
@@ -39,7 +39,7 @@ router.get("/schedule", protect, getDoctorSchedule);
 router.post("/schedule", protect, addSchedule);
 router.put("/schedule/:workplaceId", protect, updateWorkplaceSchedule);
 // Update single workplace schedule
-router.put("/schedule/:workplaceId", protect, updateSchedule);
+// router.put("/schedule/:workplaceId", protect, updateSchedule);
 // Delete single workplace schedule
 router.delete("/schedule/:workplaceId", protect, deleteSchedule);
 // Get available slots for a workplace and day

@@ -6,41 +6,39 @@ const daysList = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const DrConsultation = ({ workplace }) => {
   const { profile, setProfile, setIsDirty } = useDoctor();
 
- const workplaceData =
-  profile.doctor?.workplaces?.find(
-    (w) => w._id === workplace?._id
-  ) || {};
+  const workplaceData =
+    profile.doctor?.workplaces?.find((w) => w._id === workplace?._id) || {};
 
-const availability = workplaceData.availability || {};
+  const availability = workplaceData.availability || {};
 
   const handleChange = (day, field, value) => {
-  setProfile((prev) => {
-    const updatedWorkplaces = prev.doctor.workplaces.map((w) => {
-      if (w._id !== workplace._id) return w;
+    setProfile((prev) => {
+      const updatedWorkplaces = prev.doctor.workplaces.map((w) => {
+        if (w._id !== workplace._id) return w;
+
+        return {
+          ...w,
+          availability: {
+            ...w.availability,
+            [day]: {
+              ...(w.availability?.[day] || { start: "", end: "" }),
+              [field]: value,
+            },
+          },
+        };
+      });
 
       return {
-        ...w,
-        availability: {
-          ...w.availability,
-          [day]: {
-            ...w.availability?.[day],
-            [field]: value,
-          },
+        ...prev,
+        doctor: {
+          ...prev.doctor,
+          workplaces: updatedWorkplaces,
         },
       };
     });
 
-    return {
-      ...prev,
-      doctor: {
-        ...prev.doctor,
-        workplaces: updatedWorkplaces,
-      },
-    };
-  });
-
-  setIsDirty(true);
-};
+    setIsDirty(true);
+  };
 
   return (
     <div

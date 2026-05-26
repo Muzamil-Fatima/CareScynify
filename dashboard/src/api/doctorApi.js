@@ -16,8 +16,8 @@ export const updateDoctorEducation = async (payload) => {
   return res.data;
 };
 // update doctor workplaces
-export const updateDoctorWorkplaces = async (payload) => {
-  const res = await api.put("/api/doctor/workplaces", payload);
+export const updateWorkplaceSchedule = async (workplaceId, payload) => {
+  const res = await api.put(`/api/doctor/schedule/${workplaceId}`, payload);
   return res.data;
 };
 // update doctor languages
