@@ -2,12 +2,34 @@ import React from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const AppointmentSettings = ({ workplace }) => {
-  const { profile, setProfile, setIsDirty, saveProfile } = useDoctor();
+  const { profile, setProfile, setIsDirty, saveWorkplaceSettings } =
+    useDoctor();
 
   const workplaceData =
     profile.doctor?.workplaces?.find((w) => w._id === workplace?._id) || {};
 
-  const settings = workplaceData.settings || {};
+  const settings = {
+  appointmentDuration: {
+    value:
+      workplaceData?.settings?.appointmentDuration?.value ?? 30,
+    unit:
+      workplaceData?.settings?.appointmentDuration?.unit ??
+      "minutes",
+  },
+  appointmentFee:
+    workplaceData?.settings?.appointmentFee ?? 0,
+  consultationType:
+    workplaceData?.settings?.consultationType ??
+    "Online + Clinic",
+  maxPatientsPerDay:
+    workplaceData?.settings?.maxPatientsPerDay ?? 0,
+  breakTime:
+    workplaceData?.settings?.breakTime ?? 0,
+  bookingWindow:
+    workplaceData?.settings?.bookingWindow ?? 0,
+  followUpFee:
+    workplaceData?.settings?.followUpFee ?? 0,
+};
 
   return (
     <div
@@ -53,7 +75,11 @@ const AppointmentSettings = ({ workplace }) => {
 
               setIsDirty(true);
             }}
-            onBlur={saveProfile}
+            onBlur={() =>
+              saveWorkplaceSettings(workplace._id, {
+                settings,
+              })
+            }
             className="w-24 px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                        focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                        transition-all duration-200 hover:border-gray-300"
@@ -89,7 +115,11 @@ const AppointmentSettings = ({ workplace }) => {
 
               setIsDirty(true);
             }}
-            onBlur={saveProfile}
+            onBlur={() =>
+              saveWorkplaceSettings(workplace._id, {
+                settings,
+              })
+            }
             className="px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                        focus:bg-white focus:ring-2 focus:ring-purple-400
                        transition-all duration-200 hover:border-gray-300"
@@ -136,7 +166,11 @@ const AppointmentSettings = ({ workplace }) => {
 
               setIsDirty(true);
             }}
-            onBlur={saveProfile}
+            onBlur={() =>
+              saveWorkplaceSettings(workplace._id, {
+                settings,
+              })
+            }
             className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                        focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                        transition-all duration-200 hover:border-gray-300"
@@ -178,7 +212,11 @@ const AppointmentSettings = ({ workplace }) => {
 
             setIsDirty(true);
           }}
-          onBlur={saveProfile}
+          onBlur={() =>
+            saveWorkplaceSettings(workplace._id, {
+              settings,
+            })
+          }
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400
                      transition-all duration-200 hover:border-gray-300"
@@ -225,7 +263,11 @@ const AppointmentSettings = ({ workplace }) => {
 
             setIsDirty(true);
           }}
-          onBlur={saveProfile}
+          onBlur={() =>
+            saveWorkplaceSettings(workplace._id, {
+              settings,
+            })
+          }
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
@@ -267,7 +309,11 @@ const AppointmentSettings = ({ workplace }) => {
 
             setIsDirty(true);
           }}
-          onBlur={saveProfile}
+          onBlur={() =>
+            saveWorkplaceSettings(workplace._id, {
+              settings,
+            })
+          }
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
@@ -309,7 +355,11 @@ const AppointmentSettings = ({ workplace }) => {
 
             setIsDirty(true);
           }}
-          onBlur={saveProfile}
+          onBlur={() =>
+            saveWorkplaceSettings(workplace._id, {
+              settings,
+            })
+          }
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"
@@ -351,7 +401,11 @@ const AppointmentSettings = ({ workplace }) => {
 
             setIsDirty(true);
           }}
-          onBlur={saveProfile}
+          onBlur={() =>
+            saveWorkplaceSettings(workplace._id, {
+              settings,
+            })
+          }
           className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
                      focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
                      transition-all duration-200 hover:border-gray-300"

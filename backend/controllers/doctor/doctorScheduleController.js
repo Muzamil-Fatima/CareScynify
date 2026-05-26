@@ -199,8 +199,20 @@ export const updateWorkplaceSchedule = async (req, res) => {
 
     if (settings) {
       workplace.settings = {
-        ...workplace.settings, // IMPORTANT
+        ...workplace.settings,
         ...settings,
+
+        appointmentDuration: {
+          value:
+            settings?.appointmentDuration?.value ??
+            workplace.settings?.appointmentDuration?.value ??
+            30,
+
+          unit:
+            settings?.appointmentDuration?.unit ??
+            workplace.settings?.appointmentDuration?.unit ??
+            "minutes",
+        },
       };
     }
 
