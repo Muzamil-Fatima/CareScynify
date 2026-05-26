@@ -4,11 +4,19 @@ import {
   updateDoctorProfile,
 } from "../controllers/doctorController.js";
 import {
-  updateDoctorEducation,
   updateDoctorWorkplaces,
   updateDoctorLanguages,
   updateDoctorExperience,
 } from "../controllers/doctor/doctorSettingsController.js";
+import { updateDoctorEducation } from "../controllers/doctor/doctorEducationController.js";
+import {
+  addSchedule,
+  updateSchedule,
+  deleteSchedule,
+  getDoctorSchedule,
+  getAvailableSlots,
+  updateWorkplaceSchedule,
+} from "../controllers/doctor/doctorScheduleController.js";
 import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
@@ -25,5 +33,16 @@ router.put("/workplaces", protect, updateDoctorWorkplaces);
 router.put("/languages", protect, updateDoctorLanguages);
 // Update doctor experience
 router.put("/experience", protect, updateDoctorExperience);
+// Get doctor schedule
+router.get("/schedule", protect, getDoctorSchedule);
+// Add single workplace schedule
+router.post("/schedule", protect, addSchedule);
+router.put("/schedule/:workplaceId", protect, updateWorkplaceSchedule);
+// Update single workplace schedule
+router.put("/schedule/:workplaceId", protect, updateSchedule);
+// Delete single workplace schedule
+router.delete("/schedule/:workplaceId", protect, deleteSchedule);
+// Get available slots for a workplace and day
+router.get("/schedule/slots", protect, getAvailableSlots);
 
 export default router;

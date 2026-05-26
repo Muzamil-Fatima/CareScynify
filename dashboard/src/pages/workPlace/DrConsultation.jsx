@@ -3,29 +3,44 @@ import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const daysList = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-const DrConsultation = () => {
+const DrConsultation = ({ workplace }) => {
   const { profile, setProfile, setIsDirty } = useDoctor();
 
-  const doctor = profile.doctor || {};
-  const availability = doctor.availability || {};
+ const workplaceData =
+  profile.doctor?.workplaces?.find(
+    (w) => w._id === workplace?._id
+  ) || {};
+
+const availability = workplaceData.availability || {};
 
   const handleChange = (day, field, value) => {
-    setProfile((prev) => ({
-      ...prev,
-      doctor: {
-        ...prev.doctor,
+  setProfile((prev) => {
+    const updatedWorkplaces = prev.doctor.workplaces.map((w) => {
+      if (w._id !== workplace._id) return w;
+
+      return {
+        ...w,
         availability: {
-          ...prev.doctor.availability,
+          ...w.availability,
           [day]: {
-            ...prev.doctor.availability?.[day],
+            ...w.availability?.[day],
             [field]: value,
           },
         },
-      },
-    }));
+      };
+    });
 
-    setIsDirty(true);
-  };
+    return {
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        workplaces: updatedWorkplaces,
+      },
+    };
+  });
+
+  setIsDirty(true);
+};
 
   return (
     <div

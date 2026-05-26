@@ -33,15 +33,65 @@ const drSchema = new mongoose.Schema(
           required: true,
           trim: true,
         },
+
         location: {
           type: String,
           required: true,
           trim: true,
         },
+
         type: {
           type: String,
           enum: ["clinic", "hospital"],
           default: "clinic",
+        },
+        settings: {
+          appointmentDuration: {
+            value: { type: Number, default: 30 },
+            unit: { type: String, default: "minutes" },
+          },
+
+          appointmentFee: {
+            type: Number,
+            default: 0,
+          },
+
+          followUpFee: {
+            type: Number,
+            default: 0,
+          },
+
+          maxPatientsPerDay: {
+            type: Number,
+            default: 20,
+          },
+
+          breakTime: {
+            type: Number,
+            default: 10,
+          },
+
+          bookingWindow: {
+            type: Number,
+            default: 7,
+          },
+
+          consultationType: {
+            type: String,
+            enum: ["online", "clinic", "both", "home"],
+            default: "both",
+          },
+        },
+
+        // ⭐ ADD THIS (NEW)
+        availability: {
+          Mon: { start: String, end: String },
+          Tue: { start: String, end: String },
+          Wed: { start: String, end: String },
+          Thu: { start: String, end: String },
+          Fri: { start: String, end: String },
+          Sat: { start: String, end: String },
+          Sun: { start: String, end: String },
         },
       },
     ],

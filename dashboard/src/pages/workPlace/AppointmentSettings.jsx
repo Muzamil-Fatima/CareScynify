@@ -1,9 +1,14 @@
+
 import React from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
-const AppointmentSettings = () => {
+const AppointmentSettings = ({ workplace }) => {
   const { profile, setProfile, setIsDirty } = useDoctor();
-  const doctor = profile.doctor || {};
+
+  const workplaceData =
+    profile.doctor?.workplaces?.find((w) => w._id === workplace?._id) || {};
+
+  const settings = workplaceData.settings || {};
 
   return (
     <div
@@ -20,18 +25,33 @@ const AppointmentSettings = () => {
           <input
             type="number"
             min="1"
-            value={doctor.appointmentDuration?.value || ""}
+            value={settings.appointmentDuration?.value || ""}
             onChange={(e) => {
-              setProfile((prev) => ({
-                ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  appointmentDuration: {
-                    ...prev.doctor.appointmentDuration,
-                    value: Number(e.target.value),
+              setProfile((prev) => {
+                const updated = prev.doctor.workplaces.map((w) => {
+                  if (w._id !== workplace._id) return w;
+
+                  return {
+                    ...w,
+                    settings: {
+                      ...w.settings,
+                      appointmentDuration: {
+                        ...w.settings?.appointmentDuration,
+                        value: Number(e.target.value),
+                      },
+                    },
+                  };
+                });
+
+                return {
+                  ...prev,
+                  doctor: {
+                    ...prev.doctor,
+                    workplaces: updated,
                   },
-                },
-              }));
+                };
+              });
+
               setIsDirty(true);
             }}
             className="w-24 px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
@@ -40,18 +60,33 @@ const AppointmentSettings = () => {
           />
 
           <select
-            value={doctor.appointmentDuration?.unit || "minutes"}
+            value={settings.appointmentDuration?.unit || "minutes"}
             onChange={(e) => {
-              setProfile((prev) => ({
-                ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  appointmentDuration: {
-                    ...prev.doctor.appointmentDuration,
-                    unit: e.target.value,
+              setProfile((prev) => {
+                const updated = prev.doctor.workplaces.map((w) => {
+                  if (w._id !== workplace._id) return w;
+
+                  return {
+                    ...w,
+                    settings: {
+                      ...w.settings,
+                      appointmentDuration: {
+                        ...w.settings?.appointmentDuration,
+                        unit: e.target.value,
+                      },
+                    },
+                  };
+                });
+
+                return {
+                  ...prev,
+                  doctor: {
+                    ...prev.doctor,
+                    workplaces: updated,
                   },
-                },
-              }));
+                };
+              });
+
               setIsDirty(true);
             }}
             className="px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
@@ -74,15 +109,30 @@ const AppointmentSettings = () => {
           <input
             type="number"
             min="0"
-            value={doctor.appointmentFee || ""}
+            value={settings.appointmentFee || ""}
             onChange={(e) => {
-              setProfile((prev) => ({
-                ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  appointmentFee: Number(e.target.value),
-                },
-              }));
+              setProfile((prev) => {
+                const updated = prev.doctor.workplaces.map((w) => {
+                  if (w._id !== workplace._id) return w;
+
+                  return {
+                    ...w,
+                    settings: {
+                      ...w.settings,
+                      appointmentFee: Number(e.target.value),
+                    },
+                  };
+                });
+
+                return {
+                  ...prev,
+                  doctor: {
+                    ...prev.doctor,
+                    workplaces: updated,
+                  },
+                };
+              });
+
               setIsDirty(true);
             }}
             className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
@@ -107,6 +157,7 @@ const AppointmentSettings = () => {
           <option>Online + Clinic</option>
           <option>Online Only</option>
           <option>Clinic Only</option>
+          <option>Home Visits</option>
         </select>
       </div>
 

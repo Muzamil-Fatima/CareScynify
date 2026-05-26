@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
 import DrAvailabilityDetail from "./DrAvailabilityDetail";
@@ -7,37 +7,34 @@ import TotalWorkPlaces from "./TotalWorkPlaces";
 const WorkPlaceSchedule = () => {
   const { profile } = useDoctor();
 
-  // stable data
-  const workplaces = useMemo(() => {
-    return profile?.doctor?.workplaces || [];
-  }, [profile?.doctor?.workplaces]);
+  const workplaces = profile?.doctor?.workplaces || [];
 
-  //  initialize from first workplace
-  const [activeWorkplaceId, setActiveWorkplaceId] = useState(
-    workplaces[0]?.id || null
-  );
-
+  const [activeWorkplaceId, setActiveWorkplaceId] = useState(null);
   const [showManager, setShowManager] = useState(false);
 
-  // keep selected workplace valid
-  const activeWorkplace = useMemo(() => {
-    return (
-      workplaces.find((w) => w.id === activeWorkplaceId) ||
-      workplaces[0] ||
-      null
-    );
-  }, [workplaces, activeWorkplaceId]);
+  // pick active workplace safely (NO useMemo needed)
+  const activeWorkplace =
+    workplaces.find((w) => w._id === activeWorkplaceId) ||
+    workplaces[0] ||
+    null;
+
+  // FIX: only set default when user clicks or when modal opens
+  const handleSelect = (id) => {
+    setActiveWorkplaceId(id);
+  };
 
   return (
     <div className="space-y-6">
+
       {/* SWITCHER */}
       <div className="bg-white p-3 rounded-2xl border shadow-sm flex gap-2 overflow-x-auto">
+
         {workplaces.map((w) => (
           <button
-            key={w.id}
-            onClick={() => setActiveWorkplaceId(w.id)}
+            key={w._id}
+            onClick={() => handleSelect(w._id)}
             className={
-              activeWorkplace?.id === w.id
+              activeWorkplace?._id === w._id
                 ? "px-4 py-2 rounded-xl bg-purple-600 text-white"
                 : "px-4 py-2 rounded-xl bg-gray-100 text-gray-700 hover:bg-gray-200"
             }
@@ -52,10 +49,12 @@ const WorkPlaceSchedule = () => {
         >
           Manage
         </button>
+
       </div>
 
       {/* MAIN */}
       <div className="bg-white rounded-2xl border shadow-sm p-6">
+
         {activeWorkplace ? (
           <>
             <div className="mb-5">
@@ -77,12 +76,14 @@ const WorkPlaceSchedule = () => {
         ) : (
           <p className="text-gray-400">No workplace available</p>
         )}
+
       </div>
 
       {/* MODAL */}
       {showManager && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-2xl rounded-2xl p-6">
+
             <TotalWorkPlaces />
 
             <button
@@ -91,9 +92,11 @@ const WorkPlaceSchedule = () => {
             >
               Close
             </button>
+
           </div>
         </div>
       )}
+
     </div>
   );
 };
