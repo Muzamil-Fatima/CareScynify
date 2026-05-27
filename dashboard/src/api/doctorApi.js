@@ -15,6 +15,26 @@ export const updateDoctorEducation = async (payload) => {
   const res = await api.put("/api/doctor/education", payload);
   return res.data;
 };
+// add new doctor workplaces
+export const addWorkplace = async (payload) => {
+  const res = await api.post("/api/doctor/workplaces", payload);
+  return res.data;
+};
+// update doctor workplace
+export const updateWorkplaces = async (id, payload) => {
+  const res = await api.put(`/api/doctor/workplaces/${id}`, payload);
+  return res.data;
+};
+// delete doctor workplace
+export const deleteWorkplace = async (id) => {
+  const res = await api.delete(`/api/doctor/workplaces/${id}`);
+  return res.data;
+};
+// get doctor workplaces
+export const getWorkplaces = async () => {
+  const res = await api.get("/api/doctor/workplaces");
+  return res.data;
+};
 // update doctor workplaces
 export const updateWorkplaceSchedule = async (workplaceId, payload) => {
   const res = await api.put(`/api/doctor/schedule/${workplaceId}`, payload);
