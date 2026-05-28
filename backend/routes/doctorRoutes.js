@@ -8,19 +8,20 @@ import {
   updateDoctorExperience,
 } from "../controllers/doctor/doctorSettingsController.js";
 import { updateDoctorEducation } from "../controllers/doctor/doctorEducationController.js";
-import {
-  addSchedule,
-  deleteSchedule,
-  getDoctorSchedule,
-  getAvailableSlots,
-  updateWorkplaceSchedule,
-} from "../controllers/doctor/doctorScheduleController.js";
+
 import {
   addWorkplace,
   updateWorkplace,
   deleteWorkplace,
   getWorkplaces,
 } from "../controllers/doctor/doctorWorkPlacesController.js";
+import {
+  getConsultantHours,
+  addConsultantHours,
+  updateConsultantHours,
+  deleteConsultantHours,
+  getConsultantSlots,
+} from "../controllers/doctor/doctorConsultantController.js";
 import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
@@ -30,6 +31,7 @@ router.get("/profile", protect, getDoctorProfile);
 router.put("/profile", protect, updateDoctorProfile);
 // Update doctor education
 router.put("/education", protect, updateDoctorEducation);
+// ------------------------------------------------------ WorkPlace
 // add work places
 router.post("/workplaces", protect, addWorkplace);
 // update work places by id
@@ -38,19 +40,17 @@ router.put("/workplaces/:id", protect, updateWorkplace);
 router.delete("/workplaces/:id", protect, deleteWorkplace);
 // get doctor workplaces
 router.get("/workplaces", protect, getWorkplaces);
-
+// --------------------------------------------------- Language
 // Update doctor languages
 router.put("/languages", protect, updateDoctorLanguages);
 // Update doctor experience
 router.put("/experience", protect, updateDoctorExperience);
-// Get doctor schedule
-router.get("/schedule", protect, getDoctorSchedule);
-// Add single workplace schedule
-router.post("/schedule", protect, addSchedule);
-router.put("/schedule/:workplaceId", protect, updateWorkplaceSchedule);
-// Delete single workplace schedule
-router.delete("/schedule/:workplaceId", protect, deleteSchedule);
-// Get available slots for a workplace and day
-router.get("/schedule/slots", protect, getAvailableSlots);
+// -----------------------------------------------------Consultation Hours (Per Day) according to Place
+router.get("/consultant", getConsultantHours);
+router.post("/consultant", addConsultantHours);
+router.put("/consultant/:workplaceId", updateConsultantHours);
+router.delete("/consultant/:workplaceId", deleteConsultantHours);
+
+router.get("/consultant/slots", getConsultantSlots);
 
 export default router;

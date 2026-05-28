@@ -1,6 +1,7 @@
 import Doctor from "../../models/doctorModel.js";
-// GET FULL SCHEDULE (ALL WORKPLACES)
-export const getDoctorSchedule = async (req, res) => {
+
+//  GET CONSULTANT HOURS
+export const getConsultantHours = async (req, res) => {
   try {
     const doctor = await Doctor.findOne({ userId: req.user._id });
 
@@ -19,39 +20,9 @@ export const getDoctorSchedule = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-// ADD / UPDATE WORKPLACE SCHEDULE
-export const updateSchedule = async (req, res) => {
-  try {
-    const { workplaces } = req.body;
 
-    const doctor = await Doctor.findOneAndUpdate(
-      { userId: req.user._id },
-      {
-        $set: {
-          workplaces,
-        },
-      },
-      { new: true },
-    );
-
-    if (!doctor) {
-      return res.status(404).json({
-        success: false,
-        message: "Doctor not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Schedule updated successfully",
-      workplaces: doctor.workplaces,
-    });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-// ADD SINGLE WORKPLACE SCHEDULE
-export const addSchedule = async (req, res) => {
+// ADD WORKPLACE CONSULTANT
+export const addConsultantHours = async (req, res) => {
   try {
     const doctor = await Doctor.findOne({ userId: req.user._id });
 
@@ -68,15 +39,16 @@ export const addSchedule = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Workplace schedule added",
+      message: "Consultant hours added",
       workplaces: doctor.workplaces,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-// DELETE WORKPLACE SCHEDULE
-export const deleteSchedule = async (req, res) => {
+
+//  DELETE CONSULTANT
+export const deleteConsultantHours = async (req, res) => {
   try {
     const { workplaceId } = req.params;
 
@@ -97,15 +69,16 @@ export const deleteSchedule = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Workplace deleted",
+      message: "Consultant removed",
       workplaces: doctor.workplaces,
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-// GET AVAILABLE SLOTS
-export const getAvailableSlots = async (req, res) => {
+
+// GET AVAILABLE SLOTS (KEEP SAME LOGIC)
+export const getConsultantSlots = async (req, res) => {
   try {
     const { workplaceId, day } = req.query;
 
@@ -134,7 +107,7 @@ export const getAvailableSlots = async (req, res) => {
     if (!schedule || !schedule.start || !schedule.end) {
       return res.status(400).json({
         success: false,
-        message: "No schedule for this day",
+        message: "No consultant hours for this day",
       });
     }
 
@@ -167,62 +140,76 @@ export const getAvailableSlots = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-// update single workplace schedule (availability + settings)
-export const updateWorkplaceSchedule = async (req, res) => {
+
+//  UPDATE SINGLE CONSULTANT HOURS
+export const updateConsultantHours = async (req, res) => {
   try {
     const { workplaceId } = req.params;
-    const { availability, settings } = req.body;
+    const { availability } = req.body;
 
     const doctor = await Doctor.findOne({ userId: req.user._id });
 
     if (!doctor) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Doctor not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
     }
 
-    const workplace = doctor.workplaces.id(workplaceId);
+    const workplace = doctor.workplaces.find(
+      (w) => w._id.toString() === workplaceId,
+    );
 
     if (!workplace) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Workplace not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Workplace not found",
+      });
     }
 
-    // ✔ ONLY UPDATE SELECTED WORKPLACE
-    if (availability) {
-      workplace.availability = {
-        ...workplace.availability,
-        ...availability,
-      };
+    // CONFLICT CHECK (ALL WORKPLACES)
+    const allWorkplaces = doctor.workplaces;
+
+    for (let day in availability) {
+      const newSlot = availability[day];
+
+      if (!newSlot?.start || !newSlot?.end) continue;
+
+      for (let w of allWorkplaces) {
+        if (w._id.toString() === workplaceId) continue;
+
+        const existing = w?.availability?.[day];
+        if (!existing?.start || !existing?.end) continue;
+
+        if (newSlot.start < existing.end && newSlot.end > existing.start) {
+          return res.status(400).json({
+            success: false,
+            message: `Conflict with ${w.name || "another workplace"} on ${day}`,
+          });
+        }
+      }
     }
 
-    if (settings) {
-      workplace.settings = {
-        ...workplace.settings,
-        ...settings,
-
-        appointmentDuration: {
-          value:
-            settings?.appointmentDuration?.value ??
-            workplace.settings?.appointmentDuration?.value ??
-            30,
-
-          unit:
-            settings?.appointmentDuration?.unit ??
-            workplace.settings?.appointmentDuration?.unit ??
-            "minutes",
-        },
-      };
-    }
+    // APPLY UPDATE
+    workplace.availability = {
+      ...workplace.availability,
+      ...availability,
+    };
 
     await doctor.save();
 
     return res.status(200).json({
       success: true,
+      message: "Consultation hours updated",
       workplace,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
+};
+const hasOverlap = (newStart, newEnd, existingStart, existingEnd) => {
+  return newStart < existingEnd && newEnd > existingStart;
 };

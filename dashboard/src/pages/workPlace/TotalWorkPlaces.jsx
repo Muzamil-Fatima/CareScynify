@@ -2,17 +2,12 @@ import React, { useState, useMemo } from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const TotalWorkPlaces = () => {
-  const {
-    profile,
-    addWorkplace,
-    updateWorkplace,
-    deleteWorkplace,
-  } = useDoctor();
+  const { profile, workplace } = useDoctor();
 
   const workplaces = useMemo(
-  () => profile.doctor?.workplaces || [],
-  [profile.doctor?.workplaces]
-);
+    () => profile.doctor?.workplaces || [],
+    [profile.doctor?.workplaces]
+  );
 
   const [open, setOpen] = useState(false);
   const [editId, setEditId] = useState(null);
@@ -40,9 +35,9 @@ const TotalWorkPlaces = () => {
   // SAVE
   const handleSave = async () => {
     if (editId) {
-      await updateWorkplace(editId, form);
+      await workplace.updateWorkplace(editId, form);
     } else {
-      await addWorkplace(form);
+      await workplace.addWorkplace(form);
     }
 
     setOpen(false);
@@ -50,7 +45,7 @@ const TotalWorkPlaces = () => {
 
   // DELETE
   const handleDelete = async (id) => {
-    await deleteWorkplace(id);
+    await workplace.deleteWorkplace(id);
   };
 
   return (

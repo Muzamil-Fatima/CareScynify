@@ -83,15 +83,36 @@ const drSchema = new mongoose.Schema(
           },
         },
 
-        // ⭐ ADD THIS (NEW)
         availability: {
-          Mon: { start: String, end: String },
-          Tue: { start: String, end: String },
-          Wed: { start: String, end: String },
-          Thu: { start: String, end: String },
-          Fri: { start: String, end: String },
-          Sat: { start: String, end: String },
-          Sun: { start: String, end: String },
+          Mon: {
+            start: { type: String, default: "" },
+            end: { type: String, default: "" },
+          },
+          Tue: {
+            start: { type: String, default: "" },
+            end: { type: String, default: "" },
+          },
+          Wed: {
+            start: { type: String, default: "" },
+            end: { type: String, default: "" },
+          },
+          Thu: {
+            start: { type: String, default: "" },
+            end: { type: String, default: "" },
+          },
+          Fri: {
+            start: { type: String, default: "" },
+            end: { type: String, default: "" },
+          },
+          Sat: {
+            start: { type: String, default: "" },
+            end: { type: String, default: "" },
+          },
+          Sun: {
+            start: { type: String, default: "" },
+            end: { type: String, default: "" },
+          },
+          default: {},
         },
       },
     ],

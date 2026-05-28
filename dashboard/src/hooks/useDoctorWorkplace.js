@@ -1,76 +1,106 @@
-import { updateWorkplaceSchedule, updateWorkplaces } from "../../api/doctorApi";
-import { updateDoctorModule } from "../utils/doctorModuleHelper.js";
+import {
+  addDoctorWorkplace,
+  updateDoctorWorkplace,
+  deleteDoctorWorkplace,
+} from "../api/doctorApi";
+
 import { toast } from "react-hot-toast";
-export const useDoctorWorkplace = (profile) => {
-  // WORKPLACES CRUD
-  const addWorkplace = (data) => {
-    const updated = [
-      {
-        ...data,
-        availability: [],
-        settings: {
-          appointmentDuration: {
-            value: 30,
-            unit: "minutes",
-          },
-        },
-      },
-      ...profile.doctor.workplaces,
-    ];
 
-    return updateDoctorModule(
-      "workplaces",
-      updateWorkplaces,
-      updated,
-      "Workplace added",
-    );
-  };
-
-  const updateWorkplace = (id, data) => {
-    const updated = profile.doctor.workplaces.map((item) =>
-      item._id === id ? { ...item, ...data } : item,
-    );
-
-    return updateDoctorModule(
-      "workplaces",
-      updateWorkplaces,
-      updated,
-      "Workplace updated",
-    );
-  };
-
-  const deleteWorkplace = (id) => {
-    const updated = profile.doctor.workplaces.filter((i) => i._id !== id);
-
-    return updateDoctorModule(
-      "workplaces",
-      updateWorkplaces,
-      updated,
-      "Workplace deleted",
-    );
-  };
-  const saveWorkplaceSettings = async (workplaceId, settings) => {
+export const useDoctorWorkplace = (profile, setProfile) => {
+  // ADD WORKPLACE
+  const addWorkplace = async (data) => {
     try {
-      const res = await updateWorkplaceSchedule(workplaceId, {
-        settings, // MUST match backend
-      });
+      const res = await addDoctorWorkplace(data);
 
       if (res?.success) {
-        toast.success("Saved successfully");
+        setProfile((prev) => ({
+          ...prev,
+          doctor: {
+            ...prev.doctor,
+            workplaces: res.workplaces,
+          },
+        }));
+
+        toast.success("Workplace added");
+
         return true;
       }
 
-      toast.error(res?.message || "Save failed");
+      toast.error(res?.message || "Failed to add workplace");
+
       return false;
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
       toast.error(err.response?.data?.message || "Server error");
+
       return false;
     }
   };
+
+  // UPDATE WORKPLACE
+  const updateWorkplace = async (id, data) => {
+    try {
+      const res = await updateDoctorWorkplace(id, data);
+
+      if (res?.success) {
+        setProfile((prev) => ({
+          ...prev,
+          doctor: {
+            ...prev.doctor,
+            workplaces: res.workplaces,
+          },
+        }));
+
+        toast.success("Workplace updated");
+
+        return true;
+      }
+
+      toast.error(res?.message || "Failed to update workplace");
+
+      return false;
+    } catch (err) {
+      console.error(err);
+
+      toast.error(err.response?.data?.message || "Server error");
+
+      return false;
+    }
+  };
+
+  // DELETE WORKPLACE
+  const deleteWorkplace = async (id) => {
+    try {
+      const res = await deleteDoctorWorkplace(id);
+
+      if (res?.success) {
+        setProfile((prev) => ({
+          ...prev,
+          doctor: {
+            ...prev.doctor,
+            workplaces: res.workplaces,
+          },
+        }));
+
+        toast.success("Workplace deleted");
+
+        return true;
+      }
+
+      toast.error(res?.message || "Failed to delete workplace");
+
+      return false;
+    } catch (err) {
+      console.error(err);
+
+      toast.error(err.response?.data?.message || "Server error");
+
+      return false;
+    }
+  };
+
   return {
-    // workplace
-    saveWorkplaceSettings,
     addWorkplace,
     updateWorkplace,
     deleteWorkplace,
