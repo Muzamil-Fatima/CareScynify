@@ -147,21 +147,21 @@ const DrConsultation = ({ workplace }) => {
             ${
               dayConflict
                 ? "border-red-300 bg-red-50"
-                : "border-gray-100 bg-gradient-to-r from-white to-gray-50"
+                : "border-gray-100 bg-linear-to-r from-white to-gray-50"
             }`}
           >
             {/* TOP ROW */}
             <div className="flex items-center gap-4 flex-nowrap">
 
               {/* DAY */}
-              <div className="min-w-[60px]">
+              <div className="min-w-15">
                 <p className="font-semibold text-gray-800 text-lg">
                   {day}
                 </p>
               </div>
 
               {/* STATUS */}
-              <div className="w-[90px]">
+              <div className="w-22.5">
                 {isAvailable ? (
                   <span className="px-3 py-1 rounded-full text-sm bg-green-100 text-green-700 font-medium">
                     Available
