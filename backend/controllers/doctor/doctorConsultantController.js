@@ -102,7 +102,9 @@ export const getConsultantSlots = async (req, res) => {
       });
     }
 
-    const schedule = workplace.availability?.[day];
+    const schedule = workplace.availability?.get
+      ? workplace.availability.get(day)
+      : workplace.availability?.[day];
 
     if (!schedule || !schedule.start || !schedule.end) {
       return res.status(400).json({
@@ -145,7 +147,11 @@ export const getConsultantSlots = async (req, res) => {
 export const updateConsultantHours = async (req, res) => {
   try {
     const { workplaceId } = req.params;
-    const { availability } = req.body;
+
+    const availability =
+      req.body && typeof req.body.availability === "object"
+        ? req.body.availability
+        : {};
 
     const doctor = await Doctor.findOne({ userId: req.user._id });
 
@@ -156,9 +162,7 @@ export const updateConsultantHours = async (req, res) => {
       });
     }
 
-    const workplace = doctor.workplaces.find(
-      (w) => w._id.toString() === workplaceId,
-    );
+    const workplace = doctor.workplaces.id(workplaceId);
 
     if (!workplace) {
       return res.status(404).json({
@@ -167,21 +171,47 @@ export const updateConsultantHours = async (req, res) => {
       });
     }
 
-    // CONFLICT CHECK (ALL WORKPLACES)
-    const allWorkplaces = doctor.workplaces;
+    // clean data
+    const cleanedAvailability = {};
 
     for (let day in availability) {
-      const newSlot = availability[day];
+      const slot = availability[day];
 
-      if (!newSlot?.start || !newSlot?.end) continue;
+      if (slot?.start && slot?.end) {
+        cleanedAvailability[day] = {
+          start: slot.start,
+          end: slot.end,
+        };
+      }
+    }
 
-      for (let w of allWorkplaces) {
+    if (Object.keys(cleanedAvailability).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid time slots provided",
+      });
+    }
+
+    // ---------------- CONFLICT CHECK (FIXED) ----------------
+    for (let day in cleanedAvailability) {
+      const newSlot = cleanedAvailability[day];
+
+      for (let w of doctor.workplaces) {
         if (w._id.toString() === workplaceId) continue;
 
-        const existing = w?.availability?.[day];
+        const existing =
+          w.availability instanceof Map
+            ? w.availability.get(day)
+            : w.availability?.[day];
+
         if (!existing?.start || !existing?.end) continue;
 
-        if (newSlot.start < existing.end && newSlot.end > existing.start) {
+        const newStart = newSlot.start;
+        const newEnd = newSlot.end;
+        const exStart = existing.start;
+        const exEnd = existing.end;
+
+        if (newStart < exEnd && newEnd > exStart) {
           return res.status(400).json({
             success: false,
             message: `Conflict with ${w.name || "another workplace"} on ${day}`,
@@ -190,11 +220,12 @@ export const updateConsultantHours = async (req, res) => {
       }
     }
 
-    // APPLY UPDATE
-    workplace.availability = {
-      ...workplace.availability,
-      ...availability,
-    };
+    // ---------------- SAFE SAVE (FIXED) ----------------
+    Object.keys(cleanedAvailability).forEach((day) => {
+      workplace.availability.set(day, cleanedAvailability[day]);
+    });
+
+    doctor.markModified("workplaces");
 
     await doctor.save();
 
@@ -204,6 +235,8 @@ export const updateConsultantHours = async (req, res) => {
       workplace,
     });
   } catch (error) {
+    console.error("UPDATE CONSULTANT ERROR:", error);
+
     return res.status(500).json({
       success: false,
       message: error.message,

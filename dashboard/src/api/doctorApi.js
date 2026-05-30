@@ -1,10 +1,10 @@
 import { api } from "./axios";
+// --------------------------------- Profile Update ---------------------------------
 // GET DOCTOR PROFILE
 export const getDoctorProfile = async () => {
   const res = await api.get("/api/doctor/profile");
   return res.data;
 };
-// --------------------------------- Profile Update ---------------------------------
 // UPDATE DOCTOR PROFILE
 export const updateDoctorProfile = async (payload) => {
   const res = await api.put("/api/doctor/profile", payload);
@@ -39,6 +39,14 @@ export const getWorkplaces = async () => {
   const res = await api.get("/api/doctor/workplaces");
   return res.data;
 };
+// ------------------------- workplace settings -------------------------
+export const updateWorkplaceSettings = async (workplaceId, payload) => {
+  const res = await api.patch(
+    `/api/doctor/workplace/${workplaceId}/settings`,
+    payload,
+  );
+  return res.data;
+}
 // ------------------- Consultation Hours (Per Day) according to Place ----------
 
 // GET ALL CONSULTANT HOURS
@@ -55,18 +63,13 @@ export const addConsultantHours = async (payload) => {
 
 // UPDATE CONSULTANT HOURS (single workplace)
 export const updateConsultantHours = async (workplaceId, payload) => {
-  const res = await api.put(
-    `/api/doctor/consultant/${workplaceId}`,
-    payload
-  );
+  const res = await api.put(`/api/doctor/consultant/${workplaceId}`, payload);
   return res.data;
 };
 
 // DELETE CONSULTANT HOURS
 export const deleteConsultantHours = async (workplaceId) => {
-  const res = await api.delete(
-    `/api/doctor/consultant/${workplaceId}`
-  );
+  const res = await api.delete(`/api/doctor/consultant/${workplaceId}`);
   return res.data;
 };
 

@@ -22,6 +22,7 @@ import {
   deleteConsultantHours,
   getConsultantSlots,
 } from "../controllers/doctor/doctorConsultantController.js";
+import { updateWorkplaceSettings } from "../controllers/doctor/WorkplaceSettingsController.js";
 import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
@@ -40,17 +41,21 @@ router.put("/workplaces/:id", protect, updateWorkplace);
 router.delete("/workplaces/:id", protect, deleteWorkplace);
 // get doctor workplaces
 router.get("/workplaces", protect, getWorkplaces);
+// ------------------------------------------------------workplace setting
+router.patch(
+  "/doctor/workplace/:workplaceId/settings",
+  updateWorkplaceSettings,
+);
 // --------------------------------------------------- Language
 // Update doctor languages
 router.put("/languages", protect, updateDoctorLanguages);
 // Update doctor experience
 router.put("/experience", protect, updateDoctorExperience);
-// -----------------------------------------------------Consultation Hours (Per Day) according to Place
+// ---------------------------Consultation Hours (Per Day) according to Place
 router.get("/consultant", getConsultantHours);
 router.post("/consultant", addConsultantHours);
 router.put("/consultant/:workplaceId", updateConsultantHours);
 router.delete("/consultant/:workplaceId", deleteConsultantHours);
-
 router.get("/consultant/slots", getConsultantSlots);
 
 export default router;

@@ -78,37 +78,14 @@ const drSchema = new mongoose.Schema(
 
           consultationType: {
             type: String,
-            enum: ["online", "clinic", "both", "home"],
-            default: "both",
+            enum: ["online", "clinic", "home visit",],
+            default: "online",
           },
         },
 
         availability: {
-          Mon: {
-            start: { type: String, default: "" },
-            end: { type: String, default: "" },
-          },
-          Tue: {
-            start: { type: String, default: "" },
-            end: { type: String, default: "" },
-          },
-          Wed: {
-            start: { type: String, default: "" },
-            end: { type: String, default: "" },
-          },
-          Thu: {
-            start: { type: String, default: "" },
-            end: { type: String, default: "" },
-          },
-          Fri: {
-            start: { type: String, default: "" },
-            end: { type: String, default: "" },
-          },
-          Sat: {
-            start: { type: String, default: "" },
-            end: { type: String, default: "" },
-          },
-          Sun: {
+          type: Map,
+          of: {
             start: { type: String, default: "" },
             end: { type: String, default: "" },
           },

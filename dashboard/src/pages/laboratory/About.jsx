@@ -5,7 +5,7 @@ export default function About() {
   return (
     <div className="min-h-screen bg-slate-50 py-20 px-6 relative overflow-hidden">
       {/* Background Decorative Blur */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-blue-100 rounded-full blur-[120px] opacity-50 -z-0"></div>
+      <div className="absolute top-0 right-0 w-125 h-125 bg-blue-100 rounded-full blur-[120px] opacity-50 z-0"></div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Header Section */}
@@ -14,7 +14,7 @@ export default function About() {
             Who We Are
           </span>
           <h1 className="text-5xl md:text-6xl font-black text-slate-900 mt-4 mb-6">
-            Redefining <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">Diagnostics</span>
+            Redefining <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-600">Diagnostics</span>
           </h1>
           <p className="text-slate-500 text-lg max-w-2xl mx-auto font-light leading-relaxed">
             We merge medical expertise with high-frequency digital workflows to ensure results that you can trust, delivered at the speed of modern life.
@@ -50,7 +50,7 @@ export default function About() {
             </button>
           </div>
 
-          <div className="bg-slate-900 p-10 rounded-[32px] text-white shadow-2xl relative">
+          <div className="bg-slate-900 p-10 rounded-4xl text-white shadow-2xl relative">
             <h3 className="text-blue-400 font-bold mb-8 uppercase tracking-widest text-xs">Our Milestone Timeline</h3>
             <div className="space-y-8">
               {[

@@ -2,127 +2,82 @@ import React from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const AppointmentSettings = ({ workplace }) => {
-  const { profile, setProfile, setIsDirty, saveWorkplaceSettings } =
-    useDoctor();
+  const { profile, setProfile, setIsDirty } = useDoctor();
 
-  const workplaceData =
-    profile.doctor?.workplaces?.find((w) => w._id === workplace?._id) || {};
+ const workplaces = profile.doctor?.workplaces || [];
 
-  const settings = {
-  appointmentDuration: {
-    value:
-      workplaceData?.settings?.appointmentDuration?.value ?? 30,
-    unit:
-      workplaceData?.settings?.appointmentDuration?.unit ??
-      "minutes",
-  },
-  appointmentFee:
-    workplaceData?.settings?.appointmentFee ?? 0,
-  consultationType:
-    workplaceData?.settings?.consultationType ??
-    "Online + Clinic",
-  maxPatientsPerDay:
-    workplaceData?.settings?.maxPatientsPerDay ?? 0,
-  breakTime:
-    workplaceData?.settings?.breakTime ?? 0,
-  bookingWindow:
-    workplaceData?.settings?.bookingWindow ?? 0,
-  followUpFee:
-    workplaceData?.settings?.followUpFee ?? 0,
+const workplaceIndex = workplaces.findIndex(
+  (w) => w._id === workplace?._id
+);
+
+const workplaceData =
+  workplaceIndex !== -1 ? workplaces[workplaceIndex] : {};
+
+  const settings = workplaceData?.settings || {};
+
+const updateWorkplace = (workplaceId, updater) => {
+  setProfile((prev) => {
+    const updatedWorkplaces = (prev.doctor.workplaces || []).map((w) => {
+      if (w._id !== workplaceId) return w;
+
+      const newSettings = updater(w.settings || {});
+
+      return {
+        ...w,
+        settings: {
+          ...w.settings,
+          ...newSettings,
+        },
+      };
+    });
+
+    return {
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        workplaces: updatedWorkplaces,
+      },
+    };
+  });
+
+  setIsDirty(true);
 };
 
   return (
-    <div
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6
-                 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200"
-    >
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
       {/* Appointment Duration */}
       <div>
-        <label className="block mb-2 text-gray-700 font-medium">
-          Appointment Duration
-        </label>
+        <label className="block mb-2 font-medium">Appointment Duration</label>
 
         <div className="flex gap-3">
           <input
             type="number"
             min="1"
-            value={settings.appointmentDuration?.value || ""}
-            onChange={(e) => {
-              setProfile((prev) => {
-                const updated = prev.doctor.workplaces.map((w) => {
-                  if (w._id !== workplace._id) return w;
-
-                  return {
-                    ...w,
-                    settings: {
-                      ...w.settings,
-                      appointmentDuration: {
-                        ...w.settings?.appointmentDuration,
-                        value: Number(e.target.value),
-                      },
-                    },
-                  };
-                });
-
-                return {
-                  ...prev,
-                  doctor: {
-                    ...prev.doctor,
-                    workplaces: updated,
-                  },
-                };
-              });
-
-              setIsDirty(true);
-            }}
-            onBlur={() =>
-              saveWorkplaceSettings(workplace._id, {
-                settings,
-              })
+            value={settings?.appointmentDuration?.value ?? 30}
+            onChange={(e) =>
+              updateWorkplace(workplace._id, (prev) => ({
+                ...prev,
+                appointmentDuration: {
+                  ...prev.appointmentDuration,
+                  value: Number(e.target.value),
+                },
+              }))
             }
-            className="w-24 px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                       focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
-                       transition-all duration-200 hover:border-gray-300"
+            className="w-24 px-3 py-2 border rounded-xl bg-gray-50"
           />
 
           <select
-            value={settings.appointmentDuration?.unit || "minutes"}
-            onChange={(e) => {
-              setProfile((prev) => {
-                const updated = prev.doctor.workplaces.map((w) => {
-                  if (w._id !== workplace._id) return w;
-
-                  return {
-                    ...w,
-                    settings: {
-                      ...w.settings,
-                      appointmentDuration: {
-                        ...w.settings?.appointmentDuration,
-                        unit: e.target.value,
-                      },
-                    },
-                  };
-                });
-
-                return {
-                  ...prev,
-                  doctor: {
-                    ...prev.doctor,
-                    workplaces: updated,
-                  },
-                };
-              });
-
-              setIsDirty(true);
-            }}
-            onBlur={() =>
-              saveWorkplaceSettings(workplace._id, {
-                settings,
-              })
+            value={settings?.appointmentDuration?.unit ?? "minutes"}
+            onChange={(e) =>
+              updateWorkplace(workplace._id, (prev) => ({
+                ...prev,
+                appointmentDuration: {
+                  ...prev.appointmentDuration,
+                  unit: e.target.value,
+                },
+              }))
             }
-            className="px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                       focus:bg-white focus:ring-2 focus:ring-purple-400
-                       transition-all duration-200 hover:border-gray-300"
+            className="px-3 py-2 border rounded-xl bg-gray-50"
           >
             <option value="minutes">Minutes</option>
             <option value="hours">Hours</option>
@@ -132,283 +87,110 @@ const AppointmentSettings = ({ workplace }) => {
 
       {/* Appointment Fee */}
       <div>
-        <label className="block mb-2 text-gray-700 font-medium">
-          Appointment Fee
-        </label>
+        <label className="block mb-2 font-medium">Appointment Fee</label>
 
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            min="0"
-            value={settings.appointmentFee || ""}
-            onChange={(e) => {
-              setProfile((prev) => {
-                const updated = prev.doctor.workplaces.map((w) => {
-                  if (w._id !== workplace._id) return w;
-
-                  return {
-                    ...w,
-                    settings: {
-                      ...w.settings,
-                      appointmentFee: Number(e.target.value),
-                    },
-                  };
-                });
-
-                return {
-                  ...prev,
-                  doctor: {
-                    ...prev.doctor,
-                    workplaces: updated,
-                  },
-                };
-              });
-
-              setIsDirty(true);
-            }}
-            onBlur={() =>
-              saveWorkplaceSettings(workplace._id, {
-                settings,
-              })
-            }
-            className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                       focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
-                       transition-all duration-200 hover:border-gray-300"
-          />
-          <span className="text-gray-500 font-medium">PKR</span>
-        </div>
+        <input
+          type="number"
+          value={settings?.appointmentFee ?? 0}
+          onChange={(e) =>
+            updateWorkplace(workplace._id, (prev) => ({
+              ...prev,
+              appointmentFee: Number(e.target.value),
+            }))
+          }
+          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
+        />
       </div>
 
       {/* Consultation Type */}
       <div>
-        <label className="block mb-2 text-gray-700 font-medium">
-          Consultation Type
-        </label>
+        <label className="block mb-2 font-medium">Consultation Type</label>
 
         <select
-          value={settings.consultationType || ""}
-          onChange={(e) => {
-            setProfile((prev) => {
-              const updated = prev.doctor.workplaces.map((w) => {
-                if (w._id !== workplace._id) return w;
-
-                return {
-                  ...w,
-                  settings: {
-                    ...w.settings,
-                    consultationType: e.target.value,
-                  },
-                };
-              });
-
-              return {
-                ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  workplaces: updated,
-                },
-              };
-            });
-
-            setIsDirty(true);
-          }}
-          onBlur={() =>
-            saveWorkplaceSettings(workplace._id, {
-              settings,
-            })
+          value={settings?.consultationType ?? "online"}
+          onChange={(e) =>
+            updateWorkplace(workplace._id, (prev) => ({
+              ...prev,
+              consultationType: e.target.value,
+            }))
           }
-          className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-purple-400
-                     transition-all duration-200 hover:border-gray-300"
+          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
         >
-          <option>Online + Clinic</option>
-          <option>Online Only</option>
-          <option>Clinic Only</option>
-          <option>Home Visits</option>
+          <option value="online">Online</option>
+          <option value="clinic">Clinic</option>
+          <option value="home visit">Home Visit</option>
         </select>
       </div>
 
       {/* Max Patients */}
       <div>
-        <label className="block mb-2 text-gray-700 font-medium">
-          Max Patients / Day
-        </label>
+        <label className="block mb-2 font-medium">Max Patients / Day</label>
 
         <input
           type="number"
-          placeholder="e.g. 20"
-          value={settings.maxPatientsPerDay || ""}
-          onChange={(e) => {
-            setProfile((prev) => {
-              const updated = prev.doctor.workplaces.map((w) => {
-                if (w._id !== workplace._id) return w;
-
-                return {
-                  ...w,
-                  settings: {
-                    ...w.settings,
-                    maxPatientsPerDay: Number(e.target.value),
-                  },
-                };
-              });
-
-              return {
-                ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  workplaces: updated,
-                },
-              };
-            });
-
-            setIsDirty(true);
-          }}
-          onBlur={() =>
-            saveWorkplaceSettings(workplace._id, {
-              settings,
-            })
+          value={settings?.maxPatientsPerDay ?? 0}
+          onChange={(e) =>
+            updateWorkplace(workplace._id, (prev) => ({
+              ...prev,
+              maxPatientsPerDay: Number(e.target.value),
+            }))
           }
-          className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
-                     transition-all duration-200 hover:border-gray-300"
+          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
         />
       </div>
 
       {/* Break Time */}
       <div>
-        <label className="block mb-2 text-gray-700 font-medium">
+        <label className="block mb-2 font-medium">
           Break Between Patients (min)
         </label>
 
         <input
           type="number"
-          placeholder="e.g. 10"
-          value={settings.breakTime || ""}
-          onChange={(e) => {
-            setProfile((prev) => {
-              const updated = prev.doctor.workplaces.map((w) => {
-                if (w._id !== workplace._id) return w;
-
-                return {
-                  ...w,
-                  settings: {
-                    ...w.settings,
-                    breakTime: Number(e.target.value),
-                  },
-                };
-              });
-
-              return {
-                ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  workplaces: updated,
-                },
-              };
-            });
-
-            setIsDirty(true);
-          }}
-          onBlur={() =>
-            saveWorkplaceSettings(workplace._id, {
-              settings,
-            })
+          value={settings?.breakTime ?? 0}
+          onChange={(e) =>
+            updateWorkplace(workplace._id, (prev) => ({
+              ...prev,
+              breakTime: Number(e.target.value),
+            }))
           }
-          className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
-                     transition-all duration-200 hover:border-gray-300"
+          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
         />
       </div>
 
       {/* Booking Window */}
       <div>
-        <label className="block mb-2 text-gray-700 font-medium">
+        <label className="block mb-2 font-medium">
           Booking Allowed (Days Ahead)
         </label>
 
         <input
           type="number"
-          placeholder="e.g. 7"
-          value={settings.bookingWindow || ""}
-          onChange={(e) => {
-            setProfile((prev) => {
-              const updated = prev.doctor.workplaces.map((w) => {
-                if (w._id !== workplace._id) return w;
-
-                return {
-                  ...w,
-                  settings: {
-                    ...w.settings,
-                    bookingWindow: Number(e.target.value),
-                  },
-                };
-              });
-
-              return {
-                ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  workplaces: updated,
-                },
-              };
-            });
-
-            setIsDirty(true);
-          }}
-          onBlur={() =>
-            saveWorkplaceSettings(workplace._id, {
-              settings,
-            })
+          value={settings?.bookingWindow ?? 0}
+          onChange={(e) =>
+            updateWorkplace(workplace._id, (prev) => ({
+              ...prev,
+              bookingWindow: Number(e.target.value),
+            }))
           }
-          className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
-                     transition-all duration-200 hover:border-gray-300"
+          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
         />
       </div>
 
       {/* Follow-up Fee */}
       <div>
-        <label className="block mb-2 text-gray-700 font-medium">
-          Follow-up Fee
-        </label>
+        <label className="block mb-2 font-medium">Follow-up Fee</label>
 
         <input
           type="number"
-          placeholder="e.g. 500"
-          value={settings.followUpFee || ""}
-          onChange={(e) => {
-            setProfile((prev) => {
-              const updated = prev.doctor.workplaces.map((w) => {
-                if (w._id !== workplace._id) return w;
-
-                return {
-                  ...w,
-                  settings: {
-                    ...w.settings,
-                    followUpFee: Number(e.target.value),
-                  },
-                };
-              });
-
-              return {
-                ...prev,
-                doctor: {
-                  ...prev.doctor,
-                  workplaces: updated,
-                },
-              };
-            });
-
-            setIsDirty(true);
-          }}
-          onBlur={() =>
-            saveWorkplaceSettings(workplace._id, {
-              settings,
-            })
+          value={settings?.followUpFee ?? 0}
+          onChange={(e) =>
+            updateWorkplace(workplace._id, (prev) => ({
+              ...prev,
+              followUpFee: Number(e.target.value),
+            }))
           }
-          className="w-full px-3 py-2 rounded-xl border border-gray-200 bg-gray-50
-                     focus:bg-white focus:ring-2 focus:ring-purple-400 focus:border-purple-300
-                     transition-all duration-200 hover:border-gray-300"
+          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
         />
       </div>
     </div>

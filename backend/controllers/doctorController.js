@@ -63,32 +63,22 @@ export const updateDoctorProfile = async (req, res) => {
       experience,
       qualifications,
       licenseNo,
-      workplaces,
       education,
     } = req.body;
-    if (education !== undefined) {
-      doctor.education = education;
-    }
-    if (workplaces !== undefined) {
-      doctor.workplaces = workplaces;
-    }
-    if (specialization !== undefined) {
-      doctor.specialization = specialization;
-    }
 
-    if (qualifications !== undefined) {
-      doctor.qualifications = qualifications;
-    }
+    doctor.specialization = specialization ?? doctor.specialization;
+    doctor.qualifications = qualifications ?? doctor.qualifications;
+    doctor.experience = experience ?? doctor.experience;
+    doctor.education = education ?? doctor.education;
 
-    if (experience !== undefined) {
-      doctor.experience = experience;
-    }
-
-    if (licenseNo !== undefined) {
-      const exists = await Doctor.findOne({ licenseNo });
+    if (licenseNo !== undefined && licenseNo !== doctor.licenseNo) {
+      const exists = await Doctor.findOne({
+        licenseNo,
+      });
 
       if (exists && exists.userId.toString() !== userId.toString()) {
         return res.status(400).json({
+          success: false,
           message: "License number already exists",
         });
       }
@@ -107,27 +97,6 @@ export const updateDoctorProfile = async (req, res) => {
   }
 };
 
-//  update doctor workplaces
-export const updateWorkplaces = async (req, res) => {
-  try {
-    const userId = req.userId;
-    const { workplaces } = req.body;
-
-    let doctor = await Doctor.findOne({ userId });
-    if (!doctor) doctor = new Doctor({ userId });
-
-    doctor.workplaces = workplaces || [];
-
-    await doctor.save();
-
-    return res.json({
-      success: true,
-      message: "Workplaces updated successfully",
-    });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
 // search Doctor
 export const searchDoctor = async (req, res) => {
   try {
