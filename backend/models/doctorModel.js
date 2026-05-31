@@ -82,15 +82,10 @@ const drSchema = new mongoose.Schema(
             default: "online",
           },
         },
-
-        availability: {
-          type: Map,
-          of: {
-            start: { type: String, default: "" },
-            end: { type: String, default: "" },
-          },
-          default: {},
-        },
+availability: {
+  type: Object,
+  default: {},
+},
       },
     ],
     education: [

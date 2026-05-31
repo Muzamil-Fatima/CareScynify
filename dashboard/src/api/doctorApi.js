@@ -46,39 +46,70 @@ export const updateWorkplaceSettings = async (workplaceId, payload) => {
     payload,
   );
   return res.data;
-}
+};
 // ------------------- Consultation Hours (Per Day) according to Place ----------
 
 // GET ALL CONSULTANT HOURS
 export const getConsultantHours = async () => {
-  const res = await api.get("/api/doctor/consultant");
-  return res.data;
+  try {
+    const res = await api.get("/api/doctor/consultant");
+    return res.data;
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
 };
 
 // ADD CONSULTANT HOURS (new workplace schedule)
 export const addConsultantHours = async (payload) => {
-  const res = await api.post("/api/doctor/consultant", payload);
-  return res.data;
+  try {
+    const res = await api.post("/api/doctor/consultant", payload);
+    return res.data;
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
 };
 
 // UPDATE CONSULTANT HOURS (single workplace)
 export const updateConsultantHours = async (workplaceId, payload) => {
-  const res = await api.put(`/api/doctor/consultant/${workplaceId}`, payload);
-  return res.data;
+  try {
+    if (!workplaceId) throw new Error("workplaceId is required");
+
+    const res = await api.put(`/api/doctor/consultant/${workplaceId}`, payload);
+
+    return res.data;
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
 };
 
 // DELETE CONSULTANT HOURS
 export const deleteConsultantHours = async (workplaceId) => {
-  const res = await api.delete(`/api/doctor/consultant/${workplaceId}`);
-  return res.data;
+  try {
+    if (!workplaceId) throw new Error("workplaceId is required");
+
+    const res = await api.delete(`/api/doctor/consultant/${workplaceId}`);
+
+    return res.data;
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
 };
 
 // GET AVAILABLE SLOTS
 export const getConsultantSlots = async (workplaceId, day) => {
-  const res = await api.get("/api/doctor/consultant/slots", {
-    params: { workplaceId, day },
-  });
-  return res.data;
+  try {
+    if (!workplaceId || !day) {
+      throw new Error("workplaceId and day are required");
+    }
+
+    const res = await api.get("/api/doctor/consultant/slots", {
+      params: { workplaceId, day },
+    });
+
+    return res.data;
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
 };
 
 // --------------------------------- Languages ---------------------------------

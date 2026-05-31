@@ -1,8 +1,10 @@
 import Doctor from "../../models/doctorModel.js";
 
-// ---------------- UTILS ----------------
-const toMinutes = (t) => {
+// ================= UTILS =================
+const toMinutes = (t = "") => {
+  if (!t || !t.includes(":")) return null;
   const [h, m] = t.split(":").map(Number);
+  if (isNaN(h) || isNaN(m)) return null;
   return h * 60 + m;
 };
 
@@ -11,7 +13,7 @@ const hasOverlap = (aStart, aEnd, bStart, bEnd) => {
 };
 
 // ======================================================
-// GET CONSULTANT HOURS (ALL WORKPLACES)
+// GET CONSULTANT HOURS
 // ======================================================
 export const getConsultantHours = async (req, res) => {
   try {
@@ -26,7 +28,9 @@ export const getConsultantHours = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      workplaces: doctor.workplaces || [],
+      doctor: {
+        workplaces: doctor.workplaces || [],
+      },
     });
   } catch (error) {
     return res.status(500).json({
@@ -37,7 +41,7 @@ export const getConsultantHours = async (req, res) => {
 };
 
 // ======================================================
-// ADD WORKPLACE (OPTIONAL FOR CONSULTANT FLOW)
+// ADD WORKPLACE
 // ======================================================
 export const addConsultantHours = async (req, res) => {
   try {
@@ -51,19 +55,18 @@ export const addConsultantHours = async (req, res) => {
     }
 
     const newWorkplace = {
-      ...req.body,
+      name: req.body.name || "New Workplace",
       availability: req.body.availability || {},
       settings: req.body.settings || {},
     };
 
     doctor.workplaces.push(newWorkplace);
-
     await doctor.save();
 
     return res.status(201).json({
       success: true,
       message: "Workplace added successfully",
-      workplace: doctor.workplaces.at(-1), // IMPORTANT for frontend consistency
+      workplace: doctor.workplaces.at(-1),
       workplaces: doctor.workplaces,
     });
   } catch (error) {
@@ -90,15 +93,24 @@ export const deleteConsultantHours = async (req, res) => {
       });
     }
 
+    const beforeCount = doctor.workplaces.length;
+
     doctor.workplaces = doctor.workplaces.filter(
       (w) => w._id.toString() !== workplaceId
     );
+
+    if (doctor.workplaces.length === beforeCount) {
+      return res.status(404).json({
+        success: false,
+        message: "Workplace not found",
+      });
+    }
 
     await doctor.save();
 
     return res.status(200).json({
       success: true,
-      message: "Workplace deleted",
+      message: "Workplace deleted successfully",
       workplaces: doctor.workplaces,
     });
   } catch (error) {
@@ -115,6 +127,13 @@ export const deleteConsultantHours = async (req, res) => {
 export const getConsultantSlots = async (req, res) => {
   try {
     const { workplaceId, day } = req.query;
+
+    if (!workplaceId || !day) {
+      return res.status(400).json({
+        success: false,
+        message: "workplaceId and day are required",
+      });
+    }
 
     const doctor = await Doctor.findOne({ userId: req.user._id });
 
@@ -133,24 +152,34 @@ export const getConsultantSlots = async (req, res) => {
         message: "Workplace not found",
       });
     }
-
-    const schedule = workplace.availability?.[day];
+const availability = workplace.availability
+  ? Object.fromEntries(workplace.availability)
+  : {};
+    const schedule = availability?.[day];
 
     if (!schedule?.start || !schedule?.end) {
       return res.status(400).json({
         success: false,
-        message: "No consultant hours for this day",
+        message: "No availability for this day",
       });
     }
 
     const duration = workplace.settings?.appointmentDuration?.value || 30;
 
-    let current = toMinutes(schedule.start);
+    const start = toMinutes(schedule.start);
     const end = toMinutes(schedule.end);
 
-    const slots = [];
+    if (start === null || end === null || start >= end) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid time range",
+      });
+    }
 
-    while (current < end) {
+    const slots = [];
+    let current = start;
+
+    while (current + duration <= end) {
       const h = Math.floor(current / 60);
       const m = current % 60;
 
@@ -174,7 +203,7 @@ export const getConsultantSlots = async (req, res) => {
 };
 
 // ======================================================
-// UPDATE CONSULTANT HOURS (FIXED + SAFE)
+// UPDATE CONSULTANT HOURS
 // ======================================================
 export const updateConsultantHours = async (req, res) => {
   try {
@@ -206,18 +235,21 @@ export const updateConsultantHours = async (req, res) => {
       });
     }
 
-    // ---------------- CLEAN DATA ----------------
+    // CLEAN INPUT
     const cleaned = {};
 
     for (const day in availability) {
       const slot = availability[day];
 
-      if (slot?.start && slot?.end) {
-        cleaned[day] = {
-          start: slot.start,
-          end: slot.end,
-        };
-      }
+      const start = toMinutes(slot?.start);
+      const end = toMinutes(slot?.end);
+
+      if (start === null || end === null || start >= end) continue;
+
+      cleaned[day] = {
+        start: slot.start,
+        end: slot.end,
+      };
     }
 
     if (Object.keys(cleaned).length === 0) {
@@ -227,12 +259,10 @@ export const updateConsultantHours = async (req, res) => {
       });
     }
 
-    // ---------------- CONFLICT CHECK ----------------
+    // CONFLICT CHECK
     for (const day in cleaned) {
-      const newSlot = cleaned[day];
-
-      const newStart = toMinutes(newSlot.start);
-      const newEnd = toMinutes(newSlot.end);
+      const newStart = toMinutes(cleaned[day].start);
+      const newEnd = toMinutes(cleaned[day].end);
 
       for (const w of doctor.workplaces) {
         if (w._id.toString() === workplaceId) continue;
@@ -246,15 +276,17 @@ export const updateConsultantHours = async (req, res) => {
         if (hasOverlap(newStart, newEnd, exStart, exEnd)) {
           return res.status(400).json({
             success: false,
-            message: `Conflict with ${w.name || "another workplace"} on ${day}`,
+            message: `Conflict with ${
+              w.name || "another workplace"
+            } on ${day}`,
           });
         }
       }
     }
 
-    // ---------------- SAVE ----------------
+    // APPLY UPDATE
     workplace.availability = {
-      ...workplace.availability,
+      ...(workplace.availability || {}),
       ...cleaned,
     };
 
@@ -263,7 +295,7 @@ export const updateConsultantHours = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Consultant hours updated successfully",
-      workplace, // IMPORTANT for frontend update
+      workplace,
     });
   } catch (error) {
     return res.status(500).json({

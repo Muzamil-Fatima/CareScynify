@@ -1,17 +1,11 @@
-import React, { useRef } from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 import { X } from "lucide-react";
-import { updateConsultantHours } from "../../api/doctorApi";
-import toast from "react-hot-toast";
 
 const daysList = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const DrConsultation = ({ workplace }) => {
-  const { profile, setProfile, setIsDirty, conflicts, setConflicts } =
-    useDoctor();
-
-  const saveTimeout = useRef(null);
-
+  const { profile, conflicts, consultationHours } = useDoctor();
+  const { setDayTime, removeDay } = consultationHours ?? {};
   const workplaceId = workplace?._id;
 
   const currentWorkplace = profile?.doctor?.workplaces?.find(
@@ -20,111 +14,24 @@ const DrConsultation = ({ workplace }) => {
 
   const availability = currentWorkplace?.availability || {};
 
-  const handleChange = (day, field, value) => {
-    const currentDay = availability?.[day] || { start: "", end: "" };
-
-    const updatedDay = {
-      ...currentDay,
-      [field]: value,
-    };
-
-    const updatedAvailability = {
-      ...availability,
-      [day]: updatedDay,
-    };
-    setProfile((prev) => {
-      const updatedWorkplaces = prev.doctor.workplaces.map((w) =>
-        w._id === workplaceId
-          ? {
-              ...w,
-              availability: updatedAvailability,
-            }
-          : w,
-      );
-
-      return {
-        ...prev,
-        doctor: {
-          ...prev.doctor,
-          workplaces: updatedWorkplaces,
-        },
-      };
-    });
-    const key = `${workplaceId}-${day}`;
-
-    setConflicts((p) => ({
-      ...p,
-      [key]: null,
-    }));
-
-    const start = updatedDay.start;
-    const end = updatedDay.end;
-
-    if (start && end) {
-      if (saveTimeout.current) clearTimeout(saveTimeout.current);
-
-      saveTimeout.current = setTimeout(() => {
-        saveAvailability(updatedAvailability);
-      }, 1000);
-    }
-
-    setIsDirty(true);
-  };
-
-  const saveAvailability = async (data) => {
-    if (!workplaceId) return;
-
-    try {
-      const res = await updateConsultantHours(workplaceId, {
-        availability: data,
-      });
-
-      if (!res?.success) {
-        toast.error(res?.message || "Save failed");
-        return;
-      }
-
-      setProfile((prev) => {
-        const updated = (prev?.doctor?.workplaces || []).map((w) =>
-          w?._id === workplaceId ? { ...w, availability: data } : w,
-        );
-
-        return {
-          ...prev,
-          doctor: {
-            ...prev.doctor,
-            workplaces: updated,
-          },
-        };
-      });
-
-      setIsDirty(false);
-      toast.success("Saved");
-    } catch (err) {
-      console.error(err);
-      toast.error("Server error");
-    }
-  };
-
-  const clearTime = (day) => {
-    handleChange(day, "start", "");
-    handleChange(day, "end", "");
-  };
-
   const calculateDuration = (start, end) => {
     if (!start || !end) return null;
+    if (!start.includes(":") || !end.includes(":")) return null;
 
     const [sh, sm] = start.split(":").map(Number);
     const [eh, em] = end.split(":").map(Number);
 
-    const diff = eh * 60 + em - (sh * 60 + sm);
+    if ([sh, sm, eh, em].some(isNaN)) return null;
 
+    const diff = eh * 60 + em - (sh * 60 + sm);
     if (diff <= 0) return null;
 
     const h = Math.floor(diff / 60);
     const m = diff % 60;
 
-    return h && m ? `${h}h ${m}m` : h ? `${h}h` : `${m}m`;
+    if (h && m) return `${h}h ${m}m`;
+    if (h) return `${h}h`;
+    return `${m}m`;
   };
 
   return (
@@ -146,7 +53,7 @@ const DrConsultation = ({ workplace }) => {
         const end = availability?.[day]?.end || "";
 
         const key = `${workplaceId}-${day}`;
-        const conflict = conflicts?.[key];
+        const conflictData = conflicts?.[key];
 
         const isAvailable = start && end;
         const duration = calculateDuration(start, end);
@@ -172,29 +79,35 @@ const DrConsultation = ({ workplace }) => {
                 <input
                   type="time"
                   value={start}
-                  onChange={(e) => handleChange(day, "start", e.target.value)}
+                  onChange={(e) =>
+                    setDayTime(workplaceId, day, "start", e.target.value)
+                  }
                   className="px-3 py-2 border rounded-xl bg-gray-50"
                 />
 
                 <input
                   type="time"
                   value={end}
-                  onChange={(e) => handleChange(day, "end", e.target.value)}
+                  onChange={(e) =>
+                    setDayTime(workplaceId, day, "end", e.target.value)
+                  }
                   className="px-3 py-2 border rounded-xl bg-gray-50"
                 />
 
                 <button
-                  onClick={() => clearTime(day)}
+                  onClick={() => removeDay(workplaceId, day)}
                   className="h-10 w-10 flex items-center justify-center text-red-500"
                 >
                   <X size={16} />
                 </button>
               </div>
             </div>
-
-            {conflict && (
-              <div className="text-xs text-red-600 mt-2">
-                ⚠ Conflict with {conflict}
+            {conflictData && (
+              <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg flex items-center gap-2">
+                ⚠{" "}
+                <span>
+                  Time conflict with <b>{conflictData}</b>
+                </span>
               </div>
             )}
 

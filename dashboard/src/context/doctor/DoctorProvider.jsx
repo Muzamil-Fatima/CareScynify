@@ -30,15 +30,19 @@ const DoctorProvider = ({ children }) => {
 
   const profileRef = useRef(profile);
   const saveProfileRef = useRef(null);
-
   const workplace = useDoctorWorkplace(profile, setProfile);
-  const consultationHours = useConsultationHours(setProfile, setIsDirty);
+  const consultationHours = useConsultationHours(
+    profileRef,
+    setProfile,
+    setIsDirty,
+    setConflicts,
+    setConflicts,
+  );
   const requestIdRef = useRef(0);
   // keep latest profile in ref
   useEffect(() => {
     profileRef.current = profile;
   }, [profile]);
-
   // FETCH PROFILE
   useEffect(() => {
     let isMounted = true;
