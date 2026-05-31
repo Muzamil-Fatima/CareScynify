@@ -36,7 +36,6 @@ const DoctorProvider = ({ children }) => {
     setProfile,
     setIsDirty,
     setConflicts,
-    setConflicts,
   );
   const requestIdRef = useRef(0);
   // keep latest profile in ref
@@ -50,11 +49,8 @@ const DoctorProvider = ({ children }) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
         const data = await getDoctorProfile();
-
         if (!isMounted) return;
-
         setProfile({
           user: data?.user || {},
           doctor: {

@@ -1,6 +1,6 @@
 import Doctor from "../../models/doctorModel.js";
 
-// ================= UTILS =================
+// UTILS 
 const toMinutes = (t = "") => {
   if (!t || !t.includes(":")) return null;
   const [h, m] = t.split(":").map(Number);
@@ -12,9 +12,7 @@ const hasOverlap = (aStart, aEnd, bStart, bEnd) => {
   return aStart < bEnd && aEnd > bStart;
 };
 
-// ======================================================
 // GET CONSULTANT HOURS
-// ======================================================
 export const getConsultantHours = async (req, res) => {
   try {
     const doctor = await Doctor.findOne({ userId: req.user._id });
@@ -40,9 +38,7 @@ export const getConsultantHours = async (req, res) => {
   }
 };
 
-// ======================================================
 // ADD WORKPLACE
-// ======================================================
 export const addConsultantHours = async (req, res) => {
   try {
     const doctor = await Doctor.findOne({ userId: req.user._id });
@@ -77,9 +73,7 @@ export const addConsultantHours = async (req, res) => {
   }
 };
 
-// ======================================================
 // DELETE WORKPLACE
-// ======================================================
 export const deleteConsultantHours = async (req, res) => {
   try {
     const { workplaceId } = req.params;
@@ -96,7 +90,7 @@ export const deleteConsultantHours = async (req, res) => {
     const beforeCount = doctor.workplaces.length;
 
     doctor.workplaces = doctor.workplaces.filter(
-      (w) => w._id.toString() !== workplaceId
+      (w) => w._id.toString() !== workplaceId,
     );
 
     if (doctor.workplaces.length === beforeCount) {
@@ -121,9 +115,7 @@ export const deleteConsultantHours = async (req, res) => {
   }
 };
 
-// ======================================================
 // GET AVAILABLE SLOTS
-// ======================================================
 export const getConsultantSlots = async (req, res) => {
   try {
     const { workplaceId, day } = req.query;
@@ -152,9 +144,9 @@ export const getConsultantSlots = async (req, res) => {
         message: "Workplace not found",
       });
     }
-const availability = workplace.availability
-  ? Object.fromEntries(workplace.availability)
-  : {};
+    const availability = workplace.availability
+      ? Object.fromEntries(workplace.availability)
+      : {};
     const schedule = availability?.[day];
 
     if (!schedule?.start || !schedule?.end) {
@@ -166,15 +158,24 @@ const availability = workplace.availability
 
     const duration = workplace.settings?.appointmentDuration?.value || 30;
 
-    const start = toMinutes(schedule.start);
-    const end = toMinutes(schedule.end);
+ //  allow CLEAR operation
+if (!slot?.start && !slot?.end) {
+  cleaned[day] = {
+    start: "",
+    end: "",
+  };
+  continue;
+}
 
-    if (start === null || end === null || start >= end) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid time range",
-      });
-    }
+const start = toMinutes(slot?.start);
+const end = toMinutes(slot?.end);
+
+if (start === null || end === null || start >= end) {
+  return res.status(400).json({
+    success: false,
+    message: `Invalid time range for ${day}`,
+  });
+}
 
     const slots = [];
     let current = start;
@@ -183,9 +184,7 @@ const availability = workplace.availability
       const h = Math.floor(current / 60);
       const m = current % 60;
 
-      slots.push(
-        `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`
-      );
+      slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
 
       current += duration;
     }
@@ -202,9 +201,7 @@ const availability = workplace.availability
   }
 };
 
-// ======================================================
 // UPDATE CONSULTANT HOURS
-// ======================================================
 export const updateConsultantHours = async (req, res) => {
   try {
     const { workplaceId } = req.params;
@@ -244,7 +241,12 @@ export const updateConsultantHours = async (req, res) => {
       const start = toMinutes(slot?.start);
       const end = toMinutes(slot?.end);
 
-      if (start === null || end === null || start >= end) continue;
+      if (start === null || end === null || start >= end) {
+        return res.status(400).json({
+          success: false,
+          message: `Invalid time range for ${day}`,
+        });
+      }
 
       cleaned[day] = {
         start: slot.start,
@@ -276,9 +278,7 @@ export const updateConsultantHours = async (req, res) => {
         if (hasOverlap(newStart, newEnd, exStart, exEnd)) {
           return res.status(400).json({
             success: false,
-            message: `Conflict with ${
-              w.name || "another workplace"
-            } on ${day}`,
+            message: `Time overlaps with "${w.name || "another workplace"}" on ${day}`,
           });
         }
       }

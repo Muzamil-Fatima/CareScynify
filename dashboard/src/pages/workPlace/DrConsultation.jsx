@@ -53,7 +53,7 @@ const DrConsultation = ({ workplace }) => {
         const end = availability?.[day]?.end || "";
 
         const key = `${workplaceId}-${day}`;
-        const conflictData = conflicts?.[key];
+        const conflict = conflicts?.[key];
 
         const isAvailable = start && end;
         const duration = calculateDuration(start, end);
@@ -102,15 +102,11 @@ const DrConsultation = ({ workplace }) => {
                 </button>
               </div>
             </div>
-            {conflictData && (
-              <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg flex items-center gap-2">
-                ⚠{" "}
-                <span>
-                  Time conflict with <b>{conflictData}</b>
-                </span>
+            {conflict && (
+              <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg border border-red-200">
+                ⚠ Time conflict with <b>{conflict}</b>
               </div>
             )}
-
             {duration && (
               <div className="text-right text-purple-600 text-sm mt-2">
                 {duration}
