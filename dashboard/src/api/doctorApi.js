@@ -42,7 +42,7 @@ export const getWorkplaces = async () => {
 // ------------------------- workplace settings -------------------------
 export const updateWorkplaceSettings = async (workplaceId, payload) => {
   const res = await api.patch(
-    `/api/doctor/workplace/${workplaceId}/settings`,
+    `/api/doctor/workplaces/${workplaceId}/settings`,
     payload,
   );
   return res.data;

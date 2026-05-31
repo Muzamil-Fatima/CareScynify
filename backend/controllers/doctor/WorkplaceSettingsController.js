@@ -16,11 +16,21 @@ export const updateWorkplaceSettings = async (req, res) => {
       return res.status(404).json({ message: "Workplace not found" });
     }
 
-    // merge settings safely
+    // ✅ SAFE DEEP MERGE
+    const current = workplace.settings?.toObject?.() || {};
+
     workplace.settings = {
-      ...workplace.settings.toObject(),
+      ...current,
       ...settings,
+
+      appointmentDuration: {
+        ...current.appointmentDuration,
+        ...settings?.appointmentDuration,
+      },
     };
+
+    // 🔥 FORCE MONGOOSE TO RECOGNIZE CHANGE
+    workplace.markModified("settings");
 
     await doctor.save();
 
@@ -29,6 +39,7 @@ export const updateWorkplaceSettings = async (req, res) => {
       message: "Workplace settings updated",
       workplace,
     });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Server error" });

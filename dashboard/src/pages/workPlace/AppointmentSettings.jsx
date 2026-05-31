@@ -1,47 +1,64 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const AppointmentSettings = ({ workplace }) => {
-  const { profile, setProfile, setIsDirty } = useDoctor();
+  const { profile, setProfile, setIsDirty, saveWorkplaceSettings } =
+    useDoctor();
 
- const workplaces = profile.doctor?.workplaces || [];
+  const updateWorkplace = useCallback(
+    (workplaceId, updater) => {
+      // get current settings safely
+      const currentSettings =
+        profile?.doctor?.workplaces?.find((w) => w._id === workplaceId)
+          ?.settings || {};
 
-const workplaceIndex = workplaces.findIndex(
-  (w) => w._id === workplace?._id
-);
+      // compute next settings
+      const nextSettings = updater(currentSettings);
 
-const workplaceData =
-  workplaceIndex !== -1 ? workplaces[workplaceIndex] : {};
+      // update UI state immediately
+      setProfile((prev) => {
+        const workplaces = prev.doctor?.workplaces || [];
+
+        const updatedWorkplaces = workplaces.map((w) => {
+          if (w._id !== workplaceId) return w;
+
+          return {
+            ...w,
+            settings: {
+              ...w.settings,
+              ...nextSettings,
+              appointmentDuration: {
+                ...w.settings?.appointmentDuration,
+                ...nextSettings?.appointmentDuration,
+              },
+            },
+          };
+        });
+
+        return {
+          ...prev,
+          doctor: {
+            ...prev.doctor,
+            workplaces: updatedWorkplaces,
+          },
+        };
+      });
+
+      // save to backend immediately (safe + no race condition)
+      saveWorkplaceSettings(workplaceId, nextSettings);
+
+      setIsDirty(true);
+    },
+    [profile, setProfile, saveWorkplaceSettings, setIsDirty],
+  );
+
+  const workplaceData = profile?.doctor?.workplaces?.find(
+    (w) => w._id === workplace?._id,
+  );
 
   const settings = workplaceData?.settings || {};
 
-const updateWorkplace = (workplaceId, updater) => {
-  setProfile((prev) => {
-    const updatedWorkplaces = (prev.doctor.workplaces || []).map((w) => {
-      if (w._id !== workplaceId) return w;
-
-      const newSettings = updater(w.settings || {});
-
-      return {
-        ...w,
-        settings: {
-          ...w.settings,
-          ...newSettings,
-        },
-      };
-    });
-
-    return {
-      ...prev,
-      doctor: {
-        ...prev.doctor,
-        workplaces: updatedWorkplaces,
-      },
-    };
-  });
-
-  setIsDirty(true);
-};
+  if (!workplace?._id) return null;
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
@@ -53,12 +70,12 @@ const updateWorkplace = (workplaceId, updater) => {
           <input
             type="number"
             min="1"
-            value={settings?.appointmentDuration?.value ?? 30}
+            value={settings?.appointmentDuration?.value}
             onChange={(e) =>
               updateWorkplace(workplace._id, (prev) => ({
                 ...prev,
                 appointmentDuration: {
-                  ...prev.appointmentDuration,
+                  ...(prev.appointmentDuration || {}),
                   value: Number(e.target.value),
                 },
               }))
@@ -72,7 +89,7 @@ const updateWorkplace = (workplaceId, updater) => {
               updateWorkplace(workplace._id, (prev) => ({
                 ...prev,
                 appointmentDuration: {
-                  ...prev.appointmentDuration,
+                  ...(prev.appointmentDuration || {}),
                   unit: e.target.value,
                 },
               }))
@@ -95,7 +112,7 @@ const updateWorkplace = (workplaceId, updater) => {
           onChange={(e) =>
             updateWorkplace(workplace._id, (prev) => ({
               ...prev,
-              appointmentFee: Number(e.target.value),
+              appointmentFee: parseInt(e.target.value, 10) || 0,
             }))
           }
           className="w-full px-3 py-2 border rounded-xl bg-gray-50"

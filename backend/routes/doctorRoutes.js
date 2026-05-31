@@ -43,7 +43,7 @@ router.delete("/workplaces/:id", protect, deleteWorkplace);
 router.get("/workplaces", protect, getWorkplaces);
 // ------------------------------------------------------workplace setting
 router.patch(
-  "/doctor/workplace/:workplaceId/settings",
+  "/workplaces/:workplaceId/settings", protect,
   updateWorkplaceSettings,
 );
 // --------------------------------------------------- Language
@@ -52,10 +52,10 @@ router.put("/languages", protect, updateDoctorLanguages);
 // Update doctor experience
 router.put("/experience", protect, updateDoctorExperience);
 // ---------------------------Consultation Hours (Per Day) according to Place
-router.get("/consultant", getConsultantHours);
-router.post("/consultant", addConsultantHours);
-router.put("/consultant/:workplaceId", updateConsultantHours);
-router.delete("/consultant/:workplaceId", deleteConsultantHours);
-router.get("/consultant/slots", getConsultantSlots);
+router.get("/consultant", protect, getConsultantHours);
+router.post("/consultant", protect, addConsultantHours);
+router.put("/consultant/:workplaceId", protect, updateConsultantHours);
+router.delete("/consultant/:workplaceId", protect, deleteConsultantHours);
+router.get("/consultant/slots", protect, getConsultantSlots);
 
 export default router;
