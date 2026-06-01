@@ -2,13 +2,10 @@ import express from "express";
 import {
   getDoctorProfile,
   updateDoctorProfile,
-} from "../controllers/doctorController.js";
-import {
+  updateDoctorEducation,
   updateDoctorLanguages,
   updateDoctorExperience,
-} from "../controllers/doctor/doctorSettingsController.js";
-import { updateDoctorEducation } from "../controllers/doctor/doctorEducationController.js";
-
+} from "../controllers/doctorController.js";
 import {
   addWorkplace,
   updateWorkplace,
@@ -22,7 +19,7 @@ import {
   deleteConsultantHours,
   getConsultantSlots,
 } from "../controllers/doctor/doctorConsultantController.js";
-import { updateWorkplaceSettings } from "../controllers/doctor/WorkplaceSettingsController.js";
+import { updateWorkplaceSettings } from "../controllers/doctor/workplaceSettingsController.js";
 import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
@@ -43,7 +40,8 @@ router.delete("/workplaces/:id", protect, deleteWorkplace);
 router.get("/workplaces", protect, getWorkplaces);
 // ------------------------------------------------------workplace setting
 router.patch(
-  "/workplaces/:workplaceId/settings", protect,
+  "/workplaces/:workplaceId/settings",
+  protect,
   updateWorkplaceSettings,
 );
 // --------------------------------------------------- Language
