@@ -40,9 +40,17 @@ const SettingsSidebar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
                 onClick={() => {
                   if (item.id) setActiveSidebar(item.id);
                 }}
-                className={({ isActive }) =>
-                  ` relative flex items-center rounded-xl font-medium text-sm transition-all duration-200 group ${isOpen ? "gap-4 px-3 py-2.5" : "justify-center py-3"} ${isActive ? "bg-purple-50/80 text-purple-700 font-semibold" : "hover:bg-gray-50 hover:text-gray-900"}`
-                }
+                className={({ isActive }) => `
+    relative flex items-center rounded-xl font-medium text-sm
+    transition-all duration-200 group
+    ${isOpen ? "gap-4 px-3 py-2.5" : "justify-center py-3"}
+    
+    ${
+      isActive
+        ? "bg-purple-50/80 text-purple-700 font-semibold"
+        : "hover:bg-gray-50 hover:text-gray-900"
+    }
+  `}
               >
                 <span
                   className={({ isActive }) => `

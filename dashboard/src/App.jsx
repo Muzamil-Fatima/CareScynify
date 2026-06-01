@@ -22,7 +22,7 @@ import TopBar from "./components/TopBar";
 import SideBar from "./components/sidebar/SideBar";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
-import SettingsSidebar from "./components/settings/SettingsSidebar.jsx";
+import SettingsLayout from "./components/settings/SettingsLayout.jsx";
 import ProfileInfo from "./components/settings/doctor/PersonalInfo";
 import Verification from "./components/settings/doctor/Verification";
 import ClinicInfo from "./components/settings/doctor/ClinicInfo";
@@ -101,7 +101,7 @@ function App() {
             <Route path="/patients" element={<Patients />} />
             <Route path="/receptionists" element={<Receptionists />} />
             {/* setting */}
-            <Route path="/settings" element={<SettingsSidebar />}>
+            <Route path="/settings" element={<SettingsLayout />}>
               <Route path="personal" element={<ProfileInfo />} />
               <Route path="verification" element={<Verification />} />
               <Route path="security" element={<Security />} />
