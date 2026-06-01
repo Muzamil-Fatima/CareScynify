@@ -164,7 +164,6 @@ if (!slot?.start && !slot?.end) {
     start: "",
     end: "",
   };
-  continue;
 }
 
 const start = toMinutes(slot?.start);

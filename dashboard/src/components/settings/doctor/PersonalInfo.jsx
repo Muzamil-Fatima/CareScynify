@@ -5,7 +5,7 @@ import ProfessionalTab from "./Professional";
 import LanguagesTab from "./Languages";
 import Experience from "./Experience";
 
-const PersonalInfoTab = () => {
+const PersonalInfo = () => {
   const [formData, setFormData] = useState({
     fullName: "Dr. Alex Taylor",
     specialization: "Cardiologist & AI Health Specialist",
@@ -117,4 +117,4 @@ const PersonalInfoTab = () => {
   );
 };
 
-export default PersonalInfoTab;
+export default PersonalInfo;

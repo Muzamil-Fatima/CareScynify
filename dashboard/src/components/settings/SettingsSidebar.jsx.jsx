@@ -3,7 +3,7 @@ import ToggleButton from "../sidebar/ToggleButton";
 import { settingByRole } from "../../config/settingsConfig";
 import { useAuth } from "../../hooks/useAuth";
 
-const SettingsLayout = ({ setActiveSidebar, isOpen, setIsOpen }) => {
+const SettingsSidebar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
   const { user } = useAuth();
   const role = user?.role;
   const menuItem = settingByRole[role] || [];
@@ -83,4 +83,4 @@ const SettingsLayout = ({ setActiveSidebar, isOpen, setIsOpen }) => {
   );
 };
 
-export default SettingsLayout;
+export default SettingsSidebar;

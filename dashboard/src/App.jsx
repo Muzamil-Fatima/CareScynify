@@ -1,4 +1,3 @@
-
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Overview from "./pages/overView/OverView";
@@ -23,8 +22,8 @@ import TopBar from "./components/TopBar";
 import SideBar from "./components/sidebar/SideBar";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
-import SettingsLayout from "./components/settings/SettingsLayout";
-import ProfileInfo from "./pages/settings/ProfileInfo";
+import SettingsSidebar from "./components/settings/SettingsSidebar.jsx";
+import ProfileInfo from "./components/settings/doctor/PersonalInfo";
 import Verification from "./components/settings/doctor/Verification";
 import ClinicInfo from "./components/settings/doctor/ClinicInfo";
 import Schedule from "./components/settings/doctor/Schedule";
@@ -102,14 +101,15 @@ function App() {
             <Route path="/patients" element={<Patients />} />
             <Route path="/receptionists" element={<Receptionists />} />
             {/* setting */}
-            <Route path="/settings" element={<SettingsLayout />} />
-            <Route path="/settings/personal" element={<ProfileInfo />} />
-            <Route path="/settings/verification" element={<Verification />} />
-            <Route path="/settings/security" element={<Security />} />
-            <Route path="/settings/notifications" element={<Notifications />} />
-            <Route path="/settings/clinic" element={<ClinicInfo />} />
-            <Route path="/settings/schedule" element={<Schedule />} />
-            <Route path="/settings/credentials" element={<Credentials />} />
+            <Route path="/settings" element={<SettingsSidebar />}>
+              <Route path="personal" element={<ProfileInfo />} />
+              <Route path="verification" element={<Verification />} />
+              <Route path="security" element={<Security />} />
+              <Route path="notifications" element={<Notifications />} />
+              <Route path="clinic" element={<ClinicInfo />} />
+              <Route path="schedule" element={<Schedule />} />
+              <Route path="credentials" element={<Credentials />} />
+            </Route>
 
             <Route path="/chat" element={<Chat />} />
             <Route path="/inventory" element={<Inventory />} />
