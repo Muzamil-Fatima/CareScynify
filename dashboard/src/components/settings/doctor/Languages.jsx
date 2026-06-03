@@ -102,10 +102,18 @@ const Languages = () => {
 
         <button
           onClick={openAddModal}
-          className="bg-purple-600 hover:bg-purple-700 transition text-white px-5 py-2.5 rounded-2xl flex items-center gap-2 font-medium shadow-sm"
+          className="group flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer"
         >
-          <AddRoundedIcon fontSize="small" />
-          Add Language
+          {/* PLUS ICON */}
+          <AddRoundedIcon
+            className="text-purple-600 group-hover:text-purple-700 transition "
+            sx={{ fontSize: 26, fontWeight: 700 }}
+          />
+
+          {/* HOVER TEXT */}
+          <span className="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-35 group-hover:opacity-100 transition-all duration-300 text-sm font-semibold text-purple-600 group-hover:text-purple-700">
+            Add Language
+          </span>
         </button>
       </div>
 

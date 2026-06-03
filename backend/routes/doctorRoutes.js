@@ -2,9 +2,12 @@ import express from "express";
 import {
   getDoctorProfile,
   updateDoctorProfile,
+  addDoctorEducation,
   updateDoctorEducation,
-  updateDoctorLanguages,
+  deleteDoctorEducation,
+  addDoctorExperience,
   updateDoctorExperience,
+  deleteDoctorExperience,
 } from "../controllers/doctorController.js";
 import {
   addWorkplace,
@@ -27,8 +30,7 @@ const router = express.Router();
 router.get("/profile", protect, getDoctorProfile);
 // Update profile (AUTO-SAVE USE)
 router.put("/profile", protect, updateDoctorProfile);
-// Update doctor education
-router.put("/education", protect, updateDoctorEducation);
+
 // ------------------------------------------------------ WorkPlace
 // add work places
 router.post("/workplaces", protect, addWorkplace);
@@ -44,11 +46,17 @@ router.patch(
   protect,
   updateWorkplaceSettings,
 );
-// --------------------------------------------------- Language
-// Update doctor languages
-router.put("/languages", protect, updateDoctorLanguages);
+// --------------------------------------------------Education
+// Update doctor education
+router.post("/education", protect, addDoctorEducation);
+router.put("/education/:id", protect, updateDoctorEducation);
+router.delete("/education/:id", protect, deleteDoctorEducation);
+// --------------------------------------------------- Experience
 // Update doctor experience
-router.put("/experience", protect, updateDoctorExperience);
+router.post("/experience", protect, addDoctorExperience);
+router.put("/experience/:id", protect, updateDoctorExperience);
+router.delete("/experience/:id", protect, deleteDoctorExperience);
+
 // ---------------------------Consultation Hours (Per Day) according to Place
 router.get("/consultant", protect, getConsultantHours);
 router.post("/consultant", protect, addConsultantHours);

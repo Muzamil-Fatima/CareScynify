@@ -55,11 +55,70 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 export { updateUserProfile };
 
-// verify Mobile number 
-export const verifyMobileNumber = async(req,res)=>{
-    try {
-        
-    } catch (error) {
-        return res.status(500).json({message:error.message})
+// verify Mobile number
+export const verifyMobileNumber = async (req, res) => {
+  try {
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+// --------------------------------------Languages
+// add language
+export const addLanguage = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    user.languages.push(req.body);
+
+    await user.save();
+
+    res.json({
+      success: true,
+      languages: user.languages,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+//  update languages
+export const patchLanguage = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    const lang = user.languages.id(req.params.id);
+
+    if (!lang) {
+      return res.status(404).json({ message: "Language not found" });
     }
-}
+
+    Object.assign(lang, req.body);
+
+    await user.save();
+
+    res.json({
+      success: true,
+      languages: user.languages,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+// Delete language
+export const deleteLanguage = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    user.languages = user.languages.filter(
+      (l) => l._id.toString() !== req.params.id,
+    );
+
+    await user.save();
+
+    res.json({
+      success: true,
+      languages: user.languages,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

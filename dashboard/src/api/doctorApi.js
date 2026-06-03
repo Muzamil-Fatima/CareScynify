@@ -12,9 +12,40 @@ export const updateDoctorProfile = async (payload) => {
 };
 // --------------------------------- Education ---------------------------------
 
-// update doctor education
-export const updateDoctorEducation = async (payload) => {
-  const res = await api.put("/api/doctor/education", payload);
+import api from "./api";
+
+// UPDATE education
+export const updateDoctorEducation = async (id, payload) => {
+  const res = await api.put(`/api/doctor/education/${id}`, payload);
+  return res.data;
+};
+
+// ADD education
+export const addDoctorEducation = async (payload) => {
+  const res = await api.post("/api/doctor/education", payload);
+  return res.data;
+};
+
+// DELETE education
+export const deleteDoctorEducation = async (id) => {
+  const res = await api.delete(`/api/doctor/education/${id}`);
+  return res.data;
+};
+// --------------------------------- Experience ---------------------------------
+
+// update doctor experience
+export const updateDoctorExperience = async (id, payload) => {
+  const res = await api.put(`/api/doctor/experience/${id}`, payload);
+  return res.data;
+};
+// add doctor experience
+export const addDoctorExperience = async (payload) => {
+  const res = await api.post("/api/doctor/experience", payload);
+  return res.data;
+};
+// delete doctor experience
+export const deleteDoctorExperience = async (id) => {
+  const res = await api.delete(`/api/doctor/experience/${id}`);
   return res.data;
 };
 // --------------------------------- WorkPlace ---------------------------------
@@ -110,19 +141,4 @@ export const getConsultantSlots = async (workplaceId, day) => {
   } catch (err) {
     throw err?.response?.data || err;
   }
-};
-
-// --------------------------------- Languages ---------------------------------
-
-// update doctor languages
-export const updateDoctorLanguages = async (payload) => {
-  const res = await api.put("/api/doctor/languages", payload);
-  return res.data;
-};
-// --------------------------------- Experience ---------------------------------
-
-// update doctor experience
-export const updateDoctorExperience = async (payload) => {
-  const res = await api.put("/api/doctor/experience", payload);
-  return res.data;
 };

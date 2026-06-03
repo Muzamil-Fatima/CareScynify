@@ -23,16 +23,7 @@ export const settingByRole = {
       path: "/settings/notifications",
       icon: <NotificationsNoneOutlinedIcon />,
     },
-    {
-      name: "Clinic Info",
-      path: "/settings/clinic",
-      icon: <LocalHospitalOutlinedIcon />,
-    },
-    {
-      name: "Schedule",
-      path: "/settings/schedule",
-      icon: <CalendarMonthOutlinedIcon />,
-    },
+
     {
       name: "Personal Info",
       path: "/settings/personal",
@@ -42,6 +33,18 @@ export const settingByRole = {
       name: "Medical Credentials",
       path: "/settings/credentials",
       icon: <VerifiedUserOutlinedIcon />,
+    },
+  ],
+  clinic: [
+    {
+      name: "Clinic Info",
+      path: "/settings/clinic",
+      icon: <LocalHospitalOutlinedIcon />,
+    },
+    {
+      name: "Schedule",
+      path: "/settings/schedule",
+      icon: <CalendarMonthOutlinedIcon />,
     },
   ],
 };

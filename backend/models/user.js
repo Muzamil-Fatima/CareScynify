@@ -50,6 +50,13 @@ const userSchema = new mongoose.Schema(
       enum: ["active", "inactive", "suspended"],
       default: "active",
     },
+    languages: [
+      {
+        _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+        language: String,
+        proficiency: String,
+      },
+    ],
     role: {
       type: String,
       enum: [

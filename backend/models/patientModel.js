@@ -9,7 +9,6 @@ const patientSchema = new mongoose.Schema(
     },
 
     // PERSONAL INFO
-  
 
     gender: {
       type: String,

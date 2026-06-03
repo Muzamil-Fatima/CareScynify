@@ -58,13 +58,8 @@ export const updateDoctorProfile = async (req, res) => {
     await user.save();
 
     // DOCTOR FIELDS (ONLY UI USED)
-    const {
-      specialization,
-      experience,
-      qualifications,
-      licenseNo,
-      education,
-    } = req.body;
+    const { specialization, experience, qualifications, licenseNo, education } =
+      req.body;
 
     doctor.specialization = specialization ?? doctor.specialization;
     doctor.qualifications = qualifications ?? doctor.qualifications;
@@ -96,71 +91,122 @@ export const updateDoctorProfile = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-
-// search Doctor
-export const searchDoctor = async (req, res) => {
+// -------------------------------------Education
+// ADD EDUCATION
+export const addDoctorEducation = async (req, res) => {
   try {
-    let doctor = await Doctor.findOne({ userId, email, name, location });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-// get all doctor is specfic clinic
-export const clinicAllDoctor = async (req, res) => {
-  try {
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
+    const doctor = await Doctor.findOne({ userId: req.user._id });
 
-
-//  update education
-export const updateDoctorEducation = async (req, res) => {
-  try {
-    const doctor = await Doctor.findOneAndUpdate(
-      { userId: req.user._id },
-      { education: req.body.education },
-      { new: true }
-    );
-
-    return res.json({ success: true, doctor });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
-  }
-};
-// update doctor education
-export const updateEducation = async (req, res) => {
-  try {
-    const userId = req.userId;
-    const { education } = req.body;
-
-    let doctor = await Doctor.findOne({ userId });
-    if (!doctor) doctor = new Doctor({ userId });
-
-    doctor.education = education || [];
+    doctor.education.push(req.body);
 
     await doctor.save();
 
-    return res.json({
+    res.json({
       success: true,
-      message: "Education updated successfully",
+      education: doctor.education,
     });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
-//  update languages
-export const updateDoctorLanguages = async (req, res) => {
+// UPDATE EDUCATION
+export const updateDoctorEducation = async (req, res) => {
   try {
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+    const doctor = await Doctor.findOne({ userId: req.user._id });
+
+    const edu = doctor.education.id(req.params.id);
+    if (!edu) return res.status(404).json({ message: "Not found" });
+
+    Object.assign(edu, req.body);
+
+    await doctor.save();
+
+    res.json({
+      success: true,
+      education: doctor.education,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
-//  update experience
+
+// DELETE EDUCATION
+export const deleteDoctorEducation = async (req, res) => {
+  try {
+    const doctor = await Doctor.findOne({ userId: req.user._id });
+
+    doctor.education = doctor.education.filter(
+      (e) => e._id.toString() !== req.params.id
+    );
+
+    await doctor.save();
+
+    res.json({
+      success: true,
+      education: doctor.education,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// -------------------------------Experience
+// ADD EXPERIENCE
+export const addDoctorExperience = async (req, res) => {
+  try {
+    const doctor = await Doctor.findOne({ userId: req.user._id });
+
+    doctor.experienceDetails.push(req.body);
+
+    await doctor.save();
+
+    res.json({
+      success: true,
+      experience: doctor.experienceDetails,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// UPDATE EXPERIENCE
 export const updateDoctorExperience = async (req, res) => {
   try {
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+    const doctor = await Doctor.findOne({ userId: req.user._id });
+
+    const exp = doctor.experienceDetails.id(req.params.id);
+    if (!exp) return res.status(404).json({ message: "Not found" });
+
+    Object.assign(exp, req.body);
+
+    await doctor.save();
+
+    res.json({
+      success: true,
+      experience: doctor.experienceDetails,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// DELETE EXPERIENCE
+export const deleteDoctorExperience = async (req, res) => {
+  try {
+    const doctor = await Doctor.findOne({ userId: req.user._id });
+
+    doctor.experienceDetails = doctor.experienceDetails.filter(
+      (e) => e._id.toString() !== req.params.id
+    );
+
+    await doctor.save();
+
+    res.json({
+      success: true,
+      experience: doctor.experienceDetails,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };

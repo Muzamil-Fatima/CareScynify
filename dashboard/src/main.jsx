@@ -5,10 +5,12 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/auth/AuthProvider";
 import DoctorProvider from "./context/doctor/DoctorProvider";
+import NotificationProvider from "./context/notification/NotificationProvider";
 // import  PatientProvider  from "./context/patients/PatientProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* <PatientProvider> */}
+    <NotificationProvider>
       <DoctorProvider>
         <AuthProvider>
           <BrowserRouter>
@@ -16,6 +18,7 @@ createRoot(document.getElementById("root")).render(
           </BrowserRouter>
         </AuthProvider>
       </DoctorProvider>
+    </NotificationProvider>
     {/* </PatientProvider> */}
   </StrictMode>,
 );

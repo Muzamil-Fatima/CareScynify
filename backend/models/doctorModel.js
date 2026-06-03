@@ -78,24 +78,43 @@ const drSchema = new mongoose.Schema(
 
           consultationType: {
             type: String,
-            enum: ["online", "clinic", "home visit",],
+            enum: ["online", "clinic", "home visit"],
             default: "online",
           },
         },
-availability: {
-  type: Object,
-  default: {},
-},
+        availability: {
+          type: Object,
+          default: {},
+        },
       },
     ],
     education: [
       {
+        _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+        school: String,
         degree: String,
-        institute: String,
-        passingYear: String,
+        field: String,
+        startYear: String,
+        endYear: String,
         description: String,
       },
     ],
+
+    experienceDetails: [
+      {
+        _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+        hospital: String,
+        role: String,
+        employmentType: String,
+        location: String,
+        startYear: String,
+        endYear: String,
+        currentlyWorking: Boolean,
+        description: String,
+      },
+    ],
+
+
     fee: {
       type: Number,
     },

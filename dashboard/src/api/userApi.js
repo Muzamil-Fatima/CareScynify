@@ -9,3 +9,10 @@ export const updateUserProfile = async (formData) => {
 
   return res.data;
 };
+// --------------------------------- Languages ---------------------------------
+
+// update doctor languages
+export const updateDoctorLanguages = async (payload) => {
+  const res = await api.put("/api/doctor/languages", payload);
+  return res.data;
+};

@@ -15,7 +15,6 @@ import HospitalDetail from "./pages/hospital/HospitalDetail";
 import Clinic from "./pages/clinic/Clinic";
 import ClinicDetail from "./pages/clinic/ClinicDetail";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
-import Jobs from "./pages/jobs/Jobs";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
 import RoleSelection from "./pages/RoleSelection";
 //  auth pages
@@ -66,7 +65,6 @@ function App() {
           <Route path="/hospital/:id" element={<HospitalDetail />} />
           <Route path="/laboratory" element={<Laboratory />} />
           <Route path="/pharmacy" element={<Pharmacy />} />
-          <Route path="/jobs" element={<Jobs />} />
           <Route path="/role-selection" element={<RoleSelection />} />
 
           {/* AUTH ROUTES */}
