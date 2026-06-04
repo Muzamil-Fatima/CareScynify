@@ -114,19 +114,9 @@ const drSchema = new mongoose.Schema(
       },
     ],
 
-
     fee: {
       type: Number,
     },
-
-    // Appointment Details
-    availableDays: [
-      {
-        day: String,
-        startTime: String,
-        endTime: String,
-      },
-    ],
 
     consultationTime: {
       type: String,

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import DoctorContext from "../../../context/doctor/DoctorContext";
 import WorkOutlineRoundedIcon from "@mui/icons-material/WorkOutlineRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
@@ -10,20 +11,10 @@ const Experience = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  const [experiences, setExperiences] = useState([
-    {
-      id: 1,
-      hospital: "Mayo Hospital Lahore",
-      role: "Cardiologist",
-      employmentType: "Full-time",
-      location: "Lahore, Pakistan",
-      startYear: "2021",
-      endYear: "",
-      currentlyWorking: true,
-      description:
-        "Managing heart-related patients, diagnosis, and emergency cardiac procedures.",
-    },
-  ]);
+  const { profile, addExperience, updateExperience, removeExperience } =
+    useContext(DoctorContext);
+
+  const experiences = profile?.doctor?.experiences || [];
 
   const [form, setForm] = useState({
     hospital: "",
@@ -52,7 +43,7 @@ const Experience = () => {
   };
 
   const openEditModal = (item) => {
-    setEditingId(item.id);
+    setEditingId(item._id);
     setForm(item);
     setIsOpen(true);
   };
@@ -62,32 +53,30 @@ const Experience = () => {
     setEditingId(null);
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
 
     if (!form.hospital || !form.role) return;
 
-    if (editingId) {
-      setExperiences((prev) =>
-        prev.map((item) =>
-          item.id === editingId ? { ...item, ...form } : item,
-        ),
-      );
-    } else {
-      setExperiences((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          ...form,
-        },
-      ]);
-    }
+    try {
+      if (editingId) {
+        await updateExperience(editingId, form);
+      } else {
+        await addExperience(form);
+      }
 
-    closeModal();
+      closeModal();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const handleDelete = (id) => {
-    setExperiences((prev) => prev.filter((item) => item.id !== id));
+  const handleDelete = async (id) => {
+    try {
+      await removeExperience(id);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -152,7 +141,7 @@ const Experience = () => {
         <div className="space-y-4">
           {experiences.map((item) => (
             <div
-              key={item.id}
+              key={item._id}
               className="bg-white border border-slate-200 rounded-[30px] p-6 hover:shadow-md transition"
             >
               <div className="flex justify-between items-start gap-5">
@@ -207,7 +196,7 @@ const Experience = () => {
                   </button>
 
                   <button
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => handleDelete(item._id)}
                     className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-500 transition flex items-center justify-center"
                   >
                     <DeleteOutlineOutlinedIcon fontSize="small" />

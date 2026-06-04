@@ -7,6 +7,9 @@ import {
   addDoctorEducation,
   updateDoctorEducation,
   deleteDoctorEducation,
+  addDoctorExperience,
+  updateDoctorExperience,
+  deleteDoctorExperience,
 } from "../../api/doctorApi";
 import { useDoctorWorkplace } from "../../hooks/useDoctorWorkplace";
 import { useConsultationHours } from "../../hooks/useConsultationHours";
@@ -64,6 +67,7 @@ const DoctorProvider = ({ children }) => {
             education: data?.doctor?.education || [],
             workplaces: data?.doctor?.workplaces || [],
             languages: data?.doctor?.languages || [],
+            experiences: data?.doctor?.experienceDetails || [],
           },
         });
       } catch (err) {
@@ -186,6 +190,41 @@ const DoctorProvider = ({ children }) => {
       },
     }));
   };
+  const addExperience = async (data) => {
+    const res = await addDoctorExperience(data);
+
+    setProfile((prev) => ({
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        experiences: res.experience, // backend should return updated list
+      },
+    }));
+  };
+
+  const updateExperience = async (id, data) => {
+    const res = await updateDoctorExperience(id, data);
+
+    setProfile((prev) => ({
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        experiences: res.experience,
+      },
+    }));
+  };
+
+  const removeExperience = async (id) => {
+    const res = await deleteDoctorExperience(id);
+
+    setProfile((prev) => ({
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        experiences: res.experience,
+      },
+    }));
+  };
   return (
     <DoctorContext.Provider
       value={{
@@ -204,6 +243,9 @@ const DoctorProvider = ({ children }) => {
         addEducation,
         updateEducation,
         removeEducation,
+        removeExperience,
+        updateExperience,
+        addExperience,
       }}
     >
       {children}
