@@ -11,9 +11,6 @@ export const updateDoctorProfile = async (payload) => {
   return res.data;
 };
 // --------------------------------- Education ---------------------------------
-
-import api from "./api";
-
 // UPDATE education
 export const updateDoctorEducation = async (id, payload) => {
   const res = await api.put(`/api/doctor/education/${id}`, payload);

@@ -5,6 +5,8 @@ import {
   updateDoctorProfile,
   updateWorkplaceSettings,
   addDoctorEducation,
+  updateDoctorEducation,
+  deleteDoctorEducation,
 } from "../../api/doctorApi";
 import { useDoctorWorkplace } from "../../hooks/useDoctorWorkplace";
 import { useConsultationHours } from "../../hooks/useConsultationHours";
@@ -149,18 +151,41 @@ const DoctorProvider = ({ children }) => {
       toast.error(err?.response?.data?.message || "Workplace save failed");
     }
   };
-// education
-const addEducation = async (data) => {
-  const res = await addDoctorEducation(data);
+  // education
+  const addEducation = async (data) => {
+    const res = await addDoctorEducation(data);
 
-  setProfile((prev) => ({
-    ...prev,
-    doctor: {
-      ...prev.doctor,
-      education: res.data,
-    },
-  }));
-};
+    setProfile((prev) => ({
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        education: res.education,
+      },
+    }));
+  };
+  const updateEducation = async (id, data) => {
+    const res = await updateDoctorEducation(id, data);
+
+    setProfile((prev) => ({
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        education: res.education,
+      },
+    }));
+  };
+
+  const removeEducation = async (id) => {
+    const res = await deleteDoctorEducation(id);
+
+    setProfile((prev) => ({
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        education: res.education,
+      },
+    }));
+  };
   return (
     <DoctorContext.Provider
       value={{
@@ -177,6 +202,8 @@ const addEducation = async (data) => {
         isSaving,
         saveWorkplaceSettings,
         addEducation,
+        updateEducation,
+        removeEducation,
       }}
     >
       {children}
