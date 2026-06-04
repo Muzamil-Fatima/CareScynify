@@ -54,7 +54,22 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 export { updateUserProfile };
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
 
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 // verify Mobile number
 export const verifyMobileNumber = async (req, res) => {
   try {
@@ -81,7 +96,7 @@ export const addLanguage = async (req, res) => {
   }
 };
 //  update languages
-export const patchLanguage = async (req, res) => {
+export const updateLanguage = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
 

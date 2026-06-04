@@ -1,26 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import TranslateOutlinedIcon from "@mui/icons-material/TranslateOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import GTranslateRoundedIcon from "@mui/icons-material/GTranslateRounded";
-
+import ISO6391 from "iso-639-1";
+import Select from "react-select";
+import UserContext from "../../../context/user/UserContext";
 const Languages = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const [languages, setLanguages] = useState([
-    {
-      id: 1,
-      language: "English",
-      proficiency: "Professional",
-    },
-    {
-      id: 2,
-      language: "Urdu",
-      proficiency: "Native",
-    },
-  ]);
+  const { languages, addLanguage, updateLanguage, deleteLanguage } =
+    useContext(UserContext);
 
   const [editingId, setEditingId] = useState(null);
 
@@ -28,7 +19,10 @@ const Languages = () => {
     language: "",
     proficiency: "Conversational",
   });
-
+  const languageOptions = ISO6391.getAllNames().map((lang) => ({
+    value: lang,
+    label: lang,
+  }));
   const openAddModal = () => {
     setEditingId(null);
     setForm({
@@ -39,7 +33,7 @@ const Languages = () => {
   };
 
   const openEditModal = (item) => {
-    setEditingId(item.id);
+    setEditingId(item._id);
     setForm(item);
     setIsOpen(true);
   };
@@ -53,36 +47,22 @@ const Languages = () => {
     });
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
 
     if (!form.language.trim()) return;
 
     if (editingId) {
-      setLanguages((prev) =>
-        prev.map((item) =>
-          item.id === editingId
-            ? { ...item, ...form }
-            : item
-        )
-      );
+      await updateLanguage(editingId, form);
     } else {
-      setLanguages((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          ...form,
-        },
-      ]);
+      await addLanguage(form);
     }
 
     closeModal();
   };
 
-  const handleDelete = (id) => {
-    setLanguages((prev) =>
-      prev.filter((item) => item.id !== id)
-    );
+  const handleDelete = async (id) => {
+    await deleteLanguage(id);
   };
 
   return (
@@ -132,8 +112,7 @@ const Languages = () => {
           </h3>
 
           <p className="text-slate-500 text-sm mt-2 max-w-md">
-            Add languages you speak to improve communication
-            with patients.
+            Add languages you speak to improve communication with patients.
           </p>
 
           <button
@@ -148,7 +127,7 @@ const Languages = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {languages.map((item) => (
             <div
-              key={item.id}
+              key={item._id}
               className="bg-white border border-slate-200 rounded-[28px] p-5 hover:shadow-md transition"
             >
               <div className="flex justify-between items-start">
@@ -177,9 +156,7 @@ const Languages = () => {
                   </button>
 
                   <button
-                    onClick={() =>
-                      handleDelete(item.id)
-                    }
+                    onClick={() => handleDelete(item._id)}
                     className="w-10 h-10 rounded-xl bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-500 transition flex items-center justify-center"
                   >
                     <DeleteOutlineOutlinedIcon fontSize="small" />
@@ -199,9 +176,7 @@ const Languages = () => {
             <div className="flex justify-between items-center border-b border-slate-200 px-6 py-5">
               <div>
                 <h2 className="text-xl font-bold text-slate-800">
-                  {editingId
-                    ? "Edit Language"
-                    : "Add Language"}
+                  {editingId ? "Edit Language" : "Add Language"}
                 </h2>
 
                 <p className="text-sm text-slate-500 mt-1">
@@ -218,27 +193,47 @@ const Languages = () => {
             </div>
 
             {/* FORM */}
-            <form
-              onSubmit={handleSave}
-              className="p-6 space-y-5"
-            >
+            <form onSubmit={handleSave} className="p-6 space-y-5">
               <div>
                 <label className="text-sm font-medium text-slate-600 mb-2 block">
                   Language
                 </label>
 
-                <input
-                  type="text"
-                  placeholder="English"
-                  value={form.language}
-                  onChange={(e) =>
-                    setForm((prev) => ({
-                      ...prev,
-                      language: e.target.value,
-                    }))
-                  }
-                  className="w-full border border-slate-200 rounded-2xl px-4 py-3 outline-none focus:border-purple-500 transition"
-                />
+              <Select
+  options={languageOptions}
+  value={
+    form.language
+      ? { value: form.language, label: form.language }
+      : null
+  }
+  onChange={(selected) =>
+    setForm((prev) => ({
+      ...prev,
+      language: selected.value,
+    }))
+  }
+  isSearchable
+  placeholder="Select language"
+
+  styles={{
+    control: (base, state) => ({
+      ...base,
+      borderRadius: "16px",
+      padding: "6px",
+      borderColor: state.isFocused ? "#a855f7" : "#e2e8f0",
+      boxShadow: "none",
+      "&:hover": {
+        borderColor: "#a855f7",
+      },
+    }),
+
+    menu: (base) => ({
+      ...base,
+      borderRadius: "16px",
+      overflow: "hidden",
+    }),
+  }}
+/>
               </div>
 
               <div>
