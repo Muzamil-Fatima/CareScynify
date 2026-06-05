@@ -199,41 +199,40 @@ const Languages = () => {
                   Language
                 </label>
 
-              <Select
-  options={languageOptions}
-  value={
-    form.language
-      ? { value: form.language, label: form.language }
-      : null
-  }
-  onChange={(selected) =>
-    setForm((prev) => ({
-      ...prev,
-      language: selected.value,
-    }))
-  }
-  isSearchable
-  placeholder="Select language"
+                <Select
+                  options={languageOptions}
+                  value={
+                    form.language
+                      ? { value: form.language, label: form.language }
+                      : null
+                  }
+                  onChange={(selected) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      language: selected.value,
+                    }))
+                  }
+                  isSearchable
+                  placeholder="Select language"
+                  styles={{
+                    control: (base, state) => ({
+                      ...base,
+                      borderRadius: "16px",
+                      padding: "6px",
+                      borderColor: state.isFocused ? "#a855f7" : "#e2e8f0",
+                      boxShadow: "none",
+                      "&:hover": {
+                        borderColor: "#a855f7",
+                      },
+                    }),
 
-  styles={{
-    control: (base, state) => ({
-      ...base,
-      borderRadius: "16px",
-      padding: "6px",
-      borderColor: state.isFocused ? "#a855f7" : "#e2e8f0",
-      boxShadow: "none",
-      "&:hover": {
-        borderColor: "#a855f7",
-      },
-    }),
-
-    menu: (base) => ({
-      ...base,
-      borderRadius: "16px",
-      overflow: "hidden",
-    }),
-  }}
-/>
+                    menu: (base) => ({
+                      ...base,
+                      borderRadius: "16px",
+                      overflow: "hidden",
+                    }),
+                  }}
+                />
               </div>
 
               <div>

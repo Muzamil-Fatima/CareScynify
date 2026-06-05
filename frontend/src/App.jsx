@@ -29,7 +29,6 @@ import PatientProfile from "./pages/profile/PatientProfile";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Appointments from "./pages/appointments/Appointments";
 import Reports from "./pages/reports/Reports";
-import AIInsights from "./pages/ai/AIInsights";
 import Settings from "./pages/settings/Settings";
 import RootLayout from "./layout/RootLayout";
 
@@ -81,7 +80,6 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/ai-insights" element={<AIInsights />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
