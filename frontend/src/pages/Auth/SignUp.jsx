@@ -2,7 +2,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../Utils/api.js";
+import { BASE_URL } from "../../utils/api.js";
 import axios from "axios";
 import { useAuth } from "../../hooks/useAuth.js";
 const Signup = () => {

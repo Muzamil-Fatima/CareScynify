@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { BASE_URL } from "../../Utils/api.js";
+import { BASE_URL } from "../../utils/api.js";
 import { useLocation, useNavigate } from "react-router-dom";
 const VerifyEmail = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);

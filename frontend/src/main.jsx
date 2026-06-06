@@ -13,30 +13,25 @@ import { AppointmentProvider } from "./context/AppointmentContext.jsx";
 import PatientProvider from "./context/patients/PatientProvider.jsx";
 
 createRoot(document.getElementById("root")).render(
-  <AppointmentProvider>
-    <PatientProvider>
-      <PharmacyProvider>
-        <LabProvider>
-          <HospitalProvider>
-            <ClinicProvider>
-              <DoctorProvider>
-                <AuthProvider>
-                  <BrowserRouter>
-                    <StrictMode>
+  <StrictMode>
+    <AppointmentProvider>
+      <PatientProvider>
+        <PharmacyProvider>
+          <LabProvider>
+            <HospitalProvider>
+              <ClinicProvider>
+                <DoctorProvider>
+                  <AuthProvider>
+                    <BrowserRouter>
                       <App />
-                    </StrictMode>
-                  </BrowserRouter>
-                </AuthProvider>
-              </DoctorProvider>
-              ,
-            </ClinicProvider>
-            ,
-          </HospitalProvider>
-          ,
-        </LabProvider>
-        ,
-      </PharmacyProvider>
-      ,
-    </PatientProvider>
-  </AppointmentProvider>,
+                    </BrowserRouter>
+                  </AuthProvider>
+                </DoctorProvider>
+              </ClinicProvider>
+            </HospitalProvider>
+          </LabProvider>
+        </PharmacyProvider>
+      </PatientProvider>
+    </AppointmentProvider>
+  </StrictMode>
 );

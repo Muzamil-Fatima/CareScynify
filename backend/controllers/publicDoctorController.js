@@ -19,7 +19,7 @@ export const getDoctors = async (req, res) => {
       status: "active",
       ...(specialization && { specialization }),
       ...(consultationType && {
-        "settings.consultationType": consultationType,
+        "workplaces.settings.consultationType": consultationType,
       }),
       ...(search && {
         "userId.name": {
@@ -71,6 +71,28 @@ export const getDoctors = async (req, res) => {
         limit,
         totalPages: Math.ceil(total / limit),
       },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+export const getDoctorById = async (req, res) => {
+  try {
+    const doctor = await Doctor.findById(req.params.id).populate("userId");
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    res.json({
+      success: true,
+      doctor,
     });
   } catch (error) {
     res.status(500).json({

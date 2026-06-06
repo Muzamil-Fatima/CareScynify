@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../../Utils/api.js";
+import { BASE_URL } from "../../utils/api.js";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 const Forget = () => {

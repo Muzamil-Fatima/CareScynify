@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import { api } from "../api/axios";
 
 export const useDoctor = (filters = {}) => {
   const [doctors, setDoctors] = useState([]);
@@ -25,11 +25,13 @@ export const useDoctor = (filters = {}) => {
         params.append("consultationType", "online");
       }
 
-      const { data } = await axios.get(`/api/doctors?${params.toString()}`);
+      const { data } = await api.get(`/api/doctors?${params.toString()}`);
 
-      setDoctors(data.doctors); // IMPORTANT FIX
+      console.log(data);
+
+      setDoctors(data.doctors);
     } catch (err) {
-      setError(err.response?.data?.message || err.message);
+      setError(err.message);
     } finally {
       setLoading(false);
     }

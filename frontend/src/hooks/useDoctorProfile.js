@@ -1,21 +1,19 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState, useCallback } from "react";
+import { api } from "../api/axios";
 
 export const useDoctorProfile = (doctorId) => {
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchDoctor = async () => {
+  const fetchDoctor = useCallback(async () => {
     if (!doctorId) return;
 
     try {
       setLoading(true);
       setError(null);
 
-      const { data } = await axios.get(
-        `/api/doctors/${doctorId}`
-      );
+      const { data } = await api.get(`/api/doctors/${doctorId}`);
 
       setDoctor(data);
     } catch (err) {
@@ -23,11 +21,11 @@ export const useDoctorProfile = (doctorId) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [doctorId]);
 
   useEffect(() => {
     fetchDoctor();
-  }, [doctorId]);
+  }, [fetchDoctor]);
 
   return {
     doctor,

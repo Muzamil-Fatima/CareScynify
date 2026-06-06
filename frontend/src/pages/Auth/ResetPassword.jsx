@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { BASE_URL } from "../../Utils/api";
+import { BASE_URL } from "../../utils/api";
 import { useNavigate, useLocation } from "react-router-dom";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
