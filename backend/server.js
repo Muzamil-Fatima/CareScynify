@@ -13,6 +13,7 @@ import doctorRoutes from "./routes/doctorRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import userRouter from "./routes/userRoutes.js";
+import publicDoctorRoutes from "./routes/publicDoctorRoutes.js";
 
 //Configuration
 connectDB();
@@ -57,6 +58,8 @@ app.use("/api/patient", patientsRoutes);
 app.use("/api/doctor", doctorRoutes);
 // report router
 app.use("/api/report", reportRoutes);
+// public doctor routes
+app.use("/api/doctors", publicDoctorRoutes); 
 // server listen
 const port = process.env.PORT || 8000;
 app.listen(port, () => {

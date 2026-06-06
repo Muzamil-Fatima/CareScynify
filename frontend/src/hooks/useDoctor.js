@@ -6,15 +6,6 @@ export const useDoctor = (filters = {}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Destructure filters
-  const {
-    specialty,
-    rating,
-    experience,
-    available,
-    search,
-  } = filters;
-
   const fetchDoctors = useCallback(async () => {
     try {
       setLoading(true);
@@ -22,32 +13,27 @@ export const useDoctor = (filters = {}) => {
 
       const params = new URLSearchParams();
 
-      if (specialty)
-        params.append("specialty", specialty);
+      if (filters.search) {
+        params.append("search", filters.search);
+      }
 
-      if (rating)
-        params.append("rating", rating);
+      if (filters.specialty) {
+        params.append("specialization", filters.specialty);
+      }
 
-      if (experience)
-        params.append("experience", experience);
+      if (filters.available) {
+        params.append("consultationType", "online");
+      }
 
-      if (available)
-        params.append("available", available);
+      const { data } = await axios.get(`/api/doctors?${params.toString()}`);
 
-      if (search)
-        params.append("search", search);
-
-      const { data } = await axios.get(
-        `/api/doctors?${params.toString()}`
-      );
-
-      setDoctors(data);
+      setDoctors(data.doctors); // IMPORTANT FIX
     } catch (err) {
-      setError(err.message || "Failed to fetch doctors");
+      setError(err.response?.data?.message || err.message);
     } finally {
       setLoading(false);
     }
-  }, [specialty, rating, experience, available, search]);
+  }, [filters.search, filters.specialty, filters.available]);
 
   useEffect(() => {
     fetchDoctors();

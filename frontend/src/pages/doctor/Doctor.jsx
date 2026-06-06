@@ -53,7 +53,7 @@ const Doctor = () => {
             <DoctorList
               doctors={doctors}
               onViewProfile={(doctor) =>
-                (window.location.href = `/doctor/${doctor.id}`)
+                (window.location.href = `/doctor/${doctor._id}`)
               }
               onBook={(doctor) => alert(`Book appointment with ${doctor.name}`)}
             />

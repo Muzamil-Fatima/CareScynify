@@ -18,7 +18,7 @@ const DoctorList = ({ doctors, onViewProfile, onBook }) => {
     <div className="grid grid-cols-1 gap-4">
       {safeDoctors.map((doctor) => (
         <DoctorCard
-          key={doctor.id}
+          key={doctor._id}
           doctor={doctor}
           onViewProfile={() => onViewProfile?.(doctor)}
           onBook={() => onBook?.(doctor)}
