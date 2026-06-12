@@ -9,19 +9,18 @@ const AppointmentCard = ({ doctor }) => {
 
   return (
     <div className="w-full md:w-[340px] bg-white border border-gray-200 rounded-2xl shadow-sm p-5 sticky top-24">
-      
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold">
-          {doctor?.name?.charAt(0) || "D"}
+          {doctor?.user?.name?.charAt(0) || "D"}
         </div>
 
         <div>
           <h2 className="font-semibold text-gray-800">
-            {doctor?.name || "Doctor Name"}
+            {doctor?.user?.name || "Doctor Name"}
           </h2>
           <p className="text-sm text-gray-500">
-            {doctor?.specialty || "Specialist"}
+            {doctor?.specialization || "Specialist"}
           </p>
         </div>
       </div>
@@ -30,7 +29,7 @@ const AppointmentCard = ({ doctor }) => {
       <div className="flex items-center justify-between bg-purple-50 p-3 rounded-xl mb-4">
         <span className="text-sm text-gray-600">Consultation Fee</span>
         <span className="font-semibold text-purple-700">
-          Rs. {doctor?.fee || 2000}
+          Rs. {doctor?.workplaces?.[0]?.settings?.appointmentFee || 2000}
         </span>
       </div>
 
@@ -96,7 +95,7 @@ const AppointmentCard = ({ doctor }) => {
           }
 
           alert(
-            `Appointment booked with ${doctor?.name} on ${date} at ${time}`
+            `Appointment booked with ${doctor?.user?.name} on ${date} at ${time}`,
           );
         }}
       >

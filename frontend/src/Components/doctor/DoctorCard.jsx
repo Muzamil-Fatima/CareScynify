@@ -1,11 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useDoctor } from "../../hooks/useDoctor";
-
+import { useDoctorContext } from "../../context/doctor/DoctorContext";
 const DoctorCard = ({ doctor }) => {
   const navigate = useNavigate();
-  const { setSelectedDoctor } = useDoctor();
-
+const { setSelectedDoctor } = useDoctorContext();
   const handleClick = () => {
     setSelectedDoctor(doctor);
     navigate(`/doctor/${doctor._id}`);
@@ -60,7 +58,7 @@ const DoctorCard = ({ doctor }) => {
       {/* Button */}
       <button
         onClick={handleClick}
-        className="mt-4 w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
+        className="mt-4 w-full cursor-pointer bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
       >
         View Profile
       </button>

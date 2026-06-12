@@ -1,5 +1,6 @@
 import Doctor from "../models/doctorModel.js";
 
+// Get all doctors with pagination, search, and filters
 export const getDoctors = async (req, res) => {
   try {
     let {
@@ -79,6 +80,7 @@ export const getDoctors = async (req, res) => {
     });
   }
 };
+// get doctor by id
 export const getDoctorById = async (req, res) => {
   try {
     const doctor = await Doctor.findById(req.params.id).populate("userId");
@@ -92,7 +94,10 @@ export const getDoctorById = async (req, res) => {
 
     res.json({
       success: true,
-      doctor,
+      doctor: {
+        ...doctor._doc,
+        user: doctor.userId,
+      },
     });
   } catch (error) {
     res.status(500).json({

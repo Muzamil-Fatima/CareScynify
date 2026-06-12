@@ -7,21 +7,19 @@ import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 const DoctorProfileHeader = ({ doctor, onBook }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row gap-5">
-      
       {/* Avatar */}
-      <div className="shrink-0">
-        <div className="w-24 h-24 rounded-full bg-purple-600 text-white flex items-center justify-center text-3xl font-bold">
-          {doctor?.name?.charAt(0) || "D"}
-        </div>
-      </div>
+      <img
+        src={doctor?.user?.avatar}
+        alt={doctor?.user?.name}
+        className="w-24 h-24 rounded-full object-cover"
+      />
 
       {/* Info */}
       <div className="flex-1 space-y-2">
-        
         {/* Name + Verified */}
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-semibold text-gray-800">
-            {doctor?.name || "Doctor Name"}
+            {doctor?.user?.name || "Doctor Name"}
           </h1>
 
           <VerifiedIcon className="text-blue-500" fontSize="small" />
@@ -29,12 +27,11 @@ const DoctorProfileHeader = ({ doctor, onBook }) => {
 
         {/* Specialty */}
         <p className="text-gray-600">
-          {doctor?.specialty || "Specialist Doctor"}
+          {doctor?.specialization || "Specialist Doctor"}
         </p>
 
         {/* Rating + Experience */}
         <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-          
           <span className="flex items-center gap-1 text-yellow-500 font-medium">
             <StarIcon fontSize="small" />
             {doctor?.rating || "4.5"} ({doctor?.reviews || 120} reviews)
@@ -49,17 +46,17 @@ const DoctorProfileHeader = ({ doctor, onBook }) => {
         {/* Hospital */}
         <p className="flex items-center gap-1 text-sm text-gray-600">
           <LocalHospitalOutlinedIcon fontSize="small" />
-          {doctor?.hospital || "City Medical Complex Hospital"}
+          {doctor?.workplaces?.[0]?.location || "City Medical Complex Hospital"}
         </p>
 
         {/* Fee */}
         <p className="text-sm font-medium text-purple-700">
-          Consultation Fee: Rs. {doctor?.fee || 2000}
+          Consultation Fee: Rs.{" "}
+          {doctor?.workplaces?.[0]?.settings?.appointmentFee || 2000}
         </p>
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">
-          
           <button
             onClick={onBook}
             className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition"

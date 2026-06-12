@@ -15,8 +15,15 @@ export const useDoctorProfile = (doctorId) => {
 
       const { data } = await api.get(`/api/doctors/${doctorId}`);
 
-      setDoctor(data);
+      console.log("API RESPONSE:", data); //  debug
+
+      setDoctor({
+        ...data.doctor,
+        name: data.doctor.user?.name,
+        avatar: data.doctor.user?.avatar,
+      });
     } catch (err) {
+      console.log("ERROR:", err);
       setError(err.message || "Failed to fetch doctor profile");
     } finally {
       setLoading(false);
@@ -27,10 +34,5 @@ export const useDoctorProfile = (doctorId) => {
     fetchDoctor();
   }, [fetchDoctor]);
 
-  return {
-    doctor,
-    loading,
-    error,
-    refetch: fetchDoctor,
-  };
+  return { doctor, loading, error, refetch: fetchDoctor };
 };

@@ -4,30 +4,7 @@ import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 
 const DoctorExperience = ({ doctor }) => {
-  const experienceList = doctor?.experienceList || [
-    {
-      role: "Senior Cardiologist",
-      hospital: "City Medical Complex Hospital",
-      duration: "2020 - Present",
-      description:
-        "Leading cardiology department with focus on heart disease diagnosis and treatment.",
-    },
-    {
-      role: "Cardiology Specialist",
-      hospital: "General Hospital Lahore",
-      duration: "2016 - 2020",
-      description:
-        "Worked in emergency and outpatient cardiology cases.",
-    },
-    {
-      role: "Junior Doctor",
-      hospital: "Allied Medical Hospital",
-      duration: "2013 - 2016",
-      description:
-        "Initial training and patient care in general medicine.",
-    },
-  ];
-
+  const experienceList =doctor?.experienceDetails;
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
       

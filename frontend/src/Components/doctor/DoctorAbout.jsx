@@ -8,7 +8,6 @@ import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined
 const DoctorAbout = ({ doctor }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm space-y-5">
-      
       {/* About */}
       <div>
         <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
@@ -30,7 +29,8 @@ const DoctorAbout = ({ doctor }) => {
         </h2>
 
         <p className="text-sm text-gray-600 mt-2">
-          {doctor?.experience || "10+ years of clinical experience in hospital and private practice settings."}
+          {doctor?.experience ||
+            "10+ years of clinical experience in hospital and private practice settings."}
         </p>
       </div>
 
@@ -42,11 +42,13 @@ const DoctorAbout = ({ doctor }) => {
         </h2>
 
         <ul className="text-sm text-gray-600 mt-2 space-y-1 list-disc ml-5">
-          {(doctor?.education || [
-            "MBBS - University of Health Sciences",
-            "FCPS - Specialization",
-            "Certified Medical Training Program",
-          ]).map((edu, index) => (
+          {(
+            doctor?.education || [
+              "MBBS - University of Health Sciences",
+              "FCPS - Specialization",
+              "Certified Medical Training Program",
+            ]
+          ).map((edu, index) => (
             <li key={index}>{edu}</li>
           ))}
         </ul>
@@ -60,13 +62,8 @@ const DoctorAbout = ({ doctor }) => {
         </h2>
 
         <div className="flex flex-wrap gap-2 mt-2">
-          {(doctor?.languages || ["Urdu", "English"]).map((lang, index) => (
-            <span
-              key={index}
-              className="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full"
-            >
-              {lang}
-            </span>
+          {(doctor?.user?.languages || []).map((lang) => (
+            <span key={lang._id}>{lang.language}</span>
           ))}
         </div>
       </div>
