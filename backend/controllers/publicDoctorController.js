@@ -92,10 +92,24 @@ export const getDoctorById = async (req, res) => {
       });
     }
 
+    const experienceDetails = doctor.experienceDetails?.map((exp) => {
+      const startYear = Number(exp.startYear);
+
+      const endYear = exp.currentlyWorking
+        ? new Date().getFullYear()
+        : Number(exp.endYear);
+
+      return {
+        ...exp.toObject(),
+        duration: `${endYear - startYear} years`,
+      };
+    });
+
     res.json({
       success: true,
       doctor: {
         ...doctor._doc,
+        experienceDetails,
         user: doctor.userId,
       },
     });

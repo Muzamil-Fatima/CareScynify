@@ -16,6 +16,7 @@ import Clinic from "./pages/clinic/Clinic";
 import ClinicDetail from "./pages/clinic/ClinicDetail";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
+import BookAppointment from "./Components/doctor/BookAppointment";
 import RoleSelection from "./pages/RoleSelection";
 //  auth pages
 import Login from "./pages/Auth/Login";
@@ -60,6 +61,7 @@ function App() {
           <Route path="/clinic" element={<Clinic />} />
           <Route path="/clinic/:id" element={<ClinicDetail />} />
           <Route path="/doctor/:id" element={<DoctorProfile />} />
+          <Route path="/doctor/:id/book" element={<BookAppointment />} />
           <Route path="/hospital" element={<Hospital />} />
           <Route path="/hospital/:id" element={<HospitalDetail />} />
           <Route path="/laboratory" element={<Laboratory />} />

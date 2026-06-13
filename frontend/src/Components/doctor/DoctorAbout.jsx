@@ -74,10 +74,7 @@ const DoctorAbout = ({ doctor }) => {
           <LocalHospitalOutlinedIcon fontSize="small" />
           Affiliated Hospital
         </h2>
-
-        <p className="text-sm text-gray-600 mt-2">
-          {doctor?.hospital || "City Medical Complex Hospital"}
-        </p>
+        <p className="text-sm text-gray-600 mt-2">{doctor?.hospital}</p>
       </div>
     </div>
   );

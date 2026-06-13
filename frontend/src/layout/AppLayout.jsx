@@ -10,7 +10,7 @@ const AppLayout = () => {
       <Navbar />
 
       {/* Main area below navbar */}
-      <div className="flex flex-1 pt-[70px]">
+      <div className="flex flex-1">
         {/* Sidebar */}
         <SideBar />
 

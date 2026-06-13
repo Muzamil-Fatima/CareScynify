@@ -1,27 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 import EventAvailableOutlinedIcon from "@mui/icons-material/EventAvailableOutlined";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 
 const DoctorAvailability = ({ doctor }) => {
-  const schedule = doctor?.schedule || [
-    { day: "Monday", time: "5:00 PM - 8:00 PM", available: true },
-    { day: "Tuesday", time: "3:00 PM - 7:00 PM", available: true },
-    { day: "Wednesday", time: "-", available: false },
-    { day: "Thursday", time: "4:00 PM - 8:00 PM", available: true },
-    { day: "Friday", time: "2:00 PM - 6:00 PM", available: true },
-    { day: "Saturday", time: "-", available: false },
-    { day: "Sunday", time: "Emergency Only", available: true },
-  ];
+  const workplaces = doctor?.workplaces || [];
 
+  const [selectedWorkplace, setSelectedWorkplace] = useState(workplaces[0]);
+  const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const availability = selectedWorkplace?.availability || {};
+
+  const schedule = weekDays.map((day) => {
+    const dayData = availability[day];
+
+    return {
+      day,
+      time:
+        dayData?.start && dayData?.end
+          ? `${dayData.start} - ${dayData.end}`
+          : "-",
+      available: !!(dayData?.start && dayData?.end),
+    };
+  });
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-      
       {/* Header */}
       <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800 mb-4">
         <EventAvailableOutlinedIcon fontSize="small" />
         Availability
       </h2>
-
+      <div className="flex gap-2 mb-5 overflow-x-auto">
+        {workplaces.map((place) => (
+          <button
+            key={place._id}
+            onClick={() => setSelectedWorkplace(place)}
+            className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap ${
+              selectedWorkplace?._id === place._id
+                ? "bg-purple-600 text-white"
+                : "bg-gray-100 text-gray-700"
+            }`}
+          >
+            {place.name}
+          </button>
+        ))}
+      </div>
       {/* Schedule */}
       <div className="space-y-3">
         {schedule.map((item, index) => (
@@ -34,9 +55,7 @@ const DoctorAvailability = ({ doctor }) => {
             }`}
           >
             {/* Day */}
-            <div className="font-medium text-gray-700">
-              {item.day}
-            </div>
+            <div className="font-medium text-gray-700">{item.day}</div>
 
             {/* Time */}
             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -60,7 +79,7 @@ const DoctorAvailability = ({ doctor }) => {
 
       {/* Note */}
       <p className="text-xs text-gray-400 mt-4 text-center">
-        Schedule may change based on hospital emergencies
+        Schedule may change based on any kind of emergencies
       </p>
     </div>
   );
