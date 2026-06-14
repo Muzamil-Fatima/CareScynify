@@ -1,32 +1,36 @@
 import express from "express";
+import { protect } from "../middleware/auth.js";
+
 import {
+  getAvailableSlots,
+  reserveSlot,
   createAppointment,
-  getDoctorAppointments,
   getUserAppointments,
+  getDoctorAppointments,
   getAppointmentById,
   updateAppointmentStatus,
   cancelAppointment,
   deleteAppointment,
-  getAvailableSlots,
-  reserveSlot,
 } from "../controllers/appointmentController.js";
-
-import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
+/* ---------------- SLOT SYSTEM ---------------- */
 router.get("/slots", protect, getAvailableSlots);
 router.post("/reserve", protect, reserveSlot);
 
+/* ---------------- APPOINTMENTS ---------------- */
 router.post("/", protect, createAppointment);
 
 router.get("/", protect, getUserAppointments);
 router.get("/doctor/:doctorId", protect, getDoctorAppointments);
 router.get("/:id", protect, getAppointmentById);
 
+/* ---------------- UPDATE / CANCEL ---------------- */
 router.patch("/:id/status", protect, updateAppointmentStatus);
 router.patch("/:id/cancel", protect, cancelAppointment);
 
+/* ---------------- DELETE ---------------- */
 router.delete("/:id", protect, deleteAppointment);
 
 export default router;

@@ -1,12 +1,17 @@
 import { useState } from "react";
-import { bookAppointment } from "../api/appointmentApi";
+import { createAppointment } from "../api/appointmentApi";
 import { toast } from "react-toastify";
 
 export const useAppointment = () => {
   const [loading, setLoading] = useState(false);
 
-  const handleBookAppointment = async ({ doctorId, date, time, workplaceId }) => {
-    if (!doctorId || !date || !time) {
+  const bookAppointment = async ({
+    doctorId,
+    date,
+    time,
+    workplaceId,
+  }) => {
+    if (!doctorId || !date || !time || !workplaceId) {
       toast.error("Missing required fields");
       return;
     }
@@ -14,7 +19,7 @@ export const useAppointment = () => {
     try {
       setLoading(true);
 
-      const res = await bookAppointment({
+      const res = await createAppointment({
         doctorId,
         workplaceId,
         date,
@@ -22,11 +27,10 @@ export const useAppointment = () => {
       });
 
       toast.success("Appointment booked successfully");
-
       return res;
     } catch (error) {
       toast.error(
-        error?.response?.data?.message || "Failed to book appointment",
+        error?.response?.data?.message || "Failed to book appointment"
       );
       throw error;
     } finally {
@@ -35,7 +39,7 @@ export const useAppointment = () => {
   };
 
   return {
-    bookAppointment: handleBookAppointment,
+    bookAppointment,
     loading,
   };
 };
