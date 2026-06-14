@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-// define the schema
+
 const appointmentSchema = new mongoose.Schema({
   patientId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -11,15 +11,33 @@ const appointmentSchema = new mongoose.Schema({
     ref: "Doctor",
     required: true,
   },
-  appointmentDate: { type: Date, required: true },
-  appointmentTime: { type: String, required: true },
-  reasonForVisit: { type: String },
+  workplaceId: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+
+  appointmentDate: {
+    type: Date,
+    required: true,
+  },
+
+  appointmentTime: {
+    type: String,
+    required: true,
+  },
+
   status: {
-  type: String,
-  enum: ["pending", "confirmed", "completed", "cancelled"],
-  default: "pending",
-},
-  notes: { type: String },
+    type: String,
+    enum: ["reserved", "confirmed", "cancelled"],
+    default: "confirmed",
+  },
+
+  reservedUntil: Date,
 });
-const Appointment = mongoose.model("Appointment", appointmentSchema);
-export default Appointment;
+
+/* 🔥 CRITICAL FIX: PREVENT DOUBLE BOOKING */
+appointmentSchema.index(
+  { doctorId: 1, appointmentDate: 1, appointmentTime: 1 },
+  { unique: true }
+);
+
+export default mongoose.model("Appointment", appointmentSchema);

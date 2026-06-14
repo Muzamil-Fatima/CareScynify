@@ -1,19 +1,41 @@
-import { useEffect } from "react";
-import { useAppointmentContext } from "../context/AppointmentContext";
-import { fetchAppointments } from "../services/appointmentService";
+import { useState } from "react";
+import { bookAppointment } from "../api/appointmentApi";
+import { toast } from "react-toastify";
 
-const useAppointments = () => {
-  const { appointments, setAppointments } = useAppointmentContext();
+export const useAppointment = () => {
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const load = async () => {
-      const data = await fetchAppointments();
-      setAppointments(data);
-    };
-    load();
-  }, []);
+  const handleBookAppointment = async ({ doctorId, date, time, workplaceId }) => {
+    if (!doctorId || !date || !time) {
+      toast.error("Missing required fields");
+      return;
+    }
 
-  return { appointments, setAppointments };
+    try {
+      setLoading(true);
+
+      const res = await bookAppointment({
+        doctorId,
+        workplaceId,
+        date,
+        time,
+      });
+
+      toast.success("Appointment booked successfully");
+
+      return res;
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to book appointment",
+      );
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    bookAppointment: handleBookAppointment,
+    loading,
+  };
 };
-
-export default useAppointments;

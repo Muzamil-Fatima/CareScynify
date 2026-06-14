@@ -14,7 +14,7 @@ import reportRoutes from "./routes/reportRoutes.js";
 import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import userRouter from "./routes/userRoutes.js";
 import publicDoctorRoutes from "./routes/publicDoctorRoutes.js";
-
+import appointmentRoutes from "./routes/appointmentRoutes.js";
 //Configuration
 connectDB();
 connectCloudinary();
@@ -59,7 +59,9 @@ app.use("/api/doctor", doctorRoutes);
 // report router
 app.use("/api/report", reportRoutes);
 // public doctor routes
-app.use("/api/doctors", publicDoctorRoutes); 
+app.use("/api/doctors", publicDoctorRoutes);
+// appointment routes
+app.use("/api/appointments", appointmentRoutes);
 // server listen
 const port = process.env.PORT || 8000;
 app.listen(port, () => {

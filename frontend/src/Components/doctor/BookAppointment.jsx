@@ -5,7 +5,7 @@ import { useDoctorProfile } from "../../hooks/useDoctorProfile";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-
+import { useAppointment } from "../../hooks/useAppointments";
 /* ---------------- SLOT GENERATOR ---------------- */
 const generateSlots = (start, end, duration = 30) => {
   const slots = [];
@@ -107,14 +107,23 @@ const BookAppointment = () => {
   }, [workplace, date, duration]);
 
   const grouped = useMemo(() => groupSlots(slots), [slots]);
+  const { bookAppointment, loading: booking } = useAppointment();
 
+  const handleBook = async () => {
+    if (!time) return;
+
+    await bookAppointment({
+      doctorId: doctor._id,
+      workplaceId: workplace._id,
+      date,
+      time,
+    });
+  };
   if (loading) return <div className="text-center py-10">Loading...</div>;
   if (!doctor) return <div className="text-center py-10">Doctor not found</div>;
-
   return (
     <div className="min-h-screen px-4 py-6">
       <div className="max-w-3xl mx-auto bg-white border rounded-2xl shadow-lg p-6">
-
         {/* HEADER */}
         <div className="flex items-center gap-4 mb-5">
           <img
@@ -150,7 +159,6 @@ const BookAppointment = () => {
 
         {/* DATE BAR (FIXED 5 ITEMS) */}
         <div className="flex items-center gap-3 mb-5 border-b pb-3">
-
           {/* PREVIOUS */}
           <button
             onClick={() => setOffset((prev) => Math.max(prev - 5, 0))}
@@ -196,7 +204,6 @@ const BookAppointment = () => {
           >
             <ArrowForwardIosIcon fontSize="small" />
           </button>
-
         </div>
 
         {/* FEE */}
@@ -246,10 +253,13 @@ const BookAppointment = () => {
         </div>
 
         {/* BOOK */}
-        <button className="w-full bg-purple-600 text-white py-3 rounded-xl">
-          Book Appointment
+        <button
+          onClick={handleBook}
+          disabled={!time || booking}
+          className="w-full bg-purple-600 text-white py-3 rounded-xl disabled:opacity-50"
+        >
+          {booking ? "Booking..." : "Book Appointment"}
         </button>
-
       </div>
     </div>
   );
