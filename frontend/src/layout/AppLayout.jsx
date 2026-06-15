@@ -5,19 +5,19 @@ import Navbar from "../Components/Navbar";
 
 const AppLayout = () => {
   return (
-    <div className="flex flex-col h-screen">
-      {/* Top Navbar */}
+    <div className="h-screen overflow-hidden">
+      {/* Fixed Navbar */}
       <Navbar />
 
-      {/* Main area below navbar */}
-      <div className="flex flex-1">
+      {/* Content starts below navbar */}
+      <div className="flex h-full pt-20">
         {/* Sidebar */}
         <SideBar />
 
-        {/* Page Content */}
-        <div className="flex-1 bg-gray-50 p-5 overflow-auto">
+        {/* Main Page Content */}
+        <main className="flex-1 bg-gray-50 p-5 overflow-y-auto">
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );

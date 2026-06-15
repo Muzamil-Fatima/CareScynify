@@ -28,62 +28,48 @@ const drSchema = new mongoose.Schema(
     },
     workplaces: [
       {
-        name: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-
-        location: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-
+        name: String,
+        location: String,
         type: {
           type: String,
           enum: ["clinic", "hospital"],
           default: "clinic",
         },
+
         settings: {
           appointmentDuration: {
-            value: { type: Number, default: 30 },
+            value: { type: Number },
             unit: { type: String, default: "minutes" },
           },
 
-          appointmentFee: {
-            type: Number,
-            default: 0,
-          },
-
-          followUpFee: {
-            type: Number,
-            default: 0,
-          },
+          appointmentFee: { type: Number },
 
           maxPatientsPerDay: {
             type: Number,
-            default: 20,
           },
 
-          breakTime: {
+          breakMinutes: {
             type: Number,
-            default: 10,
           },
 
           bookingWindow: {
             type: Number,
-            default: 7,
           },
 
           consultationType: {
             type: String,
-            enum: ["online", "clinic", "home visit"],
+            enum: ["online", "physical", "online + physical"],
             default: "online",
           },
         },
+
         availability: {
           type: Object,
+          default: {},
+        },
+
+        slots: {
+          type: mongoose.Schema.Types.Mixed,
           default: {},
         },
       },

@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const appointmentSchema = new mongoose.Schema(
   {
     patientId: {
@@ -26,6 +25,12 @@ const appointmentSchema = new mongoose.Schema(
       required: true,
     },
 
+    appointmentType: {
+      type: String,
+      enum: ["online", "physical"],
+      default: "online",
+    },
+
     status: {
       type: String,
       enum: ["reserved", "confirmed", "cancelled"],
@@ -36,11 +41,5 @@ const appointmentSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-/* 🔥 PREVENT DOUBLE BOOKING (CRITICAL FIX) */
-appointmentSchema.index(
-  { doctorId: 1, appointmentDate: 1, appointmentTime: 1 },
-  { unique: true }
-);
-
-export default mongoose.model("Appointment", appointmentSchema);
+export const Appointment = mongoose.model("Appointment", appointmentSchema);
+export default Appointment;

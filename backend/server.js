@@ -4,6 +4,8 @@ import "./config/passport.js";
 import passport from "passport";
 import express from "express";
 import cookiesParser from "cookie-parser";
+import http from "http";
+import { initSocket } from "./config/socket.js";
 //Files
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
@@ -31,22 +33,21 @@ app.use(cookiesParser());
 // removeUnverifiedAccounts();
 
 // allow request
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        return callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  }),
-);
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+};
 
+app.use(cors(corsOptions));
 // Routes
 app.use("/api/auth", authRoutes);
 //  user routes
@@ -63,7 +64,13 @@ app.use("/api/doctors", publicDoctorRoutes);
 // appointment routes
 app.use("/api/appointments", appointmentRoutes);
 // server listen
+const server = http.createServer(app);
+
+// init socket
+initSocket(server);
+
 const port = process.env.PORT || 8000;
-app.listen(port, () => {
+
+server.listen(port, () => {
   console.log(`Server listen on port ${port}`);
 });

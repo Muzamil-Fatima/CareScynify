@@ -1,6 +1,6 @@
 import Doctor from "../../models/doctorModel.js";
 
-// UTILS 
+// UTILS
 const toMinutes = (t = "") => {
   if (!t || !t.includes(":")) return null;
   const [h, m] = t.split(":").map(Number);
@@ -11,7 +11,53 @@ const toMinutes = (t = "") => {
 const hasOverlap = (aStart, aEnd, bStart, bEnd) => {
   return aStart < bEnd && aEnd > bStart;
 };
+const generateWorkplaceSlots = (workplace) => {
+  const duration = workplace.settings?.appointmentDuration?.value || 30;
 
+  const breakMinutes = workplace.settings?.breakMinutes || 0;
+
+  const maxPerDay = workplace.settings?.maxPatientsPerDay || 999;
+
+  const toMinutes = (t = "") => {
+    if (!t || !t.includes(":")) return null;
+    const [h, m] = t.split(":").map(Number);
+    return h * 60 + m;
+  };
+
+  const generateSlots = (start, end) => {
+    const slots = [];
+
+    let current = toMinutes(start);
+    const endTime = toMinutes(end);
+
+    if (current === null || endTime === null) return [];
+
+    while (current + duration <= endTime && slots.length < maxPerDay) {
+      const h = Math.floor(current / 60);
+      const m = current % 60;
+
+      slots.push({
+        startTime: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
+        isBooked: false,
+      });
+
+      current += duration + breakMinutes;
+    }
+
+    return slots;
+  };
+
+  const generatedSlots = {};
+
+  for (const day in workplace.availability || {}) {
+    const slot = workplace.availability[day];
+    if (!slot?.start || !slot?.end) continue;
+
+    generatedSlots[day] = generateSlots(slot.start, slot.end);
+  }
+
+  workplace.slots = generatedSlots;
+};
 // GET CONSULTANT HOURS
 export const getConsultantHours = async (req, res) => {
   try {
@@ -52,17 +98,26 @@ export const addConsultantHours = async (req, res) => {
 
     const newWorkplace = {
       name: req.body.name || "New Workplace",
+      location: req.body.location || "",
+      type: req.body.type || "clinic",
       availability: req.body.availability || {},
       settings: req.body.settings || {},
     };
 
+    // push first
     doctor.workplaces.push(newWorkplace);
+
+    const createdWorkplace = doctor.workplaces.at(-1);
+
+    // 🔥 GENERATE SLOTS ON CREATE
+    generateWorkplaceSlots(createdWorkplace);
+
     await doctor.save();
 
     return res.status(201).json({
       success: true,
-      message: "Workplace added successfully",
-      workplace: doctor.workplaces.at(-1),
+      message: "Workplace added successfully with slots",
+      workplace: createdWorkplace,
       workplaces: doctor.workplaces,
     });
   } catch (error) {
@@ -158,23 +213,23 @@ export const getConsultantSlots = async (req, res) => {
 
     const duration = workplace.settings?.appointmentDuration?.value || 30;
 
- //  allow CLEAR operation
-if (!slot?.start && !slot?.end) {
-  cleaned[day] = {
-    start: "",
-    end: "",
-  };
-}
+    //  allow CLEAR operation
+    if (!slot?.start && !slot?.end) {
+      cleaned[day] = {
+        start: "",
+        end: "",
+      };
+    }
 
-const start = toMinutes(slot?.start);
-const end = toMinutes(slot?.end);
+    const start = toMinutes(slot?.start);
+    const end = toMinutes(slot?.end);
 
-if (start === null || end === null || start >= end) {
-  return res.status(400).json({
-    success: false,
-    message: `Invalid time range for ${day}`,
-  });
-}
+    if (start === null || end === null || start >= end) {
+      return res.status(400).json({
+        success: false,
+        message: `Invalid time range for ${day}`,
+      });
+    }
 
     const slots = [];
     let current = start;
@@ -231,7 +286,7 @@ export const updateConsultantHours = async (req, res) => {
       });
     }
 
-    // CLEAN INPUT
+    // CLEAN
     const cleaned = {};
 
     for (const day in availability) {
@@ -253,47 +308,20 @@ export const updateConsultantHours = async (req, res) => {
       };
     }
 
-    if (Object.keys(cleaned).length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid availability data",
-      });
-    }
-
-    // CONFLICT CHECK
-    for (const day in cleaned) {
-      const newStart = toMinutes(cleaned[day].start);
-      const newEnd = toMinutes(cleaned[day].end);
-
-      for (const w of doctor.workplaces) {
-        if (w._id.toString() === workplaceId) continue;
-
-        const existing = w.availability?.[day];
-        if (!existing?.start || !existing?.end) continue;
-
-        const exStart = toMinutes(existing.start);
-        const exEnd = toMinutes(existing.end);
-
-        if (hasOverlap(newStart, newEnd, exStart, exEnd)) {
-          return res.status(400).json({
-            success: false,
-            message: `Time overlaps with "${w.name || "another workplace"}" on ${day}`,
-          });
-        }
-      }
-    }
-
-    // APPLY UPDATE
+    // merge availability
     workplace.availability = {
       ...(workplace.availability || {}),
       ...cleaned,
     };
 
+    // 🔥 REGENERATE SLOTS AFTER UPDATE
+    generateWorkplaceSlots(workplace);
+
     await doctor.save();
 
     return res.status(200).json({
       success: true,
-      message: "Consultant hours updated successfully",
+      message: "Availability updated + slots regenerated",
       workplace,
     });
   } catch (error) {

@@ -7,7 +7,8 @@ import {
 import { toast } from "react-hot-toast";
 
 export const useDoctorWorkplace = (profile, setProfile) => {
-  // ADD WORKPLACE
+
+  // ADD
   const addWorkplace = async (data) => {
     try {
       const res = await addDoctorWorkplace(data);
@@ -22,28 +23,25 @@ export const useDoctorWorkplace = (profile, setProfile) => {
         }));
 
         toast.success("Workplace added");
-
         return true;
       }
 
       toast.error(res?.message || "Failed to add workplace");
-
       return false;
     } catch (err) {
       console.error(err);
-
       toast.error(err.response?.data?.message || "Server error");
-
       return false;
     }
   };
 
-  // UPDATE WORKPLACE
+  // UPDATE (SINGLE SOURCE OF TRUTH)
   const updateWorkplace = async (id, data) => {
     try {
       const res = await updateDoctorWorkplace(id, data);
 
       if (res?.success) {
+        // 🔥 ALWAYS replace from backend (no merging here)
         setProfile((prev) => ({
           ...prev,
           doctor: {
@@ -53,23 +51,19 @@ export const useDoctorWorkplace = (profile, setProfile) => {
         }));
 
         toast.success("Workplace updated");
-
         return true;
       }
 
       toast.error(res?.message || "Failed to update workplace");
-
       return false;
     } catch (err) {
       console.error(err);
-
       toast.error(err.response?.data?.message || "Server error");
-
       return false;
     }
   };
 
-  // DELETE WORKPLACE
+  // DELETE
   const deleteWorkplace = async (id) => {
     try {
       const res = await deleteDoctorWorkplace(id);
@@ -84,18 +78,14 @@ export const useDoctorWorkplace = (profile, setProfile) => {
         }));
 
         toast.success("Workplace deleted");
-
         return true;
       }
 
       toast.error(res?.message || "Failed to delete workplace");
-
       return false;
     } catch (err) {
       console.error(err);
-
       toast.error(err.response?.data?.message || "Server error");
-
       return false;
     }
   };

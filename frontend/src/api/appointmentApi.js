@@ -36,12 +36,14 @@ export const createAppointment = async ({
   workplaceId,
   date,
   time,
+  appointmentType,
 }) => {
   const res = await api.post("/api/appointments", {
     doctorId,
     workplaceId,
     date,
     time,
+    appointmentType,
   });
 
   return res.data;

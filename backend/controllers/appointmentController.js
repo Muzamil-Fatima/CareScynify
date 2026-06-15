@@ -1,15 +1,33 @@
 import Appointment from "../models/appointmentModel.js";
 import Doctor from "../models/doctorModel.js";
-
+import { getIO } from "../config/socket.js";
 /* ---------------- HELPERS ---------------- */
 
 // consistent time format: "HH:MM"
 const normalizeTime = (t) => {
   if (!t) return "";
 
-  const [h, m] = t.split(":");
+  // Case 1: already 24-hour
+  if (!t.toLowerCase().includes("am") && !t.toLowerCase().includes("pm")) {
+    const [h, m] = t.split(":");
+    return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+  }
 
-  return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+  // Case 2: AM/PM format → convert to 24h
+  let [time, modifier] = t.split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
+
+  modifier = modifier.toLowerCase();
+
+  if (modifier === "pm" && hours !== 12) {
+    hours += 12;
+  }
+
+  if (modifier === "am" && hours === 12) {
+    hours = 0;
+  }
+
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 };
 
 /* ---------------- GET AVAILABLE SLOTS ---------------- */
@@ -22,115 +40,45 @@ export const getAvailableSlots = async (req, res) => {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    const selectedDate = new Date(date + "T00:00:00Z");
-
-    if (isNaN(selectedDate.getTime())) {
-      return res.status(400).json({ message: "Invalid date" });
-    }
-
     const doctor = await Doctor.findById(doctorId);
-    if (!doctor) {
-      return res.status(404).json({ message: "Doctor not found" });
-    }
+    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
 
     const workplace = doctor.workplaces.id(workplaceId);
-    if (!workplace) {
+    if (!workplace)
       return res.status(404).json({ message: "Workplace not found" });
-    }
 
-    // clean expired reservations (IMPORTANT)
-    await Appointment.deleteMany({
-      status: "reserved",
-      reservedUntil: { $lte: new Date() },
-    });
-
-    const start = new Date(selectedDate);
-    start.setUTCHours(0, 0, 0, 0);
-
-    const end = new Date(selectedDate);
-    end.setUTCHours(23, 59, 59, 999);
-
-    const appointments = await Appointment.find({
-      doctorId,
-      appointmentDate: { $gte: start, $lte: end },
-      status: { $in: ["reserved", "confirmed"] },
-      reservedUntil: { $gt: new Date() },
-    });
-
-    const bookedTimes = appointments.map((a) =>
-      normalizeTime(a.appointmentTime),
-    );
-
-    const day = selectedDate.toLocaleDateString("en-US", {
+    const day = new Date(date).toLocaleDateString("en-US", {
       weekday: "short",
       timeZone: "UTC",
     });
 
-    const availability = workplace.availability?.[day];
+    const daySlots = workplace.slots?.[day] || [];
 
-    if (!availability) return res.json([]);
+    // 🔥 ONLY RETURN NOT BOOKED SLOTS
+    const availableSlots = daySlots
+      .filter((slot) => slot.isBooked === false)
+      .map((slot) => ({
+        label: slot.startTime,
+      }));
 
-    const [sh, sm] = availability.start.split(":").map(Number);
-    const [eh, em] = availability.end.split(":").map(Number);
-
-    const getDurationInMinutes = (settings) => {
-      const d = settings?.appointmentDuration;
-      if (!d) return 30;
-
-      if (d.unit === "hours") return Number(d.value) * 60;
-
-      return Number(d.value);
-    };
-
-    const duration = getDurationInMinutes(workplace.settings);
-
-    let current = new Date(selectedDate);
-    current.setUTCHours(sh, sm, 0, 0);
-
-    const endTime = new Date(selectedDate);
-    endTime.setUTCHours(eh, em, 0, 0);
-
-    const slots = [];
-
-    while (current.getTime() + duration * 60000 <= endTime.getTime()) {
-      const slotStart = new Date(current);
-
-      current.setMinutes(current.getMinutes() + duration);
-
-      const label = `${slotStart
-        .getHours()
-        .toString()
-        .padStart(2, "0")}:${slotStart
-        .getMinutes()
-        .toString()
-        .padStart(2, "0")}`;
-
-      if (!bookedTimes.includes(label)) {
-        slots.push({ label });
-      }
-    }
-
-    res.json(slots);
+    return res.json(availableSlots);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Server error while fetching slots",
-    });
+    return res.status(500).json({ message: error.message });
   }
 };
 /* ---------------- RESERVE SLOT ---------------- */
 
 export const reserveSlot = async (req, res) => {
   try {
-    const { doctorId, workplaceId, date, time } = req.body;
+    const { doctorId, workplaceId, date, time, appointmentType } = req.body;
 
-    if (!doctorId || !workplaceId || !date || !time) {
+    if (!doctorId || !workplaceId || !date || !time || !appointmentType) {
       return res.status(400).json({ message: "Missing fields" });
     }
 
     const appointmentDate = new Date(date + "T00:00:00Z");
 
-    // clean expired reservations first
+    // cleanup expired
     await Appointment.deleteMany({
       status: "reserved",
       reservedUntil: { $lte: new Date() },
@@ -140,14 +88,14 @@ export const reserveSlot = async (req, res) => {
       doctorId,
       appointmentDate,
       appointmentTime: time,
-      status: { $in: ["reserved", "confirmed"] },
-      reservedUntil: { $gt: new Date() },
+      $or: [
+        { status: "confirmed" },
+        { status: "reserved", reservedUntil: { $gt: new Date() } },
+      ],
     });
 
     if (existing) {
-      return res.status(400).json({
-        message: "Slot already reserved",
-      });
+      return res.status(400).json({ message: "Slot already reserved" });
     }
 
     const reservation = await Appointment.create({
@@ -156,94 +104,98 @@ export const reserveSlot = async (req, res) => {
       workplaceId,
       appointmentDate,
       appointmentTime: time,
+      appointmentType,
       status: "reserved",
       reservedUntil: new Date(Date.now() + 10 * 60 * 1000),
     });
 
-    res.json({
-      message: "Slot reserved for 10 minutes",
+    return res.json({
+      message: "Slot reserved",
       reservation,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 /* ---------------- CREATE APPOINTMENT ---------------- */
 
 export const createAppointment = async (req, res) => {
   try {
-    const { doctorId, workplaceId, date, time } = req.body;
+    const { doctorId, workplaceId, date, time, appointmentType } = req.body;
 
-    if (!doctorId || !workplaceId || !date || !time) {
+    if (!doctorId || !workplaceId || !date || !time || !appointmentType) {
       return res.status(400).json({ message: "Missing fields" });
     }
 
+    // normalize date
     const appointmentDate = new Date(`${date}T00:00:00Z`);
 
-    /* ---------------- RULE 1: ONE APPOINTMENT PER DOCTOR ---------------- */
-    const existingDoctorBooking = await Appointment.findOne({
-      patientId: req.user._id,
-      doctorId,
-      status: { $in: ["reserved", "confirmed"] },
-    });
+    // helper: normalize day key
+    const getDayKey = (d) =>
+      new Date(d)
+        .toLocaleDateString("en-US", { weekday: "short" })
+        .toLowerCase();
 
-    if (existingDoctorBooking) {
-      return res.status(400).json({
-        message: "You already have an appointment with this doctor",
-      });
-    }
+    const day = getDayKey(date);
 
-    /* ---------------- RULE 2: MAX 3 PER DAY ---------------- */
-    const startOfDay = new Date(appointmentDate);
-    startOfDay.setUTCHours(0, 0, 0, 0);
-
-    const endOfDay = new Date(appointmentDate);
-    endOfDay.setUTCHours(23, 59, 59, 999);
-
-    const dailyCount = await Appointment.countDocuments({
-      patientId: req.user._id,
-      appointmentDate: { $gte: startOfDay, $lte: endOfDay },
-      status: { $in: ["reserved", "confirmed"] },
-    });
-
-    if (dailyCount >= 3) {
-      return res.status(400).json({
-        message: "Daily limit reached (max 3 appointments per day)",
-      });
-    }
-
-    /* ---------------- RULE 3: SLOT CHECK ---------------- */
+    // check existing booking
     const existingSlot = await Appointment.findOne({
       doctorId,
       appointmentDate,
       appointmentTime: time,
-      status: { $in: ["reserved", "confirmed"] },
-      reservedUntil: { $gt: new Date() },
+      $or: [
+        { status: "confirmed" },
+        { status: "reserved", reservedUntil: { $gt: new Date() } },
+      ],
     });
 
     if (existingSlot) {
-      return res.status(400).json({
-        message: "Slot already booked",
-      });
+      return res.status(400).json({ message: "Slot already booked" });
     }
 
-    /* ---------------- CREATE APPOINTMENT ---------------- */
+    // create appointment
     const appointment = await Appointment.create({
       patientId: req.user._id,
       doctorId,
       workplaceId,
       appointmentDate,
       appointmentTime: time,
+      appointmentType,
       status: "confirmed",
     });
 
-    /* ---------------- CLEAN RESERVED ---------------- */
-    await Appointment.deleteMany({
+    // get doctor
+    const doctor = await Doctor.findById(doctorId);
+    const workplace = doctor.workplaces.id(workplaceId);
+
+    if (!workplace) {
+      return res.status(404).json({ message: "Workplace not found" });
+    }
+
+    // ensure slots exist
+    const slots = workplace.slots?.[day] || [];
+
+    // find slot
+    const slotIndex = slots.findIndex(
+      (s) => s.startTime === time
+    );
+
+    if (slotIndex !== -1) {
+      workplace.slots[day][slotIndex].isBooked = true;
+    }
+
+    // 🔥 CRITICAL FIX (Mongoose deep update)
+    doctor.markModified("workplaces");
+
+    await doctor.save();
+
+    // socket emit
+    const io = getIO();
+    io.to(doctorId.toString()).emit("slot-updated", {
       doctorId,
-      appointmentDate,
-      appointmentTime: time,
-      status: "reserved",
-      patientId: req.user._id,
+      workplaceId,
+      date,
+      time,
     });
 
     return res.status(201).json({
@@ -251,16 +203,100 @@ export const createAppointment = async (req, res) => {
       appointment,
     });
   } catch (error) {
-    console.error("BOOKING ERROR:", error);
-
     return res.status(500).json({
-      message: error.message || "Server error while booking appointment",
+      message: error.message,
     });
   }
 };
+/* ---------------- get user appointments in website  ---------------- */
+export const getUserAppointments = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({
+      patientId: req.user._id,
+    })
+      .populate({
+        path: "doctorId",
+        select: "specialization userId workplaces",
+        populate: {
+          path: "userId",
+          select: "name avatar",
+        },
+      })
+      .lean(); // important
 
-/* ---------------- OTHER FUNCTIONS (UNCHANGED BUT SAFE) ---------------- */
+    const enriched = appointments.map((a) => {
+      const doctor = a.doctorId;
 
+      const workplace = doctor?.workplaces?.find(
+        (w) => w._id.toString() === a.workplaceId?.toString(),
+      );
+
+      return {
+        ...a,
+        workplace, // 🔥 now frontend can use it easily
+      };
+    });
+
+    res.json(enriched);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+/* ---------------- CANCEL APPOINTMENT ---------------- */
+
+export const cancelAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    // ❌ update appointment status
+    appointment.status = "cancelled";
+    appointment.cancelledAt = new Date();
+    await appointment.save();
+
+    // 🔥 FREE SLOT AGAIN
+    const doctor = await Doctor.findById(appointment.doctorId);
+    const workplace = doctor.workplaces.id(appointment.workplaceId);
+
+    const day = new Date(appointment.appointmentDate).toLocaleDateString(
+      "en-US",
+      { weekday: "short", timeZone: "UTC" },
+    );
+
+    const slots = workplace.slots?.[day] || [];
+
+    const slotIndex = slots.findIndex(
+      (s) => s.startTime === appointment.appointmentTime,
+    );
+
+    if (slotIndex !== -1) {
+      workplace.slots[day][slotIndex].isBooked = false;
+    }
+
+    await doctor.save();
+
+    // ⚡ SOCKET EMIT (REAL-TIME UPDATE)
+    const io = getIO();
+
+    io.to(appointment.doctorId.toString()).emit("slot-updated", {
+      doctorId: appointment.doctorId,
+      workplaceId: appointment.workplaceId,
+      date: appointment.appointmentDate,
+      time: appointment.appointmentTime,
+      action: "cancelled",
+    });
+
+    return res.json({
+      message: "Appointment cancelled successfully",
+      appointment,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 export const getDoctorAppointments = async (req, res) => {
   try {
     const { doctorId } = req.params;
@@ -268,20 +304,6 @@ export const getDoctorAppointments = async (req, res) => {
     const appointments = await Appointment.find({ doctorId })
       .populate("patientId", "name email")
       .sort({ appointmentDate: 1 });
-
-    res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const getUserAppointments = async (req, res) => {
-  try {
-    const appointments = await Appointment.find({
-      patientId: req.user._id,
-    })
-      .populate("doctorId", "name specialization")
-      .sort({ appointmentDate: -1 });
 
     res.json(appointments);
   } catch (error) {
@@ -320,23 +342,6 @@ export const updateAppointmentStatus = async (req, res) => {
     );
 
     res.json({ message: "Status updated", appointment });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const cancelAppointment = async (req, res) => {
-  try {
-    const appointment = await Appointment.findById(req.params.id);
-
-    if (!appointment) {
-      return res.status(404).json({ message: "Not found" });
-    }
-
-    appointment.status = "cancelled";
-    await appointment.save();
-
-    res.json({ message: "Appointment cancelled", appointment });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

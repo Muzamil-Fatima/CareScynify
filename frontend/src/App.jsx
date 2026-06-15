@@ -28,7 +28,7 @@ import ResetPassword from "./pages/Auth/ResetPassword";
 //  App Pages
 import PatientProfile from "./pages/profile/PatientProfile";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Appointments from "./pages/appointments/Appointments";
+import Appointments from "./pages/Appointments";
 import Reports from "./pages/reports/Reports";
 import Settings from "./pages/settings/Settings";
 import RootLayout from "./layout/RootLayout";

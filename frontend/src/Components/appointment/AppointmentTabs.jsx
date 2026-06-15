@@ -1,5 +1,5 @@
 const AppointmentTabs = ({ active, setActive }) => {
-  const tabs = ["all", "doctor", "lab", "pharmacy", "hospital"];
+  const tabs = ["all", "doctor", "lab"];
 
   return (
     <div className="flex gap-2 flex-wrap">
