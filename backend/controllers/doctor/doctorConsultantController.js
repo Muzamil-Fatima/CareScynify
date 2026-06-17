@@ -286,12 +286,19 @@ export const updateConsultantHours = async (req, res) => {
       });
     }
 
-    // CLEAN
-    const cleaned = {};
+    //  START FROM CURRENT STATE (important for safe mutation)
+    const updatedAvailability = { ...(workplace.availability || {}) };
 
     for (const day in availability) {
       const slot = availability[day];
 
+      // DELETE CASE
+      if (!slot) {
+        delete updatedAvailability[day];
+        continue;
+      }
+
+      //  VALIDATION
       const start = toMinutes(slot?.start);
       const end = toMinutes(slot?.end);
 
@@ -302,26 +309,24 @@ export const updateConsultantHours = async (req, res) => {
         });
       }
 
-      cleaned[day] = {
+      //  UPDATE CASE
+      updatedAvailability[day] = {
         start: slot.start,
         end: slot.end,
       };
     }
 
-    // merge availability
-    workplace.availability = {
-      ...(workplace.availability || {}),
-      ...cleaned,
-    };
+    // FINAL ASSIGNMENT (MERGING )
+    workplace.availability = updatedAvailability;
 
-    // 🔥 REGENERATE SLOTS AFTER UPDATE
+    // regenerate slots
     generateWorkplaceSlots(workplace);
 
     await doctor.save();
 
     return res.status(200).json({
       success: true,
-      message: "Availability updated + slots regenerated",
+      message: "Availability updated successfully",
       workplace,
     });
   } catch (error) {

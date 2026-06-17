@@ -52,19 +52,19 @@ export const useConsultationHours = (
 
     const key = `${workplaceId}-${day}`;
 
-    // ❌ CLEAR OLD ERROR FIRST
+    // CLEAR OLD ERROR FIRST
     setConflicts((prev) => {
       const copy = { ...prev };
       delete copy[key];
       return copy;
     });
 
-    // ❌ SKIP IF NOTHING CHANGED
+    //  SKIP IF NOTHING CHANGED
     if (current.start === newStart && current.end === newEnd) {
       return true;
     }
 
-    // ❌ UPDATE UI FIRST
+    //  UPDATE UI FIRST
     setProfile((prev) => {
       const updated = (prev.doctor?.workplaces || []).map((w) =>
         w._id === workplaceId
@@ -86,13 +86,13 @@ export const useConsultationHours = (
 
     setIsDirty(true);
 
-    // ❌ VALIDATION ONLY WHEN BOTH VALUES EXIST
+    // VALIDATION ONLY WHEN BOTH VALUES EXIST
     if (!newStart || !newEnd) return true;
 
     const startMin = toMinutes(newStart);
     const endMin = toMinutes(newEnd);
 
-    // ❌ INVALID RANGE
+    //  INVALID RANGE
     if (startMin === null || endMin === null) {
       setConflicts((prev) => ({
         ...prev,
@@ -108,7 +108,7 @@ export const useConsultationHours = (
       return false;
     }
 
-    // ❌ CONFLICT CHECK
+    //  CONFLICT CHECK
     const conflict = hasConflict(workplaceId, day, startMin, endMin);
 
     if (conflict) {
@@ -119,7 +119,7 @@ export const useConsultationHours = (
       return false;
     }
 
-    // ✅ DEBOUNCED API CALL
+    // DEBOUNCED API CALL
     clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
@@ -148,54 +148,56 @@ export const useConsultationHours = (
       toast.error(err?.response?.data?.message || "Server error");
     }
   };
+const removeDay = async (workplaceId, day) => {
+  const currentReq = ++requestRef.current;
 
-  const removeDay = async (workplaceId, day) => {
-    const currentReq = ++requestRef.current;
+  try {
+    const res = await updateConsultantHours(workplaceId, {
+      availability: {
+        [day]: null, // backend to remove
+      },
+    });
 
-    try {
-      const res = await updateConsultantHours(workplaceId, {
-        availability: {
-          [day]: { start: "", end: "" },
-        },
-      });
+    if (currentReq !== requestRef.current) return;
 
-      if (currentReq !== requestRef.current) return;
+    if (!res?.success) {
+      toast.error(res?.message || "Failed to remove day");
+      return;
+    }
 
-      if (!res?.success) {
-        toast.error(res?.message || "Failed");
-        return;
-      }
+    setProfile((prev) => {
+      const updated = (prev.doctor?.workplaces || []).map((w) => {
+        if (w._id !== workplaceId) return w;
 
-      setProfile((prev) => {
-        const updated = (prev.doctor?.workplaces || []).map((w) =>
-          w._id === workplaceId
-            ? {
-                ...w,
-                availability: {
-                  ...w.availability,
-                  [day]: { start: "", end: "" },
-                },
-              }
-            : w,
-        );
+        const copy = { ...(w.availability || {}) };
+        delete copy[day];
 
         return {
-          ...prev,
-          doctor: { ...prev.doctor, workplaces: updated },
+          ...w,
+          availability: copy,
         };
       });
 
-      setConflicts((prev) => {
-        const copy = { ...prev };
-        delete copy[`${workplaceId}-${day}`];
-        return copy;
-      });
+      return {
+        ...prev,
+        doctor: {
+          ...prev.doctor,
+          workplaces: updated,
+        },
+      };
+    });
 
-      setIsDirty(true);
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Server error");
-    }
-  };
+    setConflicts((prev) => {
+      const copy = { ...prev };
+      delete copy[`${workplaceId}-${day}`];
+      return copy;
+    });
+
+    setIsDirty(true);
+  } catch (err) {
+    toast.error(err?.response?.data?.message || "Server error");
+  }
+};
 
   return { setDayTime, removeDay };
 };

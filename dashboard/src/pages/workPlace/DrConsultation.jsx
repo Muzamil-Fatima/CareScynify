@@ -12,7 +12,7 @@ const DrConsultation = ({ workplace }) => {
     (w) => w?._id === workplaceId,
   );
 
-  const availability = currentWorkplace?.availability || {};
+  const availability = currentWorkplace?.availability ?? {};
 
   const calculateDuration = (start, end) => {
     if (!start || !end) return null;
@@ -96,7 +96,7 @@ const DrConsultation = ({ workplace }) => {
 
                 <button
                   onClick={() => removeDay(workplaceId, day)}
-                  className="h-10 w-10 flex items-center justify-center text-red-500"
+                    className="h-10 w-10 flex items-center justify-center text-red-500 hover:bg-red-100 hover:text-red-600 rounded-lg transition"
                 >
                   <X size={16} />
                 </button>

@@ -58,7 +58,7 @@ const drSchema = new mongoose.Schema(
 
           consultationType: {
             type: String,
-            enum: ["online", "physical", "online + physical"],
+            enum: ["online", "physical", "online_physical"],
             default: "online",
           },
         },
