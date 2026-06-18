@@ -46,7 +46,6 @@ const corsOptions = {
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
 };
-
 app.use(cors(corsOptions));
 // Routes
 app.use("/api/auth", authRoutes);
@@ -66,9 +65,12 @@ app.use("/api/appointments", appointmentRoutes);
 // server listen
 const server = http.createServer(app);
 
-// init socket
-initSocket(server);
 
+//  INIT SOCKET FIRST
+const io = initSocket(server);
+
+//  NOW ATTACH IO TO APP
+app.set("io", io);
 const port = process.env.PORT || 8000;
 
 server.listen(port, () => {

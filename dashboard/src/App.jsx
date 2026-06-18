@@ -1,7 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Overview from "./pages/overView/OverView";
-import Appointment from "./pages/appointments/Appointment";
+import Appointment from "./pages/Appointment.jsx";
 import Doctor from "./pages/doctor/Doctor";
 import HelpCenter from "./pages/helpCenter/HelpCenter";
 import Laboratory from "./pages/laboratory/Laboratory";
@@ -15,7 +15,7 @@ import Payments from "./pages/payments/Payments";
 import Login from "./pages/auth/Login";
 import DrDashboard from "./pages/doctor/DrDashboard";
 import DrSchedule from "./pages/doctor/DrSchedule";
-import AllAppointment from "./pages/appointments/AllAppointment";
+import Appointments from "./pages/Appointment.jsx";
 import AddNewDr from "./pages/doctor/AddNewDr";
 import DrReview from "./pages/doctor/DrReview";
 import TopBar from "./components/TopBar";
@@ -91,7 +91,7 @@ function App() {
               }
             />
             <Route path="/doctor/schedule" element={<DrSchedule />} />
-            <Route path="/doctor/appointments" element={<AllAppointment />} />
+            <Route path="/doctor/appointments" element={<Appointment />} />
             <Route path="/doctor/profile" element={<AddNewDr />} />
             <Route path="/doctor/reviews" element={<DrReview />} />
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />

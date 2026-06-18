@@ -212,7 +212,7 @@ export const getUserAppointments = async (req, res) => {
       const doctor = a.doctorId;
 
       const workplace = doctor?.workplaces?.find(
-        (w) => w._id.toString() === a.workplaceId?.toString()
+        (w) => w._id.toString() === a.workplaceId?.toString(),
       );
 
       return {
@@ -229,6 +229,33 @@ export const getUserAppointments = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+// ----------------- confirm + completed
+export const updateAppointmentStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+
+    const appointment = await Appointment.findById(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    appointment.status = status;
+    await appointment.save();
+
+    // SOCKET EMIT ADD HERE
+    const io = req.app.get("io");
+
+    io.emit("slot-updated", appointment); // 👈 IMPORTANT
+
+    return res.json({
+      message: "Status updated successfully",
+      appointment,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
 /* ---------------- CANCEL APPOINTMENT ---------------- */
 export const cancelAppointment = async (req, res) => {
   try {
@@ -236,6 +263,27 @@ export const cancelAppointment = async (req, res) => {
 
     if (!appointment) {
       return res.status(404).json({ message: "Not found" });
+    }
+
+    // 👇 ADD THIS BLOCK HERE (VERY IMPORTANT)
+    const user = req.user;
+
+    if (user.role === "patient") {
+      const appointmentDateTime = new Date(
+        `${appointment.appointmentDate} ${appointment.appointmentTime}`,
+      );
+
+      const diffMs = appointmentDateTime - new Date();
+
+      if (diffMs < 60 * 60 * 1000) {
+        return res.status(400).json({
+          message: "You can only cancel at least 1 hour before appointment",
+        });
+      }
+
+      if (appointment.patientId.toString() !== user._id.toString()) {
+        return res.status(403).json({ message: "Not allowed" });
+      }
     }
 
     // ❌ update appointment status
@@ -264,7 +312,6 @@ export const cancelAppointment = async (req, res) => {
 
     await doctor.save();
 
-    // ⚡ SOCKET EMIT (REAL-TIME UPDATE)
     const io = getIO();
 
     io.to(appointment.doctorId.toString()).emit("slot-updated", {
@@ -295,26 +342,6 @@ export const getAppointmentById = async (req, res) => {
     }
 
     res.json(appointment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const updateAppointmentStatus = async (req, res) => {
-  try {
-    const allowed = ["pending", "confirmed", "cancelled", "completed"];
-
-    if (!allowed.includes(req.body.status)) {
-      return res.status(400).json({ message: "Invalid status" });
-    }
-
-    const appointment = await Appointment.findByIdAndUpdate(
-      req.params.id,
-      { status: req.body.status },
-      { new: true },
-    );
-
-    res.json({ message: "Status updated", appointment });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

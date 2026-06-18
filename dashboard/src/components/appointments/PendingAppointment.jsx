@@ -1,3 +1,22 @@
+// import React from "react";
+
+// const PendingAppointment = () => {
+//   return (
+//     <div className="border border-slate-200 bg-white rounded-2xl p-10 text-center shadow-xl shadow-purple-950/1">
+//       <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-amber-100">
+//         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+//         </svg>
+//       </div>
+//       <h3 className="text-base font-bold text-slate-800">Pending Verification Queues</h3>
+//       <p className="text-sm text-slate-400 max-w-sm mx-auto mt-1 font-medium">
+//         All requests needing temporary slot authentication review gates are listed within this component framework.
+//       </p>
+//     </div>
+//   );
+// };
+
+// export default PendingAppointment;
 import { useState } from "react";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
 
@@ -5,26 +24,23 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-
-const AllAppointment = () => {
-  const { appointments, loading } = useDoctorAppointments();
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+const PendingAppointment = () => {
+  const { appointments, loading, updateStatus } = useDoctorAppointments();
   const [timeFormat, setTimeFormat] = useState("12h");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [statusFilter, setStatusFilter] = useState("all");
   const [openStatus, setOpenStatus] = useState(false);
   const [openTime, setOpenTime] = useState(false);
+  const [openStatusMenu, setOpenStatusMenu] = useState(null);
+
   // Status Counts
-  const confirmedCount = appointments.filter(
-    (item) => item.status === "confirmed",
-  ).length;
-
-  const pendingCount = appointments.filter(
-    (item) => item.status === "reserved",
-  ).length;
-
   const cancelledCount = appointments.filter(
     (item) => item.status === "cancelled",
+  ).length;
+  const pendingCount = appointments.filter(
+    (item) => item.status === "pending",
   ).length;
   const formatTime = (time) => {
     if (!time) return "-";
@@ -44,18 +60,16 @@ const AllAppointment = () => {
         });
   };
   // Filter
-  const filteredAppointments =
-    statusFilter === "all"
-      ? appointments
-      : appointments.filter((item) => item.status === statusFilter);
-
-  // Pagination
+  const filteredAppointments = appointments.filter(
+    (item) => item.status === "pending" || item.status === "cancelled",
+  );
   const totalPages = Math.ceil(filteredAppointments.length / rowsPerPage);
 
   const paginatedAppointments = filteredAppointments.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
+
   return (
     <div className="font-secondary font-medium text-[13px] mr-4">
       {/* TABLE CARD */}
@@ -63,7 +77,7 @@ const AllAppointment = () => {
         {/* HEADER */}
         <div className="flex py-3 px-4 items-center justify-between border-b border-gray-300/30">
           <div className="text-[16px] font-semibold text-gray-800">
-            All Appointments
+            Pending Appointments
           </div>
 
           <div className="flex items-center gap-3">
@@ -146,7 +160,6 @@ const AllAppointment = () => {
                         >
                           <button
                             onClick={() => {
-                              setStatusFilter("all");
                               setCurrentPage(1);
                               setOpenStatus(false);
                             }}
@@ -154,21 +167,8 @@ const AllAppointment = () => {
                           >
                             All ({appointments.length})
                           </button>
-
                           <button
                             onClick={() => {
-                              setStatusFilter("confirmed");
-                              setCurrentPage(1);
-                              setOpenStatus(false);
-                            }}
-                            className="w-full text-left px-3 py-2 hover:bg-gray-100"
-                          >
-                            Confirmed ({confirmedCount})
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              setStatusFilter("reserved");
                               setCurrentPage(1);
                               setOpenStatus(false);
                             }}
@@ -179,7 +179,6 @@ const AllAppointment = () => {
 
                           <button
                             onClick={() => {
-                              setStatusFilter("cancelled");
                               setCurrentPage(1);
                               setOpenStatus(false);
                             }}
@@ -190,7 +189,7 @@ const AllAppointment = () => {
                         </div>
                       )}
                     </th>
-                    <th className="px-4 py-3 text-center">Action</th>
+                    <th className="px-4 py-3 text-center">Verified</th>
                   </tr>
                 </thead>
 
@@ -254,26 +253,57 @@ const AllAppointment = () => {
                           </td>
 
                           {/* Status */}
-                          <td className="px-4 py-3">
-                            <span
+                          <td className="px-4 py-3 relative">
+                            {/* STATUS BADGE (CLICKABLE) */}
+                            <button
+                              onClick={() =>
+                                setOpenStatusMenu(
+                                  openStatusMenu === item._id ? null : item._id,
+                                )
+                              }
                               className={`px-3 py-1 rounded-full text-xs font-semibold border ${
                                 item.status === "confirmed"
                                   ? "bg-green-100 text-green-700 border-green-300"
-                                  : item.status === "reserved"
-                                    ? "bg-yellow-100 text-yellow-700 border-yellow-300"
+                                  : item.status === "pending"
+                                    ? "bg-yellow-100 text-yellow-700 border-yellow-300 cursor-pointer"
                                     : "bg-red-100 text-red-700 border-red-300"
                               }`}
                             >
                               {item.status}
-                            </span>
+                            </button>
+
+                            {/* DROPDOWN */}
+                            {openStatusMenu === item._id && (
+                              <div className="absolute mt-2 left-0 w-40 bg-white border rounded-lg shadow-lg z-50">
+                                {/* CONFIRM */}
+                                <button
+                                  onClick={async () => {
+                                    await updateStatus(item._id, "confirmed");
+                                    setOpenStatusMenu(null);
+                                  }}
+                                  className="w-full flex items-center gap-2 px-3 py-2 hover:bg-green-50 text-green-700"
+                                >
+                                  <CheckCircleOutlineIcon fontSize="small" />
+                                  Confirm
+                                </button>
+
+                                {/* CANCEL */}
+                                <button
+                                  onClick={async () => {
+                                    await updateStatus(item._id, "cancelled");
+                                    setOpenStatusMenu(null);
+                                  }}
+                                  className="w-full flex items-center gap-2 px-3 py-2 hover:bg-red-50 text-red-700"
+                                >
+                                  <CancelOutlinedIcon fontSize="small" />
+                                  Cancel
+                                </button>
+                              </div>
+                            )}
                           </td>
 
-                          {/* Action */}
-                          <td className="px-4 py-3 text-center">
-                            <button className="text-gray-500 hover:text-gray-800">
-                              <MoreVertIcon />
-                            </button>
-                          </td>
+                          {/* Verify */}
+                          <td className="px-4 py-3 text-center relative"></td>
                         </tr>
                       );
                     })
@@ -337,4 +367,4 @@ const AllAppointment = () => {
   );
 };
 
-export default AllAppointment;
+export default PendingAppointment;
