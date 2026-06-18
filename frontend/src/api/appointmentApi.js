@@ -10,42 +10,18 @@ export const getAvailableSlots = async (doctorId, workplaceId, date) => {
 
   return res.data;
 };
+/* ---------------- APPOINTMENTS ---------------- */
+export const reserveSlot = async (data) => {
+  console.log("RESERVE SLOT:", data);
 
-// reserve slot (temporary hold)
-export const reserveSlot = async ({
-  doctorId,
-  workplaceId,
-  date,
-  time,
-}) => {
-  const res = await api.post("/api/appointments/reserve", {
-    doctorId,
-    workplaceId,
-    date,
-    time,
-  });
-
+  const res = await api.post("/api/appointments/reserve", data);
   return res.data;
 };
 
-/* ---------------- APPOINTMENTS ---------------- */
+export const createAppointment = async (data) => {
+  console.log("CREATE APPOINTMENT:", data);
 
-// create/confirm appointment
-export const createAppointment = async ({
-  doctorId,
-  workplaceId,
-  date,
-  time,
-  appointmentType,
-}) => {
-  const res = await api.post("/api/appointments", {
-    doctorId,
-    workplaceId,
-    date,
-    time,
-    appointmentType,
-  });
-
+  const res = await api.post("/api/appointments", data);
   return res.data;
 };
 
@@ -55,11 +31,7 @@ export const getUserAppointments = async () => {
   return res.data;
 };
 
-// get doctor appointments
-export const getDoctorAppointments = async (doctorId) => {
-  const res = await api.get(`/api/appointments/doctor/${doctorId}`);
-  return res.data;
-};
+
 
 // get single appointment
 export const getAppointmentById = async (id) => {
@@ -67,27 +39,10 @@ export const getAppointmentById = async (id) => {
   return res.data;
 };
 
-/* ---------------- UPDATE / CANCEL ---------------- */
-
-// update status (doctor/admin)
-export const updateAppointmentStatus = async (id, status) => {
-  const res = await api.patch(`/api/appointments/${id}/status`, {
-    status,
-  });
-
-  return res.data;
-};
-
+/* ---------------- CANCEL ---------------- */
 // cancel appointment
 export const cancelAppointment = async (id) => {
   const res = await api.patch(`/api/appointments/${id}/cancel`);
   return res.data;
 };
 
-/* ---------------- DELETE ---------------- */
-
-// delete appointment
-export const deleteAppointment = async (id) => {
-  const res = await api.delete(`/api/appointments/${id}`);
-  return res.data;
-};

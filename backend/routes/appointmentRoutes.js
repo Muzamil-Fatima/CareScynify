@@ -21,8 +21,8 @@ router.post("/reserve", protect, reserveSlot);
 
 /* ---------------- APPOINTMENTS ---------------- */
 router.post("/", protect, createAppointment);
-
 router.get("/", protect, getUserAppointments);
+
 router.get("/doctor", protect, getDoctorAppointments);
 router.get("/:id", protect, getAppointmentById);
 

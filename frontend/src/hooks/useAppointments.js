@@ -1,35 +1,48 @@
 import { useState, useEffect } from "react";
-import {socket} from "../socket/socket.js";
+import { socket } from "../socket/socket.js";
 import { toast } from "react-toastify";
 import {
   getUserAppointments,
   createAppointment,
   cancelAppointment,
+  reserveSlot,
 } from "../api/appointmentApi";
 
 export const useAppointment = () => {
   const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
-useEffect(() => {
-  socket.on("slot-updated", () => {
-    fetchAppointments(); // auto refresh when backend changes
-  });
+  useEffect(() => {
+    fetchAppointments();
 
-  return () => {
-    socket.off("slot-updated");
-  };
-}, []);
+    const handleUpdate = () => {
+      fetchAppointments();
+    };
+
+    socket.on("slot-updated", handleUpdate);
+
+    return () => {
+      socket.off("slot-updated", handleUpdate);
+    };
+  }, []);
   // GET ALL APPOINTMENTS
   const fetchAppointments = async () => {
     try {
       setLoading(true);
 
-      const data = await getUserAppointments();
+      const res = await getUserAppointments();
 
-      // handle array OR object 
-      setAppointments(Array.isArray(data) ? data : data.appointments || []);
+      const list =
+        res?.appointments ||
+        res?.data?.appointments ||
+        (Array.isArray(res) ? res : []);
 
-      return data;
+      const sorted = [...list].sort(
+        (a, b) => new Date(b.appointmentDate) - new Date(a.appointmentDate),
+      );
+
+      setAppointments(sorted);
+
+      return sorted;
     } catch (error) {
       console.error("Fetch appointments failed:", error);
       toast.error("Failed to load appointments");
@@ -39,40 +52,24 @@ useEffect(() => {
   };
 
   // BOOK APPOINTMENT
-  const bookAppointment = async ({
-    doctorId,
-    date,
-    time,
-    workplaceId,
-    appointmentType,
-  }) => {
-    if (!doctorId || !date || !time || !workplaceId || !appointmentType) {
-      toast.error("Missing required fields");
-      return;
-    }
-
+  const bookAppointment = async (data) => {
     try {
       setLoading(true);
 
-      const res = await createAppointment({
-        doctorId,
-        workplaceId,
-        date,
-        time,
-        appointmentType,
-      });
+      // STEP 1: reserve slot
+      await reserveSlot(data);
+
+      // STEP 2: confirm appointment
+      const res = await createAppointment(data);
 
       toast.success("Appointment booked successfully");
 
-      //refresh list after booking
       await fetchAppointments();
 
       return res;
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.message || "Failed to book appointment"
-      );
-      throw error;
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Booking failed");
+      throw err;
     } finally {
       setLoading(false);
     }

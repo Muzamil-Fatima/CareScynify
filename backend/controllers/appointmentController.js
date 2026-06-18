@@ -3,35 +3,18 @@ import Doctor from "../models/doctorModel.js";
 import { getIO } from "../config/socket.js";
 /* ---------------- HELPERS ---------------- */
 
-// consistent time format: "HH:MM"
+const normalizeDate = (date) => {
+  const d = new Date(date);
+  d.setUTCHours(0, 0, 0, 0);
+  return d;
+};
 const normalizeTime = (t) => {
   if (!t) return "";
-
-  // Case 1: already 24-hour
-  if (!t.toLowerCase().includes("am") && !t.toLowerCase().includes("pm")) {
-    const [h, m] = t.split(":");
-    return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
-  }
-
-  // Case 2: AM/PM format → convert to 24h
-  let [time, modifier] = t.split(" ");
-  let [hours, minutes] = time.split(":").map(Number);
-
-  modifier = modifier.toLowerCase();
-
-  if (modifier === "pm" && hours !== 12) {
-    hours += 12;
-  }
-
-  if (modifier === "am" && hours === 12) {
-    hours = 0;
-  }
-
-  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  return t.length === 4 ? `0${t}` : t; // 9:00 → 09:00
 };
 
+const now = () => new Date();
 /* ---------------- GET AVAILABLE SLOTS ---------------- */
-
 export const getAvailableSlots = async (req, res) => {
   try {
     const { doctorId, workplaceId, date } = req.query;
@@ -47,19 +30,35 @@ export const getAvailableSlots = async (req, res) => {
     if (!workplace)
       return res.status(404).json({ message: "Workplace not found" });
 
+    const appointmentDate = normalizeDate(date);
+    const currentTime = now();
+
+    // remove expired reservations (cleanup)
+    await Appointment.deleteMany({
+      status: "reserved",
+      reservedUntil: { $lte: currentTime },
+    });
+
+    const booked = await Appointment.find({
+      doctorId,
+      workplaceId,
+      appointmentDate,
+      status: { $in: ["reserved", "confirmed"] },
+      reservedUntil: { $gt: currentTime },
+    });
+
+    const bookedTimes = booked.map((b) => b.appointmentTime);
+
     const day = new Date(date).toLocaleDateString("en-US", {
       weekday: "short",
       timeZone: "UTC",
     });
 
-    const daySlots = workplace.slots?.[day] || [];
+    const slots = workplace.slots?.[day] || [];
 
-    // 🔥 ONLY RETURN NOT BOOKED SLOTS
-    const availableSlots = daySlots
-      .filter((slot) => slot.isBooked === false)
-      .map((slot) => ({
-        label: slot.startTime,
-      }));
+    const availableSlots = slots
+      .filter((slot) => !bookedTimes.includes(slot.startTime))
+      .map((slot) => ({ label: slot.startTime }));
 
     return res.json(availableSlots);
   } catch (error) {
@@ -75,45 +74,32 @@ export const reserveSlot = async (req, res) => {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    const appointmentDate = new Date(`${date}T00:00:00Z`);
+    const appointmentDate = normalizeDate(date);
+    const appointmentTime = normalizeTime(time);
+    const currentTime = new Date();
 
-    const now = new Date();
-
-    //  STEP 1: cleanup expired reservations first
-    await Appointment.deleteMany({
-      status: "reserved",
-      reservedUntil: { $lte: now },
-    });
-
-    //  STEP 2: ensure ONLY ONE active reservation per user
-    await Appointment.deleteMany({
-      patientId: req.user._id,
-      status: "reserved",
-      reservedUntil: { $gt: now },
-    });
-
-    // STEP 3: check if slot is already taken (reserved/confirmed)
     const existing = await Appointment.findOne({
       doctorId,
+      workplaceId,
       appointmentDate,
-      appointmentTime: time,
-      $or: [
-        { status: "confirmed" },
-        { status: "reserved", reservedUntil: { $gt: now } },
-      ],
+      appointmentTime,
+      status: { $in: ["reserved", "confirmed"] },
+      reservedUntil: { $gt: currentTime },
     });
 
     if (existing) {
-      return res.status(400).json({ message: "Slot already reserved" });
+      if (existing.patientId.toString() === req.user._id.toString()) {
+        return res.status(400).json({ message: "Already reserved" });
+      }
+      return res.status(400).json({ message: "Slot already taken" });
     }
 
-    //  STEP 4: create reservation (10 min hold)
     const reservation = await Appointment.create({
       patientId: req.user._id,
       doctorId,
       workplaceId,
       appointmentDate,
-      appointmentTime: time,
+      appointmentTime,
       appointmentType,
       status: "reserved",
       reservedUntil: new Date(Date.now() + 10 * 60 * 1000),
@@ -124,107 +110,54 @@ export const reserveSlot = async (req, res) => {
       reservation,
     });
   } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
+    return res.status(500).json({ message: error.message });
   }
 };
 /* ---------------- CREATE APPOINTMENT ---------------- */
 export const createAppointment = async (req, res) => {
   try {
-    const { doctorId, workplaceId, date, time, appointmentType } = req.body;
+    const { doctorId, workplaceId, date, time } = req.body;
 
-    if (!doctorId || !workplaceId || !date || !time || !appointmentType) {
+    if (!doctorId || !workplaceId || !date || !time) {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    const appointmentDate = new Date(`${date}T00:00:00Z`);
+    const appointmentDate = normalizeDate(date);
+    const appointmentTime = normalizeTime(time);
+    const currentTime = new Date();
 
-    const day = new Date(date).toLocaleDateString("en-US", {
-      weekday: "short",
-      timeZone: "UTC",
+    await Appointment.deleteMany({
+      status: "reserved",
+      reservedUntil: { $lte: currentTime },
     });
 
-    // 🔥 STEP 1: BLOCK USER DOUBLE CONFIRMED BOOKINGS (MAIN FIX)
-    const userExisting = await Appointment.findOne({
+    const reservation = await Appointment.findOne({
       patientId: req.user._id,
-      status: "confirmed",
+      doctorId,
+      workplaceId,
+      appointmentDate,
+      appointmentTime,
+      status: "reserved",
+      reservedUntil: { $gt: currentTime },
     });
 
-    if (userExisting) {
+    if (!reservation) {
       return res.status(400).json({
-        message: "You already have an active appointment",
+        message: "Reservation expired or not found",
       });
     }
 
-    // 🔥 STEP 2: CHECK SLOT AVAILABILITY (DOCTOR SIDE)
-    const existingSlot = await Appointment.findOne({
-      doctorId,
-      appointmentDate,
-      appointmentTime: time,
-      $or: [
-        { status: "confirmed" },
-        { status: "reserved", reservedUntil: { $gt: new Date() } },
-      ],
-    });
+    reservation.status = "pending";
+    reservation.reservedUntil = null;
 
-    if (existingSlot) {
-      return res.status(400).json({ message: "Slot already booked" });
-    }
-
-    //  STEP 3: CREATE APPOINTMENT
-    const appointment = await Appointment.create({
-      patientId: req.user._id,
-      doctorId,
-      workplaceId,
-      appointmentDate,
-      appointmentTime: time,
-      appointmentType,
-      status: "confirmed",
-    });
-
-    //  STEP 4: UPDATE DOCTOR SLOT
-    const doctor = await Doctor.findById(doctorId);
-
-    if (!doctor) {
-      return res.status(404).json({ message: "Doctor not found" });
-    }
-
-    const workplace = doctor.workplaces.id(workplaceId);
-
-    if (!workplace) {
-      return res.status(404).json({ message: "Workplace not found" });
-    }
-
-    const slots = workplace.slots?.[day] || [];
-
-    const slotIndex = slots.findIndex(
-      (slot) => slot.startTime.trim() === time.trim(),
-    );
-
-    if (slotIndex !== -1) {
-      workplace.slots[day][slotIndex].isBooked = true;
-      doctor.markModified("workplaces");
-      await doctor.save();
-    }
-
-    // socket emit
-    const io = getIO();
-    io.to(doctorId.toString()).emit("slot-updated", {
-      doctorId,
-      workplaceId,
-      date,
-      time,
-    });
+    await reservation.save();
 
     return res.status(201).json({
-      message: "Appointment booked successfully",
-      appointment,
+      message: "Appointment is now pending approval",
+      appointment: reservation,
     });
   } catch (error) {
-    return res.status(500).json({
-      message: error.message,
-    });
+    return res.status(500).json({ message: error.message });
   }
 };
 /*-------------------- Doctor Get all appointment with patients -------------*/
@@ -272,24 +205,28 @@ export const getUserAppointments = async (req, res) => {
           select: "name avatar",
         },
       })
-      .lean(); // important
+      .sort({ createdAt: -1 })
+      .lean();
 
     const enriched = appointments.map((a) => {
       const doctor = a.doctorId;
 
       const workplace = doctor?.workplaces?.find(
-        (w) => w._id.toString() === a.workplaceId?.toString(),
+        (w) => w._id.toString() === a.workplaceId?.toString()
       );
 
       return {
         ...a,
-        workplace, // 🔥 now frontend can use it easily
+        workplace,
       };
     });
 
-    res.json(enriched);
+    return res.status(200).json({
+      success: true,
+      appointments: enriched,
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 /* ---------------- CANCEL APPOINTMENT ---------------- */
