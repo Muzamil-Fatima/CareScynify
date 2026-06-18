@@ -109,7 +109,7 @@ export const addConsultantHours = async (req, res) => {
 
     const createdWorkplace = doctor.workplaces.at(-1);
 
-    // 🔥 GENERATE SLOTS ON CREATE
+    // GENERATE SLOTS ON CREATE
     generateWorkplaceSlots(createdWorkplace);
 
     await doctor.save();

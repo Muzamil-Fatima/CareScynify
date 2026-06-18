@@ -67,7 +67,6 @@ export const getAvailableSlots = async (req, res) => {
   }
 };
 /* ---------------- RESERVE SLOT ---------------- */
-
 export const reserveSlot = async (req, res) => {
   try {
     const { doctorId, workplaceId, date, time, appointmentType } = req.body;
@@ -76,21 +75,31 @@ export const reserveSlot = async (req, res) => {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    const appointmentDate = new Date(date + "T00:00:00Z");
+    const appointmentDate = new Date(`${date}T00:00:00Z`);
 
-    // cleanup expired
+    const now = new Date();
+
+    //  STEP 1: cleanup expired reservations first
     await Appointment.deleteMany({
       status: "reserved",
-      reservedUntil: { $lte: new Date() },
+      reservedUntil: { $lte: now },
     });
 
+    //  STEP 2: ensure ONLY ONE active reservation per user
+    await Appointment.deleteMany({
+      patientId: req.user._id,
+      status: "reserved",
+      reservedUntil: { $gt: now },
+    });
+
+    // STEP 3: check if slot is already taken (reserved/confirmed)
     const existing = await Appointment.findOne({
       doctorId,
       appointmentDate,
       appointmentTime: time,
       $or: [
         { status: "confirmed" },
-        { status: "reserved", reservedUntil: { $gt: new Date() } },
+        { status: "reserved", reservedUntil: { $gt: now } },
       ],
     });
 
@@ -98,6 +107,7 @@ export const reserveSlot = async (req, res) => {
       return res.status(400).json({ message: "Slot already reserved" });
     }
 
+    //  STEP 4: create reservation (10 min hold)
     const reservation = await Appointment.create({
       patientId: req.user._id,
       doctorId,
@@ -109,16 +119,17 @@ export const reserveSlot = async (req, res) => {
       reservedUntil: new Date(Date.now() + 10 * 60 * 1000),
     });
 
-    return res.json({
-      message: "Slot reserved",
+    return res.status(201).json({
+      message: "Slot reserved successfully",
       reservation,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
 /* ---------------- CREATE APPOINTMENT ---------------- */
-
 export const createAppointment = async (req, res) => {
   try {
     const { doctorId, workplaceId, date, time, appointmentType } = req.body;
@@ -127,18 +138,26 @@ export const createAppointment = async (req, res) => {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    // normalize date
     const appointmentDate = new Date(`${date}T00:00:00Z`);
 
-    // helper: normalize day key
-    const getDayKey = (d) =>
-      new Date(d)
-        .toLocaleDateString("en-US", { weekday: "short" })
-        .toLowerCase();
+    const day = new Date(date).toLocaleDateString("en-US", {
+      weekday: "short",
+      timeZone: "UTC",
+    });
 
-    const day = getDayKey(date);
+    // 🔥 STEP 1: BLOCK USER DOUBLE CONFIRMED BOOKINGS (MAIN FIX)
+    const userExisting = await Appointment.findOne({
+      patientId: req.user._id,
+      status: "confirmed",
+    });
 
-    // check existing booking
+    if (userExisting) {
+      return res.status(400).json({
+        message: "You already have an active appointment",
+      });
+    }
+
+    // 🔥 STEP 2: CHECK SLOT AVAILABILITY (DOCTOR SIDE)
     const existingSlot = await Appointment.findOne({
       doctorId,
       appointmentDate,
@@ -153,7 +172,7 @@ export const createAppointment = async (req, res) => {
       return res.status(400).json({ message: "Slot already booked" });
     }
 
-    // create appointment
+    //  STEP 3: CREATE APPOINTMENT
     const appointment = await Appointment.create({
       patientId: req.user._id,
       doctorId,
@@ -164,30 +183,30 @@ export const createAppointment = async (req, res) => {
       status: "confirmed",
     });
 
-    // get doctor
+    //  STEP 4: UPDATE DOCTOR SLOT
     const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
     const workplace = doctor.workplaces.id(workplaceId);
 
     if (!workplace) {
       return res.status(404).json({ message: "Workplace not found" });
     }
 
-    // ensure slots exist
     const slots = workplace.slots?.[day] || [];
 
-    // find slot
     const slotIndex = slots.findIndex(
-      (s) => s.startTime === time
+      (slot) => slot.startTime.trim() === time.trim(),
     );
 
     if (slotIndex !== -1) {
       workplace.slots[day][slotIndex].isBooked = true;
+      doctor.markModified("workplaces");
+      await doctor.save();
     }
-
-    // 🔥 CRITICAL FIX (Mongoose deep update)
-    doctor.markModified("workplaces");
-
-    await doctor.save();
 
     // socket emit
     const io = getIO();
@@ -205,6 +224,37 @@ export const createAppointment = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: error.message,
+    });
+  }
+};
+/*-------------------- Doctor Get all appointment with patients -------------*/
+export const getDoctorAppointments = async (req, res) => {
+  try {
+    const doctor = await Doctor.findOne({
+      userId: req.user._id,
+    });
+
+    if (!doctor) {
+      return res.status(404).json({
+        message: "Doctor profile not found",
+      });
+    }
+
+    const appointments = await Appointment.find({
+      doctorId: doctor._id,
+    })
+      .populate({
+        path: "patientId",
+        select: "name email phone avatar",
+      })
+      .sort({ appointmentDate: -1 })
+      .lean();
+
+    return res.status(200).json(appointments);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
     });
   }
 };
@@ -243,7 +293,6 @@ export const getUserAppointments = async (req, res) => {
   }
 };
 /* ---------------- CANCEL APPOINTMENT ---------------- */
-
 export const cancelAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id);
@@ -295,19 +344,6 @@ export const cancelAppointment = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: error.message });
-  }
-};
-export const getDoctorAppointments = async (req, res) => {
-  try {
-    const { doctorId } = req.params;
-
-    const appointments = await Appointment.find({ doctorId })
-      .populate("patientId", "name email")
-      .sort({ appointmentDate: 1 });
-
-    res.json(appointments);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
   }
 };
 

@@ -16,7 +16,7 @@ export const updateWorkplaceSettings = async (req, res) => {
       return res.status(404).json({ message: "Workplace not found" });
     }
 
-    // ✅ SAFE DEEP MERGE
+    // SAFE  MERGE
     const current = workplace.settings?.toObject?.() || {};
 
     workplace.settings = {
@@ -29,7 +29,7 @@ export const updateWorkplaceSettings = async (req, res) => {
       },
     };
 
-    // 🔥 FORCE MONGOOSE TO RECOGNIZE CHANGE
+    // FORCE MONGOOSE TO RECOGNIZE CHANGE
     workplace.markModified("settings");
 
     await doctor.save();

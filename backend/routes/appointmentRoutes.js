@@ -23,7 +23,7 @@ router.post("/reserve", protect, reserveSlot);
 router.post("/", protect, createAppointment);
 
 router.get("/", protect, getUserAppointments);
-router.get("/doctor/:doctorId", protect, getDoctorAppointments);
+router.get("/doctor", protect, getDoctorAppointments);
 router.get("/:id", protect, getAppointmentById);
 
 /* ---------------- UPDATE / CANCEL ---------------- */
