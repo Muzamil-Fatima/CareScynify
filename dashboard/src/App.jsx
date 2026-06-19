@@ -4,7 +4,6 @@ import Overview from "./pages/overView/OverView";
 import Appointment from "./pages/Appointment.jsx";
 import Doctor from "./pages/doctor/Doctor";
 import HelpCenter from "./pages/helpCenter/HelpCenter";
-import Laboratory from "./pages/laboratory/Laboratory";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Patients from "./pages/patients/Patients";
 import Receptionists from "./pages/Receptionists";
@@ -15,7 +14,7 @@ import DrDashboard from "./pages/doctor/DrDashboard";
 import DrSchedule from "./pages/doctor/DrSchedule";
 import Appointments from "./pages/Appointment.jsx";
 import AddNewDr from "./pages/doctor/AddNewDr";
-import DrReview from "./pages/doctor/DrReview";
+import DrReview from "./pages/DrReview.jsx";
 import TopBar from "./components/TopBar";
 import SideBar from "./components/sidebar/SideBar";
 import ProtectedRoute from "./routes/ProtectedRoute";
@@ -94,7 +93,6 @@ function App() {
             <Route path="/doctor/reviews" element={<DrReview />} />
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
             <Route path="/help-center" element={<HelpCenter />} />
-            <Route path="/laboratory" element={<Laboratory />} />
             <Route path="/pharmacy" element={<Pharmacy />} />
             <Route path="/patients" element={<Patients />} />
             <Route path="/receptionists" element={<Receptionists />} />

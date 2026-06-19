@@ -33,7 +33,7 @@ const Appointments = () => {
 
       {/* FILTER TABS */}
       <div className="flex gap-2 flex-wrap pt-2">
-        {["all", "pending", "confirmed", "cancelled"].map((status) => (
+        {["all", "pending", "confirmed", "cancelled", "completed"].map((status) => (
           <button
             key={status}
             onClick={() => setActive(status)}

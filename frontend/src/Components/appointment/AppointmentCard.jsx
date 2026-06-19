@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import CancelIcon from "@mui/icons-material/Cancel";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { toast } from "react-hot-toast";
 
-/* ---------------- TIME FORMATTER ---------------- */
+import AppointmentTimer from "./AppointmentTimer";
+import CancelModal from "./CancelModal";
+import ReviewModal from "../review/ReviewModal";
+
 const formatTimeAMPM = (time) => {
   if (!time) return "";
 
@@ -21,57 +23,17 @@ const formatTimeAMPM = (time) => {
   return `${hours}:${String(minutes).padStart(2, "0")} ${ampm}`;
 };
 
-/* ---------------- COUNTDOWN ---------------- */
-const getTimeLeft = (date, time) => {
-  if (!date || !time) return null;
-
-  try {
-    const baseDate = new Date(date);
-
-    if (isNaN(baseDate.getTime())) return "Invalid date";
-
-    let [hours, minutes] = time.split(":").map(Number);
-
-    const appointment = new Date(baseDate);
-    appointment.setUTCHours(hours, minutes, 0, 0);
-
-    const diff = appointment.getTime() - Date.now();
-
-    if (diff <= 0) return "Started";
-
-    const h = Math.floor(diff / (1000 * 60 * 60));
-    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((diff % (1000 * 60)) / 1000);
-
-    if (h > 0) return `Starts in ${h}h ${m}m ${s}s`;
-
-    return `Starts in ${m}m ${s}s`;
-  } catch (err) {
-    toast.error("Error calculating time left", err);
-    return "Invalid time";
-  }
-};
-
 const AppointmentCard = ({ item, onCancel }) => {
-  const [timer, setTimer] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const [openReview, setOpenReview] = useState(false);
 
+  
   const doctor = item?.doctorId?.userId;
 
-  useEffect(() => {
-    // ❌ STOP TIMER if cancelled or completed
-    if (item.status === "cancelled" || item.status === "completed") return;
-
-    const update = () => {
-      const t = getTimeLeft(item.appointmentDate, item.appointmentTime);
-      setTimer(t);
-    };
-
-    update();
-    const interval = setInterval(update, 1000);
-
-    return () => clearInterval(interval);
-  }, [item]);
+  const handleCancel = () => {
+    onCancel(item._id);
+    setOpenModal(false);
+  };
 
   const getStatusStyle = (status) => {
     switch (status) {
@@ -88,15 +50,11 @@ const AppointmentCard = ({ item, onCancel }) => {
     }
   };
 
-  const handleCancel = () => {
-    onCancel(item._id);
-    setOpenModal(false);
-  };
-
   return (
     <>
       {/* CARD */}
       <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-5 space-y-4">
+
         {/* DOCTOR INFO */}
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
@@ -122,7 +80,7 @@ const AppointmentCard = ({ item, onCancel }) => {
 
           <span
             className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusStyle(
-              item.status,
+              item.status
             )}`}
           >
             {item.status}
@@ -146,59 +104,58 @@ const AppointmentCard = ({ item, onCancel }) => {
             Mode: <b>{item.appointmentType}</b>
           </p>
 
-          {/* TIMER / STATUS MESSAGE */}
-          {item.status === "cancelled" ? (
-            <div className="text-red-500 font-medium">
-              Appointment Cancelled
-            </div>
-          ) : (
-            <div className="text-purple-600 font-medium">{timer}</div>
-          )}
+          {/* TIMER */}
+          <AppointmentTimer
+            date={item.appointmentDate}
+            time={item.appointmentTime}
+            status={item.status}
+          />
         </div>
 
-        {/* CANCEL BUTTON */}
-        <div className="flex justify-end">
-          {item.status !== "cancelled" && item.status !== "completed" && (
-            <button
-              onClick={() => setOpenModal(true)}
-              className="flex items-center gap-1 text-red-600 hover:text-red-700"
-            >
-              <CancelIcon fontSize="small" />
-              Cancel
-            </button>
-          )}
+        {/* ACTION BUTTONS */}
+        <div className="flex justify-between items-center">
+
+          {/* CANCEL */}
+          <div>
+            {item.status !== "cancelled" && item.status !== "completed" && (
+              <button
+                onClick={() => setOpenModal(true)}
+                className="flex items-center gap-1 text-red-600 hover:text-red-700"
+              >
+                <CancelIcon fontSize="small" />
+                Cancel
+              </button>
+            )}
+          </div>
+
+          {/* REVIEW BUTTON (NEW) */}
+          <div>
+            {item.status === "completed" && (
+              <button
+                onClick={() => setOpenReview(true)}
+                className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+              >
+                Write Review
+              </button>
+            )}
+          </div>
+
         </div>
       </div>
 
-      {/* ---------------- MODAL ---------------- */}
-      {openModal && (
-        <div className="fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white/90 backdrop-blur-xl border border-gray-200 rounded-xl p-6 w-80 space-y-4 shadow-xl">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Cancel Appointment?
-            </h2>
+      {/* CANCEL MODAL */}
+      <CancelModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        onConfirm={handleCancel}
+      />
 
-            <p className="text-sm text-gray-600">
-              Are you sure you want to cancel this appointment?
-            </p>
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setOpenModal(false)}
-                className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
-              >
-                No
-              </button>
-
-              <button
-                onClick={handleCancel}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-              >
-                Yes, Cancel
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* REVIEW MODAL */}
+      {openReview && (
+        <ReviewModal
+          appointment={item}
+          onClose={() => setOpenReview(false)}
+        />
       )}
     </>
   );
