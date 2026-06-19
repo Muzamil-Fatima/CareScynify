@@ -5,7 +5,7 @@ import asyncHandler from "../middleware/catchAsyncError.js";
 import generateToken from "../utils/sendToken.js";
 import sendEmail from "../utils/sendEmail.js";
 import jwt from "jsonwebtoken";
-
+import Appointment from "../models/appointmentModel.js";
 import {
   verificationEmail,
   forgotPasswordEmail,
@@ -18,25 +18,29 @@ const signup = asyncHandler(async (req, res) => {
     throw new Error("Please provide all required fields");
   }
 
-  const existingUser = await User.findOne({ email });
+  const existingUser = await User.findOne({
+    email,
+    isDeleted: false,
+  });
+
   if (existingUser) {
-    res.status(400);
-    throw new Error("User already exists");
+    return res.status(400).json({
+      message: "User already exists",
+    });
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
 
-  //  Generate random token
   const verificationToken = crypto.randomBytes(32).toString("hex");
 
   const newUser = await User.create({
     name,
     email,
     password: hashPassword,
-     role: role || "patient", 
+    role: role || "patient",
     verificationToken,
-    verificationCodeExpire: Date.now() + 15 * 60 * 1000, // 15 minutes
-     authProvider: "manual",
+    verificationCodeExpire: Date.now() + 15 * 60 * 1000,
+    authProvider: "manual",
   });
 
   const verifyUrl = `${process.env.BACKEND_URL}/api/auth/verify/${verificationToken}`;
@@ -47,10 +51,9 @@ const signup = asyncHandler(async (req, res) => {
     html: verificationEmail(newUser.name, verifyUrl),
   });
 
-  //  Do NOT auto-login yet
   res.status(201).json({
     success: true,
-    message: "Signup successful! Check your email to verify your account.",
+    message: "Signup successful! Check email to verify account.",
   });
 });
 const verifyEmail = asyncHandler(async (req, res) => {
@@ -86,13 +89,15 @@ const login = asyncHandler(async (req, res) => {
     return res.status(401).json({ message: "User not found" });
   }
 
-  const isPasswordValid = await bcrypt.compare(
-    password,
-    existingUsr.password
-  );
+  const isPasswordValid = await bcrypt.compare(password, existingUsr.password);
 
   if (!isPasswordValid) {
     return res.status(401).json({ message: "Invalid Password" });
+  }
+if (existingUsr.isDeleted) {
+    return res.status(403).json({
+      message: "Account is deleted",
+    });
   }
 
   const token = generateToken(res, existingUsr._id);
@@ -212,6 +217,75 @@ const verifyOtp = asyncHandler(async (req, res) => {
     resetToken: token,
   });
 });
+// 2 factor authentication
+const toggleTwoFactor = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // toggle value
+    user.twoFactorEnabled = !user.twoFactorEnabled;
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "2FA updated successfully",
+      twoFactorEnabled: user.twoFactorEnabled,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
+
+const deleteAccount = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // 1️⃣ Cancel all user appointments
+    await Appointment.updateMany(
+      { user: userId },
+      {
+        status: "cancelled",
+        cancelledBy: "user_deleted_account",
+        cancelledAt: new Date(),
+      },
+    );
+
+    // 2️⃣ Soft delete user (NEW APPROACH)
+    user.isDeleted = true;
+    user.deletedAt = new Date();
+    user.status = "inactive"; // optional but recommended
+
+    await user.save();
+
+    return res.status(200).json({
+      message: "Account deleted successfully",
+    });
+  } catch (error) {
+    console.log("DELETE ACCOUNT ERROR:", error);
+
+    return res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+};
 // -------------------- Google Authentication Handle
 
 // ---------------------------------- export controllers
@@ -224,5 +298,7 @@ export {
   verifyOtp,
   resetPassword,
   resendResetPasswordOTP,
+  toggleTwoFactor,
+  deleteAccount,
   // resendVerification,
 };

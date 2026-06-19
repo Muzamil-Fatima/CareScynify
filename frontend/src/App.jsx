@@ -26,13 +26,14 @@ import VerifyEmail from "./pages/Auth/VerifyEmail";
 import ResetPassword from "./pages/Auth/ResetPassword";
 
 //  App Pages
-import PatientProfile from "./pages/profile/PatientProfile";
+import PatientProfile from "./pages/PatientProfile";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Appointments from "./pages/Appointments";
-import Reports from "./pages/reports/Reports";
-import Settings from "./pages/settings/Settings";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 import RootLayout from "./layout/RootLayout";
-
+import Chat from "./pages/Chat";
+import Security from "./Components/settings/Security";
 function App() {
   return (
     <RootLayout>
@@ -67,7 +68,6 @@ function App() {
           <Route path="/laboratory" element={<Laboratory />} />
           <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/role-selection" element={<RoleSelection />} />
-
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -82,7 +82,9 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/message" element={<Chat />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/security" element={<Security />} />
         </Route>
       </Routes>
     </RootLayout>

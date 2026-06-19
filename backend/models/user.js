@@ -13,10 +13,10 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
-      required: [true, "Email is required"],
+      required: true,
       unique: true,
-      index: true,
-      sparse: true,
+      trim: true,
+      lowercase: true,
     },
 
     dob: {
@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema(
     cnic: {
       type: String,
       unique: true,
+      sparse: true,
     },
     phone: String,
     address: String,
@@ -70,6 +71,15 @@ const userSchema = new mongoose.Schema(
       default: "patient",
       required: true,
     },
+    twoFactorEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    deletedAt: Date,
   },
   { timestamps: true },
 );

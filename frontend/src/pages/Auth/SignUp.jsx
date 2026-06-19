@@ -2,8 +2,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../utils/api.js";
-import axios from "axios";
+import { signupUser } from "../../api/authApi";
 import { useAuth } from "../../hooks/useAuth.js";
 const Signup = () => {
   const [name, setName] = useState("");
@@ -27,7 +26,7 @@ const Signup = () => {
       return toast.error("Passwords do not match!");
 
     try {
-      const res = await axios.post(`${BASE_URL}/api/auth/`, {
+      const res = await signupUser({
         name,
         email,
         password,

@@ -11,8 +11,10 @@ import {
   verifyEmail,
   verifyOtp,
   resetPassword,
+  toggleTwoFactor,
   // resendVerification,
   resendResetPasswordOTP,
+  deleteAccount,
 } from "../controllers/authController.js";
 const router = express.Router();
 
@@ -25,6 +27,8 @@ router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOtp);
 router.post("/reset-password", resetPassword);
 router.post("/resend-reset-otp", resendResetPasswordOTP);
+router.put("/toggle-two-factor", toggleTwoFactor)
+router.delete("/delete-account", deleteAccount)
 // router.post("/resend-verification", resendVerification);
 // Google OAuth routes
 router.get(

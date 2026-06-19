@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import { BASE_URL } from "../../utils/api.js";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { forgotPassword } from "../../api/authApi.js";
 const Forget = () => {
   const navigate = useNavigate();
   const [inputEmail, setInputEmail] = useState("");
   const [isValidEmail, setIsValidEmail] = useState(null);
   const [loading, setLoading] = useState(false);
+
   const handleForgot = async (e) => {
     e.preventDefault();
     if (loading) return;
@@ -20,7 +20,7 @@ const Forget = () => {
     }
     try {
       setLoading(true);
-      await axios.post(`${BASE_URL}/api/auth/forgot-password`, {
+      await forgotPassword({
         email: inputEmail,
       });
       toast.success("OTP sent to your email");
@@ -45,9 +45,7 @@ const Forget = () => {
           type="email"
           placeholder="Email"
           className={`w-full p-3 rounded-xl border border-gray-300 focus:border-purple-500 focus:outline-none  ${
-            isValidEmail === false
-              ? "border-red-500"
-              : "border-white-500"
+            isValidEmail === false ? "border-red-500" : "border-white-500"
           }`}
           value={inputEmail}
           onChange={(e) => setInputEmail(e.target.value)}

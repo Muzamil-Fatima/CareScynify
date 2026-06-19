@@ -4,10 +4,9 @@ import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
-
+import ChatIcon from "@mui/icons-material/Chat";
 const SideBar = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -24,9 +23,9 @@ const SideBar = () => {
     },
     { name: "Reports", icon: <DescriptionOutlinedIcon />, path: "/reports" },
     {
-      name: "AI Insights",
-      icon: <SmartToyOutlinedIcon />,
-      path: "/ai-insights",
+      name: "Message",
+      icon: <ChatIcon />,
+      path: "/message",
     },
     { name: "Settings", icon: <SettingsOutlinedIcon />, path: "/settings" },
   ];

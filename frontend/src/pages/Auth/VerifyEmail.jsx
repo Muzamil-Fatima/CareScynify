@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import axios from "axios";
-import { BASE_URL } from "../../utils/api.js";
+import { verifyOtp, resendResetOtp } from "../../api/authApi.js";
+
 import { useLocation, useNavigate } from "react-router-dom";
 const VerifyEmail = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -39,12 +39,12 @@ const VerifyEmail = () => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/api/auth/verify-otp`, {
+      const response = await verifyOtp({
         otp: code,
         email,
       });
 
-      if (response.data.success) {
+      if (response?.success) {
         toast.success("OTP verified successfully");
         // const resetToken = response.data.resetToken; // temporary token
         localStorage.setItem("resetToken", response.data.resetToken);
@@ -61,7 +61,7 @@ const VerifyEmail = () => {
     }
 
     try {
-      const res = await axios.post(`${BASE_URL}/api/auth/resend-reset-otp`, {
+      const res = await resendResetOtp({
         email,
       });
 

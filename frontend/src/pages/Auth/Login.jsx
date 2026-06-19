@@ -2,11 +2,10 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { toast } from "react-hot-toast";
 // import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../utils/api.js";
 import { useAuth } from "../../hooks/useAuth.js";
+import { loginUser, googleLogin } from "../../api/authApi.js";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,24 +18,23 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        `${BASE_URL}/api/auth/login`,
-        { email, password },
-        { withCredentials: true },
-      );
-console.log("LOGIN RESPONSE:", res.data);
-      const role = res.data.role || "patient";
+      const res = await loginUser({
+        email,
+        password,
+      });
+
+      const role = res.role || "patient";
 
       login({
-        name: res.data.name,
-        email: res.data.email,
-        token: res.data.token,
+        name: res.name,
+        email: res.email,
+        token: res.token,
         role,
       });
 
-      toast.success(`${res.data.name} login successfully.`);
+      toast.success(`${res.name} login successfully.`);
 
-      // 🔥 CROSS-APP REDIRECT
+      // redirect logic
       const roleRoutes = {
         patient: "http://localhost:5173/",
         doctor: "http://localhost:5174/doctor-dashboard",
@@ -48,7 +46,6 @@ console.log("LOGIN RESPONSE:", res.data);
 
       window.location.href = roleRoutes[role] || "http://localhost:5173/";
     } catch (error) {
-      console.error(error);
       toast.error(error.response?.data?.message || "Failed to login");
     }
   };
@@ -118,9 +115,9 @@ console.log("LOGIN RESPONSE:", res.data);
         </div>
         {/* Google Login UI */}
         <button
-          onClick={() => window.open(`${BASE_URL}/api/auth/google`, "_self")}
+          onClick={googleLogin}
           type="button"
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 sm:py-4  rounded-xl font-semibold hover:bg-gray-50"
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-50"
         >
           <FcGoogle size={22} />
           Continue with Google

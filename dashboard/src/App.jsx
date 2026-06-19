@@ -7,10 +7,8 @@ import HelpCenter from "./pages/helpCenter/HelpCenter";
 import Laboratory from "./pages/laboratory/Laboratory";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Patients from "./pages/patients/Patients";
-import Receptionists from "./pages/receptionists/Receptionists";
+import Receptionists from "./pages/Receptionists";
 import Chat from "./pages/chat/Chat";
-import Inventory from "./pages/inventory/Inventory";
-import Billing from "./pages/billing/Billing";
 import Payments from "./pages/payments/Payments";
 import Login from "./pages/auth/Login";
 import DrDashboard from "./pages/doctor/DrDashboard";
@@ -26,11 +24,10 @@ import SettingsLayout from "./components/settings/SettingsLayout.jsx";
 import ProfileInfo from "./components/settings/doctor/PersonalInfo";
 import Verification from "./components/settings/doctor/Verification";
 import ClinicInfo from "./components/settings/doctor/ClinicInfo";
-import Schedule from "./components/settings/doctor/Schedule";
 import Credentials from "./components/settings/doctor/Credentials";
 import Security from "./components/settings/doctor/Security";
 import Notifications from "./components/settings/doctor/Notifications";
-import WorkPlaceSchedule from "./pages/workPlace/WorkPlaceSchedule";
+import WorkPlaceSchedule from "./components/workPlace/WorkPlaceSchedule.jsx";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -74,7 +71,7 @@ function App() {
           className={
             isSettingsPage
               ? "h-screen bg-[#f8fafc] w-full"
-              : "p-6 bg-gray-100 overflow-auto flex-1"
+              : "p-6 bg-gray-100 flex-1 overflow-y-auto"
           }
         >
           <Routes>
@@ -89,6 +86,7 @@ function App() {
                   <DrDashboard />
                 </ProtectedRoute>
               }
+              
             />
             <Route path="/doctor/schedule" element={<DrSchedule />} />
             <Route path="/doctor/appointments" element={<Appointment />} />
@@ -107,13 +105,10 @@ function App() {
               <Route path="security" element={<Security />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="clinic" element={<ClinicInfo />} />
-              <Route path="schedule" element={<Schedule />} />
               <Route path="credentials" element={<Credentials />} />
             </Route>
 
             <Route path="/chat" element={<Chat />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/billing" element={<Billing />} />
             <Route path="/payments" element={<Payments />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Login />} />

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
-import { BASE_URL } from "../../utils/api";
 import { useNavigate, useLocation } from "react-router-dom";
+import { resetPassword } from "../../api/authApi";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const resetToken = location.state?.resetToken; // get token from state
+  const resetToken =
+    location.state?.resetToken || localStorage.getItem("resetToken");
   const handleReset = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -21,14 +21,10 @@ const ResetPassword = () => {
       return toast.error("Passwords do not match");
     }
     try {
-      const res = await axios.post(
-        `${BASE_URL}/api/auth/reset-password`,
-        { password },
-        {
-          headers: { Authorization: `Bearer ${resetToken}` },
-          withCredentials: true,
-        }
-      );
+      const res = await resetPassword({
+        password,
+        resetToken,
+      });
       toast.success(res.data.message || "Password reset successfully");
       navigate("/login");
     } catch (error) {
