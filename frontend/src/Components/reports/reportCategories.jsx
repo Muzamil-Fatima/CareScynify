@@ -12,7 +12,6 @@ export const reportCategories = [
   { name: "Lab", icon: <ScienceIcon /> },
   { name: "Radiology", icon: <ImageIcon /> },
   { name: "Doctor", icon: <LocalHospitalIcon /> },
-  { name: "Pathology", icon: <DescriptionOutlinedIcon /> },
   { name: "Pharmacy", icon: <MedicationIcon /> },
   { name: "Vitals", icon: <MonitorHeartIcon /> },
   { name: "Other", icon: <CategoryIcon /> },

@@ -30,6 +30,7 @@ import PatientProfile from "./pages/PatientProfile";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Appointments from "./pages/Appointments";
 import Reports from "./pages/Reports";
+import PdfViewer from "./Components/reports/ReportViewer";
 import Settings from "./pages/Settings";
 import RootLayout from "./layout/RootLayout";
 import Chat from "./pages/Chat";
@@ -82,6 +83,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/appointments" element={<Appointments />} />
           <Route path="/reports" element={<Reports />} />
+          <Route path="/report-viewer" element={<PdfViewer />} />
           <Route path="/message" element={<Chat />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/security" element={<Security />} />

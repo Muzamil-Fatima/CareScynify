@@ -1,103 +1,83 @@
-import React, { useState, useEffect } from "react";
-import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { reportCategories } from "../Components/reports/reportCategories";
+
+import UploadReportModal from "../Components/reports/UploadReportModal";
+import ReportCard from "../Components/reports/ReportCard";
+import ReportTabs from "../Components/reports/ReportTabs";
+
 import { addReport, getReports } from "../api/reportApi";
+
 const Reports = () => {
-  const [activeTab, setActiveTab] = useState("Lab");
-  const [openModel, setOpenModel] = useState(false);
-  const [file, setFile] = useState(null);
+  const [activeTab, setActiveTab] = useState("All");
+  const [openModal, setOpenModal] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
 
-  const [reports, setReports] = useState([]);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await getReports();
-        console.log("REPORTS FROM API:", data);
-        setReports(data);
-      } catch (err) {
-        console.log(err);
-      }
-    };
+  // FETCH REPORTS
+  const {
+    data: reports = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["reports"],
+    queryFn: getReports,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  });
 
-    fetchData();
-  }, []);
+  // LOADING STATE
+  if (isLoading) {
+    return <div className="p-6">Loading reports...</div>;
+  }
+
+  // ERROR STATE
+  if (error) {
+    return <div className="p-6">Failed to load reports</div>;
+  }
+
+  // FILTER REPORTS
   const filteredReports =
     activeTab === "All"
       ? reports
-      : (reports || []).filter((r) => r.category === activeTab);
-  // DOWNLOAD FUNCTION
-  const handleDownload = async (fileUrl, title) => {
-    if (!fileUrl) {
-      toast.error("No file available for this report");
-      return;
-    }
+      : reports.filter((report) => report.category === activeTab);
 
-    try {
-      const response = await fetch(fileUrl);
+  // DOWNLOAD REPORT
+  const handleDownload = (fileUrl) => {
+    if (!fileUrl) return;
 
-      if (!response.ok) {
-        throw new Error("File not accessible");
-      }
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.target = "_blank";
+    link.rel = "noopener";
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = title || "report.pdf";
-
-      document.body.appendChild(link);
-      link.click();
-
-      link.remove();
-      window.URL.revokeObjectURL(url);
-
-      toast.success("Download started");
-    } catch (error) {
-      console.error(error);
-      toast.error("Download failed");
-    }
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
-  // UPLOAD + AI SIMULATION
-  const handleUpload = async (file) => {
+  // UPLOAD REPORT
+  const handleUpload = async (file, category) => {
     if (!file) return;
-    //  TYPE CHECK
-    const allowedTypes = ["application/pdf", "image/png", "image/jpeg"];
+
+    const allowedTypes = [
+      "application/pdf",
+      "image/png",
+      "image/jpeg",
+    ];
 
     if (!allowedTypes.includes(file.type)) {
-      toast.error("Only PDF, PNG, JPG allowed");
+      toast.error("Only PDF, JPG, PNG allowed");
       return;
     }
 
-    // SIZE CHECK (10MB)
     const maxSize = 10 * 1024 * 1024;
 
     if (file.size > maxSize) {
-      toast.error("File too large (Max 10MB)");
+      toast.error("File size exceeds 10MB");
       return;
     }
-    const newReport = {
-      id: Date.now(),
-      title: file.name,
-      doctor: "Pending AI...",
-      date: new Date().toISOString().split("T")[0],
-      category: "Pending",
-      status: "Pending",
-      fileUrl: URL.createObjectURL(file),
-    };
-
-    setReports((prev) => [newReport, ...prev]);
-
-    setUploadStatus({
-      type: "uploading",
-      message: "Uploading report...",
-    });
 
     try {
       setUploadStatus({
@@ -105,66 +85,51 @@ const Reports = () => {
         message: "Uploading report...",
       });
 
-      // 1. Cloudinary upload
-      const cloudinaryForm = new FormData();
-      cloudinaryForm.append("file", file);
-      cloudinaryForm.append(
-        "upload_preset",
-        import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET,
-      );
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("category", category);
 
-      const cloudRes = await fetch(
-        `https://api.cloudinary.com/v1_1/${
-          import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-        }/auto/upload`,
-        {
-          method: "POST",
-          body: cloudinaryForm,
-        },
-      );
+      await addReport(formData);
 
-      const cloudData = await cloudRes.json();
-
-      // 2. Save in MongoDB
-      const savedReport = await addReport({
-        title: file.name,
-        category: "Other", // temporary
-        fileUrl: cloudData.secure_url,
+      // Refresh reports after upload
+      queryClient.invalidateQueries({
+        queryKey: ["reports"],
       });
-
-      // 3. Update UI
-      setReports((prev) => [savedReport, ...prev]);
 
       setUploadStatus({
         type: "done",
-        message: "Report uploaded successfully!",
+        message: "Report uploaded successfully",
       });
+
+      toast.success("Report uploaded");
     } catch (error) {
       console.log(error);
-
-      toast.error("Upload failed");
 
       setUploadStatus({
         type: "error",
         message: "Upload failed",
       });
+
+      toast.error("Upload failed");
     }
 
-    setUploadStatus({
-      type: "done",
-      message: "Report processed successfully!",
-    });
-
-    setTimeout(() => setUploadStatus(null), 2000);
+    setTimeout(() => {
+      setUploadStatus(null);
+    }, 3000);
   };
+
+  // STATUS COLORS
   const getStatusStyle = (status) => {
     switch (status) {
-      case "Normal":
-        return "bg-green-100 text-green-700";
-      case "Pending":
+      case "Processing":
         return "bg-yellow-100 text-yellow-700";
-      case "Critical":
+
+      case "Completed":
+        return "bg-green-100 text-green-700";
+
+      case "Failed":
         return "bg-red-100 text-red-700";
+
       default:
         return "bg-gray-100 text-gray-700";
     }
@@ -179,140 +144,54 @@ const Reports = () => {
         </h1>
 
         <button
-          onClick={() => setOpenModel(true)}
-          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700 transition"
+          onClick={() => setOpenModal(true)}
+          className="flex items-center gap-2 bg-purple-600 text-white px-4 py-2 rounded-xl hover:bg-purple-700"
         >
           <AddIcon fontSize="small" />
           Add Report
         </button>
+      </div>
 
-        {/* MODAL */}
-        {openModel && (
-          <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-            <div className="bg-white rounded-2xl p-6 w-[400px] shadow-xl">
-              <h2 className="text-xl font-semibold mb-4">Upload Report</h2>
+      {/* MODAL */}
+      <UploadReportModal
+        open={openModal}
+        setOpen={setOpenModal}
+        handleUpload={handleUpload}
+      />
 
-              <p className="text-sm text-gray-500 mb-4">
-                AI will automatically analyze and categorize this report.
-              </p>
+      {/* TABS */}
+      <ReportTabs
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
 
-              {/* FILE INPUT */}
-              <input
-                type="file"
-                onChange={(e) => setFile(e.target.files[0])}
-                className="w-full border p-2 rounded mb-4"
-              />
-              <p className="text-xs text-gray-400 mt-2">
-                Supported: PDF, JPG, PNG (Max 10MB)
-              </p>
-
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={() => setOpenModel(false)}
-                  className="px-4 py-2 rounded bg-gray-200"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={() => {
-                    setOpenModel(false);
-                    if (file) handleUpload(file);
-                  }}
-                  className="px-4 py-2 rounded bg-purple-600 text-white"
-                >
-                  Upload
-                </button>
-              </div>
-            </div>
+      {/* REPORT CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {filteredReports.length > 0 ? (
+          filteredReports.map((report) => (
+            <ReportCard
+              key={report._id}
+              report={report}
+              getStatusStyle={getStatusStyle}
+              handleDownload={handleDownload}
+            />
+          ))
+        ) : (
+          <div className="col-span-full text-center text-gray-500">
+            No reports found
           </div>
         )}
       </div>
 
-      {/* TABS */}
-      <div className="flex gap-3 flex-wrap mb-6">
-        {reportCategories.map((cat) => (
-          <button
-            key={cat.name}
-            onClick={() => setActiveTab(cat.name)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm transition
-              ${
-                activeTab === cat.name
-                  ? "bg-purple-600 text-white"
-                  : "bg-white text-gray-600 hover:bg-gray-100"
-              }`}
-          >
-            {cat.icon}
-            {cat.name}
-          </button>
-        ))}
-      </div>
-
-      {/* CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filteredReports.map((report) => (
-          <div
-            key={report.id}
-            className="bg-white border rounded-2xl shadow-sm p-5 hover:shadow-md transition"
-          >
-            {/* TITLE */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-purple-100 rounded-xl">
-                <DescriptionOutlinedIcon className="text-purple-600" />
-              </div>
-
-              <h2 className="text-lg font-semibold text-gray-800">
-                {report.title}
-              </h2>
-            </div>
-
-            {/* INFO */}
-            <div className="text-sm text-gray-600 space-y-1">
-              <p>
-                <b>Doctor:</b> {report.doctor}
-              </p>
-              <p>
-                <b>Date:</b> {report.date}
-              </p>
-              <p>
-                <b>Category:</b>{" "}
-                {report.category === "Pending"
-                  ? "Analyzing..."
-                  : report.category}
-              </p>
-            </div>
-
-            {/* FOOTER */}
-            <div className="flex justify-between items-center mt-4">
-              <span
-                className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusStyle(
-                  report.status,
-                )}`}
-              >
-                {report.status}
-              </span>
-
-              <button
-                onClick={() => handleDownload(report.fileUrl, report.title)}
-                className="flex items-center gap-1 text-purple-600 hover:text-purple-800 text-sm font-medium"
-              >
-                <DownloadOutlinedIcon fontSize="small" />
-                Download
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* STATUS TOAST (GOOGLE DRIVE STYLE) */}
+      {/* UPLOAD STATUS */}
       {uploadStatus && (
         <div className="fixed bottom-5 left-5 z-50">
           <div className="bg-purple-600 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-3">
-            {uploadStatus.type === "processing" && (
+            {uploadStatus.type === "uploading" && (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
             )}
 
-            <span className="text-sm font-medium">{uploadStatus.message}</span>
+            <span>{uploadStatus.message}</span>
           </div>
         </div>
       )}

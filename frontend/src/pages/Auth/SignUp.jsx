@@ -1,9 +1,9 @@
-import { FaEye, FaEyeSlash } from "react-icons/fa";
 import React, { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { signupUser } from "../../api/authApi";
-import { useAuth } from "../../hooks/useAuth.js";
+
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,40 +13,38 @@ const Signup = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
-  const role = localStorage.getItem("selectedRole");
 
-  const { login } = useAuth();
   const handleSignup = async (e) => {
     e.preventDefault();
-    if (!name || !email || !password || !confirmPassword)
+
+    if (!name || !email || !password || !confirmPassword) {
       return toast.error("All fields are required");
-    if (password.length < 6)
-      return toast.error("Password must be at least 6 characters Long");
-    if (password !== confirmPassword)
-      return toast.error("Passwords do not match!");
+    }
+
+    if (password.length < 6) {
+      return toast.error("Password must be at least 6 characters long");
+    }
+
+    if (password !== confirmPassword) {
+      return toast.error("Passwords do not match");
+    }
 
     try {
       const res = await signupUser({
         name,
         email,
         password,
-        role,
       });
 
-      login({
-        name: res.data.name,
-        email: res.data.email,
-        token: res.data.token,
-        role: res.data.role || "patient",
-      });
+      toast.success(
+        res.data.message || "Signup successful! Please verify your email.",
+      );
 
       navigate("/login");
-      localStorage.removeItem("selectedRole");
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong");
     }
   };
-
   return (
     <div className="flex justify-center items-center min-h-screen py-6 bg-gray-50">
       <form
