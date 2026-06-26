@@ -7,6 +7,7 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
+import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 const SideBar = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
@@ -22,6 +23,11 @@ const SideBar = () => {
       path: "/appointments",
     },
     { name: "Reports", icon: <DescriptionOutlinedIcon />, path: "/reports" },
+    {
+      name: "Symptom Analyzer",
+      icon: <PsychologyOutlinedIcon />,
+      path: "/symptom-analyzer",
+    },
     {
       name: "Message",
       icon: <ChatIcon />,

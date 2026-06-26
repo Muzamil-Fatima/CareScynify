@@ -35,6 +35,7 @@ import Settings from "./pages/Settings";
 import RootLayout from "./layout/RootLayout";
 import Chat from "./pages/Chat";
 import Security from "./Components/settings/Security";
+import SymptomAnalyzer from "./pages/SymptomAnalyzer";
 function App() {
   return (
     <RootLayout>
@@ -87,6 +88,7 @@ function App() {
           <Route path="/message" element={<Chat />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/security" element={<Security />} />
+          <Route path="/symptom-analyzer" element={<SymptomAnalyzer />} />
         </Route>
       </Routes>
     </RootLayout>

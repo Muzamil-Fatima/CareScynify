@@ -17,7 +17,8 @@ import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import userRouter from "./routes/userRoutes.js";
 import publicDoctorRoutes from "./routes/publicDoctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
-import reviewRoutes from "./routes/reviewRoutes.js"
+import reviewRoutes from "./routes/reviewRoutes.js";
+import symptomRoutes from "./routes/symptomRoutes.js"
 //Configuration
 connectDB();
 connectCloudinary();
@@ -64,10 +65,11 @@ app.use("/api/doctors", publicDoctorRoutes);
 // appointment routes
 app.use("/api/appointments", appointmentRoutes);
 // review routes
-app.use("/api/review", reviewRoutes )
+app.use("/api/review", reviewRoutes);
+// symptom Analysis
+app.use("/api/symptomAnalysis", symptomRoutes);
 // server listen
 const server = http.createServer(app);
-
 
 //  INIT SOCKET FIRST
 const io = initSocket(server);
