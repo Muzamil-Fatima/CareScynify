@@ -2,12 +2,12 @@ import React, { useRef, useState } from "react";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { toast } from "react-hot-toast";
 
-import DrPersonalInfo from "./Personalinformation/DrPersonalInfo";
-import DrProfessionalDetail from "./ProfessionalDetail/DrProfessionalDetail";
-import TotalWorkPlaces from "../../components/workPlace/TotalWorkPlaces";
+import DrPersonalInfo from "../components/drProfile/DrPersonalInfo";
+import DrProfessionalDetail from "../components/drProfile/DrProfessionalDetail";
+import TotalWorkPlaces from "../components/workPlace/TotalWorkPlaces";
 
-import { updateUserProfile } from "../../api/userApi";
-import { useDoctor } from "../../context/doctor/DoctorContext";
+import { updateUserProfile } from "../api/userApi";
+import { useDoctor } from "../context/doctor/DoctorContext";
 
 const AddNewDr = () => {
   const { profile, setProfile, setIsDirty } = useDoctor();

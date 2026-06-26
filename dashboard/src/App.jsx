@@ -1,18 +1,16 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
-import Overview from "./pages/overView/OverView";
 import Appointment from "./pages/Appointment.jsx";
-import Doctor from "./pages/doctor/Doctor";
 import HelpCenter from "./pages/helpCenter/HelpCenter";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Patients from "./pages/patients/Patients";
 import Receptionists from "./pages/Receptionists";
 import Payments from "./pages/payments/Payments";
 import Login from "./pages/auth/Login";
-import DrDashboard from "./pages/doctor/DrDashboard";
-import DrSchedule from "./pages/doctor/DrSchedule";
+import DrDashboard from "./pages/DrDashboard.jsx";
+import DrSchedule from "./pages/DrSchedule.jsx";
 import Appointments from "./pages/Appointment.jsx";
-import AddNewDr from "./pages/doctor/AddNewDr";
+import AddNewDr from "./pages/AddNewDr.jsx";
 import DrReview from "./pages/DrReview.jsx";
 import TopBar from "./components/TopBar";
 import SideBar from "./components/sidebar/SideBar";
@@ -26,6 +24,7 @@ import Credentials from "./components/settings/doctor/Credentials";
 import Security from "./components/settings/doctor/Security";
 import Notifications from "./components/settings/doctor/Notifications";
 import WorkPlaceSchedule from "./components/workPlace/WorkPlaceSchedule.jsx";
+
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -73,10 +72,9 @@ function App() {
           }
         >
           <Routes>
-            <Route path="/overview" element={<Overview />} />
             <Route path="/appointment" element={<Appointment />} />
             {/* Doctor  */}
-            <Route path="/doctor" element={<Doctor />} />
+           
             <Route
               path="/doctor-dashboard"
               element={
