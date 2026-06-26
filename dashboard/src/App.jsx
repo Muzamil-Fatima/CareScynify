@@ -7,7 +7,6 @@ import HelpCenter from "./pages/helpCenter/HelpCenter";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Patients from "./pages/patients/Patients";
 import Receptionists from "./pages/Receptionists";
-import Chat from "./pages/chat/Chat";
 import Payments from "./pages/payments/Payments";
 import Login from "./pages/auth/Login";
 import DrDashboard from "./pages/doctor/DrDashboard";
@@ -85,7 +84,6 @@ function App() {
                   <DrDashboard />
                 </ProtectedRoute>
               }
-              
             />
             <Route path="/doctor/schedule" element={<DrSchedule />} />
             <Route path="/doctor/appointments" element={<Appointment />} />
@@ -106,7 +104,6 @@ function App() {
               <Route path="credentials" element={<Credentials />} />
             </Route>
 
-            <Route path="/chat" element={<Chat />} />
             <Route path="/payments" element={<Payments />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Login />} />

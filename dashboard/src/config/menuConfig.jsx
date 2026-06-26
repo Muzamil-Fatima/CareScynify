@@ -9,7 +9,6 @@ import MedicationIcon from "@mui/icons-material/Medication";
 // doctor
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import EventNoteIcon from "@mui/icons-material/EventNote";
-import ChatIcon from "@mui/icons-material/Chat";
 import PersonIcon from "@mui/icons-material/Person";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 
@@ -30,11 +29,7 @@ export const menuByRole = {
       path: "/doctor/appointments",
       icon: <EventNoteIcon />,
     },
-    {
-      name: "Messages",
-      path: "/chat",
-      icon: <ChatIcon />,
-    },
+   
     {
       name: "Patients",
       path: "/patients",

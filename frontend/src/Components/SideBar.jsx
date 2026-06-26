@@ -28,11 +28,7 @@ const SideBar = () => {
       icon: <PsychologyOutlinedIcon />,
       path: "/symptom-analyzer",
     },
-    {
-      name: "Message",
-      icon: <ChatIcon />,
-      path: "/message",
-    },
+    
     { name: "Settings", icon: <SettingsOutlinedIcon />, path: "/settings" },
   ];
 
