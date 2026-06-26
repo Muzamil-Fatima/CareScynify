@@ -1,11 +1,8 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Appointment from "./pages/Appointment.jsx";
-import HelpCenter from "./pages/helpCenter/HelpCenter";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Patients from "./pages/patients/Patients";
-import Receptionists from "./pages/Receptionists";
-import Payments from "./pages/payments/Payments";
 import Login from "./pages/auth/Login";
 import DrDashboard from "./pages/DrDashboard.jsx";
 import DrSchedule from "./pages/DrSchedule.jsx";
@@ -88,10 +85,8 @@ function App() {
             <Route path="/doctor/profile" element={<AddNewDr />} />
             <Route path="/doctor/reviews" element={<DrReview />} />
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
-            <Route path="/help-center" element={<HelpCenter />} />
             <Route path="/pharmacy" element={<Pharmacy />} />
             <Route path="/patients" element={<Patients />} />
-            <Route path="/receptionists" element={<Receptionists />} />
             {/* setting */}
             <Route path="/settings" element={<SettingsLayout />}>
               <Route path="personal" element={<ProfileInfo />} />
@@ -102,7 +97,6 @@ function App() {
               <Route path="credentials" element={<Credentials />} />
             </Route>
 
-            <Route path="/payments" element={<Payments />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Login />} />
           </Routes>
