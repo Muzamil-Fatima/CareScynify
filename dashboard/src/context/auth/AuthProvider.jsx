@@ -14,7 +14,8 @@ export const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       try {
         const data = await getMe();
-        setUser(data);
+
+        setUser(data.user); // user object save
       } catch (error) {
         console.log(error);
         setUser(null);
@@ -23,9 +24,15 @@ export const AuthProvider = ({ children }) => {
 
     fetchUser();
   }, []);
+  const updateUser = (updatedData) => {
+    setUser((prev) => ({
+      ...prev,
+      ...updatedData,
+    }));
+  };
 
   return (
-    <AuthContext.Provider value={{ user, logout }}>
+    <AuthContext.Provider value={{ user, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -7,7 +7,6 @@ const SettingsSidebar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
   const { user } = useAuth();
   const role = user?.role;
   const menuItem = settingByRole[role] || [];
-
   return (
     <div
       className={`

@@ -26,7 +26,7 @@ export const menuByRole = {
   doctor: [
     {
       name: "Dashboard",
-      path: "/doctor-dashboard",
+      path: "/doctor/dashboard",
       icon: <DashboardIcon />,
     },
     {
@@ -61,7 +61,7 @@ export const menuByRole = {
       icon: <RateReviewIcon />,
     },
   ],
-  lab: [
+  laboratory: [
     {
       name: "Dashboard",
       path: "/lab/dashboard",
@@ -86,11 +86,6 @@ export const menuByRole = {
       name: "Completed Reports",
       path: "/lab/reports",
       icon: <CheckCircleIcon />,
-    },
-    {
-      name: "Analytics",
-      path: "/lab/analytics",
-      icon: <AssessmentIcon />,
     },
     {
       name: "Patients",

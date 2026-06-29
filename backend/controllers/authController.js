@@ -223,27 +223,34 @@ const verifyOtp = asyncHandler(async (req, res) => {
 // 2 factor authentication
 const toggleTwoFactor = async (req, res) => {
   try {
-    const userId = req.user._id;
+    console.log("REQ USER:", req.user);
 
-    const user = await User.findById(userId);
+    const user = await User.findById(req.user._id);
+
+    console.log("DB USER BEFORE:", user.twoFactorEnabled);
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
 
-    // toggle value
     user.twoFactorEnabled = !user.twoFactorEnabled;
 
     await user.save();
 
-    return res.status(200).json({
+    console.log("DB USER AFTER:", user.twoFactorEnabled);
+
+    res.status(200).json({
+      success: true,
       message: "2FA updated successfully",
       twoFactorEnabled: user.twoFactorEnabled,
     });
   } catch (error) {
-    return res.status(500).json({
-      message: "Server error",
-      error: error.message,
+    console.log(error);
+
+    res.status(500).json({
+      message: "Server Error",
     });
   }
 };
@@ -260,7 +267,7 @@ const deleteAccount = async (req, res) => {
       });
     }
 
-    // 1️⃣ Cancel all user appointments
+    //  Cancel all user appointments
     await Appointment.updateMany(
       { user: userId },
       {
@@ -270,7 +277,7 @@ const deleteAccount = async (req, res) => {
       },
     );
 
-    // 2️⃣ Soft delete user (NEW APPROACH)
+    //Soft delete user (NEW APPROACH)
     user.isDeleted = true;
     user.deletedAt = new Date();
     user.status = "inactive"; // optional but recommended
@@ -289,6 +296,38 @@ const deleteAccount = async (req, res) => {
     });
   }
 };
+// change password 
+const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  const isMatch = await bcrypt.compare(
+    currentPassword,
+    user.password
+  );
+
+  if (!isMatch) {
+    return res.status(400).json({
+      message: "Current password is incorrect",
+    });
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Password updated successfully",
+  });
+});
 // -------------------- Google Authentication Handle
 
 // ---------------------------------- export controllers
@@ -303,5 +342,6 @@ export {
   resendResetPasswordOTP,
   toggleTwoFactor,
   deleteAccount,
+  changePassword
   // resendVerification,
 };

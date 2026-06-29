@@ -46,10 +46,7 @@ function App() {
         {/* Admin Routes */}
         <Route path="/admindashboard" element={<AdminDashboard />} />
         <Route path="/staff" element={<Staff />} />
-        <Route path="/tests" element={<Tests />} />
-        <Route path="/patients" element={<Patients />} />
         <Route path="/revenue" element={<Revenue />} />
-        <Route path="/settings" element={<Settings />} />
         <Route path="/test-ai" element={<TestAI />} />
         
         {/* Patient Routes */}
@@ -64,13 +61,9 @@ function App() {
         <Route path="/patient-history" element={<PatientHistory />} />
         <Route path="/appointments" element={<Appointments />} />
         <Route path="/lab-reports" element={<LabReports />} />
-        <Route path="/analytics" element={<Analytics />} />
         <Route path="/alerts" element={<Alerts />} />
         <Route path="/profile" element={<MyProfile />} />
         {/* Staff Routes */}
-        <Route path="/staffdashboard" element={<StaffDashboard />} />
-        <Route path="/process" element={<TestProcess />} />
-        <Route path="/queue" element={<SampleQueue />} />
         <Route path="/qc" element={<QCMonitor />} />
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/notifications" element={<SystemNotifications />} />
@@ -82,34 +75,11 @@ function App() {
 export default App;
 
 
-  //   {
-  //     name: "Test Orders",
-  //     path: "/lab/tests",
-  //     icon: <AssignmentIcon />,
-  //   },
-  //   {
-  //     name: "Sample Queue",
-  //     path: "/lab/samples",
-  //     icon: <HourglassEmptyIcon />,
-  //   },
-  //   {
-  //     name: "Test Processing",
-  //     path: "/lab/processing",
-  //     icon: <ScienceIcon />,
-  //   },
+ 
   //   {
   //     name: "Completed Reports",
   //     path: "/lab/reports",
   //     icon: <CheckCircleIcon />,
   //   },
-  //   {
-  //     name: "Analytics",
-  //     path: "/lab/analytics",
-  //     icon: <AssessmentIcon />,
-  //   },
-  //   {
-  //     name: "Patients",
-  //     path: "/lab/patients",
-  //     icon: <PeopleIcon />,
-  //   },
-  // ],
+  //  
+ 

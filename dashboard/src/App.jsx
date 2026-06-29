@@ -13,7 +13,6 @@ import { Toaster } from "react-hot-toast";
 import SettingsLayout from "./components/settings/SettingsLayout.jsx";
 import ProfileInfo from "./components/settings/doctor/PersonalInfo";
 import Verification from "./components/settings/doctor/Verification";
-import ClinicInfo from "./components/settings/doctor/ClinicInfo";
 import Credentials from "./components/settings/doctor/Credentials";
 import Security from "./components/settings/doctor/Security";
 import Notifications from "./components/settings/doctor/Notifications";
@@ -24,8 +23,12 @@ import PharmacyMedicines from "./pages/PharmacyMedicines.jsx";
 import PharmacyReports from "./pages/PharmacyReports.jsx";
 import PharmacySales from "./pages/PharmacySales.jsx";
 import PharmacyStock from "./pages/PharmacyStock.jsx";
-// Lab route 
+// Lab route
 import LabDashboard from "./pages/LabDashboard.jsx";
+import LabTestProcess from "./pages/LabTestProcess.jsx";
+import LabSampleQueue from "./pages/LabSampleQueue.jsx";
+import LabPatients from "./pages/LabPatients.jsx";
+import LabTests from "./pages/LabTests.jsx";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -76,12 +79,7 @@ function App() {
             <Route path="/appointment" element={<Appointment />} />
             {/* Doctor  */}
 
-            <Route
-              path="/doctor-dashboard"
-              element={
-                  <DrDashboard />
-              }
-            />
+            <Route path="/doctor/dashboard" element={<DrDashboard />} />
             <Route path="/doctor/schedule" element={<DrSchedule />} />
             <Route path="/doctor/appointments" element={<Appointment />} />
             <Route path="/doctor/profile" element={<AddNewDr />} />
@@ -94,7 +92,6 @@ function App() {
               <Route path="verification" element={<Verification />} />
               <Route path="security" element={<Security />} />
               <Route path="notifications" element={<Notifications />} />
-              <Route path="clinic" element={<ClinicInfo />} />
               <Route path="credentials" element={<Credentials />} />
             </Route>
             {/* pharmacy */}
@@ -108,6 +105,10 @@ function App() {
             <Route path="/pharmacy/reports" element={<PharmacyReports />} />
             {/* Lab  */}
             <Route path="/lab/dashboard" element={<LabDashboard />} />
+            <Route path="/lab/processing" element={<LabTestProcess />} />
+            <Route path="/lab/samples" element={<LabSampleQueue />} />
+            <Route path="/lab/patients" element={<LabPatients />} />
+            <Route path="/lab/tests" element={<LabTests />} />
           </Routes>
         </div>
       </div>

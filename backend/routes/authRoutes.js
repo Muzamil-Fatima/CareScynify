@@ -15,6 +15,7 @@ import {
   // resendVerification,
   resendResetPasswordOTP,
   deleteAccount,
+  changePassword,
 } from "../controllers/authController.js";
 const router = express.Router();
 
@@ -27,13 +28,14 @@ router.post("/forgot-password", forgotPassword);
 router.post("/verify-otp", verifyOtp);
 router.post("/reset-password", resetPassword);
 router.post("/resend-reset-otp", resendResetPasswordOTP);
-router.put("/toggle-two-factor", toggleTwoFactor)
-router.delete("/delete-account", deleteAccount)
+router.put("/change-password", protect, changePassword);
+router.patch("/toggle-2fa", protect, toggleTwoFactor);
+router.delete("/delete-account", deleteAccount);
 // router.post("/resend-verification", resendVerification);
 // Google OAuth routes
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 router.get(
   "/google/callback",
@@ -51,7 +53,7 @@ router.get(
       console.log("Google Login error:", error);
       res.redirect(`${process.env.FRONTEND_URL}/login?error=google_failed`);
     }
-  }
+  },
 );
 // Current user info
 router.get("/me", protect, (req, res) => {

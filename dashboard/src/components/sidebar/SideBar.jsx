@@ -5,7 +5,7 @@ import { useAuth } from "../../hooks/useAuth";
 
 const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
   const { user } = useAuth();
-  const role = user?.user?.role;
+  const role = user?.role;
   const menuItem = menuByRole[role] || [];
 
   return (

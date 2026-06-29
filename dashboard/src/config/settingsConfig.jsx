@@ -1,8 +1,6 @@
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
-import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import VerifiedUserOutlinedIcon from "@mui/icons-material/VerifiedUserOutlined";
 
@@ -35,16 +33,5 @@ export const settingByRole = {
       icon: <VerifiedUserOutlinedIcon />,
     },
   ],
-  clinic: [
-    {
-      name: "Clinic Info",
-      path: "/settings/clinic",
-      icon: <LocalHospitalOutlinedIcon />,
-    },
-    {
-      name: "Schedule",
-      path: "/settings/schedule",
-      icon: <CalendarMonthOutlinedIcon />,
-    },
-  ],
+
 };

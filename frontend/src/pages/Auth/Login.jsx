@@ -39,7 +39,7 @@ const Login = () => {
       //  CROSS-APP REDIRECT
       const roleRoutes = {
         patient: "http://localhost:5173/",
-        doctor: "http://localhost:5174/doctor-dashboard",
+        doctor: "http://localhost:5174/doctor/dashboard",
         pharmacy: "http://localhost:5174/pharmacy",
         laboratory: "http://localhost:5174/lab/dashboard",
       };
