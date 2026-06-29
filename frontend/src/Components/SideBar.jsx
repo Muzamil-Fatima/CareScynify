@@ -8,11 +8,22 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
+import { useAuth } from "../hooks/useAuth";
+import {logoutUser} from "../api/authApi"
 const SideBar = () => {
   const navigate = useNavigate();
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // clear auth
-    navigate("/login"); // redirect to login page
+  const { logout } = useAuth();
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser(); // backend cookie clear
+
+      logout(); // frontend context + localStorage clear
+
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
   };
   const menuItems = [
     { name: "Dashboard", icon: <HomeOutlinedIcon />, path: "/dashboard" },
@@ -28,12 +39,12 @@ const SideBar = () => {
       icon: <PsychologyOutlinedIcon />,
       path: "/symptom-analyzer",
     },
-    
+
     { name: "Settings", icon: <SettingsOutlinedIcon />, path: "/settings" },
   ];
 
   return (
-    <div className="w-64 h-screen bg-white shadow-lg flex flex-col justify-between border-r">
+    <div className="w-64 h-full bg-white shadow-lg flex flex-col border-r">
       <div>
         {/* Menu */}
         <div className="mt-6">
@@ -60,7 +71,7 @@ const SideBar = () => {
       </div>
 
       {/* Bottom Section */}
-      <div className="p-5 border-t">
+      <div className="mt-auto p-5 border-t">
         <div
           onClick={handleLogout}
           className="flex items-center gap-3 cursor-pointer text-gray-700 hover:text-red-500 transition"

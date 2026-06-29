@@ -40,10 +40,8 @@ const Login = () => {
       const roleRoutes = {
         patient: "http://localhost:5173/",
         doctor: "http://localhost:5174/doctor-dashboard",
-        hospital: "http://localhost:5174/hospital-dashboard",
-        clinic: "http://localhost:5174/clinic-dashboard",
         pharmacy: "http://localhost:5174/pharmacy",
-        laboratory: "http://localhost:5174/lab-dashboard",
+        laboratory: "http://localhost:5174/lab/dashboard",
       };
 
       window.location.href = roleRoutes[role] || "http://localhost:5173/";

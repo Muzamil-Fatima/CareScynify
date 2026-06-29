@@ -5,8 +5,6 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/auth/AuthProvider.jsx";
 import DoctorProvider from "./context/doctor/DoctorProvider.jsx";
-import ClinicProvider from "./context/clinic/ClinicProvider.jsx";
-import HospitalProvider from "./context/hospital/HospitalProvider.jsx";
 import LabProvider from "./context/lab/LabProvider.jsx";
 import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
 import { AppointmentProvider } from "./context/AppointmentContext.jsx";
@@ -21,21 +19,17 @@ createRoot(document.getElementById("root")).render(
       <PatientProvider>
         <PharmacyProvider>
           <LabProvider>
-            <HospitalProvider>
-              <ClinicProvider>
-                <DoctorProvider>
-                  <AuthProvider>
-                    <SymptomProvider>
-                      <BrowserRouter>
-                        <QueryClientProvider client={queryClient}>
-                          <App />
-                        </QueryClientProvider>
-                      </BrowserRouter>
-                    </SymptomProvider>
-                  </AuthProvider>
-                </DoctorProvider>
-              </ClinicProvider>
-            </HospitalProvider>
+            <DoctorProvider>
+              <AuthProvider>
+                <SymptomProvider>
+                  <BrowserRouter>
+                    <QueryClientProvider client={queryClient}>
+                      <App />
+                    </QueryClientProvider>
+                  </BrowserRouter>
+                </SymptomProvider>
+              </AuthProvider>
+            </DoctorProvider>
           </LabProvider>
         </PharmacyProvider>
       </PatientProvider>

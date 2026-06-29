@@ -14,14 +14,7 @@ export default function Sidebar({ role }) {
   // Role based Menu Items
   const menuConfig = {
 
-    staff: [
-      { name: 'Dashboard', path: '/staffdashboard', icon: <Activity size={18} /> },
-      { name: 'Sample Queue', path: '/queue', icon: <Users size={18} /> },
-      { name: 'Test Process', path: '/process', icon: <ScanBarcode size={18} /> },
-      { name: 'QC Monitor', path: '/qc', icon: <FlaskConical size={18} /> },
-      { name: 'Attendance', path: '/attendance', icon: <UserCheck size={18} /> },
-      { name: 'System Notifications', path: '/notifications', icon: <Bell size={18} /> },
-    ],
+  
     
     patient: [
       { name: 'Dashboard', path: '/patientdashboard', icon: <Activity size={18} /> },

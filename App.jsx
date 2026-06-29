@@ -69,8 +69,8 @@ function App() {
         <Route path="/profile" element={<MyProfile />} />
         {/* Staff Routes */}
         <Route path="/staffdashboard" element={<StaffDashboard />} />
-        <Route path="/queue" element={<SampleQueue />} />
         <Route path="/process" element={<TestProcess />} />
+        <Route path="/queue" element={<SampleQueue />} />
         <Route path="/qc" element={<QCMonitor />} />
         <Route path="/attendance" element={<Attendance />} />
         <Route path="/notifications" element={<SystemNotifications />} />
@@ -80,3 +80,36 @@ function App() {
 }
 
 export default App;
+
+
+  //   {
+  //     name: "Test Orders",
+  //     path: "/lab/tests",
+  //     icon: <AssignmentIcon />,
+  //   },
+  //   {
+  //     name: "Sample Queue",
+  //     path: "/lab/samples",
+  //     icon: <HourglassEmptyIcon />,
+  //   },
+  //   {
+  //     name: "Test Processing",
+  //     path: "/lab/processing",
+  //     icon: <ScienceIcon />,
+  //   },
+  //   {
+  //     name: "Completed Reports",
+  //     path: "/lab/reports",
+  //     icon: <CheckCircleIcon />,
+  //   },
+  //   {
+  //     name: "Analytics",
+  //     path: "/lab/analytics",
+  //     icon: <AssessmentIcon />,
+  //   },
+  //   {
+  //     name: "Patients",
+  //     path: "/lab/patients",
+  //     icon: <PeopleIcon />,
+  //   },
+  // ],

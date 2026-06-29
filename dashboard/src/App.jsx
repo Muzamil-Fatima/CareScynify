@@ -2,7 +2,6 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
 import Appointment from "./pages/DrAppointment.jsx";
 import Patients from "./pages/DrPatients.jsx";
-import Login from "./pages/auth/Login";
 import DrDashboard from "./pages/DrDashboard.jsx";
 import DrSchedule from "./pages/DrSchedule.jsx";
 import Appointments from "./pages/DrAppointment.jsx";
@@ -10,7 +9,6 @@ import AddNewDr from "./pages/AddNewDr.jsx";
 import DrReview from "./pages/DrReview.jsx";
 import TopBar from "./components/TopBar";
 import SideBar from "./components/sidebar/SideBar";
-import ProtectedRoute from "./routes/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 import SettingsLayout from "./components/settings/SettingsLayout.jsx";
 import ProfileInfo from "./components/settings/doctor/PersonalInfo";
@@ -26,6 +24,8 @@ import PharmacyMedicines from "./pages/PharmacyMedicines.jsx";
 import PharmacyReports from "./pages/PharmacyReports.jsx";
 import PharmacySales from "./pages/PharmacySales.jsx";
 import PharmacyStock from "./pages/PharmacyStock.jsx";
+// Lab route 
+import LabDashboard from "./pages/LabDashboard.jsx";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -79,9 +79,7 @@ function App() {
             <Route
               path="/doctor-dashboard"
               element={
-                <ProtectedRoute>
                   <DrDashboard />
-                </ProtectedRoute>
               }
             />
             <Route path="/doctor/schedule" element={<DrSchedule />} />
@@ -108,8 +106,8 @@ function App() {
             <Route path="/pharmacy/stock" element={<PharmacyStock />} />
             <Route path="/pharmacy/sales" element={<PharmacySales />} />
             <Route path="/pharmacy/reports" element={<PharmacyReports />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<Login />} />
+            {/* Lab  */}
+            <Route path="/lab/dashboard" element={<LabDashboard />} />
           </Routes>
         </div>
       </div>

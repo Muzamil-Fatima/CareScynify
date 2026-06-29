@@ -17,6 +17,11 @@ import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
 import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
+// lab
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 export const menuByRole = {
   doctor: [
     {
@@ -57,10 +62,42 @@ export const menuByRole = {
     },
   ],
   lab: [
-    { name: "Dashboard", path: "/lab" },
-    { name: "Reports", path: "/reports" },
+    {
+      name: "Dashboard",
+      path: "/lab/dashboard",
+      icon: <DashboardIcon />,
+    },
+    {
+      name: "Test Orders",
+      path: "/lab/tests",
+      icon: <AssignmentIcon />,
+    },
+    {
+      name: "Sample Queue",
+      path: "/lab/samples",
+      icon: <HourglassEmptyIcon />,
+    },
+    {
+      name: "Test Processing",
+      path: "/lab/processing",
+      icon: <ScienceIcon />,
+    },
+    {
+      name: "Completed Reports",
+      path: "/lab/reports",
+      icon: <CheckCircleIcon />,
+    },
+    {
+      name: "Analytics",
+      path: "/lab/analytics",
+      icon: <AssessmentIcon />,
+    },
+    {
+      name: "Patients",
+      path: "/lab/patients",
+      icon: <PeopleIcon />,
+    },
   ],
-
   pharmacy: [
     {
       name: "Dashboard",

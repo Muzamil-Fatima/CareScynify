@@ -4,19 +4,6 @@ import { BASE_URL } from "../utils/api";
 // Create axios instance
 export const api = axios.create({
   baseURL: BASE_URL,
+  withCredentials:true,
 });
 
-// Auto attach token to every request
-api.interceptors.request.use((config) => {
-  const user = localStorage.getItem("user");
-
-  if (user) {
-    const token = JSON.parse(user)?.token;
-
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-  }
-
-  return config;
-});

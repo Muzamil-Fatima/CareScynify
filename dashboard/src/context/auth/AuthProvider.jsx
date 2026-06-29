@@ -1,27 +1,31 @@
-import { useState, useNavigate } from "react";
+import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
+import { getMe } from "../../api/authApi";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
-  });
-  const navigate = useNavigate();
-  // LOGIN
-  const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData));
-  };
+  const [user, setUser] = useState(null);
 
-  // LOGOUT
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    navigate("/login");
   };
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const data = await getMe();
+        setUser(data);
+      } catch (error) {
+        console.log(error);
+        setUser(null);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, logout }}>
       {children}
     </AuthContext.Provider>
   );

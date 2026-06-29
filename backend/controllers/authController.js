@@ -111,11 +111,15 @@ const login = asyncHandler(async (req, res) => {
 });
 // ---------------------------- logout user
 const logoutCurrentUser = asyncHandler(async (req, res) => {
-  res.cookie("jwt", "", {
+  res.clearCookie("jwt", {
     httpOnly: true,
-    expires: new Date(0),
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   });
-  res.status(200).json({ message: "Logout Successfully" });
+
+  res.status(200).json({
+    message: "Logout Successfully",
+  });
 });
 // -------------------- Forgot Password --------------------
 const forgotPassword = asyncHandler(async (req, res) => {
