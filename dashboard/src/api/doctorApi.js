@@ -62,11 +62,6 @@ export const deleteDoctorWorkplace = async (id) => {
   const res = await api.delete(`/api/doctor/workplaces/${id}`);
   return res.data;
 };
-// get doctor workplaces
-export const getWorkplaces = async () => {
-  const res = await api.get("/api/doctor/workplaces");
-  return res.data;
-};
 // ------------------------- workplace settings -------------------------
 export const updateWorkplaceSettings = async (workplaceId, payload) => {
   const res = await api.patch(
@@ -138,4 +133,20 @@ export const getConsultantSlots = async (workplaceId, day) => {
   } catch (err) {
     throw err?.response?.data || err;
   }
+};
+
+//  Dr.Medical Credentials & Awards
+export const addDoctorCredential = async (payload) => {
+  const res = await api.post("/api/doctor/credentials", payload);
+  return res.data;
+};
+
+export const getDoctorCredentials = async () => {
+  const res = await api.get("/api/doctor/credentials");
+  return res.data;
+};
+
+export const deleteDoctorCredential = async (id) => {
+  const res = await api.delete(`/api/doctor/credentials/${id}`);
+  return res.data;
 };

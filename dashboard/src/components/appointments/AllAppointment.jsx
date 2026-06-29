@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
+import DoctorContext from "../../context/doctor/DoctorContext";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
@@ -10,8 +11,10 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 const AllAppointment = () => {
+  const {activeWorkplaceId } = useContext(DoctorContext);
+
   const { appointments, loading, updateStatus, cancel } =
-    useDoctorAppointments();
+    useDoctorAppointments(activeWorkplaceId);
   const [timeFormat, setTimeFormat] = useState("12h");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);

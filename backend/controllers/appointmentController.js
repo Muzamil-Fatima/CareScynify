@@ -14,6 +14,7 @@ const normalizeTime = (t) => {
 };
 
 const now = () => new Date();
+
 /* ---------------- GET AVAILABLE SLOTS ---------------- */
 export const getAvailableSlots = async (req, res) => {
   try {
@@ -78,6 +79,54 @@ export const reserveSlot = async (req, res) => {
     const appointmentTime = normalizeTime(time);
     const currentTime = new Date();
 
+    // Get doctor
+    const doctor = await Doctor.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({ message: "Doctor not found" });
+    }
+
+    // Get workplace
+    const workplace = doctor.workplaces.id(workplaceId);
+
+    if (!workplace) {
+      return res.status(404).json({ message: "Workplace not found" });
+    }
+
+    // ==========================================
+    // Calculate End Time
+    // ==========================================
+
+    const durationObj = workplace.settings?.appointmentDuration;
+
+    let durationInMinutes = 30; // default
+
+    if (durationObj) {
+      if (durationObj.unit === "hours") {
+        durationInMinutes = durationObj.value * 60;
+      } else {
+        durationInMinutes = durationObj.value;
+      }
+    }
+
+    const [hours, minutes] = appointmentTime.split(":").map(Number);
+
+    const endDate = new Date();
+
+    endDate.setHours(hours, minutes, 0, 0);
+
+    endDate.setMinutes(endDate.getMinutes() + durationInMinutes);
+
+    const endTime = endDate.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    // ==========================================
+    // Check if slot already reserved
+    // ==========================================
+
     const existing = await Appointment.findOne({
       doctorId,
       workplaceId,
@@ -89,10 +138,19 @@ export const reserveSlot = async (req, res) => {
 
     if (existing) {
       if (existing.patientId.toString() === req.user._id.toString()) {
-        return res.status(400).json({ message: "Already reserved" });
+        return res.status(400).json({
+          message: "Already reserved",
+        });
       }
-      return res.status(400).json({ message: "Slot already taken" });
+
+      return res.status(400).json({
+        message: "Slot already taken",
+      });
     }
+
+    // ==========================================
+    // Create reservation
+    // ==========================================
 
     const reservation = await Appointment.create({
       patientId: req.user._id,
@@ -100,6 +158,7 @@ export const reserveSlot = async (req, res) => {
       workplaceId,
       appointmentDate,
       appointmentTime,
+      endTime,
       appointmentType,
       status: "reserved",
       reservedUntil: new Date(Date.now() + 10 * 60 * 1000),
@@ -110,7 +169,9 @@ export const reserveSlot = async (req, res) => {
       reservation,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
 /* ---------------- CREATE APPOINTMENT ---------------- */
@@ -183,7 +244,20 @@ export const getDoctorAppointments = async (req, res) => {
       .sort({ appointmentDate: -1 })
       .lean();
 
-    return res.status(200).json(appointments);
+    // Add workplace details
+    const enrichedAppointments = appointments.map((appointment) => {
+      const workplace = doctor.workplaces.find(
+        (w) => w._id.toString() === appointment.workplaceId?.toString(),
+      );
+
+      return {
+        ...appointment,
+        workplaceName: workplace?.name || "Unknown Workplace",
+        workplaceLocation: workplace?.location || "",
+      };
+    });
+
+    return res.status(200).json(enrichedAppointments);
   } catch (error) {
     return res.status(500).json({
       message: "Server error",

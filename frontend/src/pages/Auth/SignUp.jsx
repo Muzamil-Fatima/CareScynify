@@ -29,16 +29,21 @@ const Signup = () => {
       return toast.error("Passwords do not match");
     }
 
+    const selectedRole = localStorage.getItem("selectedRole") || "patient";
+
     try {
       const res = await signupUser({
         name,
         email,
         password,
+        role: selectedRole,
       });
 
       toast.success(
         res.data.message || "Signup successful! Please verify your email.",
       );
+
+      localStorage.removeItem("selectedRole");
 
       navigate("/login");
     } catch (error) {

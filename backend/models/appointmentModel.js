@@ -30,7 +30,9 @@ const appointmentSchema = new mongoose.Schema(
       enum: ["online", "physical"],
       default: "online",
     },
-
+    endTime: {
+      type: String,
+    },
     status: {
       type: String,
       enum: ["reserved", "confirmed", "cancelled", "pending", "completed"],
@@ -39,7 +41,7 @@ const appointmentSchema = new mongoose.Schema(
 
     reservedUntil: Date,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 export const Appointment = mongoose.model("Appointment", appointmentSchema);
 export default Appointment;

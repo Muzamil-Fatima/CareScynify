@@ -1,12 +1,11 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
-import Appointment from "./pages/Appointment.jsx";
-import Pharmacy from "./pages/pharmacy/Pharmacy";
-import Patients from "./pages/patients/Patients";
+import Appointment from "./pages/DrAppointment.jsx";
+import Patients from "./pages/DrPatients.jsx";
 import Login from "./pages/auth/Login";
 import DrDashboard from "./pages/DrDashboard.jsx";
 import DrSchedule from "./pages/DrSchedule.jsx";
-import Appointments from "./pages/Appointment.jsx";
+import Appointments from "./pages/DrAppointment.jsx";
 import AddNewDr from "./pages/AddNewDr.jsx";
 import DrReview from "./pages/DrReview.jsx";
 import TopBar from "./components/TopBar";
@@ -21,7 +20,12 @@ import Credentials from "./components/settings/doctor/Credentials";
 import Security from "./components/settings/doctor/Security";
 import Notifications from "./components/settings/doctor/Notifications";
 import WorkPlaceSchedule from "./components/workPlace/WorkPlaceSchedule.jsx";
-
+// pharmacy route
+import PharmacyDashboard from "./pages/PharmacyDashboard.jsx";
+import PharmacyMedicines from "./pages/PharmacyMedicines.jsx";
+import PharmacyReports from "./pages/PharmacyReports.jsx";
+import PharmacySales from "./pages/PharmacySales.jsx";
+import PharmacyStock from "./pages/PharmacyStock.jsx";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -71,7 +75,7 @@ function App() {
           <Routes>
             <Route path="/appointment" element={<Appointment />} />
             {/* Doctor  */}
-           
+
             <Route
               path="/doctor-dashboard"
               element={
@@ -85,7 +89,6 @@ function App() {
             <Route path="/doctor/profile" element={<AddNewDr />} />
             <Route path="/doctor/reviews" element={<DrReview />} />
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
-            <Route path="/pharmacy" element={<Pharmacy />} />
             <Route path="/patients" element={<Patients />} />
             {/* setting */}
             <Route path="/settings" element={<SettingsLayout />}>
@@ -96,7 +99,15 @@ function App() {
               <Route path="clinic" element={<ClinicInfo />} />
               <Route path="credentials" element={<Credentials />} />
             </Route>
-
+            {/* pharmacy */}
+            <Route path="/pharmacy/dashboard" element={<PharmacyDashboard />} />
+            <Route
+              path=" /pharmacy/medicines"
+              element={<PharmacyMedicines />}
+            />
+            <Route path="/pharmacy/stock" element={<PharmacyStock />} />
+            <Route path="/pharmacy/sales" element={<PharmacySales />} />
+            <Route path="/pharmacy/reports" element={<PharmacyReports />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Login />} />
           </Routes>

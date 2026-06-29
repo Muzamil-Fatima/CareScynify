@@ -10,10 +10,6 @@ import LandingPage from "./pages/Home/LandingPage";
 import AboutUs from "./pages/About/AboutUs";
 import Doctor from "./pages/doctor/Doctor";
 import Laboratory from "./pages/laboratory/Laboratory";
-import Hospital from "./pages/hospital/Hospital";
-import HospitalDetail from "./pages/hospital/HospitalDetail";
-import Clinic from "./pages/clinic/Clinic";
-import ClinicDetail from "./pages/clinic/ClinicDetail";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
 import BookAppointment from "./Components/doctor/BookAppointment";
@@ -27,7 +23,7 @@ import ResetPassword from "./pages/Auth/ResetPassword";
 
 //  App Pages
 import PatientProfile from "./pages/PatientProfile";
-import Dashboard from "./pages/dashboard/Dashboard";
+import Dashboard from "./pages/Dashboard";
 import Appointments from "./pages/Appointments";
 import Reports from "./pages/Reports";
 import PdfViewer from "./Components/reports/ReportViewer";
@@ -60,12 +56,8 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/doctor" element={<Doctor />} />
-          <Route path="/clinic" element={<Clinic />} />
-          <Route path="/clinic/:id" element={<ClinicDetail />} />
           <Route path="/doctor/:id" element={<DoctorProfile />} />
           <Route path="/doctor/:id/book" element={<BookAppointment />} />
-          <Route path="/hospital" element={<Hospital />} />
-          <Route path="/hospital/:id" element={<HospitalDetail />} />
           <Route path="/laboratory" element={<Laboratory />} />
           <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/role-selection" element={<RoleSelection />} />

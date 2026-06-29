@@ -62,8 +62,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: [
         "doctor",
-        "hospital",
-        "clinic",
         "pharmacy",
         "laboratory",
         "patient",

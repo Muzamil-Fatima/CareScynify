@@ -11,7 +11,12 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import PersonIcon from "@mui/icons-material/Person";
 import RateReviewIcon from "@mui/icons-material/RateReview";
-
+// pharmacy
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
+import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
 export const menuByRole = {
   doctor: [
     {
@@ -29,7 +34,7 @@ export const menuByRole = {
       path: "/doctor/appointments",
       icon: <EventNoteIcon />,
     },
-   
+
     {
       name: "Patients",
       path: "/patients",
@@ -57,8 +62,31 @@ export const menuByRole = {
   ],
 
   pharmacy: [
-    { name: "Dashboard", path: "/pharmacy" },
-    { name: "Medicines", path: "/medicines" },
+    {
+      name: "Dashboard",
+      path: "/pharmacy/dashboard",
+      icon: <DashboardRoundedIcon />,
+    },
+    {
+      name: "Medicines",
+      path: "/pharmacy/medicines",
+      icon: <MedicationRoundedIcon />,
+    },
+    {
+      name: "Stock",
+      path: "/pharmacy/stock",
+      icon: <Inventory2RoundedIcon />,
+    },
+    {
+      name: "Sales",
+      path: "/pharmacy/sales",
+      icon: <ShoppingCartRoundedIcon />,
+    },
+    {
+      name: "Reports",
+      path: "/pharmacy/reports",
+      icon: <AssessmentRoundedIcon />,
+    },
   ],
   admin: [
     {

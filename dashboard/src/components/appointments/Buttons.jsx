@@ -23,10 +23,8 @@ const Buttons = ({ setActiveTab, activeTab }) => {
         <span className="absolute -top-2 -left-2 bg-white text-amber-700 text-xs font-semibold min-w-6 h-6 px-1 flex items-center justify-center rounded-full shadow-md">
           {pendingCount}
         </span>
-
         {/* MUI Icon */}
         <AccessTimeIcon fontSize="small" />
-
         Pending Slots
       </button>
 

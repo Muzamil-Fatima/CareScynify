@@ -33,7 +33,7 @@ const DoctorProvider = ({ children }) => {
   const [isDirty, setIsDirty] = useState(false);
   const [conflicts, setConflicts] = useState({});
   const [isSaving, setIsSaving] = useState(false);
-
+  const [activeWorkplaceId, setActiveWorkplaceId] = useState("all");
   const profileRef = useRef(profile);
   const saveProfileRef = useRef(null);
   const workplace = useDoctorWorkplace(profile, setProfile);
@@ -225,11 +225,48 @@ const DoctorProvider = ({ children }) => {
       },
     }));
   };
+  const uploadVerificationDocuments = async (cnicFront, cnicBack) => {
+    try {
+      setLoading(true);
+
+      const formData = new FormData();
+
+      if (cnicFront) {
+        formData.append("cnicFront", cnicFront);
+      }
+
+      if (cnicBack) {
+        formData.append("cnicBack", cnicBack);
+      }
+
+      const res = await updateDoctorProfile(formData);
+
+      if (res?.doctor) {
+        setProfile((prev) => ({
+          ...prev,
+          doctor: {
+            ...prev.doctor,
+            identityVerification: res.doctor.identityVerification,
+          },
+        }));
+      }
+
+      toast.success(res?.message || "Documents uploaded successfully");
+
+      return res;
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to upload documents");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <DoctorContext.Provider
       value={{
         profile,
         setProfile,
+        activeWorkplaceId,
+        setActiveWorkplaceId,
         loading,
         isDirty,
         setIsDirty,
@@ -246,6 +283,7 @@ const DoctorProvider = ({ children }) => {
         removeExperience,
         updateExperience,
         addExperience,
+        uploadVerificationDocuments,
       }}
     >
       {children}

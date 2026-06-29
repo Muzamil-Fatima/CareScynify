@@ -8,6 +8,9 @@ import {
   addDoctorExperience,
   updateDoctorExperience,
   deleteDoctorExperience,
+  addDoctorCredential,
+  getDoctorCredentials,
+  deleteDoctorCredential,
 } from "../controllers/doctorController.js";
 import {
   addWorkplace,
@@ -24,12 +27,21 @@ import {
 } from "../controllers/doctor/doctorConsultantController.js";
 import { updateWorkplaceSettings } from "../controllers/doctor/workplaceSettingsController.js";
 import { protect } from "../middleware/auth.js";
+import upload from "../middleware/upload.js";
 const router = express.Router();
 
 // Get logged-in doctor profile
 router.get("/profile", protect, getDoctorProfile);
 // Update profile (AUTO-SAVE USE)
-router.put("/profile", protect, updateDoctorProfile);
+router.put(
+  "/profile",
+  protect,
+  upload.fields([
+    { name: "cnicFront", maxCount: 1 },
+    { name: "cnicBack", maxCount: 1 },
+  ]),
+  updateDoctorProfile,
+);
 
 // ------------------------------------------------------ WorkPlace
 // add work places
@@ -56,7 +68,17 @@ router.delete("/education/:id", protect, deleteDoctorEducation);
 router.post("/experience", protect, addDoctorExperience);
 router.put("/experience/:id", protect, updateDoctorExperience);
 router.delete("/experience/:id", protect, deleteDoctorExperience);
+// ----------------------------------------------------Dr Medical Credentials & Awards
+router.post(
+  "/credentials",
+  protect,
+  upload.single("file"),
+  addDoctorCredential,
+);
 
+router.get("/credentials", protect, getDoctorCredentials);
+
+router.delete("/credentials/:id", protect, deleteDoctorCredential);
 // ---------------------------Consultation Hours (Per Day) according to Place
 router.get("/consultant", protect, getConsultantHours);
 router.post("/consultant", protect, addConsultantHours);

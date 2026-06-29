@@ -27,9 +27,6 @@ const recentPrescriptions = [
           <h2 className="text-2xl font-bold text-gray-800">Dashboard</h2>
           <p className="text-sm text-gray-500">Welcome back, Dr. Rizwan</p>
         </div>
-      
-
-
         {/* STATS CARDS */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           <StatCard title="Today Appts" value="12" color="text-blue-600" />

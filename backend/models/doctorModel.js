@@ -99,7 +99,44 @@ const drSchema = new mongoose.Schema(
         description: String,
       },
     ],
+    identityVerification: {
+      cnicFront: {
+        type: String,
+        default: "",
+      },
 
+      cnicBack: {
+        type: String,
+        default: "",
+      },
+
+      status: {
+        type: String,
+        enum: ["Pending", "Verified", "Rejected"],
+        default: "Pending",
+      },
+
+      verifiedAt: {
+        type: Date,
+      },
+    },
+    credentials: [
+      {
+        name: String,
+        category: String,
+        fileUrl: String,
+        mimeType: String,
+        status: {
+          type: String,
+          enum: ["Pending", "Verified", "Rejected"],
+          default: "Pending",
+        },
+        uploadedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     fee: {
       type: Number,
     },

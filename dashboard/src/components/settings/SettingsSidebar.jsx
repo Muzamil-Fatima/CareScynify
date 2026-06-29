@@ -41,7 +41,7 @@ const SettingsSidebar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
                   if (item.id) setActiveSidebar(item.id);
                 }}
                 className={({ isActive }) => `
-    relative flex items-center rounded-xl font-medium text-sm
+  relative flex items-center rounded-xl font-medium text-sm
     transition-all duration-200 group
     ${isOpen ? "gap-4 px-3 py-2.5" : "justify-center py-3"}
     

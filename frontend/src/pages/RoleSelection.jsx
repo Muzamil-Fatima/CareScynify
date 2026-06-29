@@ -8,18 +8,6 @@ const roles = [
     desc: "Provide consultations & appointments",
   },
   {
-    id: "hospital",
-    title: "Hospital",
-    icon: "🏥",
-    desc: "Manage hospital services",
-  },
-  {
-    id: "clinic",
-    title: "Clinic",
-    icon: "🏥",
-    desc: "Private clinic management",
-  },
-  {
     id: "pharmacy",
     title: "Pharmacy",
     icon: "💊",

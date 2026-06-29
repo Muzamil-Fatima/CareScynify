@@ -2,10 +2,11 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import { toast } from "react-hot-toast";
 // import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../Utils/api.js";
 import { useAuth } from "../../hooks/useAuth.js";
-import { loginUser, googleLogin } from "../../api/authApi.js";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,34 +19,36 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const res = await loginUser({
-        email,
-        password,
-      });
+      const res = await axios.post(
+        `${BASE_URL}/api/auth/login`,
+        { email, password },
+        { withCredentials: true },
+      );
 
-      const role = res.role || "patient";
+      const role = res.data.role || "patient";
 
       login({
-        name: res.name,
-        email: res.email,
-        token: res.token,
+        name: res.data.name,
+        email: res.data.email,
+        token: res.data.token,
         role,
       });
 
-      toast.success(`${res.name} login successfully.`);
+      toast.success(`${res.data.name} login successfully.`);
 
-      // redirect logic
+      //  CROSS-APP REDIRECT
       const roleRoutes = {
         patient: "http://localhost:5173/",
         doctor: "http://localhost:5174/doctor-dashboard",
         hospital: "http://localhost:5174/hospital-dashboard",
         clinic: "http://localhost:5174/clinic-dashboard",
-        pharmacy: "http://localhost:5174/pharmacy-dashboard",
+        pharmacy: "http://localhost:5174/pharmacy",
         laboratory: "http://localhost:5174/lab-dashboard",
       };
 
       window.location.href = roleRoutes[role] || "http://localhost:5173/";
     } catch (error) {
+      console.error(error);
       toast.error(error.response?.data?.message || "Failed to login");
     }
   };
@@ -115,9 +118,9 @@ const Login = () => {
         </div>
         {/* Google Login UI */}
         <button
-          onClick={googleLogin}
+          onClick={() => window.open(`${BASE_URL}/api/auth/google`, "_self")}
           type="button"
-          className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 sm:py-4 rounded-xl font-semibold hover:bg-gray-50"
+          className="w-full flex items-center justify-center gap-3 border border-gray-300 py-3 sm:py-4  rounded-xl font-semibold hover:bg-gray-50"
         >
           <FcGoogle size={22} />
           Continue with Google

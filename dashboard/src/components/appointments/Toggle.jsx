@@ -1,47 +1,84 @@
-import React from "react";
+import React, { useContext } from "react";
+import DoctorContext from "../../context/doctor/DoctorContext";
+import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
+import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
+import ViewAgendaRoundedIcon from "@mui/icons-material/ViewAgendaRounded";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 
 const Toggle = ({ activeTab, setActiveTab }) => {
+  const { profile, activeWorkplaceId, setActiveWorkplaceId } =
+    useContext(DoctorContext);
+
+  const workplaces = profile?.doctor?.workplaces || [];
+  const allWorkplaces = [{ _id: "all", name: "All Workplaces" }, ...workplaces];
+
+  const currentIndex = allWorkplaces.findIndex(
+    (w) => w._id === activeWorkplaceId,
+  );
+
+  const safeIndex = currentIndex === -1 ? 0 : currentIndex;
+
+  const current = allWorkplaces[safeIndex]?.name || "All Workplaces";
+
+  const handleNext = () => {
+    const nextIndex = (safeIndex + 1) % allWorkplaces.length;
+    setActiveWorkplaceId(allWorkplaces[nextIndex]._id);
+  };
+
+  const handlePrev = () => {
+    const prevIndex =
+      (safeIndex - 1 + allWorkplaces.length) % allWorkplaces.length;
+    setActiveWorkplaceId(allWorkplaces[prevIndex]._id);
+  };
+
+  if (!allWorkplaces.length) return null;
+
   return (
-    <div className="flex justify-between items-center px-5 py-3.5 bg-white rounded-2xl border border-slate-200/80 shadow-sm shadow-purple-950/1">
-      <div>
-        <h4 className="text-sm font-bold text-slate-700 tracking-wide uppercase">
-          {activeTab === "grid" 
-            ? "Calendar Schedule View" 
-            : activeTab === "pending" 
-            ? "Pending Approval Logs" 
-            : "Tabular Ledger Grid"}
-        </h4>
+    <div className="flex justify-between items-center px-5 py-3.5 bg-white rounded-2xl shadow-sm">
+      {/* WORKPLACE SWITCH */}
+      <div className="flex items-center gap-2 bg-slate-50 rounded-xl px-2 py-1 transition hover:bg-slate-100">
+        <button
+          onClick={handlePrev}
+          className="p-1 rounded-md hover:bg-white hover:text-purple-700 transition"
+        >
+          <KeyboardArrowLeftRoundedIcon />
+        </button>
+
+        <span className="text-sm font-bold text-purple-700 min-w-40 text-center">
+          {current}
+        </span>
+
+        <button
+          onClick={handleNext}
+          className="p-1 rounded-md hover:bg-white hover:text-purple-700 transition"
+        >
+          <KeyboardArrowRightRoundedIcon />
+        </button>
       </div>
 
-      {/* Segmented Vector Controls Box */}
-      <div className="flex bg-slate-50 border border-slate-200/60 p-1 rounded-xl">
-        {/* Tabular Row view option */}
+      {/* VIEW TOGGLE */}
+      <div className="flex bg-slate-50 p-1 rounded-xl transition hover:bg-slate-100">
         <button
           onClick={() => setActiveTab("all")}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-1 transition ${
             activeTab === "all"
-              ? "bg-white text-purple-700 shadow-sm border border-purple-100"
-              : "text-slate-500 hover:text-slate-800"
+              ? "bg-white text-purple-700 shadow-sm"
+              : "text-slate-500 hover:text-purple-600"
           }`}
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          <ViewAgendaRoundedIcon fontSize="small" />
           Row Feed
         </button>
 
-        {/* Large Grid Calendar variant */}
         <button
           onClick={() => setActiveTab("grid")}
-          className={`flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-lg transition-all duration-200 ${
+          className={`px-4 py-2 text-xs font-bold rounded-lg flex items-center gap-1 transition ${
             activeTab === "grid"
-              ? "bg-white text-purple-700 shadow-sm border border-purple-100"
-              : "text-slate-500 hover:text-slate-800"
+              ? "bg-white text-purple-700 shadow-sm"
+              : "text-slate-500 hover:text-purple-600"
           }`}
         >
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
+          <CalendarMonthRoundedIcon fontSize="small" />
           Large Calendar
         </button>
       </div>
