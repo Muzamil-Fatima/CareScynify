@@ -6,7 +6,13 @@ import BiotechRoundedIcon from "@mui/icons-material/BiotechRounded";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+const inputClass =
+  "w-full rounded-xl bg-slate-50 border border-transparent shadow-sm px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 outline-none transition-all duration-200 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-100";
 
+const textareaClass =
+  "w-full rounded-xl bg-slate-50 border border-transparent shadow-sm px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 resize-none outline-none focus:outline-none transition-all duration-200 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-100 appearance-none";
+const outerBox =
+  "bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all";
 const PrescriptionTab = () => {
   const [medicines, setMedicines] = useState([
     {
@@ -44,7 +50,7 @@ const PrescriptionTab = () => {
   return (
     <div className="space-y-6">
       {/* Diagnosis */}
-      <div className="bg-white rounded-xl border p-6">
+      <div className={outerBox}>
         <div className="flex items-center gap-2 mb-4">
           <NoteAltRoundedIcon className="text-indigo-600" />
           <h2 className="font-semibold text-lg">Diagnosis</h2>
@@ -53,12 +59,12 @@ const PrescriptionTab = () => {
         <textarea
           rows="4"
           placeholder="Enter diagnosis..."
-          className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-500"
+          className={textareaClass}
         />
       </div>
 
       {/* Symptoms */}
-      <div className="bg-white rounded-xl border p-6">
+      <div className={outerBox}>
         <div className="flex items-center gap-2 mb-4">
           <NoteAltRoundedIcon className="text-indigo-600" />
           <h2 className="font-semibold text-lg">Symptoms</h2>
@@ -66,13 +72,13 @@ const PrescriptionTab = () => {
 
         <textarea
           rows="4"
+          className={textareaClass}
           placeholder="Enter symptoms..."
-          className="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
       {/* Medicines */}
-      <div className="bg-white rounded-xl border p-6">
+      <div className={outerBox}>
         <div className="flex justify-between items-center mb-5">
           <div className="flex items-center gap-2">
             <MedicationRoundedIcon className="text-green-600" />
@@ -81,7 +87,7 @@ const PrescriptionTab = () => {
 
           <button
             onClick={addMedicine}
-            className="flex items-center gap-1 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
+            className="flex items-center gap-1 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg"
           >
             <AddRoundedIcon fontSize="small" />
             Add Medicine
@@ -90,10 +96,7 @@ const PrescriptionTab = () => {
 
         <div className="space-y-5">
           {medicines.map((item, index) => (
-            <div
-              key={index}
-              className="border rounded-xl p-4 bg-gray-50"
-            >
+            <div key={index} className={outerBox}>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <input
                   type="text"
@@ -102,7 +105,7 @@ const PrescriptionTab = () => {
                   onChange={(e) =>
                     handleChange(index, "medicine", e.target.value)
                   }
-                  className="border rounded-lg p-3"
+                  className={inputClass}
                 />
 
                 <input
@@ -112,7 +115,7 @@ const PrescriptionTab = () => {
                   onChange={(e) =>
                     handleChange(index, "dosage", e.target.value)
                   }
-                  className="border rounded-lg p-3"
+                  className={inputClass}
                 />
 
                 <input
@@ -122,7 +125,7 @@ const PrescriptionTab = () => {
                   onChange={(e) =>
                     handleChange(index, "frequency", e.target.value)
                   }
-                  className="border rounded-lg p-3"
+                  className={inputClass}
                 />
 
                 <input
@@ -132,7 +135,7 @@ const PrescriptionTab = () => {
                   onChange={(e) =>
                     handleChange(index, "duration", e.target.value)
                   }
-                  className="border rounded-lg p-3"
+                  className={inputClass}
                 />
               </div>
 
@@ -151,7 +154,7 @@ const PrescriptionTab = () => {
       </div>
 
       {/* Lab Tests */}
-      <div className="bg-white rounded-xl border p-6">
+      <div className={outerBox}>
         <div className="flex items-center gap-2 mb-4">
           <BiotechRoundedIcon className="text-blue-600" />
           <h2 className="font-semibold text-lg">Recommended Lab Tests</h2>
@@ -159,13 +162,13 @@ const PrescriptionTab = () => {
 
         <textarea
           rows="3"
+          className={textareaClass}
           placeholder="CBC, Blood Sugar, X-Ray..."
-          className="w-full border rounded-lg p-3"
         />
       </div>
 
       {/* Advice */}
-      <div className="bg-white rounded-xl border p-6">
+      <div className={outerBox}>
         <div className="flex items-center gap-2 mb-4">
           <NoteAltRoundedIcon className="text-orange-600" />
           <h2 className="font-semibold text-lg">Advice</h2>
@@ -174,26 +177,23 @@ const PrescriptionTab = () => {
         <textarea
           rows="4"
           placeholder="Write advice for the patient..."
-          className="w-full border rounded-lg p-3"
+          className={textareaClass}
         />
       </div>
 
       {/* Follow Up */}
-      <div className="bg-white rounded-xl border p-6">
+      <div className={outerBox}>
         <div className="flex items-center gap-2 mb-4">
           <EventRoundedIcon className="text-purple-600" />
           <h2 className="font-semibold text-lg">Follow-up Date</h2>
         </div>
 
-        <input
-          type="date"
-          className="border rounded-lg p-3"
-        />
+        <input type="date" className={inputClass} />
       </div>
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-medium">
+        <button className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-xl font-medium">
           Save Prescription
         </button>
       </div>
