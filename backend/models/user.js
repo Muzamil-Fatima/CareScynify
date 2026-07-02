@@ -60,12 +60,7 @@ const userSchema = new mongoose.Schema(
     ],
     role: {
       type: String,
-      enum: [
-        "doctor",
-        "pharmacy",
-        "laboratory",
-        "patient",
-      ],
+      enum: ["doctor", "pharmacy", "laboratory", "patient"],
       default: "patient",
       required: true,
     },
@@ -78,6 +73,21 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
     deletedAt: Date,
+    phone: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
+    isProfileCompleted: {
+      type: Boolean,
+      default: false,
+    },
+
+    createdByDoctor: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 );

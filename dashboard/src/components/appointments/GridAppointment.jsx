@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
 import DoctorContext from "../../context/doctor/DoctorContext";
+import AppointmentDetailsModal from "./AppointmentDetailsModal";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -19,15 +20,19 @@ const GridAppointment = () => {
   // Prepares the appointment information to be compatible with the FullCalendar format
   const calendarEvents = appointments.map((appointment) => ({
     id: appointment._id,
-    title: appointment.patientId?.name || "Patient",
+    title: appointment.patientId?.userId?.name || "Patient",
     start: `${new Date(appointment.appointmentDate).toISOString().split("T")[0]}T${appointment.appointmentTime}`,
     end: `${new Date(appointment.appointmentDate).toISOString().split("T")[0]}T${appointment.endTime}`,
     extendedProps: {
+      patientId: appointment.patientId?._id,
       status: appointment.status,
       workplace: appointment.workplaceName,
       location: appointment.workplaceLocation,
-      patientPhone: appointment.patientId?.phone || "N/A",
-      patientEmail: appointment.patientId?.email || "N/A",
+
+      patientAvatar: appointment.patientId?.userId?.avatar,
+      patientPhone: appointment.patientId?.userId?.phone || "N/A",
+      patientEmail: appointment.patientId?.userId?.email || "N/A",
+
       paymentStatus: appointment.paymentStatus || "Pending",
     },
   }));
@@ -67,6 +72,8 @@ const GridAppointment = () => {
     const details = {
       id: event.id,
       title: event.title,
+      avatar: props.patientAvatar,
+       patientId: props.patientId, 
       dateFormatted: new Date(event.start).toLocaleDateString("en-US", {
         weekday: "long",
         year: "numeric",
@@ -148,21 +155,28 @@ const GridAppointment = () => {
 
     const currentActiveApp = dayAppointments[activeIndex] || dayAppointments[0];
     const dayNumber = new Date(currentActiveApp.start).getDate();
-    const firstLetter = currentActiveApp.title
-      ? currentActiveApp.title.charAt(0).toUpperCase()
-      : "";
-    const appointmentTime = formatTimeHelper(new Date(currentActiveApp.start));
 
+    const appointmentTime = formatTimeHelper(new Date(currentActiveApp.start));
+    const avatar = currentActiveApp.extendedProps.patientAvatar;
     return (
       <div className="w-full flex flex-col items-center justify-center text-center pt-6 pb-2 px-2 bg-white rounded-xl pointer-events-auto relative border border-slate-100 shadow-sm">
         <div className="absolute top-1.5 right-2 text-xs font-bold text-slate-400">
           {dayNumber}
         </div>
 
-        <div className="h-9 w-9 rounded-full bg-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-sm mb-1 ring-4 ring-purple-50 mx-auto">
-          {firstLetter}
+        <div className="h-10 w-10 rounded-full overflow-hidden ring-4 ring-purple-50 bg-purple-100 flex items-center justify-center mb-1">
+          {avatar ? (
+            <img
+              src={avatar}
+              alt={currentActiveApp.title}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-purple-700 font-bold text-sm">
+              {currentActiveApp.title.charAt(0).toUpperCase()}
+            </span>
+          )}
         </div>
-
         <div className="text-[11px] font-semibold text-purple-600 leading-tight">
           {appointmentTime}
         </div>
@@ -329,131 +343,12 @@ const GridAppointment = () => {
           }}
         />
       </div>
-
-      {/* Appointment Detail Modal Pop-Up */}
-      {isModalOpen && selectedAppointment && (
-        <div
-          className="fixed inset-0 bg-black/60 z-99999 flex items-center justify-center p-4 backdrop-blur-sm"
-          onClick={closeModal}
-        >
-          <div
-            className="bg-white rounded-3xl p-8 shadow-2xl w-full max-w-lg relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Close Button and Avatar */}
-            <div className="flex items-start justify-between gap-4 mb-6 pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-4">
-                <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 font-bold text-lg ring-4 ring-purple-50">
-                  {selectedAppointment.title.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-slate-950 leading-tight">
-                    {selectedAppointment.title}
-                  </h2>
-                  <p className="text-sm font-medium text-slate-500 mt-0.5">
-                    ID: {selectedAppointment.id}
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={closeModal}
-                className="p-2 -mr-2 text-slate-400 hover:text-rose-600 rounded-full hover:bg-rose-50 transition-colors"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Information Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5 mb-8">
-              <div>
-                <p className="text-[11px] font-bold text-purple-700/80 uppercase tracking-wide">
-                  Date
-                </p>
-                <p className="text-sm font-semibold text-slate-900 leading-snug">
-                  {selectedAppointment.dateFormatted}
-                </p>
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-purple-700/80 uppercase tracking-wide">
-                  Time
-                </p>
-                <p className="text-sm font-semibold text-slate-900 leading-snug">{`${selectedAppointment.startTimeFormatted} - ${selectedAppointment.endTimeFormatted}`}</p>
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-purple-700/80 uppercase tracking-wide">
-                  Workplace
-                </p>
-                <p className="text-sm font-semibold text-slate-900 leading-snug">
-                  {selectedAppointment.workplace || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-purple-700/80 uppercase tracking-wide">
-                  Location
-                </p>
-                <p className="text-sm font-semibold text-slate-900 leading-snug">
-                  {selectedAppointment.location || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-purple-700/80 uppercase tracking-wide">
-                  Patient Phone
-                </p>
-                <p className="text-sm font-semibold text-slate-900 leading-snug">
-                  {selectedAppointment.phone || "N/A"}
-                </p>
-              </div>
-              <div>
-                <p className="text-[11px] font-bold text-purple-700/80 uppercase tracking-wide">
-                  Patient Email
-                </p>
-                <p className="text-sm font-semibold text-slate-900 leading-snug">
-                  {selectedAppointment.email || "N/A"}
-                </p>
-              </div>
-
-              <div className="md:col-span-2 flex items-center gap-6 pt-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-500">
-                    Appointment:
-                  </span>
-                  <span
-                    className={`text-xs font-bold px-3 py-1 rounded-full ring-2 ${getStatusClasses(selectedAppointment.status)}`}
-                  >
-                    {selectedAppointment.status || "Pending"}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center justify-end gap-3 mt-6 pt-5 border-t border-slate-100">
-              <button
-                onClick={closeModal}
-                className="px-5 py-2.5 text-sm font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 rounded-xl transition-colors"
-              >
-                Close
-              </button>
-              <button className="px-5 py-2.5 text-sm font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-sm transition-colors">
-                View Full Patient Record
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AppointmentDetailsModal
+        isOpen={isModalOpen}
+        appointment={selectedAppointment}
+        onClose={closeModal}
+        getStatusClasses={getStatusClasses}
+      />
     </div>
   );
 };

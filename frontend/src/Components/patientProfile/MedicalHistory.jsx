@@ -2,22 +2,16 @@ import React from "react";
 import { usePatient } from "../../context/patients/PatientContext";
 
 const MedicalHistory = () => {
-  const { profile, setProfile } = usePatient();
-
+  const { profile, setProfile, setIsDirty } = usePatient();
   const patient = profile?.patient || {};
   const medicalHistory = patient?.medicalHistory || {};
 
   const inputClass =
     "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
 
-  const labelClass =
-    "mb-2 text-sm font-medium text-gray-600";
+  const labelClass = "mb-2 text-sm font-medium text-gray-600";
 
-  const handlePatientChange = (
-    field,
-    value,
-    isArray = false
-  ) => {
+  const handlePatientChange = (field, value, isArray = false) => {
     setProfile((prev) => ({
       ...prev,
       patient: {
@@ -30,13 +24,11 @@ const MedicalHistory = () => {
           : value,
       },
     }));
+
+    setIsDirty(true);
   };
 
-  const handleMedicalChange = (
-    field,
-    value,
-    isArray = false
-  ) => {
+  const handleMedicalChange = (field, value, isArray = false) => {
     setProfile((prev) => ({
       ...prev,
       patient: {
@@ -52,6 +44,8 @@ const MedicalHistory = () => {
         },
       },
     }));
+
+    setIsDirty(true);
   };
 
   return (
@@ -61,173 +55,105 @@ const MedicalHistory = () => {
       </h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
         {/* Diseases */}
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Diseases
-          </label>
+          <label className={labelClass}>Diseases</label>
           <textarea
             rows={3}
             className={inputClass}
             placeholder="Diabetes, Blood Pressure"
-            value={
-              medicalHistory?.diseases?.join(", ") ||
-              ""
-            }
+            value={medicalHistory?.diseases?.join(", ") || ""}
             onChange={(e) =>
-              handleMedicalChange(
-                "diseases",
-                e.target.value,
-                true
-              )
+              handleMedicalChange("diseases", e.target.value, true)
             }
           />
         </div>
 
         {/* Allergies */}
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Allergies
-          </label>
+          <label className={labelClass}>Allergies</label>
           <textarea
             rows={3}
             className={inputClass}
             placeholder="Dust, Penicillin"
-            value={
-              patient?.allergies?.join(", ") || ""
-            }
+            value={patient?.allergies?.join(", ") || ""}
             onChange={(e) =>
-              handlePatientChange(
-                "allergies",
-                e.target.value,
-                true
-              )
+              handlePatientChange("allergies", e.target.value, true)
             }
           />
         </div>
 
         {/* Medications */}
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Current Medications
-          </label>
+          <label className={labelClass}>Current Medications</label>
           <textarea
             rows={3}
             className={inputClass}
             placeholder="Panadol, Vitamins"
-            value={
-              patient?.medications?.join(", ") ||
-              ""
-            }
+            value={patient?.medications?.join(", ") || ""}
             onChange={(e) =>
-              handlePatientChange(
-                "medications",
-                e.target.value,
-                true
-              )
+              handlePatientChange("medications", e.target.value, true)
             }
           />
         </div>
 
         {/* Surgeries */}
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Past Surgeries
-          </label>
+          <label className={labelClass}>Past Surgeries</label>
           <textarea
             rows={3}
             className={inputClass}
             placeholder="Appendix surgery"
-            value={
-              medicalHistory?.surgeries?.join(
-                ", "
-              ) || ""
-            }
+            value={medicalHistory?.surgeries?.join(", ") || ""}
             onChange={(e) =>
-              handleMedicalChange(
-                "surgeries",
-                e.target.value,
-                true
-              )
+              handleMedicalChange("surgeries", e.target.value, true)
             }
           />
         </div>
 
         {/* Family History */}
         <div className="md:col-span-2">
-          <label className={labelClass}>
-            Family History
-          </label>
+          <label className={labelClass}>Family History</label>
           <textarea
             rows={3}
             className={inputClass}
             placeholder="Genetic diseases"
-            value={
-              medicalHistory?.familyHistory ||
-              ""
-            }
+            value={medicalHistory?.familyHistory || ""}
             onChange={(e) =>
-              handleMedicalChange(
-                "familyHistory",
-                e.target.value
-              )
+              handleMedicalChange("familyHistory", e.target.value)
             }
           />
         </div>
 
         {/* Smoking */}
         <div>
-          <label className={labelClass}>
-            Smoking
-          </label>
+          <label className={labelClass}>Smoking</label>
           <select
             className={inputClass}
-            value={
-              medicalHistory?.smoking || ""
-            }
-            onChange={(e) =>
-              handleMedicalChange(
-                "smoking",
-                e.target.value
-              )
-            }
+            value={medicalHistory?.smoking || ""}
+            onChange={(e) => handleMedicalChange("smoking", e.target.value)}
           >
             <option value="">Select</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
-            <option value="occasionally">
-              Occasionally
-            </option>
+            <option value="occasionally">Occasionally</option>
           </select>
         </div>
 
         {/* Alcohol */}
         <div>
-          <label className={labelClass}>
-            Alcohol
-          </label>
+          <label className={labelClass}>Alcohol</label>
           <select
             className={inputClass}
-            value={
-              medicalHistory?.alcohol || ""
-            }
-            onChange={(e) =>
-              handleMedicalChange(
-                "alcohol",
-                e.target.value
-              )
-            }
+            value={medicalHistory?.alcohol || ""}
+            onChange={(e) => handleMedicalChange("alcohol", e.target.value)}
           >
             <option value="">Select</option>
             <option value="no">No</option>
             <option value="yes">Yes</option>
-            <option value="occasionally">
-              Occasionally
-            </option>
+            <option value="occasionally">Occasionally</option>
           </select>
         </div>
-
       </div>
     </div>
   );

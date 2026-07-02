@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   FiVideo,
   FiMoreVertical,
@@ -14,6 +15,10 @@ const AppointmentActions = ({
   updateStatus,
   cancel,
 }) => {
+  const navigate = useNavigate();
+  const openPatientProfile = (patientId) => {
+    navigate(`/doctor/patient/profile/${patientId}`);
+  };
   return (
     <div
       className="
@@ -49,9 +54,7 @@ const AppointmentActions = ({
       )}
 
       <button
-        onClick={() =>
-          setOpenMenu(openMenu === item._id ? null : item._id)
-        }
+        onClick={() => setOpenMenu(openMenu === item._id ? null : item._id)}
         className="text-slate-400 hover:text-slate-600 p-2"
       >
         <FiMoreVertical size={18} />
@@ -60,11 +63,8 @@ const AppointmentActions = ({
       {openMenu === item._id && (
         <div className="absolute right-0 top-14 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-50 overflow-hidden">
           <button
-            onClick={() => {
-              console.log("View Profile", item.patientId);
-              setOpenMenu(null);
-            }}
-            className="w-full flex items-center gap-2 px-4 py-3 hover:bg-blue-50 text-left text-blue-700"
+            onClick={() => openPatientProfile(item.patientId?._id)}
+            className="w-full flex items-center gap-2 px-4 py-3 hover:bg-blue-50 text-left text-blue-700 cursor-pointer"
           >
             <FiUser />
             View Profile

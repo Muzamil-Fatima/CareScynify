@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
 import DoctorContext from "../../context/doctor/DoctorContext";
-
+import { useNavigate } from "react-router-dom";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -11,7 +11,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 const AllAppointment = () => {
-  const {activeWorkplaceId } = useContext(DoctorContext);
+  const { activeWorkplaceId } = useContext(DoctorContext);
 
   const { appointments, loading, updateStatus, cancel } =
     useDoctorAppointments(activeWorkplaceId);
@@ -22,6 +22,10 @@ const AllAppointment = () => {
   const [openStatus, setOpenStatus] = useState(false);
   const [openTime, setOpenTime] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
+  const navigate = useNavigate();
+const openPatientProfile = (patientId) => {
+  navigate(`/doctor/patient/profile/${patientId}`);
+};
   // Status Counts
   const confirmedCount = appointments.filter(
     (item) => item.status === "confirmed",
@@ -213,10 +217,12 @@ const AllAppointment = () => {
                     </tr>
                   ) : (
                     paginatedAppointments.map((item, index) => {
-                      const user = item.patientId;
+                      const patient = item.patientId;
+                      const user = patient?.userId;
                       return (
                         <tr
                           key={item._id}
+                          onDoubleClick={() => openPatientProfile(patient?._id)}
                           className={`border-b border-gray-100 ${
                             index % 2 !== 0 ? "bg-gray-50" : ""
                           }`}
@@ -230,20 +236,26 @@ const AllAppointment = () => {
                                   className="w-9 h-9 rounded-full"
                                 />
                               ) : (
-                                <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center cursor-pointer ">
                                   {user?.name?.charAt(0) || "P"}
                                 </div>
                               )}
 
-                              <span>{user?.name || "Unknown"}</span>
+                              <span className="cursor-pointer">
+                                {user?.name || "Unknown"}
+                              </span>
                             </div>
                           </td>
                           {/* Email */}
-                          <td className="px-4 py-3">{user?.email || "-"}</td>
+                          <td className="px-4 py-3 cursor-pointer">
+                            {user?.email || "-"}
+                          </td>
                           {/* Phone */}
-                          <td className="px-4 py-3">{user?.phone || "-"}</td>
+                          <td className="px-4 py-3 cursor-pointer">
+                            {user?.phone || "-"}
+                          </td>
                           {/* Date */}
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-3 cursor-pointer">
                             {item.appointmentDate
                               ? new Date(
                                   item.appointmentDate,
@@ -256,7 +268,7 @@ const AllAppointment = () => {
                           </td>
 
                           {/* Time */}
-                          <td className="px-4 py-3">
+                          <td className="px-4 py-3 cursor-pointer">
                             {formatTime(item.appointmentTime)}
                           </td>
 
@@ -296,7 +308,7 @@ const AllAppointment = () => {
                                 {/* VIEW PROFILE */}
                                 <button
                                   onClick={() => {
-                                    console.log("View Profile", item.patientId);
+                                    openPatientProfile(patient?._id);
                                     setOpenMenu(null);
                                   }}
                                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-blue-50 text-left text-blue-700"

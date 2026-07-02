@@ -43,24 +43,20 @@ const PersonalInfo = () => {
   };
 
   const age = useMemo(() => {
-    return calculateAge(patient?.dob);
-  }, [patient?.dob]);
+    return calculateAge(user?.dob);
+  }, [user?.dob]);
 
-const handlePatientChange = (field, value, section) => {
-  setProfile((prev) => {
-    const updated = {
+  const handlePatientChange = (field, value, section = "patient") => {
+    setProfile((prev) => ({
       ...prev,
       [section]: {
         ...prev[section],
         [field]: value,
       },
-    };
+    }));
 
-    return updated;
-  });
-
-  setIsDirty(true);
-};
+    setIsDirty(true);
+  };
   const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
   return (
@@ -77,7 +73,9 @@ const handlePatientChange = (field, value, section) => {
             type="text"
             className={inputClass}
             value={user?.name || ""}
-            onChange={(e) => handlePatientChange("name", e.target.value, "user")}
+            onChange={(e) =>
+              handlePatientChange("name", e.target.value, "user")
+            }
           />
         </div>
 
@@ -87,15 +85,20 @@ const handlePatientChange = (field, value, section) => {
           <input
             type="date"
             className={inputClass}
-            value={patient?.dob ? patient.dob.split("T")[0] : ""}
-            onChange={(e) => handlePatientChange("dob", e.target.value, "patient")}
+            value={user?.dob ? user.dob.split("T")[0] : ""}
+            onChange={(e) => handlePatientChange("dob", e.target.value, "user")}
           />
         </div>
 
         {/* AGE (AUTO) */}
         <div>
           <label className={labelClass}>Age</label>
-          <input type="text" className={inputClass} value={age || ""} />
+          <input
+            type="text"
+            className={inputClass}
+            value={age || ""}
+            readOnly
+          />
         </div>
 
         {/* CNIC */}
@@ -104,8 +107,10 @@ const handlePatientChange = (field, value, section) => {
           <input
             type="text"
             className={inputClass}
-            value={patient?.cnic || ""}
-            onChange={(e) => handlePatientChange("cnic", e.target.value)}
+            value={user?.cnic || ""}
+            onChange={(e) =>
+              handlePatientChange("cnic", e.target.value, "user")
+            }
           />
         </div>
 
@@ -123,9 +128,12 @@ const handlePatientChange = (field, value, section) => {
           <label className={labelClass}>Email</label>
           <input
             type="email"
+            readOnly
             className={inputClass}
             value={user?.email || ""}
-            onChange={(e) => handlePatientChange("email", e.target.value, "user")}
+            onChange={(e) =>
+              handlePatientChange("email", e.target.value, "user")
+            }
           />
         </div>
 
@@ -135,7 +143,9 @@ const handlePatientChange = (field, value, section) => {
           <select
             className={inputClass}
             value={patient?.gender || ""}
-            onChange={(e) => handlePatientChange("gender", e.target.value)}
+            onChange={(e) =>
+              handlePatientChange("gender", e.target.value, "patient")
+            }
           >
             <option value="">Select Gender</option>
             <option value="male">Male</option>
@@ -150,7 +160,9 @@ const handlePatientChange = (field, value, section) => {
           <select
             className={inputClass}
             value={patient?.bloodGroup || ""}
-            onChange={(e) => handlePatientChange("bloodGroup", e.target.value)}
+            onChange={(e) =>
+              handlePatientChange("bloodGroup", e.target.value, "patient")
+            }
           >
             <option value="">Select Blood Group</option>
             {bloodGroups.map((bg) => (
@@ -168,7 +180,9 @@ const handlePatientChange = (field, value, section) => {
             rows={3}
             className={inputClass}
             value={patient?.address || ""}
-            onChange={(e) => handlePatientChange("address", e.target.value)}
+            onChange={(e) =>
+              handlePatientChange("address", e.target.value, "patient")
+            }
           />
         </div>
       </div>

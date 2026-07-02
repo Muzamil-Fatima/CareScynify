@@ -11,7 +11,7 @@ import {
   addDoctorCredential,
   getDoctorCredentials,
   deleteDoctorCredential,
-} from "../controllers/doctorController.js";
+} from "../controllers/doctor/doctorController.js";
 import {
   addWorkplace,
   updateWorkplace,

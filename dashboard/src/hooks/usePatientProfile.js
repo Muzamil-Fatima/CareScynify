@@ -1,43 +1,40 @@
 import { useEffect, useState, useCallback } from "react";
-import { getPatientProfile } from "../services/patientService";
-import { useAuth } from "../context/auth/useAuth";
+import { getPatientProfile, getPatientById } from "../api/patientApi";
 
-const usePatientProfile = () => {
-  const { user } = useAuth();
+const usePatientProfile = (patientId) => {
   const [patient, setPatient] = useState(null);
+  const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const fetchPatient = useCallback(async () => {
     try {
-      const data = await getPatientProfile();
+      const data = patientId
+        ? await getPatientById(patientId)
+        : await getPatientProfile();
 
       setPatient({
-        ...user,
-        ...data,
+        ...data.user,
+        ...data.patient,
       });
+
+      setReports(data.reports || []);
     } catch (error) {
-      console.error("Error fetching patient profile:", error);
-
-      setPatient({
-        name: user?.name || "",
-        email: user?.email || "",
-        phone: "",
-        age: "",
-        address: "",
-        allergies: [],
-        medications: [],
-        emergencyContact: {},
-      });
+      console.error(error);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [patientId]);
 
   useEffect(() => {
-    if (user) fetchPatient();
-  }, [user, fetchPatient]);
+    fetchPatient();
+  }, [fetchPatient]);
 
-  return { patient, loading };
+  return {
+    patient,
+    reports,
+    loading,
+    refetch: fetchPatient,
+  };
 };
 
 export default usePatientProfile;

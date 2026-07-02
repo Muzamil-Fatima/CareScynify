@@ -1,6 +1,6 @@
 import React from "react";
 import { usePatient } from "../../context/patients/PatientContext";
-import PhoneInput from "react-phone-input-2";
+import PhoneInput from "../PhoneInput";
 
 const EmergencyContact = () => {
   const { profile, setProfile, setIsDirty } = usePatient();
@@ -10,6 +10,7 @@ const EmergencyContact = () => {
   const inputClass =
     "w-full border border-gray-200 rounded-xl p-3 outline-none focus:ring-2 focus:ring-purple-400 transition shadow-sm bg-white";
 
+  // const labelClass = "mb-2 text-sm font-medium text-gray-600";
   const labelClass = "mb-2 text-sm font-medium text-gray-600";
 
   const handleEmergencyChange = (field, value) => {
@@ -46,10 +47,11 @@ const EmergencyContact = () => {
         </div>
 
         {/* Phone */}
+     
         <div>
-          <label className={labelClass}>Phone Number</label>
+          <label className={labelClass}>Phone</label>
           <PhoneInput
-            value={contact.phone || ""}
+            value={contact?.phone || ""}
             onChange={(value) => handleEmergencyChange("phone", value)}
           />
         </div>

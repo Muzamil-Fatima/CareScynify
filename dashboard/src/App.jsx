@@ -1,12 +1,12 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import { useState } from "react";
-import Appointment from "./pages/DrAppointment.jsx";
-import Patients from "./pages/DrPatients.jsx";
-import DrDashboard from "./pages/DrDashboard.jsx";
-import DrSchedule from "./pages/DrSchedule.jsx";
-import Appointments from "./pages/DrAppointment.jsx";
-import AddNewDr from "./pages/AddNewDr.jsx";
-import DrReview from "./pages/DrReview.jsx";
+import Appointment from "./pages/doctor/DrAppointment.jsx";
+import Patients from "./pages/doctor/DrPatients.jsx";
+import DrDashboard from "./pages/doctor/DrDashboard.jsx";
+import DrSchedule from "./pages/doctor/DrSchedule.jsx";
+import Appointments from "./pages/doctor/DrAppointment.jsx";
+import AddNewDr from "./pages/doctor/AddNewDr.jsx";
+import DrReview from "./pages/doctor/DrReview.jsx";
 import TopBar from "./components/TopBar";
 import SideBar from "./components/sidebar/SideBar";
 import { Toaster } from "react-hot-toast";
@@ -18,17 +18,18 @@ import Security from "./components/settings/doctor/Security";
 import Notifications from "./components/settings/doctor/Notifications";
 import WorkPlaceSchedule from "./components/workPlace/WorkPlaceSchedule.jsx";
 // pharmacy route
-import PharmacyDashboard from "./pages/PharmacyDashboard.jsx";
-import PharmacyMedicines from "./pages/PharmacyMedicines.jsx";
-import PharmacyReports from "./pages/PharmacyReports.jsx";
-import PharmacySales from "./pages/PharmacySales.jsx";
-import PharmacyStock from "./pages/PharmacyStock.jsx";
+import PharmacyDashboard from "./pages/pharmacy/Dashboard.jsx";
+import PharmacyMedicines from "./pages/pharmacy/Medicines.jsx";
+import PharmacyReports from "./pages/pharmacy/Reports.jsx";
+import PharmacySales from "./pages/pharmacy/Sales.jsx";
+import PharmacyStock from "./pages/pharmacy/Stock.jsx";
 // Lab route
-import LabDashboard from "./pages/LabDashboard.jsx";
-import LabTestProcess from "./pages/LabTestProcess.jsx";
-import LabSampleQueue from "./pages/LabSampleQueue.jsx";
-import LabPatients from "./pages/LabPatients.jsx";
-import LabTests from "./pages/LabTests.jsx";
+import LabDashboard from "./pages/lab/Dashboard.jsx";
+import LabTestProcess from "./pages/lab/LabTestProcess.jsx";
+import LabSampleQueue from "./pages/lab/LabSampleQueue.jsx";
+import LabPatients from "./pages/lab/LabPatients.jsx";
+import LabTests from "./pages/lab/Tests.jsx";
+import PatientProfile from "./pages/doctor/PatientProfile.jsx";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -86,6 +87,10 @@ function App() {
             <Route path="/doctor/reviews" element={<DrReview />} />
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
             <Route path="/patients" element={<Patients />} />
+            <Route
+              path="/doctor/patient/profile/:patientId"
+              element={<PatientProfile />}
+            />
             {/* setting */}
             <Route path="/settings" element={<SettingsLayout />}>
               <Route path="personal" element={<ProfileInfo />} />

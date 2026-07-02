@@ -22,15 +22,15 @@ import VerifyEmail from "./pages/Auth/VerifyEmail";
 import ResetPassword from "./pages/Auth/ResetPassword";
 
 //  App Pages
-import PatientProfile from "./pages/PatientProfile";
-import Dashboard from "./pages/Dashboard";
-import Appointments from "./pages/Appointments";
-import Reports from "./pages/Reports";
+import PatientProfile from "./pages/patients/PatientProfile";
+import Dashboard from "./pages/patients/Dashboard";
+import Appointments from "./pages/patients/Appointments";
+import Reports from "./pages/patients/Reports";
 import PdfViewer from "./Components/reports/ReportViewer";
-import Settings from "./pages/Settings";
+import Settings from "./pages/patients/Settings";
 import RootLayout from "./layout/RootLayout";
 import Security from "./Components/settings/Security";
-import SymptomAnalyzer from "./pages/SymptomAnalyzer";
+import SymptomAnalyzer from "./pages/patients/SymptomAnalyzer";
 function App() {
   return (
     <RootLayout>

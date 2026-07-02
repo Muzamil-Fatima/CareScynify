@@ -1,5 +1,6 @@
 import Appointment from "../models/appointmentModel.js";
 import Doctor from "../models/doctorModel.js";
+import Patient from "../models/patientModel.js";
 import { getIO } from "../config/socket.js";
 /* ---------------- HELPERS ---------------- */
 
@@ -135,9 +136,17 @@ export const reserveSlot = async (req, res) => {
       status: { $in: ["reserved", "confirmed"] },
       reservedUntil: { $gt: currentTime },
     });
+    const patient = await Patient.findOne({
+      userId: req.user._id,
+    });
 
+    if (!patient) {
+      return res.status(404).json({
+        message: "Patient profile not found",
+      });
+    }
     if (existing) {
-      if (existing.patientId.toString() === req.user._id.toString()) {
+      if (existing.patientId.toString() === patient._id.toString()) {
         return res.status(400).json({
           message: "Already reserved",
         });
@@ -153,7 +162,8 @@ export const reserveSlot = async (req, res) => {
     // ==========================================
 
     const reservation = await Appointment.create({
-      patientId: req.user._id,
+      userId: req.user._id,
+      patientId: patient._id,
       doctorId,
       workplaceId,
       appointmentDate,
@@ -191,9 +201,18 @@ export const createAppointment = async (req, res) => {
       status: "reserved",
       reservedUntil: { $lte: currentTime },
     });
+    const patient = await Patient.findOne({
+      userId: req.user._id,
+    });
 
+    if (!patient) {
+      return res.status(404).json({
+        message: "Patient profile not found",
+      });
+    }
     const reservation = await Appointment.findOne({
-      patientId: req.user._id,
+      userId: req.user._id,
+      patientId: patient._id,
       doctorId,
       workplaceId,
       appointmentDate,
@@ -239,7 +258,10 @@ export const getDoctorAppointments = async (req, res) => {
     })
       .populate({
         path: "patientId",
-        select: "name email phone avatar",
+        populate: {
+          path: "userId",
+          select: "name email phone avatar",
+        },
       })
       .sort({ appointmentDate: -1 })
       .lean();
@@ -268,8 +290,19 @@ export const getDoctorAppointments = async (req, res) => {
 /* ---------------- get user appointments in website  ---------------- */
 export const getUserAppointments = async (req, res) => {
   try {
+    const patient = await Patient.findOne({
+      userId: req.user._id,
+    });
+
+    if (!patient) {
+      return res.status(404).json({
+        message: "Patient profile not found",
+      });
+    }
+
     const appointments = await Appointment.find({
-      patientId: req.user._id,
+      userId: req.user._id,
+      patientId: patient._id,
     })
       .populate({
         path: "doctorId",
@@ -320,7 +353,7 @@ export const updateAppointmentStatus = async (req, res) => {
     // SOCKET EMIT ADD HERE
     const io = req.app.get("io");
 
-    io.emit("slot-updated", appointment); // 👈 IMPORTANT
+    io.emit("slot-updated", appointment); // IMPORTANT
 
     return res.json({
       message: "Status updated successfully",
@@ -339,7 +372,7 @@ export const cancelAppointment = async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    // 👇 ADD THIS BLOCK HERE (VERY IMPORTANT)
+    // ADD THIS BLOCK HERE (VERY IMPORTANT)
     const user = req.user;
 
     if (user.role === "patient") {
@@ -355,17 +388,19 @@ export const cancelAppointment = async (req, res) => {
         });
       }
 
-      if (appointment.patientId.toString() !== user._id.toString()) {
-        return res.status(403).json({ message: "Not allowed" });
+      if (appointment.userId.toString() !== user._id.toString()) {
+        return res.status(403).json({
+          message: "Not allowed",
+        });
       }
     }
 
-    // ❌ update appointment status
+    // update appointment status
     appointment.status = "cancelled";
     appointment.cancelledAt = new Date();
     await appointment.save();
 
-    // 🔥 FREE SLOT AGAIN
+    // FREE SLOT AGAIN
     const doctor = await Doctor.findById(appointment.doctorId);
     const workplace = doctor.workplaces.id(appointment.workplaceId);
 
@@ -409,7 +444,8 @@ export const getAppointmentById = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id)
       .populate("doctorId")
-      .populate("patientId");
+      .populate("patientId")
+      .populate("userId");
 
     if (!appointment) {
       return res.status(404).json({ message: "Not found" });
@@ -432,5 +468,58 @@ export const deleteAppointment = async (req, res) => {
     res.json({ message: "Appointment deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+export const getDoctorPatientAppointments = async (req, res) => {
+  try {
+    const { patientId } = req.params;
+
+    // console.log("Patient ID:", patientId);
+    // console.log("User ID:", req.user._id);
+
+    const doctor = await Doctor.findOne({
+      userId: req.user._id,
+    });
+
+    if (!doctor) {
+      return res.status(404).json({
+        message: "Doctor profile not found",
+      });
+    }
+
+    // console.log("Doctor ID:", doctor._id);
+
+  const appointments = await Appointment.find({
+  doctorId: doctor._id,
+  patientId: patientId,
+}).populate("patientId")
+      .sort({
+        appointmentDate: -1,
+        appointmentTime: -1,
+      })
+      .lean();
+
+    // console.log("Appointments Found:", appointments.length);
+    // console.log(appointments);
+
+    const enrichedAppointments = appointments.map((appointment) => {
+      const workplace = doctor.workplaces.find(
+        (w) => w._id.toString() === appointment.workplaceId?.toString(),
+      );
+
+      return {
+        ...appointment,
+        workplaceName: workplace?.name || "Unknown Workplace",
+        workplaceLocation: workplace?.location || "",
+      };
+    });
+
+    return res.status(200).json(enrichedAppointments);
+  } catch (error) {
+    // console.error(error);
+
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };

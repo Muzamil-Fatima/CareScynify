@@ -7,6 +7,7 @@ import {
   cancelAppointment,
 } from "../api/appointmentApi";
 
+
 const useDoctorAppointments = (activeWorkplaceId = "all") => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(false);

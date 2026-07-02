@@ -1,4 +1,5 @@
 import { useState } from "react";
+import {useNavigate} from "react-router-dom";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -9,6 +10,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 const PendingAppointment = () => {
   const { appointments, loading, updateStatus } = useDoctorAppointments();
+  const navigate = useNavigate();
   const [timeFormat, setTimeFormat] = useState("12h");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -39,6 +41,9 @@ const PendingAppointment = () => {
           minute: "2-digit",
           hour12: false,
         });
+  };
+  const openPatientProfile = (patientId) => {
+    navigate(`/doctor/patient/profile/${patientId}`);
   };
   // Filter
   const filteredAppointments = appointments.filter(
@@ -189,6 +194,7 @@ const PendingAppointment = () => {
                       const user = item.patientId;
                       return (
                         <tr
+                          onDoubleClick={() => openPatientProfile(user?._id)}
                           key={item._id}
                           className={`border-b border-gray-100 ${
                             index % 2 !== 0 ? "bg-gray-50" : ""

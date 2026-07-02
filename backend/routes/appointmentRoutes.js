@@ -7,6 +7,7 @@ import {
   createAppointment,
   getUserAppointments,
   getDoctorAppointments,
+  getDoctorPatientAppointments,
   getAppointmentById,
   updateAppointmentStatus,
   cancelAppointment,
@@ -25,7 +26,11 @@ router.get("/", protect, getUserAppointments);
 
 router.get("/doctor", protect, getDoctorAppointments);
 router.get("/:id", protect, getAppointmentById);
-
+router.get(
+  "/doctor/patient/:patientId",
+  protect,
+  getDoctorPatientAppointments,
+);
 /* ---------------- UPDATE / CANCEL ---------------- */
 router.patch("/:id/status", protect, updateAppointmentStatus);
 router.patch("/:id/cancel", protect, cancelAppointment);

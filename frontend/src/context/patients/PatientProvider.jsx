@@ -35,19 +35,40 @@ const PatientProvider = ({ children }) => {
   }, []);
 
   // AUTO SAVE
+  // AUTO SAVE
   useEffect(() => {
     if (!dirty) return;
 
     const timeout = setTimeout(async () => {
       try {
-        const patientPayload = {
+        const payload = {
+          // USER
+          name: profile.user?.name,
+          email: profile.user?.email,
+          phone: profile.user?.phone,
+          dob: profile.user?.dob,
+          cnic: profile.user?.cnic,
+
+          // PATIENT
           ...profile.patient,
         };
 
-        await updatePatientProfile(patientPayload);
+        // Remove empty values
+        Object.keys(payload).forEach((key) => {
+          if (
+            payload[key] === "" ||
+            payload[key] === undefined ||
+            payload[key] === null
+          ) {
+            delete payload[key];
+          }
+        });
+        console.log("Profile User:", profile.user);
+        console.log("Payload:", payload);
+        await updatePatientProfile(payload);
 
-        toast.success("Information saved successfully");
         setIsDirty(false);
+        toast.success("Profile saved successfully");
       } catch (err) {
         console.error("Auto-save error:", err);
         toast.error("Failed to save information");

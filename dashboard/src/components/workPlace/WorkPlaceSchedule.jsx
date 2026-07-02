@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
-import DrAvailabilityDetail from "../../pages/DrAvailabilityDetail";
+import DrAvailabilityDetail from "../../pages/doctor/DrAvailabilityDetail";
 import TotalWorkPlaces from "./TotalWorkPlaces";
 
 const WorkPlaceSchedule = () => {

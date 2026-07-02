@@ -21,3 +21,8 @@ export const cancelAppointment = async (id) => {
   const res = await api.patch(`/api/appointments/${id}/cancel`);
   return res.data;
 };
+export const getDoctorPatientAppointments = async (patientId) => {
+  const { data } = await api.get(`/api/appointments/doctor/patient/${patientId}`);
+
+  return data;
+};

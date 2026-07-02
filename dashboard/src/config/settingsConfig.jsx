@@ -11,11 +11,7 @@ export const settingByRole = {
       path: "/settings/verification",
       icon: <BadgeOutlinedIcon />,
     },
-    {
-      name: "Account Security",
-      path: "/settings/security",
-      icon: <SecurityOutlinedIcon />,
-    },
+
     {
       name: "Notifications",
       path: "/settings/notifications",
@@ -33,5 +29,28 @@ export const settingByRole = {
       icon: <VerifiedUserOutlinedIcon />,
     },
   ],
-
+  laboratory: [
+    {
+      name: "Identity Verification",
+      path: "/settings/verification",
+      icon: <BadgeOutlinedIcon />,
+    },
+    {
+      name: "Account Security",
+      path: "/settings/security",
+      icon: <SecurityOutlinedIcon />,
+    },
+  ],
+  pharmacy: [
+    {
+      name: "Identity Verification",
+      path: "/settings/verification",
+      icon: <BadgeOutlinedIcon />,
+    },
+    {
+      name: "Account Security",
+      path: "/settings/security",
+      icon: <SecurityOutlinedIcon />,
+    },
+  ],
 };
