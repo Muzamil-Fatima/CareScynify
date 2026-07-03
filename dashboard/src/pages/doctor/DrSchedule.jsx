@@ -1,9 +1,9 @@
 
 import React, { useState, useEffect } from "react";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
-import ScheduleHeader from "../../components/drSchedule/ScheduleHeader";
-import DateFilterCard from "../../components/drSchedule/DateFilterCard";
-import AppointmentList from "../../components/drSchedule/AppointmentList";
+import ScheduleHeader from "../../components/doctor/Schedule/ScheduleHeader";
+import DateFilterCard from "../../components/doctor/Schedule/DateFilterCard";
+import AppointmentList from "../../components/doctor/Schedule/AppointmentList";
 
 const DrSchedule = () => {
   const [date, setDate] = useState(

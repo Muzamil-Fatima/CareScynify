@@ -1,12 +1,12 @@
 import React from "react";
 import { Box } from "@mui/material";
 
-import DashboardHero from "../../components/dashboard/DashboardHero";
-import PatientTrendChart from "../../components/dashboard/PatientTrendChart";
-import ProfileStatusCard from "../../components/dashboard/ProfileStatusCard";
-import QuickActionsCard from "../../components/dashboard/QuickActionsCard";
-import RevenueChart from "../../components/dashboard/RevenueChart";
-import StatsSection from "../../components/dashboard/StatsSection";
+import DashboardHero from "../../components/doctor/dashboard/DashboardHero";
+import PatientTrendChart from "../../components/doctor/dashboard/PatientTrendChart";
+import ProfileStatusCard from "../../components/doctor/dashboard/ProfileStatusCard";
+import QuickActionsCard from "../../components/doctor/dashboard/QuickActionsCard";
+import RevenueChart from "../../components/doctor/dashboard/RevenueChart";
+import StatsSection from "../../components/doctor/dashboard/StatsSection";
 
 const DrDashboard = () => {
   return (

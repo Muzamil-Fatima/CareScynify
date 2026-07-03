@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import ToggleButton from "../sidebar/ToggleButton";
+import ToggleButton from "../layout/sidebar/ToggleButton";
 import { settingByRole } from "../../config/settingsConfig";
 import { useAuth } from "../../hooks/useAuth";
 

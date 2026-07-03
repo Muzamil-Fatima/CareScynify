@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import PatientProvider  from "../../context/patients/PatientProvider";
-import PatientHeader from "../../components/drPatientProfile/PatientHeader";
-import OverviewTab from "../../components/drPatientProfile/OverviewTab";
-import MedicalInfoTab from "../../components/drPatientProfile/MedicalInfoTab";
-import AppointmentHistoryTab from "../../components/drPatientProfile/AppointmentHistoryTab";
-import ReportsTab from "../../components/drPatientProfile/ReportsTab";
-import PrescriptionTab from "../../components/drPatientProfile/PrescriptionTab";
-import DrNotesTab from "../../components/drPatientProfile/DrNotesTab";
+import PatientHeader from "../../components/doctor/PatientProfile/PatientHeader";
+import OverviewTab from "../../components/doctor/PatientProfile/OverviewTab";
+import MedicalInfoTab from "../../components/doctor/PatientProfile/MedicalInfoTab";
+import AppointmentHistoryTab from "../../components/doctor/PatientProfile/AppointmentHistoryTab";
+import ReportsTab from "../../components/doctor/PatientProfile/ReportsTab";
+import PrescriptionTab from "../../components/doctor/PatientProfile/PrescriptionTab";
+import DrNotesTab from "../../components/doctor/PatientProfile/DrNotesTab";
 const PatientProfileContent = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const tabs = [

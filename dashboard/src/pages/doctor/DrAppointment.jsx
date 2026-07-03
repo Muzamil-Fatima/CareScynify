@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Search from "../../components/SearchBox";
-import AllAppointment from "../../components/appointments/AllAppointment";
-import Buttons from "../../components/appointments/Buttons";
-import PendingAppointment from "../../components/appointments/PendingAppointment";
-import Toggle from "../../components/appointments/Toggle";
-import GridAppointment from "../../components/appointments/GridAppointment";
+import AllAppointment from "../../components/doctor/appointments/AllAppointment";
+import Buttons from "../../components/doctor/appointments/AppointmentActions";
+import PendingAppointment from "../../components/doctor/appointments/PendingAppointment";
+import Toggle from "../../components/doctor/appointments/Toggle";
+import GridAppointment from "../../components/doctor/appointments/GridAppointment";
 
 const DrAppointment = () => {
   const [activeTab, setActiveTab] = useState("all");

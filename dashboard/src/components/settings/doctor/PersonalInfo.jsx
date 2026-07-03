@@ -5,7 +5,7 @@ import Education from "./Education";
 // import Professional from "./Professional";
 import Languages from "./Languages";
 import Experience from "./Experience";
-import DrPersonalInfo from "../../drProfile/DrPersonalInfo";
+import DrPersonalInfo from "../../doctor/Profile/DrPersonalInfo";
 
 import SectionCard from "../SectionCard";
 
