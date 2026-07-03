@@ -14,9 +14,8 @@ import RateReviewIcon from "@mui/icons-material/RateReview";
 // pharmacy
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
-import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
-import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
-import AssessmentRoundedIcon from "@mui/icons-material/AssessmentRounded";
+import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
+import ShoppingBagRoundedIcon from "@mui/icons-material/ShoppingBagRounded";
 // lab
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
@@ -93,6 +92,7 @@ export const menuByRole = {
       icon: <PeopleIcon />,
     },
   ],
+
   pharmacy: [
     {
       name: "Dashboard",
@@ -100,24 +100,24 @@ export const menuByRole = {
       icon: <DashboardRoundedIcon />,
     },
     {
-      name: "Medicines",
+      name: "All Medicines",
       path: "/pharmacy/medicines",
       icon: <MedicationRoundedIcon />,
     },
     {
-      name: "Stock",
-      path: "/pharmacy/stock",
-      icon: <Inventory2RoundedIcon />,
+      name: "Add Medicine",
+      path: "/pharmacy/add-medicine",
+      icon: <AddCircleRoundedIcon />,
     },
     {
-      name: "Sales",
-      path: "/pharmacy/sales",
-      icon: <ShoppingCartRoundedIcon />,
+      name: "Orders",
+      path: "/pharmacy/order",
+      icon: <ShoppingBagRoundedIcon />,
     },
-    {
-      name: "Reports",
-      path: "/pharmacy/reports",
-      icon: <AssessmentRoundedIcon />,
+      {
+      name: "Profile",
+      path: "/pharmacy/profile",
+      icon: <PersonIcon />,
     },
   ],
   admin: [

@@ -16,9 +16,11 @@ const AppointmentCard = ({
   const navigate = useNavigate();
   const patient = item.patientId;
 const user = patient?.userId;
-  const openPatientProfile = (patientId) => {
-    navigate(`/doctor/patient/profile/${patientId}`);
-  };
+ const openPatientProfile = (appointment) => {
+  navigate(
+    `/doctor/patient/profile/${appointment.patientId._id}/${appointment._id}`
+  );
+};
   return (
     <div
       className={`

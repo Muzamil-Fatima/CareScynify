@@ -1,4 +1,3 @@
-// src/components/pharmacy/MedicineForm.jsx
 
 import React, { useEffect, useState } from "react";
 

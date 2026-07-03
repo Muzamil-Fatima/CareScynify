@@ -1,5 +1,5 @@
 import React from "react";
-import { usePatient } from "../../../../context/patients/PatientContext";
+import { usePatient } from "../../../context/patients/PatientContext";
 
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import EmailRoundedIcon from "@mui/icons-material/EmailRounded";

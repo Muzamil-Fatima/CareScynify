@@ -1,6 +1,6 @@
 import React from "react";
-import PhoneInput from "../PhoneInput";
-import { useDoctor } from "../../context/doctor/DoctorContext";
+import PhoneInput from "../../PhoneInput";
+import { useDoctor } from "../../../context/doctor/DoctorContext";
 
 const DrPersonalInfo = () => {
   const { profile, setProfile, setIsDirty } = useDoctor();

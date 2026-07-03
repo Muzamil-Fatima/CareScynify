@@ -1,6 +1,6 @@
 import React from "react";
-import { usePatient } from "../../../../context/patients/PatientContext";
-import usePatientAppointments from "../../../../hooks/usePatientAppointments";
+import { usePatient } from "../../../context/patients/PatientContext";
+import usePatientAppointments from "../../../hooks/usePatientAppointments";
 
 import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
 import AccessTimeRoundedIcon from "@mui/icons-material/AccessTimeRounded";

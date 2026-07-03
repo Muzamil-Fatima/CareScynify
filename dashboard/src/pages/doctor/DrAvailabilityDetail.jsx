@@ -1,6 +1,6 @@
 import React from "react";
-import DrConsultation from "../../components/workPlace/DrConsultation";
-import AppointmentSettings from "../../components/workPlace/AppointmentSettings";
+import DrConsultation from "../../components/doctor/workPlace/DrConsultation";
+import AppointmentSettings from "../../components/doctor/workPlace/AppointmentSettings";
 
 const DrAvailabilityDetail = ({ workplace }) => {
   return (

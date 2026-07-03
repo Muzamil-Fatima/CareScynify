@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useState } from "react";
-import DoctorContext from "../../context/doctor/DoctorContext";
-import useDoctorAppointments from "../../hooks/useDoctorAppointments";
+import DoctorContext from "../../../context/doctor/DoctorContext";
+import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import {

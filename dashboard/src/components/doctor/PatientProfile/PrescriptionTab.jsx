@@ -1,11 +1,14 @@
-import React, { useState } from "react";
-
+import React, { useState, useContext, useEffect } from "react";
+import usePrescription from "../../../hooks/usePrescription";
+import PatientContext from "../../../context/patients/PatientContext";
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
 import NoteAltRoundedIcon from "@mui/icons-material/NoteAltRounded";
 import BiotechRoundedIcon from "@mui/icons-material/BiotechRounded";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import MedicineItem from "./prescription/MedicineItem";
+import PrescriptionHistory from "./prescription/PrescriptionHistory";
+import PrescriptionHistoryModal from "./prescription/PrescriptionHistoryModal";
 const inputClass =
   "w-full rounded-xl bg-slate-50 border border-transparent shadow-sm px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 outline-none transition-all duration-200 focus:bg-white focus:border-purple-500 focus:ring-4 focus:ring-purple-100";
 
@@ -14,6 +17,60 @@ const textareaClass =
 const outerBox =
   "bg-white rounded-2xl p-6 shadow-sm hover:shadow-md transition-all";
 const PrescriptionTab = () => {
+  const [editMode, setEditMode] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const { patient, appointmentId } = useContext(PatientContext);
+  const { loading, history, create, update, loadHistory, loadByAppointment } =
+    usePrescription();
+
+  useEffect(() => {
+    if (patient?._id) {
+      loadHistory(patient._id);
+    }
+  }, [patient?._id, loadHistory]);
+  const handleSave = async () => {
+    if (!patient) return;
+
+    try {
+      const payload = {
+        patientId: patient._id,
+        appointmentId,
+
+        diagnosis: formData.diagnosis,
+
+        symptoms: formData.symptoms
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean),
+
+        medicines,
+
+        labTests: formData.labTests
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean),
+
+        advice: formData.advice,
+
+        followUpDate: formData.followUpDate,
+      };
+
+      if (editMode && editingId) {
+        await update(editingId, payload);
+      } else {
+        await create(payload);
+      }
+
+      await loadHistory(patient._id);
+      await loadByAppointment(appointmentId);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  const handleView = (item) => {
+    setSelectedPrescription(item);
+    setHistoryOpen(true);
+  };
   const [medicines, setMedicines] = useState([
     {
       medicine: "",
@@ -22,7 +79,74 @@ const PrescriptionTab = () => {
       duration: "",
     },
   ]);
+  const [formData, setFormData] = useState({
+    diagnosis: "",
+    symptoms: "",
+    labTests: "",
+    advice: "",
+    followUpDate: "",
+  });
+  const [selectedPrescription, setSelectedPrescription] = useState(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  useEffect(() => {
+    const load = async () => {
+      if (!appointmentId) return;
 
+      const data = await loadByAppointment(appointmentId);
+
+      if (!data) {
+        setEditMode(false);
+        setEditingId(null);
+
+        setFormData({
+          diagnosis: "",
+          symptoms: "",
+          labTests: "",
+          advice: "",
+          followUpDate: "",
+        });
+        setMedicines((prev) => [
+          ...prev,
+          {
+            medicine: "",
+            dosage: "",
+            frequency: "",
+            duration: "",
+          },
+        ]);
+
+        return;
+      }
+
+      setEditMode(true);
+      setEditingId(data._id);
+
+      setFormData({
+        diagnosis: data.diagnosis || "",
+        symptoms: Array.isArray(data.symptoms) ? data.symptoms.join("\n") : "",
+        labTests: Array.isArray(data.labTests) ? data.labTests.join("\n") : "",
+        advice: data.advice || "",
+        followUpDate: data.followUpDate
+          ? data.followUpDate.substring(0, 10)
+          : "",
+      });
+
+      setMedicines(
+        data.medicines?.length
+          ? data.medicines
+          : [
+              {
+                medicine: "",
+                dosage: "",
+                frequency: "",
+                duration: "",
+              },
+            ],
+      );
+    };
+
+    load();
+  }, [appointmentId, loadByAppointment]);
   const addMedicine = () => {
     setMedicines([
       ...medicines,
@@ -36,17 +160,16 @@ const PrescriptionTab = () => {
   };
 
   const removeMedicine = (index) => {
-    const updated = [...medicines];
-    updated.splice(index, 1);
-    setMedicines(updated);
+    if (medicines.length === 1) return;
+
+    setMedicines(medicines.filter((_, i) => i !== index));
   };
 
   const handleChange = (index, field, value) => {
-    const updated = [...medicines];
-    updated[index][field] = value;
-    setMedicines(updated);
+    setMedicines((prev) =>
+      prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)),
+    );
   };
-
   return (
     <div className="space-y-6">
       {/* Diagnosis */}
@@ -58,6 +181,13 @@ const PrescriptionTab = () => {
 
         <textarea
           rows="4"
+          value={formData.diagnosis}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              diagnosis: e.target.value,
+            })
+          }
           placeholder="Enter diagnosis..."
           className={textareaClass}
         />
@@ -69,11 +199,17 @@ const PrescriptionTab = () => {
           <NoteAltRoundedIcon className="text-indigo-600" />
           <h2 className="font-semibold text-lg">Symptoms</h2>
         </div>
-
         <textarea
           rows="4"
-          className={textareaClass}
+          value={formData.symptoms}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              symptoms: e.target.value,
+            })
+          }
           placeholder="Enter symptoms..."
+          className={textareaClass}
         />
       </div>
 
@@ -96,59 +232,14 @@ const PrescriptionTab = () => {
 
         <div className="space-y-5">
           {medicines.map((item, index) => (
-            <div key={index} className={outerBox}>
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <input
-                  type="text"
-                  placeholder="Medicine Name"
-                  value={item.medicine}
-                  onChange={(e) =>
-                    handleChange(index, "medicine", e.target.value)
-                  }
-                  className={inputClass}
-                />
-
-                <input
-                  type="text"
-                  placeholder="Dosage"
-                  value={item.dosage}
-                  onChange={(e) =>
-                    handleChange(index, "dosage", e.target.value)
-                  }
-                  className={inputClass}
-                />
-
-                <input
-                  type="text"
-                  placeholder="Frequency"
-                  value={item.frequency}
-                  onChange={(e) =>
-                    handleChange(index, "frequency", e.target.value)
-                  }
-                  className={inputClass}
-                />
-
-                <input
-                  type="text"
-                  placeholder="Duration"
-                  value={item.duration}
-                  onChange={(e) =>
-                    handleChange(index, "duration", e.target.value)
-                  }
-                  className={inputClass}
-                />
-              </div>
-
-              {medicines.length > 1 && (
-                <button
-                  onClick={() => removeMedicine(index)}
-                  className="mt-4 text-red-600 flex items-center gap-1"
-                >
-                  <DeleteOutlineRoundedIcon fontSize="small" />
-                  Remove
-                </button>
-              )}
-            </div>
+            <MedicineItem
+              key={index}
+              index={index}
+              medicine={item}
+              onChange={handleChange}
+              onRemove={removeMedicine}
+              canRemove={medicines.length > 1}
+            />
           ))}
         </div>
       </div>
@@ -162,8 +253,15 @@ const PrescriptionTab = () => {
 
         <textarea
           rows="3"
-          className={textareaClass}
+          value={formData.labTests}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              labTests: e.target.value,
+            })
+          }
           placeholder="CBC, Blood Sugar, X-Ray..."
+          className={textareaClass}
         />
       </div>
 
@@ -176,7 +274,14 @@ const PrescriptionTab = () => {
 
         <textarea
           rows="4"
-          placeholder="Write advice for the patient..."
+          value={formData.advice}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              advice: e.target.value,
+            })
+          }
+          placeholder="Write advice..."
           className={textareaClass}
         />
       </div>
@@ -188,15 +293,63 @@ const PrescriptionTab = () => {
           <h2 className="font-semibold text-lg">Follow-up Date</h2>
         </div>
 
-        <input type="date" className={inputClass} />
+        <input
+          type="date"
+          value={formData.followUpDate}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              followUpDate: e.target.value,
+            })
+          }
+          className={inputClass}
+        />
       </div>
 
       {/* Save Button */}
       <div className="flex justify-end">
-        <button className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-xl font-medium">
-          Save Prescription
+        <button
+          onClick={handleSave}
+          disabled={loading}
+          className={`text-white px-8 py-3 rounded-xl font-medium ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-purple-500 hover:bg-purple-600"
+          }`}
+        >
+          {loading ? "Saving..." : "Save Prescription"}
         </button>
       </div>
+      <PrescriptionHistory
+        prescriptions={history}
+        loading={loading}
+        onView={handleView}
+      />
+      <PrescriptionHistoryModal
+        open={historyOpen}
+        prescription={selectedPrescription}
+        onClose={() => setHistoryOpen(false)}
+        onUseTemplate={(item) => {
+          setHistoryOpen(false);
+
+          setFormData({
+            diagnosis: item.diagnosis || "",
+            symptoms: item.symptoms?.join("\n") || "",
+            labTests: item.labTests?.join("\n") || "",
+            advice: item.advice || "",
+            followUpDate: "",
+          });
+
+          setMedicines(
+            item.medicines?.length
+              ? item.medicines
+              : [{ medicine: "", dosage: "", frequency: "", duration: "" }],
+          );
+
+          setEditMode(true);
+          setEditingId(item._id);
+        }}
+      />
     </div>
   );
 };

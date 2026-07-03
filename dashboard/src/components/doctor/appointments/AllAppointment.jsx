@@ -23,9 +23,11 @@ const AllAppointment = () => {
   const [openTime, setOpenTime] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
   const navigate = useNavigate();
-const openPatientProfile = (patientId) => {
-  navigate(`/doctor/patient/profile/${patientId}`);
-};
+  const openPatientProfile = (appointment) => {
+    navigate(
+      `/doctor/patient/profile/${appointment.patientId._id}/${appointment._id}`,
+    );
+  };
   // Status Counts
   const confirmedCount = appointments.filter(
     (item) => item.status === "confirmed",
@@ -222,7 +224,7 @@ const openPatientProfile = (patientId) => {
                       return (
                         <tr
                           key={item._id}
-                          onDoubleClick={() => openPatientProfile(patient?._id)}
+                          onDoubleClick={() => openPatientProfile(item)}
                           className={`border-b border-gray-100 ${
                             index % 2 !== 0 ? "bg-gray-50" : ""
                           }`}
@@ -307,10 +309,11 @@ const openPatientProfile = (patientId) => {
                               <div className="absolute right-4 mt-2 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
                                 {/* VIEW PROFILE */}
                                 <button
-                                  onClick={() => {
-                                    openPatientProfile(patient?._id);
-                                    setOpenMenu(null);
-                                  }}
+                                onClick={() => {
+  openPatientProfile(item);
+  setOpenMenu(null);
+}}
+                               
                                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-blue-50 text-left text-blue-700"
                                 >
                                   <PersonOutlineIcon

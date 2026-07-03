@@ -1,4 +1,3 @@
-addMedicine
 import Medicine from "../models/Medicine.js";
 
 export const addMedicine = async (req, res) => {

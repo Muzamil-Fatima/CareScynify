@@ -43,7 +43,7 @@ const MedicineDescription = ({
             value={formData.description}
             onChange={handleChange}
             placeholder="Write medicine description, usage, storage instructions, precautions..."
-            className="w-full rounded-xl border border-slate-300 bg-white pl-12 pr-4 py-3 resize-none outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500"
+            className="w-full rounded-xl border border-slate-300 bg-white pl-12 pr-4 py-3 resize-none outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500"
           />
         </div>
       </div>
@@ -122,7 +122,7 @@ const MedicineDescription = ({
           className={`flex-1 flex items-center justify-center gap-2 rounded-xl px-6 py-3 font-semibold text-white transition ${
             editingMedicine
               ? "bg-amber-500 hover:bg-amber-600"
-              : "bg-indigo-600 hover:bg-indigo-700"
+              : "bg-violet-600 hover:bg-violet-700"
           } disabled:opacity-60 disabled:cursor-not-allowed`}
         >
           {loading ? (

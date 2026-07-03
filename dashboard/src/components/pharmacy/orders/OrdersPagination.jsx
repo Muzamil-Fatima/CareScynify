@@ -1,69 +1,74 @@
 import React from "react";
-import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
-import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
+
+import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
+import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
 
 const OrdersPagination = ({
   currentPage = 1,
   totalPages = 1,
+  rowsPerPage = 10,
+  totalItems = 0,
   onPageChange,
+  onRowsPerPageChange,
 }) => {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const start =
+    totalItems === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
 
-  const goToPage = (page) => {
-    if (page < 1 || page > totalPages) return;
-    onPageChange?.(page);
-  };
+  const end = Math.min(currentPage * rowsPerPage, totalItems);
 
   return (
-    <div className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl px-4 py-3 shadow-sm">
-      
-      {/* Previous */}
-      <button
-        onClick={() => goToPage(currentPage - 1)}
-        disabled={currentPage === 1}
-        className={`flex items-center gap-1 rounded-xl px-3 py-2 text-sm font-medium transition
-          ${
-            currentPage === 1
-              ? "text-gray-400 cursor-not-allowed"
-              : "text-gray-700 hover:bg-gray-100"
-          }`}
-      >
-        <ChevronLeftRoundedIcon fontSize="small" />
-        Previous
-      </button>
+    <div className="flex flex-col gap-4 border-t bg-white rounded-2xl border-slate-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+      {/* Showing */}
+      <p className="text-sm text-slate-600">
+        {start} - {end} of {totalItems}
+      </p>
 
-      {/* Page Numbers */}
-      <div className="flex items-center gap-2">
-        {pages.map((page) => (
-          <button
-            key={page}
-            onClick={() => goToPage(page)}
-            className={`h-9 w-9 rounded-lg text-sm font-medium transition
-              ${
-                currentPage === page
-                  ? "bg-blue-600 text-white"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
+      {/* Controls */}
+      <div className="flex flex-wrap items-center gap-4">
+        {/* Rows */}
+        <div className="flex items-center gap-2 text-sm text-slate-600">
+          <span>Rows:</span>
+
+          <select
+            value={rowsPerPage}
+            onChange={(e) =>
+              onRowsPerPageChange?.(Number(e.target.value))
+            }
+            className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 outline-none transition-all duration-300 hover:border-violet-400 focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
           >
-            {page}
-          </button>
-        ))}
-      </div>
+            <option value={5}>5</option>
+            <option value={10}>10</option>
+            <option value={20}>20</option>
+            <option value={50}>50</option>
+            <option value={100}>100</option>
+          </select>
+        </div>
 
-      {/* Next */}
-      <button
-        onClick={() => goToPage(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className={`flex items-center gap-1 rounded-xl px-3 py-2 text-sm font-medium transition
-          ${
-            currentPage === totalPages
-              ? "text-gray-400 cursor-not-allowed"
-              : "text-gray-700 hover:bg-gray-100"
-          }`}
-      >
-        Next
-        <ChevronRightRoundedIcon fontSize="small" />
-      </button>
+        {/* Previous / Next */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() =>
+              currentPage > 1 &&
+              onPageChange?.(currentPage - 1)
+            }
+            disabled={currentPage === 1}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 transition-all duration-300 hover:border-violet-400 hover:bg-violet-50 hover:text-violet-600 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <KeyboardArrowLeftRoundedIcon fontSize="small" />
+          </button>
+
+          <button
+            onClick={() =>
+              currentPage < totalPages &&
+              onPageChange?.(currentPage + 1)
+            }
+            disabled={currentPage === totalPages}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 transition-all duration-300 hover:border-violet-400 hover:bg-violet-50 hover:text-violet-600 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <KeyboardArrowRightRoundedIcon fontSize="small" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

@@ -3,20 +3,16 @@ import { useParams } from "react-router-dom";
 import usePatientProfile from "../../hooks/usePatientProfile";
 
 const PatientProvider = ({ children }) => {
-  const { patientId } = useParams();
+  const { patientId, appointmentId } = useParams();
 
-  const {
-    patient,
-    reports,
-    loading,
-    error,
-    refetch,
-  } = usePatientProfile(patientId);
+  const { patient, reports, loading, error, refetch } =
+    usePatientProfile(patientId);
 
   return (
     <PatientContext.Provider
       value={{
         patient,
+        appointmentId,
         reports,
         loading,
         error,

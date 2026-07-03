@@ -1,4 +1,3 @@
-getCart
 import Cart from "../models/Cart.js";
 
 export const getCart = async (req, res) => {

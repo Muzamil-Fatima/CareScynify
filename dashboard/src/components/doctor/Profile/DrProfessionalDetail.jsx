@@ -1,6 +1,6 @@
 import React from "react";
 import DrSpecialization from "./DrSpecialization";
-import { useDoctor } from "../../context/doctor/DoctorContext";
+import { useDoctor } from "../../../context/doctor/DoctorContext";
 
 const DrProfessionalDetail = () => {
   const { profile, setProfile, setIsDirty } = useDoctor();

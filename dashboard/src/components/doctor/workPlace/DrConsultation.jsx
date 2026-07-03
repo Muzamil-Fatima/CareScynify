@@ -1,4 +1,4 @@
-import { useDoctor } from "../../context/doctor/DoctorContext";
+import { useDoctor } from "../../../context/doctor/DoctorContext";
 import { X } from "lucide-react";
 
 const daysList = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];

@@ -1,5 +1,5 @@
 import React from "react";
-import useDoctorAppointments from "../../hooks/useDoctorAppointments";
+import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 
 const AppointmentActions = ({ setActiveTab, activeTab }) => {

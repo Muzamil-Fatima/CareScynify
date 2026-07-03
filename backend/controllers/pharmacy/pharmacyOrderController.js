@@ -1,9 +1,9 @@
 placeOrder
-import Cart from "../models/Cart.js";
-import Medicine from "../models/Medicine.js";
-import Patient from "../models/Patient.js";
-import PharmacyOrder from "../models/PharmacyOrder.js";
-
+import Cart from "../../models/pharmacy/Cart.js";
+import Medicine from "../../models/pharmacy/Medicine.js";
+import Patient from "../../models/patientModel.js";
+import PharmacyOrder from "../../models/pharmacy/PharmacyOrder.js";
+import Prescription from "../../models/prescriptionModel.js";
 export const placeOrder = async (req, res) => {
   try {
     const { prescriptionId, paymentMethod } = req.body;

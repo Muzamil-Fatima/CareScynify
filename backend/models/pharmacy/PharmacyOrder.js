@@ -71,7 +71,10 @@ const pharmacyOrderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-export default mongoose.model("PharmacyOrder", pharmacyOrderSchema);
+const PharmacyOrder =
+  mongoose.models.PharmacyOrder ||
+  mongoose.model("PharmacyOrder", pharmacyOrderSchema);
+export default PharmacyOrder;

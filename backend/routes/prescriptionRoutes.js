@@ -1,15 +1,18 @@
 import express from "express";
 import {
-  createPrescription,
-  updatePrescription,
-  deletePrescription,
-  getPrescriptionById,
-  getPrescriptionByAppointment,
-  getPatientPrescriptions,
-} from "../../controllers/doctor/prescriptionController.js";
+createPrescription,
+updatePrescription,
+getPrescriptionByAppointment,
+getPatientPrescriptions,
+getPrescriptionById,
+deletePrescription,
 
-import protect from "../../middleware/authMiddleware.js";
 
+  getMyPrescriptions,
+  getMyPrescriptionById,
+} from "../controllers/prescriptionController.js";
+
+import { protect } from "../middleware/auth.js";
 const router = express.Router();
 
 // Create
@@ -25,6 +28,15 @@ router.get(
   getPrescriptionByAppointment
 );
 
+// Patient routes
+router.get("/getMyPrescriptions", protect, getMyPrescriptions);
+
+router.get(
+  "/getMyPrescriptionById/:prescriptionId",
+  protect,
+  getMyPrescriptionById
+);
+
 // Single Prescription
 router.get("/:prescriptionId", protect, getPrescriptionById);
 
@@ -33,20 +45,5 @@ router.put("/:prescriptionId", protect, updatePrescription);
 
 // Delete
 router.delete("/:prescriptionId", protect, deletePrescription);
-
-export default router;
-import express from "express";
-import {
-  getMyPrescriptions,
-  getMyPrescriptionById,
-} from "../../controllers/patient/prescriptionController.js";
-
-import protect from "../../middleware/authMiddleware.js";
-
-const router = express.Router();
-
-router.get("/", protect, getMyPrescriptions);
-
-router.get("/:prescriptionId", protect, getMyPrescriptionById);
 
 export default router;

@@ -1,5 +1,5 @@
 import React from "react";
-import { usePatient } from "../../context/patients/PatientContext";
+import { usePatient } from "../../../context/patients/PatientContext";
 
 import VaccinesRoundedIcon from "@mui/icons-material/VaccinesRounded";
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";

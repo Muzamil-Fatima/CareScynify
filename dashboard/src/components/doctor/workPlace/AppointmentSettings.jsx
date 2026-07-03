@@ -5,7 +5,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import { useDoctor } from "../../context/doctor/DoctorContext";
+import { useDoctor } from "../../../context/doctor/DoctorContext";
 
 const AppointmentSettings = ({ workplace }) => {
   const { profile, setIsDirty, saveWorkplaceSettings } = useDoctor();

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
-import DoctorContext from "../../context/doctor/DoctorContext";
-import useDoctorAppointments from "../../hooks/useDoctorAppointments";
+import DoctorContext from "../../../context/doctor/DoctorContext";
+import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
 
 import { Box, Typography, Button, Avatar, Stack, Chip } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";

@@ -21,6 +21,12 @@ const categories = [
   "Other",
 ];
 
+const inputClass =
+  "w-full rounded-xl border border-slate-300 bg-white py-3 pl-12 pr-4 text-slate-700 placeholder:text-slate-400 outline-none transition-all duration-300 hover:border-violet-400 hover:shadow-sm focus:border-violet-600 focus:ring-4 focus:ring-violet-100";
+
+const iconClass =
+  "absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors duration-300 pointer-events-none";
+
 const MedicineBasicInfo = ({ formData, handleChange }) => {
   return (
     <div className="space-y-6">
@@ -30,19 +36,19 @@ const MedicineBasicInfo = ({ formData, handleChange }) => {
           Basic Information
         </h2>
 
-        <p className="text-sm text-slate-500 mt-1">
+        <p className="mt-1 text-sm text-slate-500">
           Enter the medicine's general information.
         </p>
       </div>
 
       {/* Medicine Name */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
+        <label className="mb-2 block text-sm font-semibold text-slate-700">
           Medicine Name <span className="text-red-500">*</span>
         </label>
 
-        <div className="relative">
-          <MedicationRoundedIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <div className="group relative">
+          <MedicationRoundedIcon className={iconClass} />
 
           <input
             type="text"
@@ -50,19 +56,19 @@ const MedicineBasicInfo = ({ formData, handleChange }) => {
             value={formData.name}
             onChange={handleChange}
             placeholder="Paracetamol"
-            className="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+            className={`${inputClass} group-focus-within:border-violet-600`}
           />
         </div>
       </div>
 
       {/* Generic Name */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
+        <label className="mb-2 block text-sm font-semibold text-slate-700">
           Generic Name
         </label>
 
-        <div className="relative">
-          <ScienceRoundedIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <div className="group relative">
+          <ScienceRoundedIcon className={iconClass} />
 
           <input
             type="text"
@@ -70,19 +76,19 @@ const MedicineBasicInfo = ({ formData, handleChange }) => {
             value={formData.genericName}
             onChange={handleChange}
             placeholder="Acetaminophen"
-            className="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+            className={inputClass}
           />
         </div>
       </div>
 
       {/* Brand */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
+        <label className="mb-2 block text-sm font-semibold text-slate-700">
           Brand
         </label>
 
-        <div className="relative">
-          <LocalPharmacyRoundedIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <div className="group relative">
+          <LocalPharmacyRoundedIcon className={iconClass} />
 
           <input
             type="text"
@@ -90,25 +96,25 @@ const MedicineBasicInfo = ({ formData, handleChange }) => {
             value={formData.brand}
             onChange={handleChange}
             placeholder="Panadol"
-            className="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+            className={inputClass}
           />
         </div>
       </div>
 
       {/* Category */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
+        <label className="mb-2 block text-sm font-semibold text-slate-700">
           Category <span className="text-red-500">*</span>
         </label>
 
-        <div className="relative">
-          <CategoryRoundedIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+        <div className="group relative">
+          <CategoryRoundedIcon className={iconClass} />
 
           <select
             name="category"
             value={formData.category}
             onChange={handleChange}
-            className="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+            className={`${inputClass} appearance-none cursor-pointer`}
           >
             <option value="">Select Category</option>
 
@@ -123,12 +129,12 @@ const MedicineBasicInfo = ({ formData, handleChange }) => {
 
       {/* Strength */}
       <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-2">
+        <label className="mb-2 block text-sm font-semibold text-slate-700">
           Strength <span className="text-red-500">*</span>
         </label>
 
-        <div className="relative">
-          <FitnessCenterRoundedIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+        <div className="group relative">
+          <FitnessCenterRoundedIcon className={iconClass} />
 
           <input
             type="text"
@@ -136,7 +142,7 @@ const MedicineBasicInfo = ({ formData, handleChange }) => {
             value={formData.strength}
             onChange={handleChange}
             placeholder="500 mg"
-            className="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+            className={inputClass}
           />
         </div>
       </div>

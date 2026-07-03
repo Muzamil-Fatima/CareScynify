@@ -440,6 +440,21 @@ export const cancelAppointment = async (req, res) => {
   }
 };
 
+
+
+export const deleteAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findByIdAndDelete(req.params.id);
+
+    if (!appointment) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    res.json({ message: "Appointment deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 export const getAppointmentById = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id)
@@ -452,20 +467,6 @@ export const getAppointmentById = async (req, res) => {
     }
 
     res.json(appointment);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-export const deleteAppointment = async (req, res) => {
-  try {
-    const appointment = await Appointment.findByIdAndDelete(req.params.id);
-
-    if (!appointment) {
-      return res.status(404).json({ message: "Not found" });
-    }
-
-    res.json({ message: "Appointment deleted" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

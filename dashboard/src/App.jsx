@@ -8,7 +8,7 @@ import Appointments from "./pages/doctor/DrAppointment.jsx";
 import AddNewDr from "./pages/doctor/AddNewDr.jsx";
 import DrReview from "./pages/doctor/DrReview.jsx";
 import TopBar from "./components/layout/TopBar.jsx";
-import SideBar from "./components/layout/sidebar/SideBar.js";
+import SideBar from "./components/layout/sidebar/SideBar.jsx";
 import { Toaster } from "react-hot-toast";
 import SettingsLayout from "./components/settings/SettingsLayout.jsx";
 import ProfileInfo from "./components/settings/doctor/PersonalInfo";
@@ -19,10 +19,9 @@ import Notifications from "./components/settings/doctor/Notifications";
 import WorkPlaceSchedule from "./components/doctor/workPlace/WorkPlaceSchedule.jsx";
 // pharmacy route
 import PharmacyDashboard from "./pages/pharmacy/Dashboard.jsx";
-import PharmacyMedicines from "./pages/pharmacy/Medicines.jsx";
-import PharmacyReports from "./pages/pharmacy/Reports.jsx";
-import PharmacySales from "./pages/pharmacy/Sales.jsx";
-import PharmacyStock from "./pages/pharmacy/Stock.jsx";
+import Medicines from "./pages/pharmacy/Medicines.jsx";
+import AddMedicine from "./pages/pharmacy/AddMedicine.jsx";
+import Orders from "./pages/pharmacy/Orders.jsx";
 // Lab route
 import LabDashboard from "./pages/lab/Dashboard.jsx";
 import LabTestProcess from "./pages/lab/LabTestProcess.jsx";
@@ -88,7 +87,7 @@ function App() {
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
             <Route path="/patients" element={<Patients />} />
             <Route
-              path="/doctor/patient/profile/:patientId"
+              path="/doctor/patient/profile/:patientId/:appointmentId"
               element={<PatientProfile />}
             />
             {/* setting */}
@@ -101,13 +100,9 @@ function App() {
             </Route>
             {/* pharmacy */}
             <Route path="/pharmacy/dashboard" element={<PharmacyDashboard />} />
-            <Route
-              path=" /pharmacy/medicines"
-              element={<PharmacyMedicines />}
-            />
-            <Route path="/pharmacy/stock" element={<PharmacyStock />} />
-            <Route path="/pharmacy/sales" element={<PharmacySales />} />
-            <Route path="/pharmacy/reports" element={<PharmacyReports />} />
+            <Route path="/pharmacy/medicines" element={<Medicines />} />
+            <Route path="/pharmacy/add-medicine" element={<AddMedicine />} />
+            <Route path="/pharmacy/order" element={<Orders />} />
             {/* Lab  */}
             <Route path="/lab/dashboard" element={<LabDashboard />} />
             <Route path="/lab/processing" element={<LabTestProcess />} />

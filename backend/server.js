@@ -17,6 +17,7 @@ import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import userRouter from "./routes/userRoutes.js";
 import publicDoctorRoutes from "./routes/publicDoctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
+import prescriptionRoutes from "./routes/prescriptionRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import symptomRoutes from "./routes/symptomRoutes.js"
 //Configuration
@@ -64,6 +65,8 @@ app.use("/api/report", reportRoutes);
 app.use("/api/doctors", publicDoctorRoutes);
 // appointment routes
 app.use("/api/appointments", appointmentRoutes);
+// prescription routes
+app.use("/api/prescription", prescriptionRoutes);
 // review routes
 app.use("/api/review", reviewRoutes);
 // symptom Analysis

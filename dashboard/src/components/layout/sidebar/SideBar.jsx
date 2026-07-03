@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import ToggleButton from "./ToggleButton";
-import { menuByRole } from "../../config/menuConfig";
-import { useAuth } from "../../hooks/useAuth";
+import { menuByRole } from "../../../config/menuConfig";
+import { useAuth } from "../../../hooks/useAuth";
 
 const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
   const { user } = useAuth();

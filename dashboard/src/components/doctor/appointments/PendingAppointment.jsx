@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -42,8 +42,10 @@ const PendingAppointment = () => {
           hour12: false,
         });
   };
-  const openPatientProfile = (patientId) => {
-    navigate(`/doctor/patient/profile/${patientId}`);
+  const openPatientProfile = (appointment) => {
+    navigate(
+      `/doctor/patient/profile/${appointment.patientId._id}/${appointment._id}`,
+    );
   };
   // Filter
   const filteredAppointments = appointments.filter(

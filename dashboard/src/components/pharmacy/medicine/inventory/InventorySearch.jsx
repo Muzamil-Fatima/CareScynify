@@ -6,6 +6,7 @@ import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
 
 const InventorySearch = () => {
   return (
+    
     <div className="flex flex-col gap-4">
       {/* Search */}
       <div className="relative">

@@ -1,5 +1,5 @@
-import Doctor from "../models/Doctor.js";
-import Prescription from "../models/Prescription.js";
+import Doctor from "../models/doctorModel.js";
+import Prescription from "../models/PrescriptionModel.js";
 
 export const createPrescription = async (req, res) => {
   try {
@@ -69,7 +69,6 @@ export const createPrescription = async (req, res) => {
 };
 
 // Update prescription
-
 export const updatePrescription = async (req, res) => {
   try {
     const { prescriptionId } = req.params;
@@ -220,8 +219,6 @@ export const getPatientPrescriptions = async (req, res) => {
   }
 };
 // Get prescription by id
-import Doctor from "../models/Doctor.js";
-import Prescription from "../models/Prescription.js";
 
 export const getPrescriptionById = async (req, res) => {
   try {
@@ -268,8 +265,6 @@ export const getPrescriptionById = async (req, res) => {
   }
 };
 // Delete prescription (optional)
-import Doctor from "../models/Doctor.js";
-import Prescription from "../models/Prescription.js";
 
 export const deletePrescription = async (req, res) => {
   try {
@@ -307,6 +302,66 @@ export const deletePrescription = async (req, res) => {
     });
   } catch (error) {
     console.error("Delete Prescription Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Get all prescriptions of logged-in patient
+export const getMyPrescriptions = async (req, res) => {
+  try {
+    const prescriptions = await Prescription.find({
+      patientId: req.user._id,
+    })
+      .sort({ createdAt: -1 })
+      .populate("doctorId", "specialization qualification")
+      .populate("appointmentId", "appointmentDate appointmentTime status")
+      .populate("workplaceId");
+
+    return res.status(200).json({
+      success: true,
+      count: prescriptions.length,
+      prescriptions,
+    });
+  } catch (error) {
+    console.error("Get My Prescriptions Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Get a single prescription of logged-in patient
+export const getMyPrescriptionById = async (req, res) => {
+  try {
+    const { prescriptionId } = req.params;
+
+    const prescription = await Prescription.findOne({
+      _id: prescriptionId,
+      patientId: req.user._id,
+    })
+      .populate("doctorId")
+      .populate("appointmentId")
+      .populate("workplaceId");
+
+    if (!prescription) {
+      return res.status(404).json({
+        success: false,
+        message: "Prescription not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      prescription,
+    });
+  } catch (error) {
+    console.error("Get My Prescription By Id Error:", error);
 
     return res.status(500).json({
       success: false,
