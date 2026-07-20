@@ -98,8 +98,12 @@ const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
         medicineData.append("unitPrice", formData.unitPrice);
         medicineData.append("expiryDate", formData.expiryDate);
         medicineData.append("description", formData.description);
+        const existingImages = formData.images.filter(
+          (image) => !(image instanceof File),
+        );
 
-        // Sirf naye selected files upload karo
+        medicineData.append("existingImages", JSON.stringify(existingImages));
+        //  only upload new file
         formData.images.forEach((image) => {
           if (image instanceof File) {
             medicineData.append("images", image);

@@ -9,10 +9,10 @@ const InventoryRow = ({ medicine, onView, onEdit, onDelete }) => {
   return (
     <tr className="hover:bg-slate-50 transition-colors">
       {/* Medicine */}
-      <td className="px-6 py-5">
-        <div className="flex items-center gap-4">
+      <td className="px-3 py-3">
+        <div className="flex min-w-0 items-center gap-4">
           {/* Image */}
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
             {medicine?.image ? (
               <img
                 src={medicine.image}
@@ -25,12 +25,12 @@ const InventoryRow = ({ medicine, onView, onEdit, onDelete }) => {
           </div>
 
           {/* Name */}
-          <div>
-            <h3 className="font-semibold text-slate-800">
+          <div className="min-w-0">
+            <h3 className="truncate text-sm font-semibold text-slate-800">
               {medicine?.name || "Paracetamol 500mg"}
             </h3>
 
-            <p className="text-sm text-slate-500">
+            <p className="truncate text-xs text-slate-500">
               SKU: {medicine?.sku || "MED-1001"}
             </p>
           </div>
@@ -38,8 +38,10 @@ const InventoryRow = ({ medicine, onView, onEdit, onDelete }) => {
       </td>
 
       {/* Category */}
-      <td className="px-6 py-5">
-        <span className="text-slate-700">{medicine?.category || "Tablet"}</span>
+      <td className="px-4 py-5">
+        <span className="text-sm text-slate-700">
+          {medicine?.category || "Tablet"}
+        </span>
       </td>
 
       {/* Price */}
@@ -56,7 +58,13 @@ const InventoryRow = ({ medicine, onView, onEdit, onDelete }) => {
 
       {/* Expiry */}
       <td className="px-6 py-5 text-slate-600">
-        {medicine?.expiryDate || "12 Dec 2027"}
+        {medicine?.expiryDate
+          ? new Date(medicine.expiryDate).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })
+          : "12 Dec 2027"}
       </td>
 
       {/* Manufacturer */}

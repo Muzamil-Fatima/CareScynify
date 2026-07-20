@@ -12,28 +12,28 @@ const AddMedicine = () => {
 
   const [editingMedicine, setEditingMedicine] = useState(null);
 
-useEffect(() => {
-  if (!id) return;
+  useEffect(() => {
+    if (!id) return;
 
-  const loadMedicine = async () => {
-    try {
-      const medicine = await fetchMedicineById(id);
-      setEditingMedicine(medicine);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const loadMedicine = async () => {
+      try {
+        const medicine = await fetchMedicineById(id);
+        setEditingMedicine(medicine);
+      } catch (err) {
+        console.error(err);
+      }
+    };
 
-  loadMedicine();
-}, [id, fetchMedicineById]);
+    loadMedicine();
+  }, [id, fetchMedicineById]);
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="mx-auto w-full max-w-7xl px-3 py-4 sm:px-5 sm:py-6 lg:px-6 lg:py-8">
         <MedicineHead editingMedicine={editingMedicine} />
 
         <div className="mt-4">
-          <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-7">
+          <div className="rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 lg:p-7 overflow-hidden">
             <MedicineForm
               editingMedicine={editingMedicine}
               setEditingMedicine={setEditingMedicine}

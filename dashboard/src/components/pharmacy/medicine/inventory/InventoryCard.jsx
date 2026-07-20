@@ -12,7 +12,7 @@ import SellRoundedIcon from "@mui/icons-material/SellRounded";
 import MedicineBadges from "./MedicineBadges";
 import InventoryActions from "./InventoryActions";
 
-const InventoryCard = ({ medicine, onView}) => {
+const InventoryCard = ({ medicine, onView }) => {
   const { removeMedicine } = useMedicine();
 
   const navigate = useNavigate();
@@ -39,9 +39,9 @@ const InventoryCard = ({ medicine, onView}) => {
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
       {/* Top */}
       <div className="flex items-start justify-between">
-        <div className="flex gap-4">
+        <div className="flex min-w-0 gap-4">
           {/* Image */}
-          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100 text-blue-600">
+          <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100 text-purple-600">
             {medicine?.image ? (
               <img
                 src={medicine.image}
@@ -54,12 +54,12 @@ const InventoryCard = ({ medicine, onView}) => {
           </div>
 
           {/* Name */}
-          <div>
-            <h3 className="text-lg font-semibold text-slate-800">
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate text-lg font-semibold text-slate-800">
               {medicine?.name || "Paracetamol 500mg"}
             </h3>
 
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-1 truncate text-sm text-slate-500">
               SKU: {medicine?.sku || "MED-1001"}
             </p>
 
@@ -112,7 +112,13 @@ const InventoryCard = ({ medicine, onView}) => {
           </div>
 
           <span className="text-slate-700">
-            {medicine?.expiryDate || "12 Dec 2027"}
+            {medicine?.expiryDate
+              ? new Date(medicine.expiryDate).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })
+              : "12 Dec 2027"}
           </span>
         </div>
 

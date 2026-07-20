@@ -35,7 +35,7 @@ const MedicineInventory = ({ medicines = [], onView }) => {
   return (
     <section className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
       {/* Header */}
-      <div className="border-b border-slate-200 px-6 py-5">
+      <div className="border-b border-slate-200 px-4 py-4 sm:px-6 sm:py-5">
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl font-bold text-slate-900">
             Medicine Inventory
@@ -49,7 +49,7 @@ const MedicineInventory = ({ medicines = [], onView }) => {
       </div>
 
       {/* Search & Filters */}
-      <div className="px-6 py-5 border-b border-slate-100">
+      <div className="px-4 py-4 sm:px-6 sm:py-5 border-b border-slate-100">
         <InventorySearch />
       </div>
 

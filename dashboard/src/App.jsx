@@ -42,7 +42,7 @@ function App() {
       className={
         isSettingsPage
           ? "block w-full min-h-screen bg-[#f8fafc]"
-          : "grid grid-cols-[auto_1fr] min-h-screen"
+          : "grid grid-cols-[auto_minmax(0,1fr)] min-h-screen overflow-hidden"
       }
     >
       {/* Toast Notifications */}

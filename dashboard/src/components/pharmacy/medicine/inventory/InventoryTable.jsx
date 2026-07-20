@@ -3,19 +3,21 @@ import React from "react";
 import InventoryRow from "./InventoryRow";
 const InventoryTable = ({ medicines = [], onView, onEdit, onDelete }) => {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200">
-      <table className="min-w-full">
+    <div className="w-full overflow-x-auto rounded-2xl border border-slate-200 scrollbar-thin">
+      <table className="w-full table-fixed">
         {/* Table Header */}
         <thead className="bg-slate-100">
           <tr className="text-left text-sm font-semibold text-slate-700">
-            <th className="px-6 py-4">Medicine</th>
-            <th className="px-6 py-4">Category</th>
-            <th className="px-6 py-4">Price</th>
-            <th className="px-6 py-4">Stock</th>
-            <th className="px-6 py-4">Expiry</th>
-            <th className="px-6 py-4">Manufacturer</th>
-            <th className="px-6 py-4">Status</th>
-            <th className="px-6 py-4 text-center">Actions</th>
+            <th className="px-3 py-3 text-xs font-semibold">Medicine</th>
+            <th className="px-3 py-3 text-xs font-semibold">Category</th>
+            <th className="px-3 py-3 text-xs font-semibold">Price</th>
+            <th className="px-3 py-3 text-xs font-semibold">Stock</th>
+            <th className="px-3 py-3 text-xs font-semibold">Expiry</th>
+            <th className="px-3 py-3 text-xs font-semibold">Manufacturer</th>
+            <th className="px-3 py-3 text-xs font-semibold">Status</th>
+            <th className="px-3 py-3 text-xs font-semibold text-center">
+              Actions
+            </th>
           </tr>
         </thead>
 
