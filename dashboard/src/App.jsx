@@ -17,18 +17,20 @@ import Credentials from "./components/settings/doctor/Credentials";
 import Security from "./components/settings/doctor/Security";
 import Notifications from "./components/settings/doctor/Notifications";
 import WorkPlaceSchedule from "./components/doctor/workPlace/WorkPlaceSchedule.jsx";
+import PatientProfile from "./pages/doctor/PatientProfile.jsx";
 // pharmacy route
 import PharmacyDashboard from "./pages/pharmacy/Dashboard.jsx";
 import Medicines from "./pages/pharmacy/Medicines.jsx";
 import AddMedicine from "./pages/pharmacy/AddMedicine.jsx";
 import Orders from "./pages/pharmacy/Orders.jsx";
+import PharmacyProfile from "./pages/pharmacy/PharmacyProfile.jsx";
+
 // Lab route
-import LabDashboard from "./pages/lab/Dashboard.jsx";
-import LabTestProcess from "./pages/lab/LabTestProcess.jsx";
-import LabSampleQueue from "./pages/lab/LabSampleQueue.jsx";
-import LabPatients from "./pages/lab/LabPatients.jsx";
-import LabTests from "./pages/lab/Tests.jsx";
-import PatientProfile from "./pages/doctor/PatientProfile.jsx";
+// import LabDashboard from "./pages/lab/Dashboard.jsx";
+// import LabTestProcess from "./pages/lab/LabTestProcess.jsx";
+// import LabSampleQueue from "./pages/lab/LabSampleQueue.jsx";
+// import LabPatients from "./pages/lab/LabPatients.jsx";
+// import LabTests from "./pages/lab/Tests.jsx";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -103,12 +105,14 @@ function App() {
             <Route path="/pharmacy/medicines" element={<Medicines />} />
             <Route path="/pharmacy/add-medicine" element={<AddMedicine />} />
             <Route path="/pharmacy/order" element={<Orders />} />
+            <Route path="/pharmacy/order/:orderId" element={<Orders />} />
+            <Route path="/pharmacy/profile" element={<PharmacyProfile />} />
             {/* Lab  */}
-            <Route path="/lab/dashboard" element={<LabDashboard />} />
-            <Route path="/lab/processing" element={<LabTestProcess />} />
-            <Route path="/lab/samples" element={<LabSampleQueue />} />
-            <Route path="/lab/patients" element={<LabPatients />} />
-            <Route path="/lab/tests" element={<LabTests />} />
+            {/* <Route path="/lab/dashboard" element={<LabDashboard />} /> */}
+            {/* <Route path="/lab/processing" element={<LabTestProcess />} /> */}
+            {/* <Route path="/lab/samples" element={<LabSampleQueue />} /> */}
+            {/* <Route path="/lab/patients" element={<LabPatients />} /> */}
+            {/* <Route path="/lab/tests" element={<LabTests />} /> */}
           </Routes>
         </div>
       </div>

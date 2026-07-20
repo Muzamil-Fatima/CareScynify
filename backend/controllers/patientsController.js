@@ -8,7 +8,7 @@ export const getPatientProfile = async (req, res) => {
     const user = await User.findById(req.user._id).select(
       "name email avatar phone cnic dob",
     );
-
+    console.log("user =", user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -16,7 +16,7 @@ export const getPatientProfile = async (req, res) => {
     const patient = await Patient.findOne({
       userId: req.user._id,
     });
-
+    console.log("patient =", patient);
     return res.json({
       user: {
         name: user.name,
@@ -174,7 +174,6 @@ export const getAllPatients = async (req, res) => {
 };
 
 // GET PATIENT PROFILE BY ID (Doctor/Admin)
-// GET PATIENT PROFILE BY ID (Doctor/Admin)
 export const getPatientById = async (req, res) => {
   try {
     const { patientId } = req.params;
@@ -210,7 +209,7 @@ export const getPatientById = async (req, res) => {
 
     // Find user
     const user = await User.findById(patient.userId).select(
-      "name email avatar phone cnic dob"
+      "name email avatar phone cnic dob",
     );
 
     // Find reports

@@ -113,7 +113,7 @@ const MedicinePricing = ({ formData, handleChange }) => {
       </div>
 
       {/* Inventory Summary */}
-      <div className="rounded-2xl border border-violet-200 bg-gradient-to-r from-violet-50 to-indigo-50 p-5 shadow-sm">
+      <div className="rounded-2xl border border-violet-200 bg-linear-to-r from-violet-50 to-indigo-50 p-5 shadow-sm">
         <h3 className="text-sm font-semibold text-violet-700">
           Inventory Summary
         </h3>

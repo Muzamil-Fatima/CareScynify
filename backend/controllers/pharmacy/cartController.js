@@ -1,5 +1,7 @@
 import Cart from "../models/Cart.js";
-
+import Medicine from "../models/Medicine.js";
+import Patient from "../models/Patient.js";
+// get cart item
 export const getCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({
@@ -29,11 +31,7 @@ export const getCart = async (req, res) => {
     });
   }
 };
-addToCart
-import Cart from "../models/Cart.js";
-import Medicine from "../models/Medicine.js";
-import Patient from "../models/Patient.js";
-
+// addToCart
 export const addToCart = async (req, res) => {
   try {
     const { medicineId, quantity } = req.body;
@@ -104,10 +102,7 @@ export const addToCart = async (req, res) => {
     });
   }
 };
-updateCartItem
-import Cart from "../models/Cart.js";
-import Patient from "../models/Patient.js";
-
+// updateCartItem
 export const updateCartItem = async (req, res) => {
   try {
     const { medicineId } = req.params;
@@ -177,10 +172,7 @@ export const updateCartItem = async (req, res) => {
     });
   }
 };
-removeCartItem
-import Cart from "../models/Cart.js";
-import Patient from "../models/Patient.js";
-
+// removeCartItem
 export const removeCartItem = async (req, res) => {
   try {
     const { medicineId } = req.params;
@@ -243,10 +235,7 @@ export const removeCartItem = async (req, res) => {
     });
   }
 };
-clearCart
-import Cart from "../models/Cart.js";
-import Patient from "../models/Patient.js";
-
+// clearCart
 export const clearCart = async (req, res) => {
   try {
     const patient = await Patient.findOne({

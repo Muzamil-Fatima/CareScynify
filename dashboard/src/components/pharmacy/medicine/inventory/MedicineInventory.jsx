@@ -1,4 +1,6 @@
 import React from "react";
+import { toast } from "react-hot-toast";
+import { useMedicine } from "../../../../context/pharmacy/PharmacyContext";
 
 import InventorySearch from "./InventorySearch";
 import InventoryTable from "./InventoryTable";
@@ -7,7 +9,37 @@ import InventoryPagination from "./InventoryPagination";
 import EmptyInventory from "./EmptyInventory";
 
 const MedicineInventory = ({ medicines = [] }) => {
+  const { removeMedicine } = useMedicine();
+
   const hasMedicines = medicines.length > 0;
+
+ const handleDelete = async (medicine) => {
+  console.log("handleDelete called", medicine);
+
+  if (!window.confirm(`Delete ${medicine.name}?`)) return;
+
+  try {
+    await removeMedicine(medicine._id);
+    toast.success("Medicine deleted successfully.");
+  } catch (error) {
+    console.error(error);
+    toast.error(
+      error?.response?.data?.message || "Failed to delete medicine."
+    );
+  }
+};
+
+  const handleEdit = (medicine) => {
+    console.log("Edit:", medicine);
+  };
+
+  const handleView = (medicine) => {
+    console.log("View:", medicine);
+  };
+
+  const handleRestock = (medicine) => {
+    console.log("Restock:", medicine);
+  };
 
   return (
     <section className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
@@ -36,15 +68,25 @@ const MedicineInventory = ({ medicines = [] }) => {
           <>
             {/* Desktop Table */}
             <div className="hidden lg:block">
-              <InventoryTable medicines={medicines} />
+              <InventoryTable
+                medicines={medicines}
+                onView={handleView}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onRestock={handleRestock}
+              />
             </div>
 
             {/* Mobile Cards */}
             <div className="grid gap-5 lg:hidden">
               {medicines.map((medicine) => (
                 <InventoryCard
-                  key={medicine._id || medicine.id}
+                  key={medicine._id}
                   medicine={medicine}
+                  onView={handleView}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                  onRestock={handleRestock}
                 />
               ))}
             </div>

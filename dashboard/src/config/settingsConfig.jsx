@@ -52,5 +52,10 @@ export const settingByRole = {
       path: "/settings/security",
       icon: <SecurityOutlinedIcon />,
     },
+      {
+      name: "Medical Credentials",
+      path: "/settings/credentials",
+      icon: <VerifiedUserOutlinedIcon />,
+    },
   ],
 };

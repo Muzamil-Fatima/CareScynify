@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import MedicineHeader from "../../components/pharmacy/medicine/MedicineHeader";
+import MedicineHead from "../../components/pharmacy/medicine/MedicineHead";
 import MedicineForm from "../../components/pharmacy/medicine/MedicineForm";
 
 const AddMedicine = () => {
@@ -11,7 +11,7 @@ const AddMedicine = () => {
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
-        <MedicineHeader />
+        <MedicineHead />
 
 
         {/* Main Content */}

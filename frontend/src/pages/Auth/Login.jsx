@@ -40,7 +40,7 @@ const Login = () => {
       const roleRoutes = {
         patient: "http://localhost:5173/",
         doctor: "http://localhost:5174/doctor/dashboard",
-        pharmacy: "http://localhost:5174/pharmacy",
+        pharmacy: "http://localhost:5174/pharmacy/dashboard",
         laboratory: "http://localhost:5174/lab/dashboard",
       };
 

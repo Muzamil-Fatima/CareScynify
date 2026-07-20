@@ -7,16 +7,19 @@ import { AuthProvider } from "./context/auth/AuthProvider";
 import DoctorProvider from "./context/doctor/DoctorProvider";
 import NotificationProvider from "./context/notification/NotificationProvider";
 import UserProvider from "./context/user/UserProvider";
+import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <UserProvider>
-          <NotificationProvider>
-            <DoctorProvider>
+          <PharmacyProvider>
+            <NotificationProvider>
+              <DoctorProvider>
                 <App />
-            </DoctorProvider>
-          </NotificationProvider>
+              </DoctorProvider>
+            </NotificationProvider>
+          </PharmacyProvider>
         </UserProvider>
       </AuthProvider>
     </BrowserRouter>

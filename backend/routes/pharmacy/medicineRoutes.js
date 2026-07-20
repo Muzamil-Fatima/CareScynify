@@ -3,26 +3,23 @@ import express from "express";
 import {
   addMedicine,
   getMedicines,
-  getMedicine,
   updateMedicine,
   deleteMedicine,
-} from "../controllers/medicineController.js";
-
-import { protect } from "../middleware/authMiddleware.js";
+} from "../../controllers/pharmacy/medicineController.js";
+import { protect } from "../../middleware/auth.js";
 
 const router = express.Router();
 
-router.use(protect);
+// Add Medicine
+router.post("/addMedicine", protect, addMedicine);
 
-router
-  .route("/")
-  .post(addMedicine)
-  .get(getMedicines);
+// Get Medicines
+router.get("/getMedicine", protect, getMedicines);
 
-router
-  .route("/:id")
-  .get(getMedicine)
-  .put(updateMedicine)
-  .delete(deleteMedicine);
+// Update Medicine
+router.put("/:medicineId", protect, updateMedicine);
+
+// Delete Medicine
+router.delete("/:medicineId", protect, deleteMedicine);
 
 export default router;

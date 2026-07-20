@@ -35,7 +35,6 @@ const PatientProvider = ({ children }) => {
   }, []);
 
   // AUTO SAVE
-  // AUTO SAVE
   useEffect(() => {
     if (!dirty) return;
 

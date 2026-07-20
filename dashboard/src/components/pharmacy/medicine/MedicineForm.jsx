@@ -1,10 +1,9 @@
-
 import React, { useEffect, useState } from "react";
-
+import { toast } from "react-hot-toast";
 import MedicineBasicInfo from "./MedicineBasicInfo";
 import MedicinePricing from "./MedicinePricing";
 import MedicineDescription from "./MedicineDescription";
-
+import { usePharmacy } from "../../../context/pharmacy/PharmacyContext";
 const initialState = {
   name: "",
   genericName: "",
@@ -18,13 +17,10 @@ const initialState = {
   description: "",
 };
 
-const MedicineForm = ({
-  editingMedicine,
-  setEditingMedicine,
-}) => {
+const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
-
+  const { createMedicine, editMedicine } = usePharmacy();
   // Populate form when editing
   useEffect(() => {
     if (editingMedicine) {
@@ -64,37 +60,41 @@ const MedicineForm = ({
   // Submit form
   const handleSubmit = async () => {
     if (!formData.name.trim()) {
-      return alert("Medicine name is required.");
+      return toast.error("Medicine name is required.");
     }
 
     if (!formData.category) {
-      return alert("Please select a category.");
+      return toast.error("Please select a category.");
     }
 
     if (!formData.strength.trim()) {
-      return alert("Strength is required.");
+      return toast.error("Strength is required.");
     }
 
     if (!formData.expiryDate) {
-      return alert("Expiry date is required.");
+      return toast.error("Expiry date is required.");
     }
 
     try {
       setLoading(true);
 
       if (editingMedicine) {
-        console.log("Update Medicine", formData);
-
-        // await updateMedicine(editingMedicine._id, formData);
+        const data = await editMedicine(editingMedicine._id, formData);
+        toast.success(data.message || "Medicine updated successfully.");
       } else {
-        console.log("Add Medicine", formData);
-
-        // await addMedicine(formData);
+        const data = await createMedicine(formData);
+        toast.success(data.message || "Medicine added successfully.");
       }
 
       handleReset();
     } catch (error) {
       console.error(error);
+
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Something went wrong.",
+      );
     } finally {
       setLoading(false);
     }
@@ -102,15 +102,9 @@ const MedicineForm = ({
 
   return (
     <div className="space-y-8">
-      <MedicineBasicInfo
-        formData={formData}
-        handleChange={handleChange}
-      />
+      <MedicineBasicInfo formData={formData} handleChange={handleChange} />
 
-      <MedicinePricing
-        formData={formData}
-        handleChange={handleChange}
-      />
+      <MedicinePricing formData={formData} handleChange={handleChange} />
 
       <MedicineDescription
         formData={formData}

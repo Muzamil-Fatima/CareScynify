@@ -1,9 +1,11 @@
-placeOrder
 import Cart from "../../models/pharmacy/Cart.js";
 import Medicine from "../../models/pharmacy/Medicine.js";
 import Patient from "../../models/patientModel.js";
 import PharmacyOrder from "../../models/pharmacy/PharmacyOrder.js";
 import Prescription from "../../models/prescriptionModel.js";
+import PharmacyOrder from "../models/PharmacyOrder.js";
+
+// placeOrder
 export const placeOrder = async (req, res) => {
   try {
     const { prescriptionId, paymentMethod } = req.body;
@@ -82,10 +84,7 @@ export const placeOrder = async (req, res) => {
     });
   }
 };
-getPatientOrders
-import Patient from "../models/Patient.js";
-import PharmacyOrder from "../models/PharmacyOrder.js";
-
+// getPatientOrders
 export const getPatientOrders = async (req, res) => {
   try {
     const patient = await Patient.findOne({
@@ -120,9 +119,7 @@ export const getPatientOrders = async (req, res) => {
     });
   }
 };
-getAllOrders
-import PharmacyOrder from "../models/PharmacyOrder.js";
-
+// getAllOrders
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await PharmacyOrder.find()
@@ -145,9 +142,7 @@ export const getAllOrders = async (req, res) => {
     });
   }
 };
-updateOrderStatus
-import PharmacyOrder from "../models/PharmacyOrder.js";
-
+// updateOrderStatus
 export const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -196,9 +191,7 @@ export const updateOrderStatus = async (req, res) => {
     });
   }
 };
-getOrder
-import PharmacyOrder from "../models/PharmacyOrder.js";
-
+// getOrder
 export const getOrder = async (req, res) => {
   try {
     const { id } = req.params;

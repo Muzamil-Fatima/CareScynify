@@ -1,4 +1,4 @@
-import Medicine from "../models/Medicine.js";
+import Medicine from "../../models/pharmacy/Medicine.js";
 
 export const addMedicine = async (req, res) => {
   try {
@@ -16,7 +16,7 @@ export const addMedicine = async (req, res) => {
     } = req.body;
 
     const existingMedicine = await Medicine.findOne({
-      name: name.trim(),
+      name: name?.trim(),
       strength: strength?.trim(),
     });
 
@@ -54,9 +54,7 @@ export const addMedicine = async (req, res) => {
     });
   }
 };
-getMedicines
-import Medicine from "../models/Medicine.js";
-
+// getMedicines
 export const getMedicines = async (req, res) => {
   try {
     const medicines = await Medicine.find({
@@ -78,14 +76,12 @@ export const getMedicines = async (req, res) => {
   }
 };
 
-updateMedicine
-import Medicine from "../models/Medicine.js";
-
+// updateMedicine
 export const updateMedicine = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { medicineId } = req.params;
 
-    const medicine = await Medicine.findById(id);
+    const medicine = await Medicine.findById(medicineId);
 
     if (!medicine) {
       return res.status(404).json({
@@ -95,7 +91,7 @@ export const updateMedicine = async (req, res) => {
     }
 
     const updatedMedicine = await Medicine.findByIdAndUpdate(
-      id,
+      medicineId,
       req.body,
       {
         new: true,
@@ -117,14 +113,13 @@ export const updateMedicine = async (req, res) => {
     });
   }
 };
-deleteMedicine
-import Medicine from "../models/Medicine.js";
+// deleteMedicine
 
 export const deleteMedicine = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { medicineId } = req.params;
 
-    const medicine = await Medicine.findById(id);
+    const medicine = await Medicine.findById(medicineId);
 
     if (!medicine) {
       return res.status(404).json({

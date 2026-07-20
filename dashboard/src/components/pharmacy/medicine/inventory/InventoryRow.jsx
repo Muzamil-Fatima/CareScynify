@@ -5,7 +5,7 @@ import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
 import MedicineBadges from "./MedicineBadges";
 import InventoryActions from "./InventoryActions";
 
-const InventoryRow = ({ medicine }) => {
+const InventoryRow = ({ medicine, onView, onEdit, onDelete, onRestock }) => {
   return (
     <tr className="hover:bg-slate-50 transition-colors">
       {/* Medicine */}
@@ -39,14 +39,12 @@ const InventoryRow = ({ medicine }) => {
 
       {/* Category */}
       <td className="px-6 py-5">
-        <span className="text-slate-700">
-          {medicine?.category || "Tablet"}
-        </span>
+        <span className="text-slate-700">{medicine?.category || "Tablet"}</span>
       </td>
 
       {/* Price */}
       <td className="px-6 py-5 font-medium text-slate-700">
-        Rs. {medicine?.price || 120}
+        Rs. {medicine?.unitPrice || 120}
       </td>
 
       {/* Stock */}
@@ -68,14 +66,18 @@ const InventoryRow = ({ medicine }) => {
 
       {/* Status */}
       <td className="px-6 py-5">
-        <MedicineBadges
-          status={medicine?.status || "In Stock"}
-        />
+        <MedicineBadges type={medicine?.status || "available"} />
       </td>
 
       {/* Actions */}
       <td className="px-6 py-5">
-        <InventoryActions medicine={medicine} />
+        <InventoryActions
+          medicine={medicine}
+          onView={onView}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onRestock={onRestock}
+        />
       </td>
     </tr>
   );

@@ -19,7 +19,10 @@ import publicDoctorRoutes from "./routes/publicDoctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import prescriptionRoutes from "./routes/prescriptionRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
-import symptomRoutes from "./routes/symptomRoutes.js"
+import symptomRoutes from "./routes/symptomRoutes.js";
+// pharmacy
+import medicineRoutes from "./routes/pharmacy/medicineRoutes.js";
+import profileRoutes from "./routes/pharmacy/profileRoutes.js";
 //Configuration
 connectDB();
 connectCloudinary();
@@ -71,6 +74,10 @@ app.use("/api/prescription", prescriptionRoutes);
 app.use("/api/review", reviewRoutes);
 // symptom Analysis
 app.use("/api/symptomAnalysis", symptomRoutes);
+
+// pharmacy
+app.use("/api/medicineRoutes", medicineRoutes);
+app.use("/api/pharmacy", profileRoutes);
 // server listen
 const server = http.createServer(app);
 

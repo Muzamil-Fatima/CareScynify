@@ -1,8 +1,13 @@
 import React from "react";
 
 import InventoryRow from "./InventoryRow";
-
-const InventoryTable = ({ medicines = [] }) => {
+const InventoryTable = ({
+  medicines = [],
+  onView,
+  onEdit,
+  onDelete,
+  onRestock,
+}) => {
   return (
     <div className="overflow-x-auto rounded-2xl border border-slate-200">
       <table className="min-w-full">
@@ -25,16 +30,17 @@ const InventoryTable = ({ medicines = [] }) => {
           {medicines.length > 0 ? (
             medicines.map((medicine) => (
               <InventoryRow
-                key={medicine._id || medicine.id}
+                key={medicine._id}
                 medicine={medicine}
+                onView={onView}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onRestock={onRestock}
               />
             ))
           ) : (
             <tr>
-              <td
-                colSpan="8"
-                className="py-12 text-center text-slate-500"
-              >
+              <td colSpan="8" className="py-12 text-center text-slate-500">
                 No medicines found.
               </td>
             </tr>

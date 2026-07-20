@@ -28,8 +28,11 @@ const medicineSchema = new mongoose.Schema(
         "Cream",
         "Drops",
         "Inhaler",
+        "Ointment",
+        "Powder",
         "Other",
       ],
+
       default: "Other",
     },
 
