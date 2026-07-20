@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import MedicineContext from "./MedicineContext";
 
 import {
   addMedicine,
   getMedicines,
+  getMedicineById,
   updateMedicine,
   deleteMedicine,
 } from "../../api/pharmacy/medicineApi";
@@ -26,7 +27,21 @@ const PharmacyProvider = ({ children }) => {
       setLoading(false);
     }
   };
+  // Get Single Medicine
+  const fetchMedicineById = useCallback(async (medicineId) => {
+  try {
+    setLoading(true);
 
+    const data = await getMedicineById(medicineId);
+
+    return data.medicine;
+  } catch (error) {
+    console.error("Error fetching medicine:", error);
+    throw error;
+  } finally {
+    setLoading(false);
+  }
+}, []);
   // Add Medicine
   const createMedicine = async (medicineData) => {
     try {
@@ -54,8 +69,8 @@ const PharmacyProvider = ({ children }) => {
 
       setMedicines((prev) =>
         prev.map((medicine) =>
-          medicine._id === medicineId ? data.medicine : medicine
-        )
+          medicine._id === medicineId ? data.medicine : medicine,
+        ),
       );
 
       return data;
@@ -72,11 +87,13 @@ const PharmacyProvider = ({ children }) => {
     try {
       setLoading(true);
 
-      await deleteMedicine(medicineId);
+      const data = await deleteMedicine(medicineId);
 
       setMedicines((prev) =>
-        prev.filter((medicine) => medicine._id !== medicineId)
+        prev.filter((medicine) => medicine._id !== medicineId),
       );
+
+      return data;
     } catch (error) {
       console.error("Error deleting medicine:", error);
       throw error;
@@ -89,6 +106,7 @@ const PharmacyProvider = ({ children }) => {
     medicines,
     loading,
     fetchMedicines,
+    fetchMedicineById,
     createMedicine,
     editMedicine,
     removeMedicine,

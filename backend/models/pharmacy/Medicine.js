@@ -63,7 +63,11 @@ const medicineSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-
+    batchNumber: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     stock: {
       type: Number,
       default: 0,

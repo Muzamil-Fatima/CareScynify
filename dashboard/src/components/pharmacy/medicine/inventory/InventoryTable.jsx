@@ -1,13 +1,7 @@
 import React from "react";
 
 import InventoryRow from "./InventoryRow";
-const InventoryTable = ({
-  medicines = [],
-  onView,
-  onEdit,
-  onDelete,
-  onRestock,
-}) => {
+const InventoryTable = ({ medicines = [], onView, onEdit, onDelete }) => {
   return (
     <div className="overflow-x-auto rounded-2xl border border-slate-200">
       <table className="min-w-full">
@@ -35,7 +29,6 @@ const InventoryTable = ({
                 onView={onView}
                 onEdit={onEdit}
                 onDelete={onDelete}
-                onRestock={onRestock}
               />
             ))
           ) : (

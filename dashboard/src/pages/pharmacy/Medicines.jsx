@@ -1,13 +1,19 @@
-import React, { useEffect } from "react";
-
+import React, { useEffect, useState } from "react";
 import MedicineHead from "../../components/pharmacy/medicine/MedicineHead";
 import MedicineStats from "../../components/pharmacy/medicine/MedicineStats";
 import MedicineInventory from "../../components/pharmacy/medicine/inventory/MedicineInventory";
-
+import MedicineDetailsModal from "../../components/pharmacy/medicine/inventory/MedicineDetailsModal";
 import { useMedicine } from "../../context/pharmacy/MedicineContext";
 
 const Medicines = () => {
   const { medicines, fetchMedicines, loading } = useMedicine();
+  const [selectedMedicine, setSelectedMedicine] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+
+  const handleViewMedicine = (medicine) => {
+    setSelectedMedicine(medicine);
+    setShowDetailsModal(true);
+  };
   useEffect(() => {
     fetchMedicines();
   }, [fetchMedicines]);
@@ -19,7 +25,20 @@ const Medicines = () => {
 
         <MedicineStats medicines={medicines} />
 
-        <MedicineInventory medicines={medicines} loading={loading} />
+        <MedicineInventory
+          medicines={medicines}
+          loading={loading}
+          onView={handleViewMedicine}
+        />
+        {showDetailsModal && (
+          <MedicineDetailsModal
+            medicine={selectedMedicine}
+            onClose={() => {
+              setShowDetailsModal(false);
+              setSelectedMedicine(null);
+            }}
+          />
+        )}
       </div>
     </div>
   );

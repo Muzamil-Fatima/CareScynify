@@ -5,7 +5,7 @@ import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
 import MedicineBadges from "./MedicineBadges";
 import InventoryActions from "./InventoryActions";
 
-const InventoryRow = ({ medicine, onView, onEdit, onDelete, onRestock }) => {
+const InventoryRow = ({ medicine, onView, onEdit, onDelete }) => {
   return (
     <tr className="hover:bg-slate-50 transition-colors">
       {/* Medicine */}
@@ -76,7 +76,6 @@ const InventoryRow = ({ medicine, onView, onEdit, onDelete, onRestock }) => {
           onView={onView}
           onEdit={onEdit}
           onDelete={onDelete}
-          onRestock={onRestock}
         />
       </td>
     </tr>

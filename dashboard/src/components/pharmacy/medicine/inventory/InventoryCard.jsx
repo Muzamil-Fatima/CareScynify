@@ -1,5 +1,7 @@
 import React from "react";
-
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useMedicine } from "../../../../context/pharmacy/MedicineContext";
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
@@ -10,13 +12,29 @@ import SellRoundedIcon from "@mui/icons-material/SellRounded";
 import MedicineBadges from "./MedicineBadges";
 import InventoryActions from "./InventoryActions";
 
-const InventoryCard = ({
-  medicine,
-  onView,
-  onEdit,
-  onDelete,
-  onRestock,
-}) => {
+const InventoryCard = ({ medicine, onView}) => {
+  const { removeMedicine } = useMedicine();
+
+  const navigate = useNavigate();
+
+  const handleEditMedicine = (medicine) => {
+    navigate("/pharmacy/add-medicine", {
+      state: {
+        medicine,
+      },
+    });
+  };
+  const handleDeleteMedicine = async (selectedMedicine) => {
+    try {
+      const data = await removeMedicine(selectedMedicine._id);
+
+      toast.success(data.message || "Medicine deleted successfully");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Failed to delete medicine",
+      );
+    }
+  };
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-md">
       {/* Top */}
@@ -46,9 +64,7 @@ const InventoryCard = ({
             </p>
 
             <div className="mt-3">
-              <MedicineBadges
-                type={medicine?.status || "available"}
-              />
+              <MedicineBadges type={medicine?.status || "available"} />
             </div>
           </div>
         </div>
@@ -119,9 +135,8 @@ const InventoryCard = ({
       <InventoryActions
         medicine={medicine}
         onView={onView}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        onRestock={onRestock}
+        onEdit={handleEditMedicine}
+        onDelete={handleDeleteMedicine}
       />
     </div>
   );

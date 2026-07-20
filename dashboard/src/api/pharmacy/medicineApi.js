@@ -16,7 +16,11 @@ export const getMedicines = async () => {
   const res = await api.get("/api/medicineRoutes/getMedicine");
   return res.data;
 };
-
+// Get Single Medicine
+export const getMedicineById = async (medicineId) => {
+  const res = await api.get(`/api/medicineRoutes/${medicineId}`);
+  return res.data;
+};
 // Update Medicine
 export const updateMedicine = async (medicineId, medicineData) => {
   const res = await api.put(`/api/medicineRoutes/${medicineId}`, medicineData, {

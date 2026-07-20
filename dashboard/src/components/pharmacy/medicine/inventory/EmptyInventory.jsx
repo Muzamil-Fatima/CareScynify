@@ -3,11 +3,11 @@ import React from "react";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
-const EmptyInventory = ({ onAddMedicine }) => {
+const EmptyInventory = () => {
   return (
     <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-20 text-center">
       {/* Icon */}
-      <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+      <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-purple-100 text-purple-600">
         <Inventory2RoundedIcon sx={{ fontSize: 50 }} />
       </div>
 
@@ -24,14 +24,6 @@ const EmptyInventory = ({ onAddMedicine }) => {
         pricing, expiry dates and prescriptions.
       </p>
 
-      {/* Button */}
-      <button
-        onClick={onAddMedicine}
-        className="mt-8 flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
-      >
-        <AddRoundedIcon />
-        Add First Medicine
-      </button>
     </div>
   );
 };

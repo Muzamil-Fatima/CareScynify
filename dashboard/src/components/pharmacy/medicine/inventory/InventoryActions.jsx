@@ -1,19 +1,11 @@
-
 import React, { useEffect, useRef, useState } from "react";
-
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 
-const InventoryActions = ({
-  medicine,
-  onView,
-  onEdit,
-  onDelete,
-  onRestock,
-}) => {
+const InventoryActions = ({ medicine, onView, onEdit, onDelete }) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef(null);
 
@@ -27,8 +19,7 @@ const InventoryActions = ({
 
     document.addEventListener("mousedown", handleClickOutside);
 
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -62,17 +53,6 @@ const InventoryActions = ({
           >
             <EditRoundedIcon fontSize="small" />
             Edit Medicine
-          </button>
-
-          <button
-            onClick={() => {
-              onRestock?.(medicine);
-              setShowMenu(false);
-            }}
-            className="flex w-full items-center gap-3 px-4 py-3 text-sm text-slate-700 transition hover:bg-green-50 hover:text-green-600"
-          >
-            <Inventory2RoundedIcon fontSize="small" />
-            Restock
           </button>
 
           <div className="border-t border-slate-100" />

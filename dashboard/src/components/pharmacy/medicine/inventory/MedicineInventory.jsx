@@ -1,5 +1,6 @@
 import React from "react";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { useMedicine } from "../../../../context/pharmacy/MedicineContext";
 
 import InventorySearch from "./InventorySearch";
@@ -8,37 +9,27 @@ import InventoryCard from "./InventoryCard";
 import InventoryPagination from "./InventoryPagination";
 import EmptyInventory from "./EmptyInventory";
 
-const MedicineInventory = ({ medicines = [] }) => {
+const MedicineInventory = ({ medicines = [], onView }) => {
   const { removeMedicine } = useMedicine();
-
+  const navigate = useNavigate();
   const hasMedicines = medicines.length > 0;
 
- const handleDelete = async (medicine) => {
-  console.log("handleDelete called", medicine);
+  const handleDelete = async (medicine) => {
+    console.log("handleDelete called", medicine);
 
-  if (!window.confirm(`Delete ${medicine.name}?`)) return;
-
-  try {
-    await removeMedicine(medicine._id);
-    toast.success("Medicine deleted successfully.");
-  } catch (error) {
-    console.error(error);
-    toast.error(
-      error?.response?.data?.message || "Failed to delete medicine."
-    );
-  }
-};
+    try {
+      await removeMedicine(medicine._id);
+      toast.success("Medicine deleted successfully.");
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        error?.response?.data?.message || "Failed to delete medicine.",
+      );
+    }
+  };
 
   const handleEdit = (medicine) => {
-    console.log("Edit:", medicine);
-  };
-
-  const handleView = (medicine) => {
-    console.log("View:", medicine);
-  };
-
-  const handleRestock = (medicine) => {
-    console.log("Restock:", medicine);
+    navigate(`/pharmacy/edit-medicine/${medicine._id}`);
   };
 
   return (
@@ -70,10 +61,9 @@ const MedicineInventory = ({ medicines = [] }) => {
             <div className="hidden lg:block">
               <InventoryTable
                 medicines={medicines}
-                onView={handleView}
+                onView={onView}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
-                onRestock={handleRestock}
               />
             </div>
 
@@ -83,10 +73,9 @@ const MedicineInventory = ({ medicines = [] }) => {
                 <InventoryCard
                   key={medicine._id}
                   medicine={medicine}
-                  onView={handleView}
+                  onView={onView}
                   onEdit={handleEdit}
                   onDelete={handleDelete}
-                  onRestock={handleRestock}
                 />
               ))}
             </div>

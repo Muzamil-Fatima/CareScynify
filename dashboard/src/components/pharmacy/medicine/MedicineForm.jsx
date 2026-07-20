@@ -11,6 +11,7 @@ const initialState = {
   category: "",
   strength: "",
   manufacturer: "",
+  batchNumber: "",
   stock: "",
   unitPrice: "",
   expiryDate: "",
@@ -31,14 +32,15 @@ const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
         brand: editingMedicine.brand || "",
         category: editingMedicine.category || "",
         strength: editingMedicine.strength || "",
-        images: [],
         manufacturer: editingMedicine.manufacturer || "",
+        batchNumber: editingMedicine.batchNumber || "",
         stock: editingMedicine.stock || "",
         unitPrice: editingMedicine.unitPrice || "",
         expiryDate: editingMedicine.expiryDate
           ? editingMedicine.expiryDate.substring(0, 10)
           : "",
         description: editingMedicine.description || "",
+        images: editingMedicine.images || [],
       });
     } else {
       setFormData(initialState);
@@ -72,7 +74,9 @@ const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
     if (!formData.strength.trim()) {
       return toast.error("Strength is required.");
     }
-
+    if (!formData.batchNumber.trim()) {
+      return toast.error("Batch number is required.");
+    }
     if (!formData.expiryDate) {
       return toast.error("Expiry date is required.");
     }
@@ -81,7 +85,29 @@ const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
       setLoading(true);
 
       if (editingMedicine) {
-        const data = await editMedicine(editingMedicine._id, formData);
+        const medicineData = new FormData();
+
+        medicineData.append("name", formData.name);
+        medicineData.append("genericName", formData.genericName);
+        medicineData.append("brand", formData.brand);
+        medicineData.append("category", formData.category);
+        medicineData.append("strength", formData.strength);
+        medicineData.append("manufacturer", formData.manufacturer);
+        medicineData.append("batchNumber", formData.batchNumber);
+        medicineData.append("stock", formData.stock);
+        medicineData.append("unitPrice", formData.unitPrice);
+        medicineData.append("expiryDate", formData.expiryDate);
+        medicineData.append("description", formData.description);
+
+        // Sirf naye selected files upload karo
+        formData.images.forEach((image) => {
+          if (image instanceof File) {
+            medicineData.append("images", image);
+          }
+        });
+
+        const data = await editMedicine(editingMedicine._id, medicineData);
+
         toast.success(data.message || "Medicine updated successfully.");
       } else {
         const medicineData = new FormData();
@@ -92,6 +118,7 @@ const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
         medicineData.append("category", formData.category);
         medicineData.append("strength", formData.strength);
         medicineData.append("manufacturer", formData.manufacturer);
+        medicineData.append("batchNumber", formData.batchNumber);
         medicineData.append("stock", formData.stock);
         medicineData.append("unitPrice", formData.unitPrice);
         medicineData.append("expiryDate", formData.expiryDate);

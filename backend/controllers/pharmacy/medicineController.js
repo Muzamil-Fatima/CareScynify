@@ -11,47 +11,12 @@ export const addMedicine = async (req, res) => {
       category,
       strength,
       manufacturer,
+      batchNumber,
       stock,
       unitPrice,
       expiryDate,
       description,
     } = req.body;
-
-    const existingMedicine = await Medicine.findOne({
-      name: name?.trim(),
-      strength: strength?.trim(),
-    });
-
-    if (existingMedicine) {
-      return res.status(400).json({
-        success: false,
-        message: "Medicine already exists.",
-      });
-    }
-    const uploadedImages = [];
-
-    if (req.files && req.files.length > 0) {
-      for (const file of req.files) {
-        const result = await new Promise((resolve, reject) => {
-          const stream = cloudinary.uploader.upload_stream(
-            {
-              folder: "medicine-images",
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            },
-          );
-
-          streamifier.createReadStream(file.buffer).pipe(stream);
-        });
-
-        uploadedImages.push({
-          url: result.secure_url,
-          public_id: result.public_id,
-        });
-      }
-    }
     const pharmacy = await Pharmacy.findOne({
       userId: req.user._id,
     });
@@ -62,6 +27,46 @@ export const addMedicine = async (req, res) => {
         message: "Pharmacy profile not found",
       });
     }
+    const existingMedicine = await Medicine.findOne({
+      pharmacyId: pharmacy._id,
+      name: name?.trim(),
+      strength: strength?.trim(),
+      batchNumber: batchNumber?.trim(),
+    });
+
+    if (existingMedicine) {
+      return res.status(400).json({
+        success: false,
+        message: "Medicine already exists.",
+      });
+    }
+    let uploadedImages = [];
+
+    if (req.files?.length) {
+      uploadedImages = await Promise.all(
+        req.files.map(
+          (file) =>
+            new Promise((resolve, reject) => {
+              const stream = cloudinary.uploader.upload_stream(
+                {
+                  folder: "medicine-images",
+                },
+                (err, result) => {
+                  if (err) return reject(err);
+
+                  resolve({
+                    url: result.secure_url,
+                    public_id: result.public_id,
+                  });
+                },
+              );
+
+              streamifier.createReadStream(file.buffer).pipe(stream);
+            }),
+        ),
+      );
+    }
+
     const medicine = await Medicine.create({
       pharmacyId: pharmacy._id,
       name,
@@ -70,6 +75,7 @@ export const addMedicine = async (req, res) => {
       category,
       strength,
       manufacturer,
+      batchNumber,
       stock,
       unitPrice,
       expiryDate,
@@ -94,10 +100,21 @@ export const addMedicine = async (req, res) => {
 // getMedicines
 export const getMedicines = async (req, res) => {
   try {
+    const pharmacy = await Pharmacy.findOne({
+      userId: req.user._id,
+    });
+
+    if (!pharmacy) {
+      return res.status(404).json({
+        success: false,
+        message: "Pharmacy profile not found",
+      });
+    }
+
     const medicines = await Medicine.find({
+      pharmacyId: pharmacy._id,
       isActive: true,
     }).sort({ createdAt: -1 });
-
     res.status(200).json({
       success: true,
       count: medicines.length,
@@ -112,13 +129,27 @@ export const getMedicines = async (req, res) => {
     });
   }
 };
-
-// updateMedicine
-export const updateMedicine = async (req, res) => {
+// getMedicineById
+export const getMedicineById = async (req, res) => {
   try {
     const { medicineId } = req.params;
 
-    const medicine = await Medicine.findById(medicineId);
+    const pharmacy = await Pharmacy.findOne({
+      userId: req.user._id,
+    });
+
+    if (!pharmacy) {
+      return res.status(404).json({
+        success: false,
+        message: "Pharmacy profile not found",
+      });
+    }
+
+    const medicine = await Medicine.findOne({
+      _id: medicineId,
+      pharmacyId: pharmacy._id,
+      isActive: true,
+    });
 
     if (!medicine) {
       return res.status(404).json({
@@ -127,8 +158,53 @@ export const updateMedicine = async (req, res) => {
       });
     }
 
-    const updatedMedicine = await Medicine.findByIdAndUpdate(
-      medicineId,
+    res.status(200).json({
+      success: true,
+      medicine,
+    });
+  } catch (error) {
+    console.error("Get Medicine By Id Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch medicine.",
+    });
+  }
+};
+// updateMedicine
+export const updateMedicine = async (req, res) => {
+  try {
+  
+    const { medicineId } = req.params;
+
+    const pharmacy = await Pharmacy.findOne({
+      userId: req.user._id,
+    });
+
+    if (!pharmacy) {
+      return res.status(404).json({
+        success: false,
+        message: "Pharmacy profile not found",
+      });
+    }
+
+    const medicine = await Medicine.findOne({
+      _id: medicineId,
+      pharmacyId: pharmacy._id,
+    });
+
+    if (!medicine) {
+      return res.status(404).json({
+        success: false,
+        message: "Medicine not found.",
+      });
+    }
+
+    const updatedMedicine = await Medicine.findOneAndUpdate(
+      {
+        _id: medicineId,
+        pharmacyId: pharmacy._id,
+      },
       req.body,
       {
         new: true,
@@ -151,12 +227,25 @@ export const updateMedicine = async (req, res) => {
   }
 };
 // deleteMedicine
-
 export const deleteMedicine = async (req, res) => {
   try {
     const { medicineId } = req.params;
 
-    const medicine = await Medicine.findById(medicineId);
+    const pharmacy = await Pharmacy.findOne({
+      userId: req.user._id,
+    });
+
+    if (!pharmacy) {
+      return res.status(404).json({
+        success: false,
+        message: "Pharmacy profile not found",
+      });
+    }
+
+    const medicine = await Medicine.findOne({
+      _id: medicineId,
+      pharmacyId: pharmacy._id,
+    });
 
     if (!medicine) {
       return res.status(404).json({
@@ -165,14 +254,21 @@ export const deleteMedicine = async (req, res) => {
       });
     }
 
-    medicine.isActive = false;
-
-    await medicine.save();
+    await Medicine.findByIdAndUpdate(
+      medicineId,
+      {
+        isActive: false,
+      },
+      {
+        runValidators: false,
+      }
+    );
 
     res.status(200).json({
       success: true,
       message: "Medicine deleted successfully.",
     });
+
   } catch (error) {
     console.error("Delete Medicine Error:", error);
 

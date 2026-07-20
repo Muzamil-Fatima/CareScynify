@@ -183,16 +183,20 @@ const MedicineBasicInfo = ({
         </div>
 
         {formData.images?.length > 0 && (
-          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {Array.from(formData.images).map((image, index) => (
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {formData.images.map((image, index) => (
               <div
                 key={index}
-                className="relative overflow-hidden rounded-xl border border-slate-200 bg-white"
+                className="relative overflow-hidden rounded-xl border border-slate-200 bg-white aspect-square"
               >
                 <img
-                  src={URL.createObjectURL(image)}
+                  src={
+                    image instanceof File
+                      ? URL.createObjectURL(image)
+                      : image.url
+                  }
                   alt={`Medicine ${index + 1}`}
-                  className="h-28 w-full object-cover"
+                  className="h-full w-full object-cover"
                 />
 
                 <button
