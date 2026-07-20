@@ -7,11 +7,11 @@ import {
   deleteMedicine,
 } from "../../controllers/pharmacy/medicineController.js";
 import { protect } from "../../middleware/auth.js";
-
+import upload from "../../middleware/upload.js";
 const router = express.Router();
 
 // Add Medicine
-router.post("/addMedicine", protect, addMedicine);
+router.post("/addMedicine", protect, upload.array("images", 4), addMedicine);
 
 // Get Medicines
 router.get("/getMedicine", protect, getMedicines);

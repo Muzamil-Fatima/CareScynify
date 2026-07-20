@@ -39,7 +39,7 @@ const PharmacyAddressInfo = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Address */}
         <div className="md:col-span-2">
-          <label className={labelClass}>Complete Address</label>
+          <label className={labelClass}>Business Address</label>
 
           <textarea
             rows={4}
@@ -65,24 +65,27 @@ const PharmacyAddressInfo = () => {
 
         {/* Province */}
         <div>
-          <label className={labelClass}>Province</label>
+          <label className={labelClass}>State / Province / Region</label>
 
-          <select
+          <input
+            type="text"
             className={inputClass}
+            placeholder="California, Punjab, Sindh..."
             value={pharmacy.province || ""}
             onChange={(e) => handleChange("province", e.target.value)}
-          >
-            <option value="">Select Province</option>
-            <option value="Punjab">Punjab</option>
-            <option value="Sindh">Sindh</option>
-            <option value="KPK">KPK</option>
-            <option value="Balochistan">Balochistan</option>
-            <option value="Gilgit Baltistan">Gilgit Baltistan</option>
-            <option value="Azad Kashmir">Azad Kashmir</option>
-            <option value="Islamabad">Islamabad</option>
-          </select>
+          />
         </div>
+        <div>
+          <label className={labelClass}>Country</label>
 
+          <input
+            type="text"
+            className={inputClass}
+            placeholder="Pakistan"
+            value={pharmacy.country || ""}
+            onChange={(e) => handleChange("country", e.target.value)}
+          />
+        </div>
         {/* Postal Code */}
         <div>
           <label className={labelClass}>Postal Code</label>

@@ -1,6 +1,6 @@
 import React from "react";
 import { toast } from "react-hot-toast";
-import { useMedicine } from "../../../../context/pharmacy/PharmacyContext";
+import { useMedicine } from "../../../../context/pharmacy/MedicineContext";
 
 import InventorySearch from "./InventorySearch";
 import InventoryTable from "./InventoryTable";

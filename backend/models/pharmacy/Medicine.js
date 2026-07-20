@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 const medicineSchema = new mongoose.Schema(
   {
+    pharmacyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Pharmacy",
+      required: true,
+      index: true,
+    },
     name: {
       type: String,
       required: true,
@@ -12,6 +18,18 @@ const medicineSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    images: [
+      {
+        url: {
+          type: String,
+          required: true,
+        },
+        public_id: {
+          type: String,
+          required: true,
+        },
+      },
+    ],
 
     brand: {
       type: String,

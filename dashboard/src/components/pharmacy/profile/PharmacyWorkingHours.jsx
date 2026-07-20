@@ -15,28 +15,27 @@ const PharmacyWorkingHours = () => {
   const { profile, setProfile, setIsDirty } = usePharmacy();
 
   // Initialize working hours if empty
-  // useEffect(() => {
-  //   if (
-  //     !profile?.pharmacy?.operatingHours ||
-  //     profile.pharmacy.operatingHours.length === 0
-  //   ) {
-  //     const defaultHours = DAYS.map((day) => ({
-  //       day,
-  //       open: "09:00",
-  //       close: "21:00",
-  //       closed: false,
-  //     }));
+  useEffect(() => {
+    if (
+      !profile?.pharmacy?.operatingHours ||
+      profile.pharmacy.operatingHours.length === 0
+    ) {
+      const defaultHours = DAYS.map((day) => ({
+        day,
+        open: "09:00",
+        close: "21:00",
+        closed: false,
+      }));
 
-  //     setProfile((prev) => ({
-  //       ...prev,
-  //       pharmacy: {
-  //         ...prev.pharmacy,
-  //         operatingHours: defaultHours,
-  //       },
-  //     }));
-  //   }
-  // }, []);
-
+      setProfile((prev) => ({
+        ...prev,
+        pharmacy: {
+          ...prev.pharmacy,
+          operatingHours: defaultHours,
+        },
+      }));
+    }
+  }, [profile?.pharmacy?.operatingHours, setProfile]);
   const hours = profile?.pharmacy?.operatingHours || [];
 
   const updateHour = (index, field, value) => {
@@ -62,9 +61,7 @@ const PharmacyWorkingHours = () => {
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6">
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-semibold text-gray-800">
-          Working Hours
-        </h2>
+        <h2 className="text-2xl font-semibold text-gray-800">Working Hours</h2>
 
         <p className="text-sm text-gray-500 mt-1">
           Configure your pharmacy's weekly operating schedule.
@@ -93,9 +90,7 @@ const PharmacyWorkingHours = () => {
                   type="time"
                   disabled={item.closed}
                   value={item.open}
-                  onChange={(e) =>
-                    updateHour(index, "open", e.target.value)
-                  }
+                  onChange={(e) => updateHour(index, "open", e.target.value)}
                   className="w-full rounded-xl border border-gray-200 p-3 outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
                 />
               </div>
@@ -109,9 +104,7 @@ const PharmacyWorkingHours = () => {
                   type="time"
                   disabled={item.closed}
                   value={item.close}
-                  onChange={(e) =>
-                    updateHour(index, "close", e.target.value)
-                  }
+                  onChange={(e) => updateHour(index, "close", e.target.value)}
                   className="w-full rounded-xl border border-gray-200 p-3 outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-gray-100"
                 />
               </div>
@@ -119,14 +112,10 @@ const PharmacyWorkingHours = () => {
 
             {/* Closed Switch */}
             <div className="flex items-center justify-between lg:justify-end gap-4">
-              <span className="text-sm font-medium text-gray-700">
-                Closed
-              </span>
+              <span className="text-sm font-medium text-gray-700">Closed</span>
 
               <button
-                onClick={() =>
-                  updateHour(index, "closed", !item.closed)
-                }
+                onClick={() => updateHour(index, "closed", !item.closed)}
                 className={`relative w-14 h-7 rounded-full transition ${
                   item.closed ? "bg-red-500" : "bg-purple-600"
                 }`}
@@ -145,8 +134,8 @@ const PharmacyWorkingHours = () => {
       {/* Footer Note */}
       <div className="mt-6 rounded-xl bg-purple-50 border border-purple-100 p-4">
         <p className="text-sm text-purple-700">
-          💡 These working hours will be shown to customers when they
-          search for your pharmacy.
+          💡 These working hours will be shown to customers when they search for
+          your pharmacy.
         </p>
       </div>
     </div>

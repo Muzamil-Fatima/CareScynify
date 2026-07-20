@@ -18,17 +18,25 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: "User not found" });
   }
 
-  const { name, email, phone, address, cnic, dob, avatar } = req.body;
+  const { name, email, phone, address, cnic, dob } = req.body;
   if (name !== undefined) user.name = name;
   if (email !== undefined) user.email = email;
   if (phone !== undefined) user.phone = phone;
   if (address !== undefined) user.address = address;
   if (cnic !== undefined) user.cnic = cnic;
   if (dob !== undefined) user.dob = dob;
-  if (avatar !== undefined) user.avatar = avatar;
 
   // ---------------- AVATAR UPLOAD ----------------
   if (req.file && req.file.buffer) {
+    // Delete old avatar
+    if (user.avatar?.publicId) {
+      try {
+        await cloudinary.uploader.destroy(user.avatar.publicId);
+      } catch (error) {
+        console.error("Failed to delete old avatar:", error.message);
+      }
+    }
+
     const result = await new Promise((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
         { folder: "avatars" },
@@ -41,7 +49,10 @@ const updateUserProfile = asyncHandler(async (req, res) => {
       streamifier.createReadStream(req.file.buffer).pipe(stream);
     });
 
-    user.avatar = result.secure_url;
+    user.avatar = {
+      url: result.secure_url,
+      publicId: result.public_id,
+    };
   }
 
   await user.save();

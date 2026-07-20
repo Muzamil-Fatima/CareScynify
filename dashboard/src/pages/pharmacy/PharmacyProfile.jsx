@@ -54,7 +54,7 @@ const PharmacyProfile = () => {
   const avatar =
     selectedFile
       ? URL.createObjectURL(selectedFile)
-      : profile?.user?.avatar || "";
+      : profile?.user?.avatar?.url || "";
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center py-10 px-4">

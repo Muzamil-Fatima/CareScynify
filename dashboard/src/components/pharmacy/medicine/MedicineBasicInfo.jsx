@@ -1,5 +1,3 @@
-// src/components/pharmacy/MedicineBasicInfo.jsx
-
 import React from "react";
 
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
@@ -7,7 +5,7 @@ import ScienceRoundedIcon from "@mui/icons-material/ScienceRounded";
 import LocalPharmacyRoundedIcon from "@mui/icons-material/LocalPharmacyRounded";
 import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 import FitnessCenterRoundedIcon from "@mui/icons-material/FitnessCenterRounded";
-
+import AddPhotoAlternateRoundedIcon from "@mui/icons-material/AddPhotoAlternateRounded";
 const categories = [
   "Tablet",
   "Capsule",
@@ -27,14 +25,17 @@ const inputClass =
 const iconClass =
   "absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 transition-colors duration-300 pointer-events-none";
 
-const MedicineBasicInfo = ({ formData, handleChange }) => {
+const MedicineBasicInfo = ({
+  formData,
+  handleChange,
+  handleImageChange,
+  removeImage,
+}) => {
   return (
     <div className="space-y-6">
       {/* Section Title */}
       <div>
-        <h2 className="text-xl font-bold text-slate-800">
-          Basic Information
-        </h2>
+        <h2 className="text-xl font-bold text-slate-800">Basic Information</h2>
 
         <p className="mt-1 text-sm text-slate-500">
           Enter the medicine's general information.
@@ -145,6 +146,66 @@ const MedicineBasicInfo = ({ formData, handleChange }) => {
             className={inputClass}
           />
         </div>
+      </div>
+      {/* Medicine Images */}
+      <div>
+        <label className="mb-2 block text-sm font-semibold text-slate-700">
+          Medicine Images
+        </label>
+
+        <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-6 transition hover:border-violet-400 hover:bg-violet-50">
+          <label
+            htmlFor="medicineImages"
+            className="flex cursor-pointer flex-col items-center justify-center text-center"
+          >
+            <AddPhotoAlternateRoundedIcon
+              sx={{ fontSize: 48 }}
+              className="mb-3 text-violet-600"
+            />
+
+            <p className="font-semibold text-slate-700">
+              Click to upload medicine images
+            </p>
+
+            <p className="mt-1 text-sm text-slate-500">
+              JPG, PNG or WEBP (Maximum 4 images)
+            </p>
+
+            <input
+              id="medicineImages"
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageChange}
+              className="hidden"
+            />
+          </label>
+        </div>
+
+        {formData.images?.length > 0 && (
+          <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {Array.from(formData.images).map((image, index) => (
+              <div
+                key={index}
+                className="relative overflow-hidden rounded-xl border border-slate-200 bg-white"
+              >
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Medicine ${index + 1}`}
+                  className="h-28 w-full object-cover"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-sm font-bold text-white hover:bg-red-600"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

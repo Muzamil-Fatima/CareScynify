@@ -1,5 +1,7 @@
 import Medicine from "../../models/pharmacy/Medicine.js";
-
+import Pharmacy from "../../models/pharmacy/pharmacyModel.js";
+import cloudinary from "../../utils/cloudinary.js";
+import streamifier from "streamifier";
 export const addMedicine = async (req, res) => {
   try {
     const {
@@ -26,8 +28,42 @@ export const addMedicine = async (req, res) => {
         message: "Medicine already exists.",
       });
     }
+    const uploadedImages = [];
 
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        const result = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            {
+              folder: "medicine-images",
+            },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            },
+          );
+
+          streamifier.createReadStream(file.buffer).pipe(stream);
+        });
+
+        uploadedImages.push({
+          url: result.secure_url,
+          public_id: result.public_id,
+        });
+      }
+    }
+    const pharmacy = await Pharmacy.findOne({
+      userId: req.user._id,
+    });
+
+    if (!pharmacy) {
+      return res.status(404).json({
+        success: false,
+        message: "Pharmacy profile not found",
+      });
+    }
     const medicine = await Medicine.create({
+      pharmacyId: pharmacy._id,
       name,
       genericName,
       brand,
@@ -38,6 +74,7 @@ export const addMedicine = async (req, res) => {
       unitPrice,
       expiryDate,
       description,
+      images: uploadedImages,
     });
 
     res.status(201).json({
@@ -96,7 +133,7 @@ export const updateMedicine = async (req, res) => {
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     res.status(200).json({

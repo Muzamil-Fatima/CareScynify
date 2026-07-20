@@ -2,10 +2,12 @@ import { api } from "../axios";
 
 // Add Medicine
 export const addMedicine = async (medicineData) => {
-  const res = await api.post(
-    "/api/medicineRoutes/addMedicine",
-    medicineData
-  );
+  const res = await api.post("/api/medicineRoutes/addMedicine", medicineData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   return res.data;
 };
 
@@ -17,10 +19,12 @@ export const getMedicines = async () => {
 
 // Update Medicine
 export const updateMedicine = async (medicineId, medicineData) => {
-  const res = await api.put(
-    `/api/medicineRoutes/${medicineId}`,
-    medicineData
-  );
+  const res = await api.put(`/api/medicineRoutes/${medicineId}`, medicineData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   return res.data;
 };
 

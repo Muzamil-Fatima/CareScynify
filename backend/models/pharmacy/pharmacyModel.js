@@ -12,7 +12,6 @@ const pharmacySchema = new mongoose.Schema(
     // Basic Information
     pharmacyName: {
       type: String,
-      required: true,
       trim: true,
     },
 
@@ -78,7 +77,13 @@ const pharmacySchema = new mongoose.Schema(
       enum: ["pending", "verified", "rejected"],
       default: "pending",
     },
-
+country: {
+  type: String,
+  trim: true,
+},mapLink: {
+  type: String,
+  trim: true,
+},
 
     emergencyService: {
       type: Boolean,

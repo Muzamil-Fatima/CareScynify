@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import MedicineBasicInfo from "./MedicineBasicInfo";
 import MedicinePricing from "./MedicinePricing";
 import MedicineDescription from "./MedicineDescription";
-import { usePharmacy } from "../../../context/pharmacy/PharmacyContext";
+import { useMedicine } from "../../../context/pharmacy/MedicineContext";
 const initialState = {
   name: "",
   genericName: "",
@@ -15,12 +15,13 @@ const initialState = {
   unitPrice: "",
   expiryDate: "",
   description: "",
+  images: [],
 };
 
 const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
   const [formData, setFormData] = useState(initialState);
   const [loading, setLoading] = useState(false);
-  const { createMedicine, editMedicine } = usePharmacy();
+  const { createMedicine, editMedicine } = useMedicine();
   // Populate form when editing
   useEffect(() => {
     if (editingMedicine) {
@@ -30,6 +31,7 @@ const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
         brand: editingMedicine.brand || "",
         category: editingMedicine.category || "",
         strength: editingMedicine.strength || "",
+        images: [],
         manufacturer: editingMedicine.manufacturer || "",
         stock: editingMedicine.stock || "",
         unitPrice: editingMedicine.unitPrice || "",
@@ -82,7 +84,25 @@ const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
         const data = await editMedicine(editingMedicine._id, formData);
         toast.success(data.message || "Medicine updated successfully.");
       } else {
-        const data = await createMedicine(formData);
+        const medicineData = new FormData();
+
+        medicineData.append("name", formData.name);
+        medicineData.append("genericName", formData.genericName);
+        medicineData.append("brand", formData.brand);
+        medicineData.append("category", formData.category);
+        medicineData.append("strength", formData.strength);
+        medicineData.append("manufacturer", formData.manufacturer);
+        medicineData.append("stock", formData.stock);
+        medicineData.append("unitPrice", formData.unitPrice);
+        medicineData.append("expiryDate", formData.expiryDate);
+        medicineData.append("description", formData.description);
+
+        formData.images.forEach((image) => {
+          medicineData.append("images", image);
+        });
+
+        const data = await createMedicine(medicineData);
+
         toast.success(data.message || "Medicine added successfully.");
       }
 
@@ -99,10 +119,39 @@ const MedicineForm = ({ editingMedicine, setEditingMedicine }) => {
       setLoading(false);
     }
   };
+  const handleImageChange = (e) => {
+    const newFiles = Array.from(e.target.files);
 
+    setFormData((prev) => {
+      const updatedImages = [...prev.images, ...newFiles];
+
+      if (updatedImages.length > 4) {
+        toast.error("Maximum 4 images are allowed.");
+        return prev;
+      }
+
+      return {
+        ...prev,
+        images: updatedImages,
+      };
+    });
+
+    e.target.value = "";
+  };
+  const removeImage = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index),
+    }));
+  };
   return (
     <div className="space-y-8">
-      <MedicineBasicInfo formData={formData} handleChange={handleChange} />
+      <MedicineBasicInfo
+        formData={formData}
+        handleChange={handleChange}
+        handleImageChange={handleImageChange}
+        removeImage={removeImage}
+      />
 
       <MedicinePricing formData={formData} handleChange={handleChange} />
 

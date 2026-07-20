@@ -43,8 +43,14 @@ const userSchema = new mongoose.Schema(
 
     // verificationCode: Number,
     avatar: {
-      type: String,
-      required: false,
+      url: {
+        type: String,
+        default: "",
+      },
+      publicId: {
+        type: String,
+        default: "",
+      },
     },
     status: {
       type: String,
