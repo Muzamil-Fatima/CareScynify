@@ -75,7 +75,7 @@ const AppointmentSettings = ({ workplace }) => {
                 },
               }))
             }
-            className="w-24 px-3 py-2 border rounded-xl bg-gray-50"
+            className="w-24 px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
 
           <select
@@ -89,7 +89,7 @@ const AppointmentSettings = ({ workplace }) => {
                 },
               }))
             }
-            className="px-3 py-2 border rounded-xl bg-gray-50"
+            className="px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
           >
             <option value="minutes">Minutes</option>
             <option value="hours">Hours</option>
@@ -113,7 +113,7 @@ const AppointmentSettings = ({ workplace }) => {
               appointmentFee: value === "" ? "" : Math.max(0, Number(value)),
             }));
           }}
-          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
+          className="w-full px-3 py-2 border  bg-gray-50 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
 
@@ -129,7 +129,7 @@ const AppointmentSettings = ({ workplace }) => {
               consultationType: e.target.value,
             }))
           }
-          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
+          className="w-full px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
         >
           <option value="online">Online</option>
           <option value="physical">Physical</option>
@@ -153,7 +153,7 @@ const AppointmentSettings = ({ workplace }) => {
               maxPatientsPerDay: value === "" ? "" : Math.max(0, Number(value)),
             }));
           }}
-          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
+          className="w-full px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
 
@@ -175,7 +175,7 @@ const AppointmentSettings = ({ workplace }) => {
               breakMinutes: value === "" ? "" : Math.max(0, Number(value)),
             }));
           }}
-          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
+          className="w-full px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
 
@@ -197,7 +197,7 @@ const AppointmentSettings = ({ workplace }) => {
               bookingWindow: value === "" ? "" : Math.max(0, Number(value)),
             }));
           }}
-          className="w-full px-3 py-2 border rounded-xl bg-gray-50"
+          className="w-full px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
     </div>

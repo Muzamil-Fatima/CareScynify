@@ -59,7 +59,7 @@ const DrConsultation = ({ workplace }) => {
         const duration = calculateDuration(start, end);
 
         return (
-          <div key={day} className="border rounded-2xl p-4">
+          <div key={day} className="border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-400 rounded-2xl p-4">
             <div className="flex items-center gap-4">
               <div className="min-w-15 font-semibold">{day}</div>
 
@@ -82,7 +82,7 @@ const DrConsultation = ({ workplace }) => {
                   onChange={(e) =>
                     setDayTime(workplaceId, day, "start", e.target.value)
                   }
-                  className="px-3 py-2 border rounded-xl bg-gray-50"
+                  className="px-3 py-2 border bg-gray-50 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
                 />
 
                 <input
@@ -91,12 +91,12 @@ const DrConsultation = ({ workplace }) => {
                   onChange={(e) =>
                     setDayTime(workplaceId, day, "end", e.target.value)
                   }
-                  className="px-3 py-2 border rounded-xl bg-gray-50"
+                  className="px-3 py-2 border bg-gray-50 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
                 />
 
                 <button
                   onClick={() => removeDay(workplaceId, day)}
-                    className="h-10 w-10 flex items-center justify-center text-red-500 hover:bg-red-100 hover:text-red-600 rounded-lg transition"
+                  className="h-10 w-10 flex items-center justify-center text-red-500 hover:bg-red-100 hover:text-red-600 rounded-lg transition"
                 >
                   <X size={16} />
                 </button>

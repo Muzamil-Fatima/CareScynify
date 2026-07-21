@@ -68,7 +68,7 @@ const PharmacyProvider = ({ children }) => {
           }
         });
 
-        console.log("Saving Pharmacy Profile:", payload);
+        // console.log("Saving Pharmacy Profile:", payload);
 
         await updatePharmacyProfile(payload);
 

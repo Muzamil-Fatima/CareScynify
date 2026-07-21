@@ -42,6 +42,7 @@ const Login = () => {
         doctor: "http://localhost:5174/doctor/dashboard",
         pharmacy: "http://localhost:5174/pharmacy/dashboard",
         laboratory: "http://localhost:5174/lab/dashboard",
+        admin:"http://localhost:5174/admin/dashboard",
       };
 
       window.location.href = roleRoutes[role] || "http://localhost:5173/";

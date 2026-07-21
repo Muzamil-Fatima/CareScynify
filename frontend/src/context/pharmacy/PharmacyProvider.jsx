@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { PharmacyContext } from "./CartContext";
-import pharmacyData from "../../data/pharmacyData";
+import { PharmacyContext } from "./PharmacyContext";
 
 const PharmacyProvider = ({ children }) => {
-  const [pharmacies] = useState(pharmacyData);
+  const [pharmacies] = useState();
   const [selectedPharmacy, setSelectedPharmacy] = useState(null);
 
   return (

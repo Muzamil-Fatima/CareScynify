@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { LabContext } from "./LabContext";
-import labsData from "../../data/labData";
 
 const LabProvider = ({ children }) => {
-  const [labs] = useState(labsData);
+  const [labs] = useState();
   const [selectedLab, setSelectedLab] = useState(null);
 
   return (

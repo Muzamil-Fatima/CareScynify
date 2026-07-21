@@ -11,8 +11,7 @@ const InventoryPagination = ({
   onPageChange,
   onRowsPerPageChange,
 }) => {
-  const start =
-    totalItems === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
+  const start = totalItems === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
 
   const end = Math.min(currentPage * rowsPerPage, totalItems);
 
@@ -31,9 +30,7 @@ const InventoryPagination = ({
 
           <select
             value={rowsPerPage}
-            onChange={(e) =>
-              onRowsPerPageChange?.(Number(e.target.value))
-            }
+            onChange={(e) => onRowsPerPageChange?.(Number(e.target.value))}
             className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
           >
             <option value={5}>5</option>
@@ -47,10 +44,7 @@ const InventoryPagination = ({
         {/* Previous / Next */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() =>
-              currentPage > 1 &&
-              onPageChange?.(currentPage - 1)
-            }
+            onClick={() => currentPage > 1 && onPageChange?.(currentPage - 1)}
             disabled={currentPage === 1}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
@@ -59,8 +53,7 @@ const InventoryPagination = ({
 
           <button
             onClick={() =>
-              currentPage < totalPages &&
-              onPageChange?.(currentPage + 1)
+              currentPage < totalPages && onPageChange?.(currentPage + 1)
             }
             disabled={currentPage === totalPages}
             className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50"

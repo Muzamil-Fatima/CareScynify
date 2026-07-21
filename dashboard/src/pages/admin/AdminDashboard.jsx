@@ -1,11 +1,10 @@
 import React from 'react';
-import Sidebar from '../components/Sidebar';
-import { GoogleGenerativeAI } from "@google/generative-ai";
+// import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Clock, AlertCircle } from 'lucide-react';
 
 // API Key ko .env file se load karna (Security best practice)
-const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-const genAI = new GoogleGenerativeAI(apiKey);
+// const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+// const genAI = new GoogleGenerativeAI(apiKey);
 
 export default function AdminDashboard() {
   
@@ -31,16 +30,15 @@ export default function AdminDashboard() {
     { name: 'Thyroid', count: 18, percentage: 'w-[18%]', color: 'bg-pink-500' },
   ];
 
-  const systemActivities = [
-    { text: 'New patient Ali Khan registered', time: '2 mins ago' },
-    { text: 'Blood test result uploaded for Sara Raza', time: '15 mins ago' },
-    { text: 'Invoice #1042 generated — Rs 3,500', time: '1 hr ago' },
-    { text: 'Staff member Dr. Nadia marked on leave', time: '2 hrs ago' },
-  ];
+  // const systemActivities = [
+  //   { text: 'New patient Ali Khan registered', time: '2 mins ago' },
+  //   { text: 'Blood test result uploaded for Sara Raza', time: '15 mins ago' },
+  //   { text: 'Invoice #1042 generated — Rs 3,500', time: '1 hr ago' },
+  //   { text: 'Staff member Dr. Nadia marked on leave', time: '2 hrs ago' },
+  // ];
 
   return (
     <div className="flex min-h-screen bg-[#f8fafc] font-sans antialiased">
-      <Sidebar role="admin" />
 
       <main className="flex-1 p-8 overflow-y-auto">
         <div className="flex justify-between items-center mb-6">

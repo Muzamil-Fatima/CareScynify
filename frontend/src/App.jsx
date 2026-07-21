@@ -7,7 +7,7 @@ import AppLayout from "./layout/AppLayout";
 
 // public pages
 import LandingPage from "./pages/Home/LandingPage";
-import AboutUs from "./pages/About/AboutUs";
+// import AboutUs from "./pages/About/AboutUs";
 import Doctor from "./pages/doctor/Doctor";
 import Laboratory from "./pages/laboratory/Laboratory";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
@@ -54,7 +54,7 @@ function App() {
         {/* PUBLIC AREA (Navbar + Footer inside PublicLayout) */}
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/about" element={<AboutUs />} />
+          {/* <Route path="/about" element={<AboutUs />} /> */}
           <Route path="/doctor" element={<Doctor />} />
           <Route path="/doctor/:id" element={<DoctorProfile />} />
           <Route path="/doctor/:id/book" element={<BookAppointment />} />

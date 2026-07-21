@@ -27,7 +27,7 @@ const WorkPlaceSchedule = () => {
     <div className="space-y-6">
 
       {/* SWITCHER */}
-      <div className="bg-white p-3 rounded-2xl border shadow-sm flex gap-2 overflow-x-auto">
+      <div className="bg-white p-3 rounded-2xl shadow-sm flex gap-2 overflow-x-auto">
 
         {workplaces.map((w) => (
           <button
@@ -45,7 +45,7 @@ const WorkPlaceSchedule = () => {
 
         <button
           onClick={() => setShowManager(true)}
-          className="ml-auto px-4 py-2 rounded-xl bg-gray-900 text-white hover:bg-black"
+          className="ml-auto px-4 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple"
         >
           Manage
         </button>
@@ -53,7 +53,7 @@ const WorkPlaceSchedule = () => {
       </div>
 
       {/* MAIN */}
-      <div className="bg-white rounded-2xl border shadow-sm p-6">
+      <div className="bg-white rounded-2xl shadow-sm p-6">
 
         {activeWorkplace ? (
           <>
@@ -88,7 +88,7 @@ const WorkPlaceSchedule = () => {
 
             <button
               onClick={() => setShowManager(false)}
-              className="mt-4 w-full bg-gray-900 text-white py-2 rounded-xl"
+              className="mt-4 w-full bg-purple-600 text-white py-2 rounded-xl"
             >
               Close
             </button>

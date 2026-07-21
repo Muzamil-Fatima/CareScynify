@@ -21,6 +21,10 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+// admin
+import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
+
 export const menuByRole = {
   doctor: [
     {
@@ -114,7 +118,7 @@ export const menuByRole = {
       path: "/pharmacy/order",
       icon: <ShoppingBagRoundedIcon />,
     },
-      {
+    {
       name: "Profile",
       path: "/pharmacy/profile",
       icon: <PersonIcon />,
@@ -123,8 +127,19 @@ export const menuByRole = {
   admin: [
     {
       name: "Overview",
-      path: "/overview",
+      path: "/admin/dashboard",
       icon: <DashboardIcon />,
+    },
+    {
+      name: "Request to Verify",
+      path: "/admin/verify/person",
+      icon: <BadgeOutlinedIcon />,
+    },
+
+    {
+      name: "Notifications",
+      path: "/admin/notification",
+      icon: <NotificationsNoneOutlinedIcon />,
     },
     {
       id: "dr",
@@ -136,12 +151,6 @@ export const menuByRole = {
       name: "Patients",
       path: "/patients",
       icon: <PeopleIcon />,
-    },
-    {
-      id: "appointment",
-      name: "Appointment",
-      path: "/appointment",
-      icon: <EventIcon />,
     },
     {
       id: "lab",

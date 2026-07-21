@@ -1,7 +1,7 @@
 import React from "react";
-import AboutImg from "../../assets/images/AboutImage.png";
-import WeDo from "./WeDo";
-import OurTec from "./OurTec";
+// import AboutImg from "../../assets/images/AboutImage.png";
+import WeDo from "../Components/About/WeDo";
+import OurTec from "../Components/About/OurTec";
 
 const AboutUs = () => {
   return (
@@ -28,7 +28,7 @@ const AboutUs = () => {
 
         <div className="relative">
           <img
-            src={AboutImg}
+            // src={AboutImg}
             alt="CareScynify"
             className="rounded-3xl shadow-2xl border border-purple-200"
           />

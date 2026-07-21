@@ -10,12 +10,13 @@ import { AppointmentProvider } from "./context/AppointmentContext.jsx";
 import PatientProvider from "./context/patients/PatientProvider.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SymptomProvider from "./context/symptomAnalyzer/SymptomProvider.jsx";
-
+import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AppointmentProvider>
-      <PatientProvider>
+      <PharmacyProvider>
+        <PatientProvider>
           <LabProvider>
             <DoctorProvider>
               <AuthProvider>
@@ -29,7 +30,8 @@ createRoot(document.getElementById("root")).render(
               </AuthProvider>
             </DoctorProvider>
           </LabProvider>
-      </PatientProvider>
+        </PatientProvider>
+      </PharmacyProvider>
     </AppointmentProvider>
   </StrictMode>,
 );

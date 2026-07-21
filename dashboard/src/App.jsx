@@ -26,11 +26,13 @@ import Orders from "./pages/pharmacy/Orders.jsx";
 import PharmacyProfile from "./pages/pharmacy/PharmacyProfile.jsx";
 
 // Lab route
-// import LabDashboard from "./pages/lab/Dashboard.jsx";
-// import LabTestProcess from "./pages/lab/LabTestProcess.jsx";
-// import LabSampleQueue from "./pages/lab/LabSampleQueue.jsx";
-// import LabPatients from "./pages/lab/LabPatients.jsx";
-// import LabTests from "./pages/lab/Tests.jsx";
+import LabDashboard from "./pages/laboratory/LabDashboard.jsx";
+import LabTestProcess from "./pages/laboratory/LabTestProcess.jsx";
+import LabSampleQueue from "./pages/laboratory/LabSampleQueue.jsx";
+import LabPatients from "./pages/laboratory/LabPatients.jsx";
+import LabTests from "./pages/laboratory/LabTests.jsx";
+// admin
+import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -112,11 +114,14 @@ function App() {
             <Route path="/pharmacy/order/:orderId" element={<Orders />} />
             <Route path="/pharmacy/profile" element={<PharmacyProfile />} />
             {/* Lab  */}
-            {/* <Route path="/lab/dashboard" element={<LabDashboard />} /> */}
-            {/* <Route path="/lab/processing" element={<LabTestProcess />} /> */}
-            {/* <Route path="/lab/samples" element={<LabSampleQueue />} /> */}
-            {/* <Route path="/lab/patients" element={<LabPatients />} /> */}
-            {/* <Route path="/lab/tests" element={<LabTests />} /> */}
+            <Route path="/lab/dashboard" element={<LabDashboard />} />
+            <Route path="/lab/processing" element={<LabTestProcess />} />
+            <Route path="/lab/samples" element={<LabSampleQueue />} />
+            <Route path="/lab/patients" element={<LabPatients />} />
+            <Route path="/lab/tests" element={<LabTests />} />
+            {/* admin */}
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
           </Routes>
         </div>
       </div>

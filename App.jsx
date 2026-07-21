@@ -73,13 +73,3 @@ function App() {
 }
 
 export default App;
-
-
- 
-  //   {
-  //     name: "Completed Reports",
-  //     path: "/lab/reports",
-  //     icon: <CheckCircleIcon />,
-  //   },
-  //  
- 

@@ -114,20 +114,20 @@ const TotalWorkPlaces = () => {
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               placeholder="Hospital / Clinic Name"
-              className="w-full mb-3 p-2 border rounded"
+              className="w-full mb-3 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
 
             <input
               value={form.location}
               onChange={(e) => setForm({ ...form, location: e.target.value })}
               placeholder="Location"
-              className="w-full mb-3 p-2 border rounded"
+              className="w-full mb-3 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
 
             <select
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className="w-full mb-4 p-2 border rounded"
+              className="w-full mb-4 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
             >
               <option value="clinic">Clinic</option>
               <option value="hospital">Hospital</option>

@@ -47,7 +47,6 @@ const AddNewDr = () => {
       toast.error("Image upload failed");
     }
   };
-
   const avatarSrc = selectedFile
     ? URL.createObjectURL(selectedFile)
     : profile?.user?.avatar?.url  || "";
