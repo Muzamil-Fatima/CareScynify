@@ -109,11 +109,7 @@ const QuickActionsCard = () => {
               <div className="flex flex-col gap-3">
                 <div
                   className="
-                    w-10
-                    h-10
-                    md:w-12
-                    md:h-12
-                    rounded-xl
+                    w-10 h-10 md:w-12 md:h-12 rounded-xl
                     flex
                     items-center
                     justify-center
@@ -137,9 +133,9 @@ const QuickActionsCard = () => {
         </div>
       </div>
       <AddPatient
-        open={openAddPatient}
-        onClose={() => setOpenAddPatient(false)}
-      />
+  open={openAddPatient}
+  onClose={() => setOpenAddPatient(false)}
+/>
     </div>
   );
 };

@@ -1,39 +1,53 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import AddPatient from "../../components/doctor/PatientProfile/AddPatients";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
+import AddPatient from "../../components/doctor/PatientProfile/AddPatients";
 import DoctorContext from "../../context/doctor/DoctorContext";
+import DoctorPatientContext from "../../context/patients/DoctorPatientContext";
+import { useEffect } from "react";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 const DrPatients = () => {
-  const [openAddPatient, setOpenAddPatient] = useState(false);
   const { activeWorkplaceId } = useContext(DoctorContext);
   const { appointments, loading } = useDoctorAppointments(activeWorkplaceId);
+  const [openAddPatient, setOpenAddPatient] = useState(false);
   const navigate = useNavigate();
   const openPatientProfile = (patientId) => {
     navigate(`/doctor/patient/profile/${patientId}`);
   };
+  const { patients: doctorPatients, fetchPatients } =
+    useContext(DoctorPatientContext);
 
+  useEffect(() => {
+    fetchPatients();
+  }, [fetchPatients]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const appointmentPatients = appointments
+    .filter((item) => item?.patientId?._id)
+    .map((item) => ({
+      _id: item.patientId._id,
+      ...item.patientId.userId,
+    }));
+
+  const manualPatients = doctorPatients.map((patient) => ({
+    _id: patient.patientId,
+    name: patient.userId?.name || "Unknown",
+    phone: patient.userId?.phone || "-",
+    email: patient.userId?.email || "-",
+    avatar: patient.userId?.avatar || "",
+  }));
+
   // Get unique patients only
+
   const uniquePatients = Array.from(
     new Map(
-      appointments
-        .filter((item) => item?.patientId?._id)
-        .map((item) => [
-          item.patientId._id,
-          {
-            _id: item.patientId._id, // Patient ID
-            ...item.patientId.userId, // name, email, phone, avatar
-          },
-        ]),
+      [...appointmentPatients, ...manualPatients].map((p) => [p._id, p]),
     ).values(),
   );
-
   // Pagination
   const totalPages = Math.ceil(uniquePatients.length / rowsPerPage);
 
@@ -44,15 +58,13 @@ const DrPatients = () => {
 
   return (
     <div className="font-secondary font-medium text-[13px] mr-4">
-      <div className="flex justify-end m-4">
-        <button
-          onClick={() => setOpenAddPatient(true)}
-          className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-purple-600 rounded-xl transition-all duration-150 hover:bg-purple-700 shadow-sm"
-        >
-          <span className="text-lg leading-none font-bold">+</span>
-          <span>Add Patient</span>
-        </button>
-      </div>
+      <button
+        onClick={() => setOpenAddPatient(true)}
+        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700"
+      >
+        <AddRoundedIcon fontSize="small" />
+        Add Patient
+      </button>
       <div className="border border-gray-300/30 rounded-[15px] bg-white shadow-sm">
         {/* Header */}
         <div className="flex py-3 px-4 items-center justify-between border-b border-gray-300/30">

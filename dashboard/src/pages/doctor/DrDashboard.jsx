@@ -26,8 +26,6 @@ const DrDashboard = () => {
           display: "grid",
           gap: 3,
 
-          // Large screens: 40% | 30% | 30%
-          // Small screens: keep all in one row with horizontal scroll
           gridTemplateColumns: {
             xs: "repeat(3, minmax(260px, 1fr))",
             lg: "4fr 3fr 3fr",

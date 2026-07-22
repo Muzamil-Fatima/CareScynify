@@ -178,10 +178,6 @@ export const getPatientById = async (req, res) => {
   try {
     const { patientId } = req.params;
 
-    // console.log("Request Params:", req.params);
-    // console.log("Patient ID:", patientId);
-
-    // Check if ID exists
     if (!patientId) {
       return res.status(400).json({
         success: false,
@@ -189,7 +185,6 @@ export const getPatientById = async (req, res) => {
       });
     }
 
-    // Check if ObjectId is valid
     if (!mongoose.Types.ObjectId.isValid(patientId)) {
       return res.status(400).json({
         success: false,
@@ -197,8 +192,15 @@ export const getPatientById = async (req, res) => {
       });
     }
 
-    // Find patient
-    const patient = await Patient.findById(patientId);
+    // Find patient profile by Patient ID
+    let patient = await Patient.findById(patientId);
+
+    // If Patient ID not found, search by User ID
+    if (!patient) {
+      patient = await Patient.findOne({
+        userId: patientId,
+      });
+    }
 
     if (!patient) {
       return res.status(404).json({
@@ -207,12 +209,12 @@ export const getPatientById = async (req, res) => {
       });
     }
 
-    // Find user
+    // Get user basic information
     const user = await User.findById(patient.userId).select(
-      "name email avatar phone cnic dob",
+      "name email avatar phone cnic dob"
     );
 
-    // Find reports
+    // Get reports
     const reports = await Report.find({
       userId: patient.userId,
     }).sort({ createdAt: -1 });
@@ -223,6 +225,7 @@ export const getPatientById = async (req, res) => {
       patient,
       reports,
     });
+
   } catch (error) {
     console.error("getPatientById Error:", error);
 

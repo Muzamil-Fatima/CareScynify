@@ -95,6 +95,11 @@ function App() {
               path="/doctor/patient/profile/:patientId/:appointmentId"
               element={<PatientProfile />}
             />
+               
+            <Route
+              path="/doctor/patient/profile/:patientId"
+              element={<PatientProfile />}
+            />
             {/* setting */}
             <Route path="/settings" element={<SettingsLayout />}>
               <Route path="personal" element={<ProfileInfo />} />

@@ -20,6 +20,7 @@ import appointmentRoutes from "./routes/appointmentRoutes.js";
 import prescriptionRoutes from "./routes/prescriptionRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import symptomRoutes from "./routes/symptomRoutes.js";
+import doctorPatientRoutes from "./routes/doctorPatientRoutes.js"
 // pharmacy
 import medicineRoutes from "./routes/pharmacy/medicineRoutes.js";
 import profileRoutes from "./routes/pharmacy/profileRoutes.js";
@@ -74,7 +75,7 @@ app.use("/api/prescription", prescriptionRoutes);
 app.use("/api/review", reviewRoutes);
 // symptom Analysis
 app.use("/api/symptomAnalysis", symptomRoutes);
-
+app.use("/api/doctor-patients", doctorPatientRoutes);
 // pharmacy
 app.use("/api/medicineRoutes", medicineRoutes);
 app.use("/api/pharmacy", profileRoutes);
