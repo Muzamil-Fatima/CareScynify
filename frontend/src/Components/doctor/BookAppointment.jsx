@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { getAvailableSlots } from "../../api/appointmentApi";
 import { useDoctorProfile } from "../../hooks/useDoctorProfile";
 import { useAppointment } from "../../hooks/useAppointments";
-import { getAvailableSlots } from "../../api/appointmentApi";
 
 import { toast } from "react-toastify";
 
@@ -16,7 +16,7 @@ const BookAppointment = () => {
 
   const { doctor, loading } = useDoctorProfile(id);
   const { bookAppointment, loading: booking } = useAppointment();
-
+  const [bookingError, setBookingError] = useState("");
   /* ---------------- STATE ---------------- */
   const [offset, setOffset] = useState(0);
   const [date, setDate] = useState(
@@ -85,6 +85,8 @@ const BookAppointment = () => {
     if (!time || !workplace) return;
 
     try {
+      setBookingError("");
+
       await bookAppointment({
         doctorId: doctor._id,
         workplaceId: workplace._id,
@@ -93,7 +95,7 @@ const BookAppointment = () => {
         appointmentType,
       });
 
-      // 🔥 instant UI update (IMPORTANT)
+      // Instant UI update
       setSlots((prev) => prev.filter((s) => s.label !== time));
 
       const updated = await getAvailableSlots(doctor._id, workplace._id, date);
@@ -107,7 +109,7 @@ const BookAppointment = () => {
         navigate("/appointments");
       }, 1200);
     } catch (err) {
-      toast.error(err?.response?.data?.message || "Booking failed");
+      setBookingError(err?.response?.data?.message || "Booking failed.");
     }
   };
   if (loading) return <div className="text-center py-10">Loading...</div>;
@@ -181,7 +183,10 @@ const BookAppointment = () => {
         {/* APPOINTMENT TYPE */}
         <div className="flex bg-gray-100 p-1 rounded-xl w-fit">
           <button
-            onClick={() => setAppointmentType("online")}
+            onClick={() => {
+              setAppointmentType("online");
+              setBookingError("");
+            }}
             className={`px-4 py-2 rounded-lg text-sm transition ${
               appointmentType === "online"
                 ? "bg-white shadow text-purple-600"
@@ -192,7 +197,10 @@ const BookAppointment = () => {
           </button>
 
           <button
-            onClick={() => setAppointmentType("physical")}
+            onClick={() => {
+              setAppointmentType("physical");
+              setBookingError("");
+            }}
             className={`px-4 py-2 rounded-lg text-sm transition ${
               appointmentType === "physical"
                 ? "bg-white shadow text-purple-600"
@@ -211,6 +219,7 @@ const BookAppointment = () => {
               onClick={() => {
                 setSelectedWorkplace(wp);
                 setTime("");
+                setBookingError("");
               }}
               className={`px-3 py-1.5 text-sm rounded-full border whitespace-nowrap transition ${
                 workplace?._id === wp._id
@@ -239,6 +248,7 @@ const BookAppointment = () => {
                 onClick={() => {
                   setDate(d.value);
                   setTime("");
+                  setBookingError("");
                 }}
                 className={`flex-1 px-2 py-2 rounded-lg text-sm border transition ${
                   date === d.value
@@ -306,7 +316,10 @@ const BookAppointment = () => {
                           {items.map((slot, i) => (
                             <button
                               key={i}
-                              onClick={() => setTime(slot.label)}
+                              onClick={() => {
+                                setTime(slot.label);
+                                setBookingError("");
+                              }}
                               className={`px-3 py-2 rounded-lg text-sm border transition ${
                                 time === slot.label
                                   ? "bg-purple-600 text-white border-purple-600"
@@ -334,6 +347,11 @@ const BookAppointment = () => {
         >
           {booking ? "Booking..." : "Book Appointment"}
         </button>
+        {bookingError && (
+          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">
+            <p className="text-sm font-medium text-red-600">{bookingError}</p>
+          </div>
+        )}
       </div>
     </div>
   );

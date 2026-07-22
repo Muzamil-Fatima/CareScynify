@@ -58,14 +58,6 @@ const Navbar = () => {
             </NavLink>
           </li>
 
-          {/* Appointment */}
-          <li>
-            <NavLink to="/appointments" className={navItemClass}>
-              <EventAvailableOutlinedIcon fontSize="small" />
-              Appointment
-            </NavLink>
-          </li>
-
           {/* About */}
           <li>
             <NavLink to="/about" className={navItemClass}>

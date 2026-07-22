@@ -16,7 +16,7 @@ const DrPersonalInfo = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Name */}
         <div className="flex flex-col">
-          <label className="mb-2 text-gray-700">Dr Name</label>
+          <label className="mb-2 text-gray-700">Full Name</label>
           <input
             value={user.name || ""}
             onChange={(e) => {

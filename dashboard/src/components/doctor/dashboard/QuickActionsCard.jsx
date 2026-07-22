@@ -1,182 +1,146 @@
-import React from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  Stack,
-} from "@mui/material";
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import AddPatient from "../PatientProfile/AddPatients";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EventNoteRoundedIcon from "@mui/icons-material/EventNoteRounded";
 import LocalHospitalRoundedIcon from "@mui/icons-material/LocalHospital";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import RateReviewRoundedIcon from "@mui/icons-material/RateReview";
-
 const actions = [
   {
     title: "Add Patient",
     icon: <PersonAddAltRoundedIcon />,
     color: "#16a34a",
     bg: "#ecfdf5",
+    path: "/doctor/add-patient",
   },
   {
     title: "Create Appointment",
     icon: <EventNoteRoundedIcon />,
     color: "#4f46e5",
     bg: "#eef2ff",
+    path: "/doctor/appointments",
   },
   {
     title: "Manage Workplace",
     icon: <LocalHospitalRoundedIcon />,
     color: "#0ea5e9",
     bg: "#e0f2fe",
+    path: "/workplace/schedule",
   },
   {
     title: "View Appointments",
     icon: <AddRoundedIcon />,
     color: "#f59e0b",
     bg: "#fffbeb",
+    path: "/doctor/appointments",
   },
   {
     title: "Patient Reviews",
     icon: <RateReviewRoundedIcon />,
     color: "#7c3aed",
     bg: "#f3e8ff",
+    path: "/doctor/reviews",
   },
 ];
 
 const QuickActionsCard = () => {
-  const handleClick = (title) => {
-    console.log(`${title} clicked`);
+  const navigate = useNavigate();
+  const [openAddPatient, setOpenAddPatient] = useState(false);
+
+  const handleActionClick = (action) => {
+    if (action.title === "Add Patient") {
+      setOpenAddPatient(true);
+    } else {
+      navigate(action.path);
+    }
   };
-
   return (
-    <Card
-      sx={{
-        borderRadius: "22px",
-        border: "1px solid #e2e8f0",
-        boxShadow:
-          "0 1px 3px rgba(0,0,0,0.04), 0 10px 25px rgba(0,0,0,0.04)",
-        width: "100%",
-      }}
-    >
-      <CardContent
-        sx={{
-          p: { xs: 2, md: 3 },
-        }}
-      >
+    <div className="w-full rounded-[22px] border border-slate-200 bg-white shadow-[0_1px_3px_rgba(0,0,0,0.04),0_10px_25px_rgba(0,0,0,0.04)]">
+      <div className="p-5 md:p-6">
         {/* Header */}
-        <Box mb={3}>
-          <Typography
-            sx={{
-              fontWeight: 700,
-              color: "#0f172a",
-              fontSize: {
-                xs: "1.1rem",
-                sm: "1.25rem",
-                md: "1.4rem",
-              },
-            }}
-          >
+        <div className="mb-6">
+          <h2 className="font-bold text-slate-900 text-[1.1rem] sm:text-[1.25rem] md:text-[1.4rem]">
             Quick Actions
-          </Typography>
+          </h2>
 
-          <Typography
-            sx={{
-              color: "#64748b",
-              mt: 0.5,
-              fontSize: {
-                xs: "0.8rem",
-                sm: "0.9rem",
-                md: "0.95rem",
-              },
-            }}
-          >
+          <p className="mt-1 text-slate-500 text-[0.8rem] sm:text-[0.9rem] md:text-[0.95rem]">
             Fast access to important tasks
-          </Typography>
-        </Box>
+          </p>
+        </div>
 
         {/* Actions Grid */}
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "repeat(auto-fit, minmax(140px, 1fr))",
-              sm: "repeat(auto-fit, minmax(160px, 1fr))",
-              lg: "repeat(5, 1fr)",
-            },
-            gap: 2,
-            width: "100%",
-          }}
+        <div
+          className="
+            grid
+            gap-4
+            w-full
+            grid-cols-[repeat(auto-fit,minmax(140px,1fr))]
+            sm:grid-cols-[repeat(auto-fit,minmax(160px,1fr))]
+            lg:grid-cols-5
+          "
         >
           {actions.map((action, index) => (
-            <Box
+            <div
               key={index}
-              onClick={() => handleClick(action.title)}
-              sx={{
-                p: { xs: 1.5, md: 2 },
-                borderRadius: "16px",
+              onClick={() => handleActionClick(action)}
+              className="
+                w-full
+                min-h-25
+                md:min-h-30
+                rounded-2xl
+                border
+                border-transparent
+                cursor-pointer
+                transition-all
+                duration-300
+                hover:-translate-y-1
+                hover:border-slate-200
+                hover:shadow-[0_10px_20px_rgba(0,0,0,0.05)]
+                flex
+                items-center
+                p-4
+                md:p-5
+              "
+              style={{
                 backgroundColor: action.bg,
-                cursor: "pointer",
-                transition: "all .3s ease",
-                border: "1px solid transparent",
-                width: "100%",
-                minHeight: { xs: 100, md: 120 },
-
-                display: "flex",
-                alignItems: "center",
-
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  border: "1px solid #e2e8f0",
-                  boxShadow: "0 10px 20px rgba(0,0,0,0.05)",
-                },
               }}
             >
-              <Stack spacing={1.5}>
-                <Box
-                  sx={{
-                    width: { xs: 40, md: 48 },
-                    height: { xs: 40, md: 48 },
-                    borderRadius: "12px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+              <div className="flex flex-col gap-3">
+                <div
+                  className="
+                    w-10
+                    h-10
+                    md:w-12
+                    md:h-12
+                    rounded-xl
+                    flex
+                    items-center
+                    justify-center
+                    bg-white
+                  "
+                  style={{
                     color: action.color,
-                    backgroundColor: "#fff",
-
-                    "& svg": {
-                      fontSize: {
-                        xs: "1.2rem",
-                        md: "1.5rem",
-                      },
-                    },
                   }}
                 >
-                  {action.icon}
-                </Box>
+                  <div className="text-[1.2rem] md:text-[1.5rem]">
+                    {action.icon}
+                  </div>
+                </div>
 
-                <Typography
-                  sx={{
-                    fontWeight: 600,
-                    color: "#0f172a",
-                    fontSize: {
-                      xs: "0.8rem",
-                      sm: "0.9rem",
-                      md: "1rem",
-                    },
-                    lineHeight: 1.3,
-                  }}
-                >
+                <h3 className="font-semibold text-slate-900 text-[0.8rem] sm:text-[0.9rem] md:text-[1rem] leading-[1.3]">
                   {action.title}
-                </Typography>
-              </Stack>
-            </Box>
+                </h3>
+              </div>
+            </div>
           ))}
-        </Box>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+      <AddPatient
+        open={openAddPatient}
+        onClose={() => setOpenAddPatient(false)}
+      />
+    </div>
   );
 };
 

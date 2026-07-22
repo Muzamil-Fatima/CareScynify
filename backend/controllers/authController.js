@@ -1,11 +1,11 @@
-import User from "../models/user.js";
-import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import crypto from "crypto";
+import bcrypt from "bcryptjs";
+import User from "../models/user.js";
+import Appointment from "../models/appointmentModel.js";
 import asyncHandler from "../middleware/catchAsyncError.js";
 import generateToken from "../utils/sendToken.js";
 import sendEmail from "../utils/sendEmail.js";
-import jwt from "jsonwebtoken";
-import Appointment from "../models/appointmentModel.js";
 import {
   verificationEmail,
   forgotPasswordEmail,

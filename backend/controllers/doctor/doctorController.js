@@ -72,19 +72,24 @@ export const updateDoctorProfile = async (req, res) => {
     doctor.education = education ?? doctor.education;
 
     // License check
-    if (licenseNo !== undefined && licenseNo !== doctor.licenseNo) {
-      const exists = await Doctor.findOne({ licenseNo });
-
-      if (exists && exists.userId.toString() !== userId.toString()) {
-        return res.status(400).json({
-          success: false,
-          message: "License number already exists",
+    if (licenseNo !== undefined) {
+      const cleanLicense = licenseNo.trim();
+      // Only check duplicate if license number is not empty
+      if (cleanLicense !== "" && cleanLicense !== doctor.licenseNo) {
+        const exists = await Doctor.findOne({
+          licenseNo: cleanLicense,
+          _id: { $ne: doctor._id },
         });
+
+        if (exists) {
+          return res.status(400).json({
+            success: false,
+            message: "License number already exists",
+          });
+        }
       }
-
-      doctor.licenseNo = licenseNo;
+      doctor.licenseNo = cleanLicense;
     }
-
     // ---------------- CNIC FRONT ----------------
     if (req.files?.cnicFront?.[0]) {
       const frontResult = await new Promise((resolve, reject) => {

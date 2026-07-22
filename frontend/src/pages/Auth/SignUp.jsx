@@ -40,7 +40,7 @@ const Signup = () => {
       });
 
       toast.success(
-        res.data.message || "Signup successful! Please verify your email.",
+        res.message || "Signup successful! Please verify your email.",
       );
 
       localStorage.removeItem("selectedRole");

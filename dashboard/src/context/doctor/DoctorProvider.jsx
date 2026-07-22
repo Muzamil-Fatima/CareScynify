@@ -106,6 +106,7 @@ const DoctorProvider = ({ children }) => {
 
         if (res?.success) {
           setIsDirty(false);
+          toast.success(res.message || "Profile updated successfully");
         }
       } catch (err) {
         toast.error(err?.response?.data?.message || "Profile update failed");
