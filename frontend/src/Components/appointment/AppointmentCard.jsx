@@ -5,7 +5,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 import AppointmentTimer from "./AppointmentTimer";
 import CancelModal from "./CancelModal";
-import ReviewModal from "../review/ReviewModal";
+import ReviewModal from "./ReviewModal";
 
 const formatTimeAMPM = (time) => {
   if (!time) return "";

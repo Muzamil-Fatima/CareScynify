@@ -1,9 +1,7 @@
 import React from "react";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
-import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
-import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 
 const DoctorAbout = ({ doctor }) => {
   return (
@@ -16,21 +14,7 @@ const DoctorAbout = ({ doctor }) => {
         </h2>
 
         <p className="text-sm text-gray-600 mt-2 leading-relaxed">
-          {doctor?.about ||
-            "Dr. is a highly experienced medical professional dedicated to providing quality healthcare services with a patient-first approach. Focused on accurate diagnosis, modern treatment methods, and compassionate care."}
-        </p>
-      </div>
-
-      {/* Experience */}
-      <div>
-        <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
-          <WorkOutlineOutlinedIcon fontSize="small" />
-          Experience
-        </h2>
-
-        <p className="text-sm text-gray-600 mt-2">
-          {doctor?.experience ||
-            "10+ years of clinical experience in hospital and private practice settings."}
+          {doctor?.about || "No information available"}
         </p>
       </div>
 
@@ -42,39 +26,39 @@ const DoctorAbout = ({ doctor }) => {
         </h2>
 
         <ul className="text-sm text-gray-600 mt-2 space-y-1 list-disc ml-5">
-          {(
-            doctor?.education || [
-              "MBBS - University of Health Sciences",
-              "FCPS - Specialization",
-              "Certified Medical Training Program",
-            ]
-          ).map((edu, index) => (
-            <li key={index}>{edu}</li>
-          ))}
+          {doctor?.education?.length > 0 ? (
+            doctor.education.map((edu) => (
+              <li key={edu._id}>
+                {edu.degree} - {edu.school}
+              </li>
+            ))
+          ) : (
+            <li>No education information available</li>
+          )}
         </ul>
       </div>
 
       {/* Languages */}
       <div>
-        <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
+        <h2 className="flex items-center gap-2 text-lg text-gray-800 font-semibold">
           <LanguageOutlinedIcon fontSize="small" />
           Languages
         </h2>
 
         <div className="flex flex-wrap gap-2 mt-2">
-          {(doctor?.user?.languages || []).map((lang) => (
-            <span key={lang._id}>{lang.language}</span>
-          ))}
+          {doctor?.user?.languages?.length > 0 ? (
+            doctor.user.languages.map((lang) => (
+              <span
+                key={lang._id}
+                className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+              >
+                {lang.language}
+              </span>
+            ))
+          ) : (
+            <span className="text-sm text-gray-500">No languages added</span>
+          )}
         </div>
-      </div>
-
-      {/* Hospital */}
-      <div>
-        <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
-          <LocalHospitalOutlinedIcon fontSize="small" />
-          Affiliated Hospital
-        </h2>
-        <p className="text-sm text-gray-600 mt-2">{doctor?.hospital}</p>
       </div>
     </div>
   );

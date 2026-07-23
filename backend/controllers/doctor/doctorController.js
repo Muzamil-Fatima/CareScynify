@@ -67,6 +67,7 @@ export const updateDoctorProfile = async (req, res) => {
       licenseNo,
       education,
       treatableConditions,
+      about,
     } = req.body;
 
     doctor.specialization = specialization ?? doctor.specialization;
@@ -76,6 +77,7 @@ export const updateDoctorProfile = async (req, res) => {
     doctor.experience = experience ?? doctor.experience;
 
     doctor.education = education ?? doctor.education;
+    doctor.about = about ?? doctor.about;
     if (treatableConditions !== undefined) {
       doctor.treatableConditions = treatableConditions.slice(0, 4);
     }

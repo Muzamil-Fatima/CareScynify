@@ -24,7 +24,11 @@ const drSchema = new mongoose.Schema(
     qualifications: {
       type: String,
     },
-
+    about: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     licenseNo: {
       type: String,
       unique: true,
@@ -146,10 +150,6 @@ const drSchema = new mongoose.Schema(
 
     consultationTime: {
       type: String,
-    },
-
-    drRoomNo: {
-      type: Number,
     },
 
     status: {

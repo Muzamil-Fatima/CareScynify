@@ -21,6 +21,7 @@ const DoctorProvider = ({ children }) => {
     doctor: {
       specialization: "",
       qualifications: "",
+       about: "",
       licenseNo: "",
       experience: "",
       education: [],
@@ -67,6 +68,7 @@ const DoctorProvider = ({ children }) => {
             education: data?.doctor?.education || [],
             workplaces: data?.doctor?.workplaces || [],
             languages: data?.doctor?.languages || [],
+            about: data?.doctor?.about || "",
             experiences: data?.doctor?.experienceDetails || [],
             treatableConditions: data?.doctor?.treatableConditions || [],
           },

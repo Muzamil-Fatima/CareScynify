@@ -116,8 +116,6 @@ export const getAvailableSlots = async (req, res) => {
 /* ---------------- RESERVE SLOT ---------------- */
 export const reserveSlot = async (req, res) => {
   try {
-    console.log("===== RESERVE API HIT =====");
-    console.log(req.body);
     const { doctorId, workplaceId, date, time, appointmentType } = req.body;
 
     if (!doctorId || !workplaceId || !date || !time || !appointmentType) {

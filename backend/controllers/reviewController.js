@@ -26,8 +26,7 @@ export const createReview = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
+// dashboard doctor seen own review
 export const getDoctorReviews = async (req, res) => {
   try {
     // 1. find doctor profile using logged-in user
@@ -74,5 +73,26 @@ export const getReviewByAppointment = async (req, res) => {
     res.json(review);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+export const getPublicDoctorReviews = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+
+    const reviews = await Review.find({
+      doctor: doctorId,
+    })
+      .populate("patient", "name")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      reviews,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

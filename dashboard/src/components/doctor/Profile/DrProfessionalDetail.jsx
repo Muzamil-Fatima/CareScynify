@@ -13,6 +13,7 @@ const DrProfessionalDetail = () => {
     { name: "Qualification", type: "text", key: "qualifications" },
     { name: "License No", type: "text", key: "licenseNo" },
     { name: "Experience", type: "text", key: "experience" },
+    { name: "About Yourself", type: "textarea", key: "about" },
   ];
 
   return (
@@ -23,23 +24,31 @@ const DrProfessionalDetail = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {fields.map((field) => (
-          <div key={field.name} className="flex flex-col">
+          <div
+            key={field.name}
+            className={`flex flex-col ${
+              field.type === "textarea" ? "md:col-span-2" : ""
+            }`}
+          >
             <label className="mb-2 text-gray-700">{field.name}</label>
 
-            {field.type === "specialization" ? (
-              <DrSpecialization
+            {field.type === "textarea" ? (
+              <textarea
+                rows={5}
                 value={doctor[field.key] || ""}
-                onChange={(value) => {
+                onChange={(e) => {
                   setProfile((prev) => ({
                     ...prev,
                     doctor: {
                       ...prev.doctor,
-                      [field.key]: value,
+                      [field.key]: e.target.value,
                     },
                   }));
-
+                }}
+                onBlur={() => {
                   setIsDirty(true);
                 }}
+                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400 resize-none"
               />
             ) : (
               <input
