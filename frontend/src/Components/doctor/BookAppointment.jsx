@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getAvailableSlots } from "../../api/appointmentApi";
 import { useDoctorProfile } from "../../hooks/useDoctorProfile";
 import { useAppointment } from "../../hooks/useAppointments";
-
+import { socket } from "../../socket/socket";
 import { toast } from "react-toastify";
 
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -15,7 +15,8 @@ const BookAppointment = () => {
   const navigate = useNavigate();
 
   const { doctor, loading } = useDoctorProfile(id);
-  const { bookAppointment, loading: booking } = useAppointment();
+  const { bookAppointment, reserveAppointment, bookingLoading } =
+    useAppointment();
   const [bookingError, setBookingError] = useState("");
   /* ---------------- STATE ---------------- */
   const [offset, setOffset] = useState(0);
@@ -52,29 +53,52 @@ const BookAppointment = () => {
 
   /* ---------------- SLOTS ---------------- */
   const [slots, setSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState("");
   const [loadingSlots, setLoadingSlots] = useState(false);
+ const fetchSlots = useCallback(
+  async (showLoader = true) => {
+    if (!doctor?._id || !workplace?._id || !date) return;
 
-  useEffect(() => {
-    const fetchSlots = async () => {
-      if (!doctor?._id || !workplace?._id || !date) return;
-
-      try {
+    try {
+      if (showLoader) {
         setLoadingSlots(true);
+      }
 
-        const data = await getAvailableSlots(doctor._id, workplace._id, date);
+      const data = await getAvailableSlots(
+        doctor._id,
+        workplace._id,
+        date,
+      );
 
-        setSlots(data || []);
-        setTime("");
-      } catch (err) {
-        console.log("SLOT ERROR:", err);
-      } finally {
+      setSlots(data || []);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      if (showLoader) {
         setLoadingSlots(false);
+      }
+    }
+  },
+  [doctor, workplace, date],
+);
+  useEffect(() => {
+    fetchSlots(true);
+  }, [fetchSlots]);
+  useEffect(() => {
+    const handleSlotUpdate = (data) => {
+      if (
+        data.doctorId === doctor?._id &&
+        data.workplaceId === workplace?._id &&
+        data.date === date
+      ) {
+        fetchSlots(false);
       }
     };
 
-    fetchSlots();
-  }, [doctor, workplace, date]);
+    socket.on("slot-updated", handleSlotUpdate);
 
+    return () => socket.off("slot-updated", handleSlotUpdate);
+  }, [doctor, workplace, date, fetchSlots]);
   /* ---------------- RESET ---------------- */
   useEffect(() => {
     setTime("");
@@ -82,7 +106,7 @@ const BookAppointment = () => {
 
   /* ---------------- BOOKING ---------------- */
   const handleBook = async () => {
-    if (!time || !workplace) return;
+    if (!selectedSlot || !workplace) return;
 
     try {
       setBookingError("");
@@ -91,7 +115,7 @@ const BookAppointment = () => {
         doctorId: doctor._id,
         workplaceId: workplace._id,
         date,
-        time,
+        time: selectedSlot,
         appointmentType,
       });
 
@@ -285,6 +309,7 @@ const BookAppointment = () => {
           ) : (
             (() => {
               const grouped = {
+                Night: [],
                 Morning: [],
                 Afternoon: [],
                 Evening: [],
@@ -294,9 +319,16 @@ const BookAppointment = () => {
                 const hour = convertTo24Hour(slot.label);
 
                 let session = "";
-                if (hour >= 5 && hour < 12) session = "Morning";
-                else if (hour >= 12 && hour < 17) session = "Afternoon";
-                else session = "Evening";
+
+                if (hour >= 0 && hour < 5) {
+                  session = "Night";
+                } else if (hour >= 5 && hour < 12) {
+                  session = "Morning";
+                } else if (hour >= 12 && hour < 17) {
+                  session = "Afternoon";
+                } else {
+                  session = "Evening";
+                }
 
                 grouped[session].push(slot);
               });
@@ -316,12 +348,37 @@ const BookAppointment = () => {
                           {items.map((slot, i) => (
                             <button
                               key={i}
-                              onClick={() => {
-                                setTime(slot.label);
+                              onClick={async () => {
                                 setBookingError("");
+
+                                // first click par hi purple
+                                setSelectedSlot(slot.label);
+                                setTime(slot.label);
+
+                                try {
+                                  if (slot.reservedByMe) {
+                                    return;
+                                  }
+
+                                  await reserveAppointment({
+                                    doctorId: doctor._id,
+                                    workplaceId: workplace._id,
+                                    date,
+                                    time: slot.label,
+                                    appointmentType,
+                                  });
+                                } catch (err) {
+                                  setBookingError(
+                                    err?.response?.data?.message ||
+                                      "Failed to reserve slot.",
+                                  );
+
+                                  setSelectedSlot("");
+                                  setTime("");
+                                }
                               }}
                               className={`px-3 py-2 rounded-lg text-sm border transition ${
-                                time === slot.label
+                                selectedSlot === slot.label
                                   ? "bg-purple-600 text-white border-purple-600"
                                   : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
                               }`}
@@ -342,10 +399,10 @@ const BookAppointment = () => {
         {/* BOOK BUTTON */}
         <button
           onClick={handleBook}
-          disabled={!time || booking || !workplace}
+          disabled={!selectedSlot || bookingLoading || !workplace}
           className="w-full bg-purple-600 hover:bg-purple-700 transition text-white py-3 rounded-xl disabled:opacity-50 font-medium shadow-sm"
         >
-          {booking ? "Booking..." : "Book Appointment"}
+          {bookingLoading ? "Booking..." : "Book Appointment"}
         </button>
         {bookingError && (
           <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3">

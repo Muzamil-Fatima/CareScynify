@@ -10,6 +10,8 @@ import {
 
 export const useAppointment = () => {
   const [loading, setLoading] = useState(false);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [reserveLoading, setReserveLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
   useEffect(() => {
     fetchAppointments();
@@ -50,14 +52,21 @@ export const useAppointment = () => {
       setLoading(false);
     }
   };
+  const reserveAppointment = async (data) => {
+    try {
+      setReserveLoading(true);
 
+      const res = await reserveSlot(data);
+
+      return res;
+    } finally {
+      setReserveLoading(false);
+    }
+  };
   // BOOK APPOINTMENT
   const bookAppointment = async (data) => {
     try {
-      setLoading(true);
-
-      // STEP 1: reserve slot
-      await reserveSlot(data);
+      setBookingLoading(true);
 
       // STEP 2: confirm appointment
       const res = await createAppointment(data);
@@ -71,7 +80,7 @@ export const useAppointment = () => {
       toast.error(err?.response?.data?.message || "Booking failed");
       throw err;
     } finally {
-      setLoading(false);
+      setBookingLoading(false);
     }
   };
 
@@ -89,11 +98,14 @@ export const useAppointment = () => {
     }
   };
 
-  return {
-    appointments,
-    loading,
-    bookAppointment,
-    cancel,
-    refetch: fetchAppointments,
-  };
+return {
+  appointments,
+  loading,
+  bookingLoading,
+  reserveLoading,
+  reserveAppointment,
+  bookAppointment,
+  cancel,
+  refetch: fetchAppointments,
+};
 };

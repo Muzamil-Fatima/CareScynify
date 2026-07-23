@@ -56,8 +56,6 @@ export const getAvailableSlots = async (req, res) => {
       ],
     });
 
-    const bookedTimes = booked.map((b) => b.appointmentTime);
-
     const day = new Date(date).toLocaleDateString("en-US", {
       weekday: "short",
       timeZone: "UTC",
@@ -70,12 +68,6 @@ export const getAvailableSlots = async (req, res) => {
 
     const availableSlots = slots
       .filter((slot) => {
-        // Remove booked slots
-        if (bookedTimes.includes(slot.startTime)) {
-          return false;
-        }
-
-        // Remove past slots if the selected date is today
         if (isToday) {
           const [hours, minutes] = slot.startTime.split(":").map(Number);
 
@@ -87,11 +79,34 @@ export const getAvailableSlots = async (req, res) => {
           }
         }
 
-        return true;
+        const appointment = booked.find(
+          (a) => a.appointmentTime === slot.startTime,
+        );
+
+        if (!appointment) return true;
+
+        if (
+          appointment.status === "reserved" &&
+          appointment.userId.toString() === req.user._id.toString()
+        ) {
+          return true;
+        }
+
+        return false;
       })
-      .map((slot) => ({
-        label: slot.startTime,
-      }));
+      .map((slot) => {
+        const appointment = booked.find(
+          (a) => a.appointmentTime === slot.startTime,
+        );
+
+        return {
+          label: slot.startTime,
+          reservedByMe:
+            appointment &&
+            appointment.status === "reserved" &&
+            appointment.userId.toString() === req.user._id.toString(),
+        };
+      });
 
     return res.json(availableSlots);
   } catch (error) {
@@ -101,6 +116,8 @@ export const getAvailableSlots = async (req, res) => {
 /* ---------------- RESERVE SLOT ---------------- */
 export const reserveSlot = async (req, res) => {
   try {
+    console.log("===== RESERVE API HIT =====");
+    console.log(req.body);
     const { doctorId, workplaceId, date, time, appointmentType } = req.body;
 
     if (!doctorId || !workplaceId || !date || !time || !appointmentType) {
@@ -109,6 +126,13 @@ export const reserveSlot = async (req, res) => {
         message: "Missing required fields",
       });
     }
+    const appointmentDate = normalizeDate(date);
+    const appointmentTime = normalizeTime(time);
+    const currentTime = new Date();
+    await Appointment.deleteMany({
+      status: "reserved",
+      reservedUntil: { $lte: currentTime },
+    });
 
     // Make sure user is authenticated
     if (!req.user) {
@@ -117,10 +141,6 @@ export const reserveSlot = async (req, res) => {
         message: "Please login first.",
       });
     }
-
-    const appointmentDate = normalizeDate(date);
-    const appointmentTime = normalizeTime(time);
-    const currentTime = new Date();
 
     // Get doctor
     const doctor = await Doctor.findById(doctorId);
@@ -193,8 +213,6 @@ export const reserveSlot = async (req, res) => {
       minute: "2-digit",
       hour12: false,
     });
-
-    // Check existing reservation
     const existing = await Appointment.findOne({
       doctorId,
       workplaceId,
@@ -206,31 +224,45 @@ export const reserveSlot = async (req, res) => {
           reservedUntil: { $gt: currentTime },
         },
         {
-          status: {
-            $in: ["pending", "confirmed"],
-          },
+          status: { $in: ["pending", "confirmed"] },
         },
       ],
     });
-
-    if (existing) {
-      if (
-        existing.patientId &&
-        existing.patientId.toString() === patient._id.toString()
-      ) {
-        return res.status(400).json({
-          success: false,
-          message: "You have already reserved this slot.",
-        });
-      }
-
+    if (existing && !existing.patientId.equals(patient._id)) {
       return res.status(400).json({
         success: false,
         message: "This slot has already been reserved.",
       });
     }
+    const previousReservation = await Appointment.findOne({
+      patientId: patient._id,
+      status: "reserved",
+      reservedUntil: { $gt: currentTime },
+    });
+    if (previousReservation) {
+      previousReservation.userId = req.user._id;
+      previousReservation.doctorId = doctorId;
+      previousReservation.workplaceId = workplaceId;
+      previousReservation.appointmentDate = appointmentDate;
+      previousReservation.appointmentTime = appointmentTime;
+      previousReservation.endTime = endTime;
+      previousReservation.appointmentType = appointmentType;
+      previousReservation.reservedUntil = new Date(Date.now() + 10 * 60 * 1000);
 
-    // Create reservation
+      await previousReservation.save();
+      const io = getIO();
+
+      io.emit("slot-updated", {
+        doctorId,
+        workplaceId,
+        date,
+      });
+      return res.status(200).json({
+        success: true,
+        message: "Slot updated successfully.",
+        reservation: previousReservation,
+      });
+    }
     const reservation = await Appointment.create({
       userId: req.user._id,
       patientId: patient._id,
@@ -243,7 +275,13 @@ export const reserveSlot = async (req, res) => {
       status: "reserved",
       reservedUntil: new Date(Date.now() + 10 * 60 * 1000),
     });
+    const io = getIO();
 
+    io.emit("slot-updated", {
+      doctorId,
+      workplaceId,
+      date,
+    });
     return res.status(201).json({
       success: true,
       message: "Slot reserved successfully.",
@@ -251,7 +289,12 @@ export const reserveSlot = async (req, res) => {
     });
   } catch (error) {
     console.error("Reserve Slot Error:", error);
-
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "This slot has already been reserved.",
+      });
+    }
     return res.status(500).json({
       success: false,
       message: error.message,
@@ -321,7 +364,11 @@ export const createAppointment = async (req, res) => {
     reservation.reservedUntil = null;
 
     await reservation.save();
-
+    req.io.emit("slot-updated", {
+      doctorId: reservation.doctorId,
+      workplaceId: reservation.workplaceId,
+      date: reservation.appointmentDate,
+    });
     return res.status(201).json({
       message: "Appointment is now pending approval",
       appointment: reservation,
@@ -484,7 +531,6 @@ export const cancelAppointment = async (req, res) => {
         });
       }
     }
-
     // update appointment status
     appointment.status = "cancelled";
     appointment.cancelledAt = new Date();
@@ -511,14 +557,10 @@ export const cancelAppointment = async (req, res) => {
 
     await doctor.save();
 
-    const io = getIO();
-
-    io.to(appointment.doctorId.toString()).emit("slot-updated", {
+    req.io.emit("slot-updated", {
       doctorId: appointment.doctorId,
       workplaceId: appointment.workplaceId,
       date: appointment.appointmentDate,
-      time: appointment.appointmentTime,
-      action: "cancelled",
     });
 
     return res.json({
