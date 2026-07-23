@@ -1,6 +1,7 @@
 import React from "react";
 import DrSpecialization from "./DrSpecialization";
 import { useDoctor } from "../../../context/doctor/DoctorContext";
+import TreatableConditions from "./TreatableConditions";
 
 const DrProfessionalDetail = () => {
   const { profile, setProfile, setIsDirty } = useDoctor();
@@ -63,6 +64,20 @@ const DrProfessionalDetail = () => {
           </div>
         ))}
       </div>
+      <TreatableConditions
+        value={doctor.treatableConditions || []}
+        onChange={(value) => {
+          setProfile((prev) => ({
+            ...prev,
+            doctor: {
+              ...prev.doctor,
+              treatableConditions: value,
+            },
+          }));
+
+          setIsDirty(true);
+        }}
+      />
     </div>
   );
 };

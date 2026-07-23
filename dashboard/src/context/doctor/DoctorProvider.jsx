@@ -68,6 +68,7 @@ const DoctorProvider = ({ children }) => {
             workplaces: data?.doctor?.workplaces || [],
             languages: data?.doctor?.languages || [],
             experiences: data?.doctor?.experienceDetails || [],
+            treatableConditions: data?.doctor?.treatableConditions || [],
           },
         });
       } catch (err) {

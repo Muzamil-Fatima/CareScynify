@@ -60,8 +60,14 @@ export const updateDoctorProfile = async (req, res) => {
     await user.save();
 
     // ---------------- DOCTOR FIELDS ----------------
-    const { specialization, experience, qualifications, licenseNo, education } =
-      req.body;
+    const {
+      specialization,
+      experience,
+      qualifications,
+      licenseNo,
+      education,
+      treatableConditions,
+    } = req.body;
 
     doctor.specialization = specialization ?? doctor.specialization;
 
@@ -70,7 +76,9 @@ export const updateDoctorProfile = async (req, res) => {
     doctor.experience = experience ?? doctor.experience;
 
     doctor.education = education ?? doctor.education;
-
+    if (treatableConditions !== undefined) {
+      doctor.treatableConditions = treatableConditions.slice(0, 4);
+    }
     // License check
     if (licenseNo !== undefined) {
       const cleanLicense = licenseNo.trim();

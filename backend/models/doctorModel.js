@@ -12,7 +12,10 @@ const drSchema = new mongoose.Schema(
     specialization: {
       type: String,
     },
-
+    treatableConditions: {
+      type: [String],
+      default: [],
+    },
     experience: {
       type: String,
       default: 0,

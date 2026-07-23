@@ -13,7 +13,7 @@ const DoctorProfileHeader = ({ doctor }) => {
 
       {/* Avatar */}
       <img
-        src={doctor?.user?.avatar}
+        src={doctor?.user?.avatar?.url}
         alt={doctor?.user?.name}
         className="w-24 h-24 rounded-full object-cover"
       />

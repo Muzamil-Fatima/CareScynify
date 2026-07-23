@@ -194,7 +194,7 @@ const BookAppointment = () => {
         {/* HEADER */}
         <div className="flex items-center gap-4">
           <img
-            src={doctor?.user?.avatar}
+            src={doctor?.user?.avatar?.url}
             className="w-16 h-16 rounded-full object-cover border border-gray-200"
             alt="doctor"
           />

@@ -58,6 +58,7 @@ export const getDoctors = async (req, res) => {
       _id: d._id,
       specialization: d.specialization,
       experience: d.experience,
+      treatableConditions: d.treatableConditions,
       settings: d.settings,
       user: d.userId,
     }));
