@@ -16,7 +16,7 @@ import doctorRoutes from "./routes/doctorRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
 import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import userRouter from "./routes/userRoutes.js";
-import publicDoctorRoutes from "./routes/publicDoctorRoutes.js";
+import publicDoctorRoutes from "./routes/userSite/publicDoctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import prescriptionRoutes from "./routes/prescriptionRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
@@ -25,8 +25,10 @@ import doctorPatientRoutes from "./routes/doctorPatientRoutes.js";
 // pharmacy
 import medicineRoutes from "./routes/pharmacy/medicineRoutes.js";
 import profileRoutes from "./routes/pharmacy/profileRoutes.js";
+import cartRoutes from "./routes/pharmacy/cartRoutes.js";
 // website 
-import publicPharmacyRoutes from "./routes/publicPharmacyRoutes.js"
+import publicPharmacyRoutes from "./routes/userSite/publicPharmacyRoutes.js"
+import publicMedicineRoutes from "./routes/userSite/publicMedicineRoutes.js"
 //Configuration
 connectDB();
 connectCloudinary();
@@ -65,6 +67,7 @@ app.use("/api/user", userRouter);
 // use patient routes
 app.use("/api/patient", patientsRoutes);
 app.use("/api/public/pharmacies", publicPharmacyRoutes);
+app.use("/api/public/medicine", publicMedicineRoutes)
 // dr router
 app.use("/api/doctor", doctorRoutes);
 // report router
@@ -83,6 +86,7 @@ app.use("/api/doctor-patients", doctorPatientRoutes);
 // pharmacy
 app.use("/api/medicineRoutes", medicineRoutes);
 app.use("/api/pharmacy", profileRoutes);
+app.use("/api/cart", cartRoutes);
 // server listen
 const server = http.createServer(app);
 

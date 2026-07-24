@@ -1,6 +1,5 @@
-import Medicine from "../models/pharmacy/Medicine.js";
+import Medicine from "../../models/pharmacy/Medicine.js";
 
-// GET /api/public/medicines
 export const getAllMedicines = async (req, res) => {
   try {
     const medicines = await Medicine.find({
@@ -25,7 +24,6 @@ export const getAllMedicines = async (req, res) => {
   }
 };
 
-// GET /api/public/medicines/:id
 export const getMedicineById = async (req, res) => {
   try {
     const medicine = await Medicine.findOne({

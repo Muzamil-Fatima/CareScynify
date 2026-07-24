@@ -1,28 +1,28 @@
 import express from "express";
-
 import {
   getCart,
   addToCart,
   updateCartItem,
   removeCartItem,
   clearCart,
-} from "../controllers/cartController.js";
-
-import { protect } from "../middleware/authMiddleware.js";
+} from "../../controllers/pharmacy/cartController.js";
+import { protect } from "../../middleware/auth.js";
 
 const router = express.Router();
 
-router.use(protect);
+// Get logged-in patient's cart
+router.get("/", protect, getCart);
 
-router
-  .route("/")
-  .get(getCart)
-  .post(addToCart)
-  .delete(clearCart);
+// Add medicine to cart
+router.post("/add", protect, addToCart);
 
-router
-  .route("/:medicineId")
-  .patch(updateCartItem)
-  .delete(removeCartItem);
+// Update quantity of a cart item
+router.put("/update/:medicineId", protect, updateCartItem);
+
+// Remove a medicine from cart
+router.delete("/remove/:medicineId", protect, removeCartItem);
+
+// Clear entire cart
+router.delete("/clear", protect, clearCart);
 
 export default router;

@@ -11,6 +11,7 @@ import PatientProvider from "./context/patients/PatientProvider.jsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SymptomProvider from "./context/symptomAnalyzer/SymptomProvider.jsx";
 import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
+import CartProvider from "./context/pharmacy/CartProvider.jsx";
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -19,15 +20,17 @@ createRoot(document.getElementById("root")).render(
         <PatientProvider>
           <LabProvider>
             <DoctorProvider>
-              <AuthProvider>
-                <SymptomProvider>
-                  <BrowserRouter>
-                    <QueryClientProvider client={queryClient}>
-                      <App />
-                    </QueryClientProvider>
-                  </BrowserRouter>
-                </SymptomProvider>
-              </AuthProvider>
+              <CartProvider>
+                <AuthProvider>
+                  <SymptomProvider>
+                    <BrowserRouter>
+                      <QueryClientProvider client={queryClient}>
+                        <App />
+                      </QueryClientProvider>
+                    </BrowserRouter>
+                  </SymptomProvider>
+                </AuthProvider>
+              </CartProvider>
             </DoctorProvider>
           </LabProvider>
         </PatientProvider>

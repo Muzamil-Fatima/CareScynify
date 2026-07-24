@@ -2,7 +2,7 @@ import express from "express";
 import {
     getAllMedicines,
     getMedicineById
-} from "../controllers/userSite/publicMedicineController.js";
+} from "../../controllers/userSite/publicMedicineController.js";
 const router = express.Router();
 
 router.get("/", getAllMedicines);

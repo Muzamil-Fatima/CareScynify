@@ -1,11 +1,22 @@
-import Cart from "../models/Cart.js";
-import Medicine from "../models/Medicine.js";
-import Patient from "../models/Patient.js";
+import Cart from "../../models/pharmacy/Cart.js";
+import Medicine from "../../models/pharmacy/Medicine.js";
+import Patient from "../../models/patientModel.js";
 // get cart item
 export const getCart = async (req, res) => {
   try {
+    const patient = await Patient.findOne({
+      userId: req.user._id,
+    });
+
+    if (!patient) {
+      return res.status(404).json({
+        success: false,
+        message: "Patient not found.",
+      });
+    }
+
     const cart = await Cart.findOne({
-      patientId: req.user._id,
+      patientId: patient._id,
     }).populate("items.medicineId");
 
     if (!cart) {
@@ -65,7 +76,7 @@ export const addToCart = async (req, res) => {
     }
 
     const itemIndex = cart.items.findIndex(
-      (item) => item.medicineId.toString() === medicineId
+      (item) => item.medicineId.toString() === medicineId,
     );
 
     if (itemIndex > -1) {
@@ -83,7 +94,7 @@ export const addToCart = async (req, res) => {
 
     cart.totalAmount = cart.items.reduce(
       (total, item) => total + item.subtotal,
-      0
+      0,
     );
 
     await cart.save();
@@ -138,7 +149,7 @@ export const updateCartItem = async (req, res) => {
     }
 
     const item = cart.items.find(
-      (item) => item.medicineId.toString() === medicineId
+      (item) => item.medicineId.toString() === medicineId,
     );
 
     if (!item) {
@@ -153,7 +164,7 @@ export const updateCartItem = async (req, res) => {
 
     cart.totalAmount = cart.items.reduce(
       (total, item) => total + item.subtotal,
-      0
+      0,
     );
 
     await cart.save();
@@ -200,7 +211,7 @@ export const removeCartItem = async (req, res) => {
     }
 
     const itemExists = cart.items.some(
-      (item) => item.medicineId.toString() === medicineId
+      (item) => item.medicineId.toString() === medicineId,
     );
 
     if (!itemExists) {
@@ -211,12 +222,12 @@ export const removeCartItem = async (req, res) => {
     }
 
     cart.items = cart.items.filter(
-      (item) => item.medicineId.toString() !== medicineId
+      (item) => item.medicineId.toString() !== medicineId,
     );
 
     cart.totalAmount = cart.items.reduce(
       (total, item) => total + item.subtotal,
-      0
+      0,
     );
 
     await cart.save();

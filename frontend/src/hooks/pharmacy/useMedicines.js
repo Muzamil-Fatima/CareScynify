@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getMedicines } from "../api/pharmacy/medicineApi";
+import { getAllMedicines } from "../../api/pharmacy/medicineApi";
 
 export const useMedicine = (filters = {}) => {
   const [medicines, setMedicines] = useState([]);
@@ -11,7 +11,7 @@ export const useMedicine = (filters = {}) => {
       setLoading(true);
       setError("");
 
-      const data = await getMedicines(filters);
+      const data = await getAllMedicines(filters);
 
       setMedicines(data.medicines || []);
     } catch (err) {

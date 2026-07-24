@@ -1,8 +1,6 @@
 import Pharmacy from "../../models/pharmacy/pharmacyModel.js";
 
 
-// @desc Get all verified pharmacies
-// @route GET /api/public/pharmacies
 export const getAllPharmacies = async (req, res) => {
   try {
     const pharmacies = await Pharmacy.find({
@@ -31,8 +29,6 @@ export const getAllPharmacies = async (req, res) => {
 
 
 
-// @desc Get single pharmacy
-// @route GET /api/public/pharmacies/:id
 export const getPharmacyById = async (req, res) => {
   try {
 

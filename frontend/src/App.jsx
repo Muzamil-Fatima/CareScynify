@@ -33,6 +33,7 @@ import Settings from "./pages/patients/Settings";
 import RootLayout from "./layout/RootLayout";
 import Security from "./Components/settings/Security";
 import SymptomAnalyzer from "./pages/patients/SymptomAnalyzer";
+import MedicineDetails from "./pages/pharmacy/MedicineDetail";
 function App() {
   return (
     <RootLayout>
@@ -65,6 +66,7 @@ function App() {
           {/* pharmacy */}
           <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/medicine" element={<Medicine />} />
+          <Route path="/medicine/:id"   element={<MedicineDetails />}/>
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

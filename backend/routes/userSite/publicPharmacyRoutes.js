@@ -2,7 +2,7 @@ import express from "express";
 import {
   getAllPharmacies,
   getPharmacyById,
-} from "../controllers/userSite/publicPharmacyController.js";
+} from "../../controllers/userSite/publicPharmacyController.js";
 
 
 const router = express.Router();

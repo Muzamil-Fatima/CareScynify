@@ -1,89 +1,59 @@
 import React from "react";
-import LocalPharmacyOutlinedIcon from "@mui/icons-material/LocalPharmacyOutlined";
-import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import { useNavigate } from "react-router-dom";
+import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 
 const MedicineCard = ({ medicine }) => {
   const navigate = useNavigate();
 
+  const handleCardClick = () => {
+    navigate(`/medicine/${medicine._id}`);
+  };
+
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl transition overflow-hidden">
-      {/* Medicine Image */}
-      <div className="h-52 bg-gray-100 flex items-center justify-center">
+    <div onClick={handleCardClick} className="group cursor-pointer">
+      {/* Image Card */}
+      <div className="relative aspect-square rounded-2xl border border-gray-200 bg-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-purple-200">
+        {/* Wishlist */}
+        <button
+          onClick={(e) => e.stopPropagation()}
+          className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-purple-500 hover:bg-purple-50 transition"
+        >
+          <FavoriteBorderRoundedIcon fontSize="small" />
+        </button>
+
+        {/* Image */}
         <img
-          src={medicine.images?.[0]?.url}
+          src={
+            medicine.images?.[0]?.url ||
+            "https://via.placeholder.com/400x400?text=Medicine"
+          }
           alt={medicine.name}
-          className="w-40 h-40 object-contain"
+          loading="lazy"
+          className="w-full h-full object-contain p-8 transition-transform duration-300 group-hover:scale-105"
         />
       </div>
 
-      {/* Content */}
-      <div className="p-4">
-        {/* Category */}
-        <span className="inline-block text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">
-          {medicine.category}
-        </span>
-
-        {/* Medicine Name */}
-        <h2 className="mt-3 text-lg font-semibold text-gray-800 line-clamp-1">
+      {/* Details */}
+      <div className="mt-4 px-1">
+        {/* Name */}
+        <h2 className="text-[18px] font-semibold text-gray-800 leading-7 line-clamp-2 min-h-14">
           {medicine.name}
+
+          {(medicine.strength || medicine.brand) && (
+            <span >
+              {" "}
+              | {medicine.strength}
+              {medicine.strength && medicine.brand && " • "}
+              {medicine.brand}
+            </span>
+          )}
         </h2>
 
-        {/* Generic Name */}
-        <p className="text-sm text-gray-500">
-          {medicine.genericName || "Generic name not available"}
-        </p>
-
-        {/* Manufacturer */}
-        <p className="text-sm text-gray-600 mt-2">
-          {medicine.manufacturer}
-        </p>
-
-        {/* Pharmacy */}
-        <div className="flex items-center gap-2 mt-2 text-sm text-gray-600">
-          <LocalPharmacyOutlinedIcon fontSize="small" />
-          <span>{medicine.pharmacy?.pharmacyName || "Pharmacy"}</span>
-        </div>
-
-        {/* Stock */}
-        <div className="flex items-center gap-2 mt-2 text-sm">
-          <Inventory2OutlinedIcon fontSize="small" />
-          <span
-            className={
-              medicine.stock > 0 ? "text-green-600" : "text-red-600"
-            }
-          >
-            {medicine.stock > 0
-              ? `${medicine.stock} in stock`
-              : "Out of Stock"}
-          </span>
-        </div>
-
         {/* Price */}
-        <div className="mt-4 flex items-center justify-between">
-          <span className="text-2xl font-bold text-purple-700">
-            Rs. {medicine.unitPrice}
+        <div className=" flex items-center">
+          <span className=" font-bold text-lime-600">
+            Rs. {Number(medicine.unitPrice).toFixed(0)}
           </span>
-        </div>
-
-        {/* Buttons */}
-        <div className="mt-4 flex gap-2">
-          <button
-            onClick={() => navigate(`/medicine/${medicine._id}`)}
-            className="flex-1 flex items-center justify-center gap-2 border border-purple-600 text-purple-600 py-2 rounded-lg hover:bg-purple-50"
-          >
-            <VisibilityOutlinedIcon fontSize="small" />
-            Details
-          </button>
-
-          <button
-            className="flex-1 flex items-center justify-center gap-2 bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
-          >
-            <ShoppingCartOutlinedIcon fontSize="small" />
-            Add
-          </button>
         </div>
       </div>
     </div>

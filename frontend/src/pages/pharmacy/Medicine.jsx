@@ -5,7 +5,7 @@ import MedicineSearchBar from "../../Components/pharmacy/medicines/MedicineSearc
 import MedicineFilters from "../../Components/pharmacy/medicines/MedicineFilters";
 import MedicineList from "../../Components/pharmacy/medicines/MedicineList";
 
-import { useMedicine } from "../../hooks/useMedicine";
+import { useMedicine } from "../../hooks/pharmacy/useMedicines";
 
 const Medicine = () => {
   const [filters, setFilters] = useState({
