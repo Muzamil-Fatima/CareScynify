@@ -7,9 +7,10 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import { useAuth } from "../hooks/useAuth";
-import {logoutUser} from "../api/authApi"
+import { logoutUser } from "../api/authApi";
 const SideBar = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
@@ -34,6 +35,11 @@ const SideBar = () => {
       path: "/appointments",
     },
     { name: "Reports", icon: <DescriptionOutlinedIcon />, path: "/reports" },
+    {
+      name: "My Orders",
+      icon: <ShoppingBagOutlinedIcon />,
+      path: "/orders",
+    },
     {
       name: "Symptom Analyzer",
       icon: <PsychologyOutlinedIcon />,

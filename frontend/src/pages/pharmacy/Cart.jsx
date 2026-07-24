@@ -20,16 +20,16 @@ const Cart = () => {
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
             <Link
-              to="/pharmacy"
+              to="/medicine"
               className="mb-3 inline-flex items-center gap-2 text-purple-700 hover:underline"
             >
               <ArrowBackRoundedIcon fontSize="small" />
-              Continue Shopping
+              Go back to Medicines
             </Link>
 
             <h1 className="flex items-center gap-3 text-3xl font-bold text-gray-900">
               <ShoppingCartOutlinedIcon sx={{ fontSize: 34 }} />
-              Shopping Cart
+              Item's Cart
             </h1>
 
             <p className="mt-2 text-gray-500">

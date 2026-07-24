@@ -7,7 +7,7 @@ import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined
 import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
-import { useCartContext } from "../../context/CartContext";
+import { useCartContext } from "../../context/pharmacy/CartContext";
 const Checkout = () => {
   const navigate = useNavigate();
 

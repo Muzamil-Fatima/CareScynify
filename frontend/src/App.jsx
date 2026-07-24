@@ -16,6 +16,8 @@ import RoleSelection from "./pages/RoleSelection";
 // pharmacy
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Medicine from "./pages/pharmacy/Medicine";
+import Cart from "./pages/pharmacy/Cart";
+import Checkout from "./pages/pharmacy/Checkout";
 //  auth pages
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/SignUp";
@@ -34,6 +36,8 @@ import RootLayout from "./layout/RootLayout";
 import Security from "./Components/settings/Security";
 import SymptomAnalyzer from "./pages/patients/SymptomAnalyzer";
 import MedicineDetails from "./pages/pharmacy/MedicineDetail";
+import OrderSuccess from "./pages/pharmacy/OrderSuccess";
+import MyOrders from "./pages/patients/MyOrder";
 function App() {
   return (
     <RootLayout>
@@ -66,7 +70,10 @@ function App() {
           {/* pharmacy */}
           <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/medicine" element={<Medicine />} />
-          <Route path="/medicine/:id"   element={<MedicineDetails />}/>
+          <Route path="/medicine/:id" element={<MedicineDetails />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-success" element={<OrderSuccess />} />
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -84,6 +91,7 @@ function App() {
           <Route path="/report-viewer" element={<PdfViewer />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/security" element={<Security />} />
+          <Route path="/orders" element={<MyOrders />} />
           <Route path="/symptom-analyzer" element={<SymptomAnalyzer />} />
         </Route>
       </Routes>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-
+import { Activity } from "lucide-react";
 import CartDrawer from "./pharmacy/cart/CartDrawer";
 import MedicalServicesOutlinedIcon from "@mui/icons-material/MedicalServicesOutlined";
 import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
@@ -33,11 +33,15 @@ const Navbar = () => {
     <header className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-gray-200">
       <div className="max-w-6xl mx-auto flex items-center justify-between px-4 lg:px-6 py-3">
         {/* Logo */}
+
         <Link
           to="/"
           className="text-2xl font-bold bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
         >
-          CareScynify
+          <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-purple-500">
+            <Activity className="w-5 h-5 text-[#EAF3EF]" strokeWidth={2.4} />
+          </span>
+          <span> CareScynify</span>
         </Link>
 
         {/* Desktop Menu */}
