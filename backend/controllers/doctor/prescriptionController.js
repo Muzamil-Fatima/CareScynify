@@ -1,5 +1,5 @@
-import Doctor from "../models/doctorModel.js";
-import Prescription from "../models/PrescriptionModel.js";
+import Doctor from "../../models/doctorModel.js";
+import Prescription from "../../models/PrescriptionModel.js";
 
 export const createPrescription = async (req, res) => {
   try {

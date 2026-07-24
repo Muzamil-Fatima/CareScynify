@@ -6,7 +6,7 @@ import {
   deleteDoctorPatient,
   getDoctorPatient,
   getDoctorPatients
-} from "../controllers/DoctorPatientController.js";
+} from "../controllers/doctor/DoctorPatientController.js";
 
 const router = express.Router();
 

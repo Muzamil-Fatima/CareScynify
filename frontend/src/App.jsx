@@ -10,10 +10,12 @@ import LandingPage from "./pages/Home/LandingPage";
 import AboutUs from "./pages/AboutUs";
 import Doctor from "./pages/doctor/Doctor";
 import Laboratory from "./pages/laboratory/Laboratory";
-import Pharmacy from "./pages/pharmacy/Pharmacy";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
 import BookAppointment from "./Components/doctor/BookAppointment";
 import RoleSelection from "./pages/RoleSelection";
+// pharmacy
+import Pharmacy from "./pages/pharmacy/Pharmacy";
+import Medicine from "./pages/pharmacy/Medicine";
 //  auth pages
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/SignUp";
@@ -59,8 +61,10 @@ function App() {
           <Route path="/doctor/:id" element={<DoctorProfile />} />
           <Route path="/doctor/:id/book" element={<BookAppointment />} />
           <Route path="/laboratory" element={<Laboratory />} />
-          <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/role-selection" element={<RoleSelection />} />
+          {/* pharmacy */}
+          <Route path="/pharmacy" element={<Pharmacy />} />
+          <Route path="/medicine" element={<Medicine />} />
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />

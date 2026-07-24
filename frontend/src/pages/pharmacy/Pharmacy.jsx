@@ -2,7 +2,11 @@ import React from "react";
 import { usePharmacy } from "../../hooks/usePharmacy";
 
 const Pharmacy = () => {
-  const { pharmacies, setSelectedPharmacy } = usePharmacy();
+  const { pharmacies, setSelectedPharmacy, loading } = usePharmacy();
+
+  if (loading) {
+    return <p className="text-center mt-10">Loading pharmacies...</p>;
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 px-6 py-10">
@@ -13,35 +17,58 @@ const Pharmacy = () => {
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {pharmacies.map((pharmacy) => (
           <div
-            key={pharmacy.id}
+            key={pharmacy._id}
             className="bg-white p-5 rounded-2xl shadow-md hover:shadow-xl transition"
           >
-            {/* Name */}
-            <h2 className="text-xl font-semibold">{pharmacy.name}</h2>
+            <h2 className="text-xl font-semibold">
+              {pharmacy.pharmacyName}
+            </h2>
 
-            {/* Location */}
-            <p className="text-blue-600 mt-1">📍 {pharmacy.location}</p>
-            <p className="text-gray-500 text-sm">{pharmacy.address}</p>
+            <p className="text-purple-600 mt-1">
+              📍 {pharmacy.city}
+            </p>
 
-            {/* Rating */}
-            <p className="mt-2 text-sm">⭐ Rating: {pharmacy.rating}</p>
+            <p className="text-gray-500 text-sm">
+              {pharmacy.address}
+            </p>
 
-            {/* Services */}
+            <p className="mt-2 text-sm">
+              Type: {pharmacy.pharmacyType}
+            </p>
+
+            <p
+              className={`mt-1 text-sm font-medium ${
+                pharmacy.isOpen
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {pharmacy.isOpen ? "Open" : "Closed"}
+            </p>
+
             <div className="mt-3 flex flex-wrap gap-2">
-              {pharmacy.services.map((service, i) => (
-                <span
-                  key={i}
-                  className="text-xs bg-gray-200 px-2 py-1 rounded-full"
-                >
-                  {service}
+              {pharmacy.homeDelivery && (
+                <span className="text-xs bg-gray-200 px-2 py-1 rounded-full">
+                  Home Delivery
                 </span>
-              ))}
+              )}
+
+              {pharmacy.acceptPrescription && (
+                <span className="text-xs bg-gray-200 px-2 py-1 rounded-full">
+                  Prescription
+                </span>
+              )}
+
+              {pharmacy.cashOnDelivery && (
+                <span className="text-xs bg-gray-200 px-2 py-1 rounded-full">
+                  Cash on Delivery
+                </span>
+              )}
             </div>
 
-            {/* Button */}
             <button
               onClick={() => setSelectedPharmacy(pharmacy)}
-              className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+              className="mt-4 w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
             >
               Order Medicines
             </button>

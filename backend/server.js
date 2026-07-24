@@ -6,6 +6,7 @@ import express from "express";
 import cookiesParser from "cookie-parser";
 import http from "http";
 import { initSocket } from "./config/socket.js";
+
 //Files
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
@@ -20,10 +21,12 @@ import appointmentRoutes from "./routes/appointmentRoutes.js";
 import prescriptionRoutes from "./routes/prescriptionRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
 import symptomRoutes from "./routes/symptomRoutes.js";
-import doctorPatientRoutes from "./routes/doctorPatientRoutes.js"
+import doctorPatientRoutes from "./routes/doctorPatientRoutes.js";
 // pharmacy
 import medicineRoutes from "./routes/pharmacy/medicineRoutes.js";
 import profileRoutes from "./routes/pharmacy/profileRoutes.js";
+// website 
+import publicPharmacyRoutes from "./routes/publicPharmacyRoutes.js"
 //Configuration
 connectDB();
 connectCloudinary();
@@ -54,13 +57,14 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
 };
 app.use(cors(corsOptions));
+// ========================== website
 // Routes
 app.use("/api/auth", authRoutes);
 //  user routes
 app.use("/api/user", userRouter);
 // use patient routes
 app.use("/api/patient", patientsRoutes);
-
+app.use("/api/public/pharmacies", publicPharmacyRoutes);
 // dr router
 app.use("/api/doctor", doctorRoutes);
 // report router

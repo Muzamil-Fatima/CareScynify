@@ -16,7 +16,7 @@ const DoctorCard = ({ doctor }) => {
         <img
           src={doctor.user?.avatar?.url}
           alt={doctor.user?.name}
-          className="w-20 h-20 rounded-full object-cover"
+          className="w-26 h-26 rounded-full object-cover"
         />
       </div>
 
@@ -31,7 +31,7 @@ const DoctorCard = ({ doctor }) => {
       {/* Experience */}
       <p className="text-center text-sm text-gray-500 mt-2 mb-3">
         {doctor.experience
-          ? `${doctor.experience}+ years experience`
+          ? `${doctor.experience}+ experience`
           : "Experience not added"}
       </p>
 

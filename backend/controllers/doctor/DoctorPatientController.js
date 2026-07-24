@@ -1,7 +1,7 @@
-import DoctorPatient from "../models/doctorAddPatientModel.js";
-import DoctorModel from "../models/doctorModel.js";
-import User from "../models/user.js";
-import Patient from "../models/patientModel.js";
+import DoctorPatient from "../../models/doctorAddPatientModel.js";
+import DoctorModel from "../../models/doctorModel.js";
+import User from "../../models/user.js";
+import Patient from "../../models/patientModel.js";
 // Add Doctor Patient
 export const addDoctorPatient = async (req, res) => {
   try {

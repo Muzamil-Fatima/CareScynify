@@ -42,19 +42,18 @@ const Navbar = () => {
               Doctors
             </NavLink>
           </li>
+          {/* Pharmacy */}
+          <li>
+            <NavLink to="/medicine" className={navItemClass}>
+              <LocalPharmacyOutlinedIcon fontSize="small" />
+              Pharmacy
+            </NavLink>
+          </li>
           {/* Laboratory */}
           <li>
             <NavLink to="/laboratory" className={navItemClass}>
               <ScienceOutlinedIcon fontSize="small" />
               Laboratory
-            </NavLink>
-          </li>
-
-          {/* Pharmacy */}
-          <li>
-            <NavLink to="/pharmacy" className={navItemClass}>
-              <LocalPharmacyOutlinedIcon fontSize="small" />
-              Pharmacy
             </NavLink>
           </li>
 

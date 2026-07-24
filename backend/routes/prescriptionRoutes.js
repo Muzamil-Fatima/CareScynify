@@ -10,7 +10,7 @@ deletePrescription,
 
   getMyPrescriptions,
   getMyPrescriptionById,
-} from "../controllers/prescriptionController.js";
+} from "../controllers/doctor/prescriptionController.js";
 
 import { protect } from "../middleware/auth.js";
 const router = express.Router();
