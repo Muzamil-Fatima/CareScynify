@@ -1,4 +1,16 @@
+
 import React from "react";
+import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
+import ShoppingBagRoundedIcon from "@mui/icons-material/ShoppingBagRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
+import {
+  FaCapsules,
+  FaClipboardList,
+  FaUsers,
+  FaMoneyBillTrendUp,
+} from "react-icons/fa6";
+
 import {
   BarChart,
   Bar,
@@ -11,123 +23,290 @@ import {
   Pie,
   Cell,
 } from "recharts";
-import { FaCapsules, FaShoppingCart, FaUsers, FaArrowUp } from "react-icons/fa";
 
-const PharmacyDashboard = () => {
+const Dashboard = () => {
   const salesData = [
     { name: "Mon", sales: 400 },
-    { name: "Tue", sales: 300 },
-    { name: "Wed", sales: 600 },
-    { name: "Thu", sales: 800 },
-    { name: "Fri", sales: 500 },
-    { name: "Sat", sales: 900 },
+    { name: "Tue", sales: 650 },
+    { name: "Wed", sales: 500 },
+    { name: "Thu", sales: 900 },
+    { name: "Fri", sales: 700 },
+    { name: "Sat", sales: 1100 },
   ];
 
-  const stockData = [
-    { name: "Tablets", value: 400 },
-    { name: "Syrups", value: 300 },
-    { name: "Injections", value: 100 },
-    { name: "Capsules", value: 200 },
+  const inventoryData = [
+    {
+      name: "Tablets",
+      value: 450,
+    },
+    {
+      name: "Syrup",
+      value: 200,
+    },
+    {
+      name: "Capsules",
+      value: 300,
+    },
+    {
+      name: "Injection",
+      value: 100,
+    },
   ];
 
-  const COLORS = ["#2563eb", "#10b981", "#f59e0b", "#ef4444"];
+  const COLORS = ["#6366f1", "#10b981", "#f59e0b", "#ef4444"];
+
+  const stats = [
+    {
+      title: "Total Medicines",
+      value: "1,240",
+      icon: <Inventory2RoundedIcon />,
+      style: "bg-purple-50 text-purple-600",
+    },
+
+    {
+      title: "Total Orders",
+      value: "356",
+      icon: <ShoppingBagRoundedIcon />,
+      style: "bg-blue-50 text-blue-600",
+    },
+
+    {
+      title: "Customers",
+      value: "842",
+      icon: <PeopleAltRoundedIcon />,
+      style: "bg-green-50 text-green-600",
+    },
+
+    {
+      title: "Revenue",
+      value: "$12,450",
+      icon: <TrendingUpRoundedIcon />,
+      style: "bg-orange-50 text-orange-600",
+    },
+  ];
 
   return (
-    <div className="p-8 bg-[#f8f9fe] min-h-screen">
-      <h1 className="text-4xl font-black text-blue-950 mb-8">
-        System Analytics
-      </h1>
+    <div className="min-h-screen bg-slate-100">
+      <div className="mx-auto max-w-7xl px-3 py-6 sm:px-5 lg:px-6">
+        {/* Header */}
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        {[
-          {
-            label: "Daily Sales",
-            val: "$2,450",
-            icon: <FaShoppingCart />,
-            color: "text-blue-600",
-            bg: "bg-blue-100",
-          },
-          {
-            label: "Total Stock",
-            val: "1,240",
-            icon: <FaCapsules />,
-            color: "text-emerald-600",
-            bg: "bg-emerald-100",
-          },
-          {
-            label: "New Customers",
-            val: "84",
-            icon: <FaUsers />,
-            color: "text-purple-600",
-            bg: "bg-purple-100",
-          },
-          {
-            label: "Revenue Growth",
-            val: "+12.5%",
-            icon: <FaArrowUp />,
-            color: "text-orange-600",
-            bg: "bg-orange-100",
-          },
-        ].map((item, i) => (
-          <div
-            key={i}
-            className="bg-white p-6 rounded-4xl shadow-sm flex items-center gap-4 transition-transform hover:scale-105"
-          >
-            <div className={`${item.bg} ${item.color} p-4 rounded-2xl`}>
-              {item.icon}
+        <div className="mb-6">
+          <h1 className="text-2xl font-semibold text-slate-900">
+            Pharmacy Dashboard
+          </h1>
+
+          <p className="mt-1 text-sm text-slate-500">
+            Manage medicines, orders and pharmacy performance
+          </p>
+        </div>
+
+        {/* Stats */}
+
+        <div
+          className="
+grid 
+grid-cols-1 
+sm:grid-cols-2 
+xl:grid-cols-4 
+gap-5
+"
+        >
+          {stats.map((item, index) => (
+            <div
+              key={index}
+              className="
+rounded-3xl
+border
+border-slate-200
+bg-white
+p-5
+flex
+items-center
+gap-4
+"
+            >
+              <div
+                className={`
+h-12
+w-12
+rounded-2xl
+flex
+items-center
+justify-center
+text-xl
+${item.style}
+`}
+              >
+                {item.icon}
+              </div>
+
+              <div>
+                <p className="text-sm text-slate-500">{item.title}</p>
+
+                <h2 className="mt-1 text-2xl font-semibold text-slate-900">
+                  {item.value}
+                </h2>
+              </div>
             </div>
-            <div>
-              <p className="text-gray-400 font-bold text-xs uppercase">
-                {item.label}
-              </p>
-              <h3 className="text-2xl font-black text-gray-800">{item.val}</h3>
+          ))}
+        </div>
+
+        {/* Charts */}
+
+        <div
+          className="
+grid 
+grid-cols-1 
+lg:grid-cols-2 
+gap-6 
+mt-6
+"
+        >
+          {/* Sales */}
+
+          <div
+            className="
+rounded-3xl
+border
+border-slate-200
+bg-white
+p-5
+"
+          >
+            <h2
+              className="
+text-lg
+font-semibold
+text-slate-900
+"
+            >
+              Weekly Sales
+            </h2>
+
+            <p className="text-sm text-slate-500 mb-5">
+              Order revenue overview
+            </p>
+
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={salesData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+
+                  <XAxis dataKey="name" />
+
+                  <YAxis />
+
+                  <Tooltip />
+
+                  <Bar dataKey="sales" fill="#6366f1" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </div>
           </div>
-        ))}
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-50">
-          <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
-            Weekly Sales
-          </h2>
-          <div className="h-75">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={salesData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Bar dataKey="sales" fill="#2563eb" radius={[10, 10, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          {/* Inventory */}
+
+          <div
+            className="
+rounded-3xl
+border
+border-slate-200
+bg-white
+p-5
+"
+          >
+            <h2
+              className="
+text-lg
+font-semibold
+text-slate-900
+"
+            >
+              Medicine Inventory
+            </h2>
+
+            <p className="text-sm text-slate-500 mb-5">
+              Stock category distribution
+            </p>
+
+            <div className="h-72">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={inventoryData}
+                    dataKey="value"
+                    innerRadius={70}
+                    outerRadius={100}
+                    paddingAngle={5}
+                  >
+                    {inventoryData.map((_, index) => (
+                      <Cell key={index} fill={COLORS[index]} />
+                    ))}
+                  </Pie>
+
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-gray-50">
-          <h2 className="text-xl font-bold text-gray-800 mb-6 text-center">
-            Stock Distribution
+        {/* Recent Activity */}
+
+        <div
+          className="
+mt-6
+rounded-3xl
+border
+border-slate-200
+bg-white
+p-5
+"
+        >
+          <h2 className="text-lg font-semibold text-slate-900">
+            Recent Activity
           </h2>
-          <div className="h-75">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={stockData}
-                  innerRadius={80}
-                  outerRadius={110}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {stockData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+
+          <div className="mt-4 space-y-3">
+            <div
+              className="
+flex
+justify-between
+border-b
+pb-3
+text-sm
+"
+            >
+              <span className="text-slate-600">New order received</span>
+
+              <span className="text-blue-600">ORD-10245</span>
+            </div>
+
+            <div
+              className="
+flex
+justify-between
+border-b
+pb-3
+text-sm
+"
+            >
+              <span className="text-slate-600">Medicine stock updated</span>
+
+              <span className="text-green-600">Paracetamol</span>
+            </div>
+
+            <div
+              className="
+flex
+justify-between
+text-sm
+"
+            >
+              <span className="text-slate-600">Prescription uploaded</span>
+
+              <span className="text-purple-600">Patient</span>
+            </div>
           </div>
         </div>
       </div>
@@ -135,4 +314,4 @@ const PharmacyDashboard = () => {
   );
 };
 
-export default PharmacyDashboard;
+export default Dashboard;
