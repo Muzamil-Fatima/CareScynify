@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 
 const MedicineCard = ({ medicine }) => {
   const navigate = useNavigate();
@@ -13,13 +12,7 @@ const MedicineCard = ({ medicine }) => {
     <div onClick={handleCardClick} className="group cursor-pointer">
       {/* Image Card */}
       <div className="relative aspect-square rounded-2xl border border-gray-200 bg-white overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-purple-200">
-        {/* Wishlist */}
-        <button
-          onClick={(e) => e.stopPropagation()}
-          className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-purple-500 hover:bg-purple-50 transition"
-        >
-          <FavoriteBorderRoundedIcon fontSize="small" />
-        </button>
+      
 
         {/* Image */}
         <img
@@ -36,7 +29,7 @@ const MedicineCard = ({ medicine }) => {
       {/* Details */}
       <div className="mt-4 px-1">
         {/* Name */}
-        <h2 className="text-[18px] font-semibold text-gray-800 leading-7 line-clamp-2 min-h-14">
+        <h2 className="text-[18px] font-semibold text-gray-800 leading-7 line-clamp-2 min-h-8">
           {medicine.name}
 
           {(medicine.strength || medicine.brand) && (
