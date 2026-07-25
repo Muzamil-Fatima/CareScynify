@@ -3,28 +3,28 @@ import express from "express";
 import {
   placeOrder,
   getPatientOrders,
-  getAllOrders,
-  getOrder,
+  getMyPharmacyOrders,
   updateOrderStatus,
-} from "../controllers/pharmacyOrderController.js";
+  getOrder,
+} from "../../controllers/pharmacy/pharmacyOrderController.js";
 
-import { protect } from "../middleware/authMiddleware.js";
+import { protect } from "../../middleware/auth.js";
 
 const router = express.Router();
 
-router.use(protect);
+// Place Order
+router.post("/place", protect, placeOrder);
 
-router
-  .route("/")
-  .post(placeOrder)
-  .get(getAllOrders);
+// Get Patient Orders
+router.get("/my-orders", protect, getPatientOrders);
 
-router.get("/patient", getPatientOrders);
+// Get Pharmacy Orders
+router.get("/pharmacy-orders", protect, getMyPharmacyOrders);
 
-router
-  .route("/:id")
-  .get(getOrder);
+// Update Order Status
+router.put("/:id/status", protect, updateOrderStatus);
 
-router.patch("/:id/status", updateOrderStatus);
+// Get Order Detail
+router.get("/:id", protect, getOrder);
 
 export default router;

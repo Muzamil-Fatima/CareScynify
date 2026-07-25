@@ -38,6 +38,7 @@ import SymptomAnalyzer from "./pages/patients/SymptomAnalyzer";
 import MedicineDetails from "./pages/pharmacy/MedicineDetail";
 import OrderSuccess from "./pages/pharmacy/OrderSuccess";
 import MyOrders from "./pages/patients/MyOrder";
+import OrderDetails from "./pages/patients/OrderDetails";
 function App() {
   return (
     <RootLayout>
@@ -74,6 +75,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
+          <Route path="/order-success/:orderId" element={<OrderSuccess />} />
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -92,6 +94,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/security" element={<Security />} />
           <Route path="/orders" element={<MyOrders />} />
+          <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route path="/symptom-analyzer" element={<SymptomAnalyzer />} />
         </Route>
       </Routes>

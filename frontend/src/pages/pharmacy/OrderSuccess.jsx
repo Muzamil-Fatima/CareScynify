@@ -1,10 +1,19 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useParams } from "react-router-dom";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import LocalPharmacyOutlinedIcon from "@mui/icons-material/LocalPharmacyOutlined";
-
+import { useOrderContext } from "../../context/pharmacy/OrderContext";
 const OrderSuccess = () => {
+  const { orderId } = useParams();
+
+  const { fetchOrderById, order } = useOrderContext();
+
+ useEffect(() => {
+  if (orderId) {
+    fetchOrderById(orderId);
+  }
+}, [orderId, fetchOrderById]);
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-lg rounded-3xl bg-white p-8 text-center shadow-xl">
@@ -17,9 +26,7 @@ const OrderSuccess = () => {
         </div>
 
         {/* Heading */}
-        <h1 className="mt-6 text-3xl font-bold text-gray-900">
-          Order Placed!
-        </h1>
+        <h1 className="mt-6 text-3xl font-bold text-gray-900">Order Placed!</h1>
 
         <p className="mt-3 text-gray-600">
           Thank you for your order. Your medicines have been successfully
@@ -30,12 +37,16 @@ const OrderSuccess = () => {
         <div className="mt-8 rounded-2xl bg-gray-50 p-5 text-left">
           <div className="flex justify-between">
             <span className="text-gray-500">Order ID</span>
-            <span className="font-semibold">#ORD123456</span>
+            <span className="font-semibold">
+  {order?.orderId || "-"}
+</span>
           </div>
 
           <div className="mt-3 flex justify-between">
             <span className="text-gray-500">Payment</span>
-            <span className="font-semibold text-green-600">Confirmed</span>
+            <span className="font-semibold text-green-600">
+  {order?.paymentStatus}
+</span>
           </div>
 
           <div className="mt-3 flex justify-between">
@@ -55,11 +66,11 @@ const OrderSuccess = () => {
           </Link>
 
           <Link
-            to="/pharmacy"
+            to="/medicine"
             className="flex w-full items-center justify-center gap-2 rounded-xl border border-purple-700 py-3 font-semibold text-purple-700 hover:bg-purple-50"
           >
             <LocalPharmacyOutlinedIcon />
-            Continue Shopping
+            More Medicine
           </Link>
         </div>
       </div>

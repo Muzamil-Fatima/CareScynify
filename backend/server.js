@@ -26,9 +26,10 @@ import doctorPatientRoutes from "./routes/doctorPatientRoutes.js";
 import medicineRoutes from "./routes/pharmacy/medicineRoutes.js";
 import profileRoutes from "./routes/pharmacy/profileRoutes.js";
 import cartRoutes from "./routes/pharmacy/cartRoutes.js";
-// website 
-import publicPharmacyRoutes from "./routes/userSite/publicPharmacyRoutes.js"
-import publicMedicineRoutes from "./routes/userSite/publicMedicineRoutes.js"
+import pharmacyOrderRoutes from "./routes/pharmacy/pharmacyOrderRoutes.js"
+// website
+import publicPharmacyRoutes from "./routes/userSite/publicPharmacyRoutes.js";
+import publicMedicineRoutes from "./routes/userSite/publicMedicineRoutes.js";
 //Configuration
 connectDB();
 connectCloudinary();
@@ -67,7 +68,7 @@ app.use("/api/user", userRouter);
 // use patient routes
 app.use("/api/patient", patientsRoutes);
 app.use("/api/public/pharmacies", publicPharmacyRoutes);
-app.use("/api/public/medicine", publicMedicineRoutes)
+app.use("/api/public/medicine", publicMedicineRoutes);
 // dr router
 app.use("/api/doctor", doctorRoutes);
 // report router
@@ -87,6 +88,8 @@ app.use("/api/doctor-patients", doctorPatientRoutes);
 app.use("/api/medicineRoutes", medicineRoutes);
 app.use("/api/pharmacy", profileRoutes);
 app.use("/api/cart", cartRoutes);
+// Pharmacy Order Routes
+app.use("/api/pharmacy/orders", pharmacyOrderRoutes);
 // server listen
 const server = http.createServer(app);
 

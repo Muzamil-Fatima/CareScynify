@@ -8,12 +8,13 @@ import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import NoteAltOutlinedIcon from "@mui/icons-material/NoteAltOutlined";
 import { useCartContext } from "../../context/pharmacy/CartContext";
+import { useOrderContext } from "../../context/pharmacy/OrderContext";
 import toast from "react-hot-toast";
 const Checkout = () => {
   const navigate = useNavigate();
 
   const { cartItems, subtotal } = useCartContext();
-
+  const { createOrder, loading } = useOrderContext();
   const deliveryFee = 0;
   const total = subtotal + deliveryFee;
 
@@ -32,7 +33,8 @@ const Checkout = () => {
       [e.target.name]: e.target.value,
     });
   };
-  const handlePlaceOrder = () => {
+
+  const handlePlaceOrder = async () => {
     if (!formData.fullName.trim()) {
       toast.error("Please enter your full name.");
       return;
@@ -62,10 +64,21 @@ const Checkout = () => {
       toast.error("Your cart is empty.");
       return;
     }
+    try {
+      const response = await createOrder({
+        fullName: formData.fullName,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        notes: formData.notes,
+        paymentMethod: formData.paymentMethod,
+      });
 
-    console.log(formData);
-
-    navigate("/order-success");
+      toast.success("Order placed successfully.");
+      navigate(`/order-success/${response.order._id}`);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to place order.");
+    }
   };
   const isFormValid =
     formData.fullName.trim() &&
@@ -272,14 +285,14 @@ const Checkout = () => {
 
               <button
                 onClick={handlePlaceOrder}
-                disabled={!isFormValid}
+                disabled={!isFormValid || loading}
                 className={`mt-8 w-full rounded-2xl py-3.5 text-base font-semibold text-white transition-all duration-300 ${
                   isFormValid
                     ? "bg-linear-to-r from-purple-600 to-indigo-600 hover:-translate-y-0.5 hover:from-purple-700 hover:to-indigo-700"
                     : "cursor-not-allowed bg-gray-300"
                 }`}
               >
-                Place Order
+                {loading ? "Placing Order..." : "Place Order"}
               </button>
             </div>
           </div>

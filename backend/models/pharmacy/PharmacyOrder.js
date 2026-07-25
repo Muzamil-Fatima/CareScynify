@@ -2,12 +2,21 @@ import mongoose from "mongoose";
 
 const pharmacyOrderSchema = new mongoose.Schema(
   {
+    orderId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
       required: true,
     },
-
+    pharmacyId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Pharmacy",
+      required: true,
+    },
     prescriptionId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Prescription",
@@ -38,17 +47,38 @@ const pharmacyOrderSchema = new mongoose.Schema(
         },
       },
     ],
-
+    deliveryInfo: {
+      fullName: {
+        type: String,
+        required: true,
+      },
+      phone: {
+        type: String,
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      notes: {
+        type: String,
+        default: "",
+      },
+    },
     totalAmount: {
       type: Number,
       required: true,
     },
 
-    paymentMethod: {
-      type: String,
-      enum: ["Cash", "Card", "Online"],
-      default: "Cash",
-    },
+paymentMethod: {
+  type: String,
+  enum: ["Cash on Delivery", "Card", "Online"],
+  default: "Cash on Delivery",
+},
 
     paymentStatus: {
       type: String,
