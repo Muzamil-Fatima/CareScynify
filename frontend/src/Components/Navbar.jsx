@@ -36,10 +36,10 @@ const Navbar = () => {
 
         <Link
           to="/"
-          className="text-2xl font-bold bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
+          className="flex text-2xl font-bold bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
         >
-          <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-purple-500">
-            <Activity className="w-5 h-5 text-[#EAF3EF]" strokeWidth={2.4} />
+          <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 mr-2">
+            <Activity className="w-4 h-4 text-white" strokeWidth={2.4} />
           </span>
           <span> CareScynify</span>
         </Link>

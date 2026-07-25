@@ -1,5 +1,4 @@
-// HowItWorks.jsx
-// Numbered steps are appropriate here — this is a real, ordered process.
+
 
 const STEPS = [
   {
@@ -21,28 +20,37 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section className="bg-[#0B2B27] py-20 md:py-28 text-[#EAF3EF]">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <span className="font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#8FB3AA]">
-          How it works
-        </span>
-        <h2 className="mt-3 font-['Fraunces'] text-3xl md:text-4xl mb-16 max-w-lg">
-          Three steps between you and care.
-        </h2>
+  <section className="bg-linear-to-br from-purple-50 via-white to-violet-50 py-20 md:py-28">
+  <div className="max-w-7xl mx-auto px-6 md:px-10">
+    <span className="font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-purple-600">
+      How it works
+    </span>
 
-        <div className="grid md:grid-cols-3 gap-10 md:gap-8 relative">
-          {STEPS.map((step, i) => (
-            <div key={step.n} className="relative">
-              <p className="font-['IBM_Plex_Mono'] text-5xl text-[#1F5C53]">{step.n}</p>
-              <h3 className="mt-4 font-['Fraunces'] text-2xl">{step.title}</h3>
-              <p className="mt-3 text-[#8FB3AA] max-w-xs">{step.desc}</p>
-              {i < STEPS.length - 1 && (
-                <div className="hidden md:block absolute top-6 -right-4 w-8 h-px bg-[#1F5C53]" />
-              )}
-            </div>
-          ))}
+    <h2 className="mt-3 font-['Fraunces'] text-3xl md:text-4xl text-gray-900 mb-16 max-w-lg">
+      Three steps between you and care.
+    </h2>
+
+    <div className="grid md:grid-cols-3 gap-8">
+      {STEPS.map((step) => (
+        <div
+          key={step.n}
+          className="bg-white border border-purple-100 rounded-3xl p-8 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+        >
+          <p className="font-['IBM_Plex_Mono'] text-5xl font-bold bg-linear-to-r from-purple-500 to-indigo-500 bg-clip-text text-transparent">
+            {step.n}
+          </p>
+
+          <h3 className="mt-5 font-['Fraunces'] text-2xl text-gray-900">
+            {step.title}
+          </h3>
+
+          <p className="mt-3 text-gray-600 leading-7">
+            {step.desc}
+          </p>
         </div>
-      </div>
-    </section>
+      ))}
+    </div>
+  </div>
+</section>
   );
 }

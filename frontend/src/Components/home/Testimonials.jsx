@@ -21,26 +21,44 @@ const REVIEWS = [
 
 export default function Testimonials() {
   return (
-    <section className="bg-[#F5F9F7] py-20 md:py-28">
+    <section className="bg-linear-to-b from-purple-50 to-white py-20 md:py-28">
       <div className="max-w-7xl mx-auto px-6 md:px-10">
-        <span className="font-['IBM_Plex_Mono'] text-xs uppercase tracking-widest text-[#14534B]">
+        <span className="text-xs font-semibold uppercase tracking-widest text-purple-600">
           Trusted by patients & doctors
         </span>
-        <h2 className="mt-3 font-['Fraunces'] text-3xl md:text-4xl text-[#0B2B27] mb-14 max-w-lg">
+
+        <h2 className="mt-3 text-3xl md:text-4xl font-bold text-gray-900 mb-14 max-w-lg">
           What people are saying.
         </h2>
 
         <div className="grid md:grid-cols-3 gap-6">
           {REVIEWS.map((r) => (
-            <div key={r.name} className="bg-white border border-[#D8E6E1] rounded-2xl p-7">
-              <div className="flex gap-1 text-[#E8A33D] mb-4">
+            <div
+              key={r.name}
+              className="bg-white border border-purple-100 rounded-2xl p-7 shadow-sm hover:shadow-lg transition-all duration-300"
+            >
+              <div className="flex gap-1 text-amber-400 mb-4">
                 {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4" fill="#E8A33D" strokeWidth={0} />
+                  <Star
+                    key={i}
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    strokeWidth={0}
+                  />
                 ))}
               </div>
-              <p className="text-[#3A5650] mb-6">"{r.text}"</p>
-              <p className="font-medium text-[#0B2B27] text-sm">{r.name}</p>
-              <p className="text-xs text-[#5B7770]">{r.role}</p>
+
+              <p className="text-gray-600 leading-7 mb-6">
+                "{r.text}"
+              </p>
+
+              <p className="font-semibold text-gray-900">
+                {r.name}
+              </p>
+
+              <p className="text-sm text-gray-500">
+                {r.role}
+              </p>
             </div>
           ))}
         </div>
