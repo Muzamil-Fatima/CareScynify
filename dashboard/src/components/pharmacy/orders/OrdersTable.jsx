@@ -12,8 +12,10 @@ const OrdersTable = ({
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
         <table className="min-w-full">
+
           <thead className="bg-gray-50">
             <tr className="border-b border-gray-200">
+
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
                 Order ID
               </th>
@@ -41,13 +43,15 @@ const OrdersTable = ({
               <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">
                 Actions
               </th>
+
             </tr>
           </thead>
+
 
           <tbody className="divide-y divide-gray-100">
             {orders.map((order) => (
               <OrderRow
-                key={order._id}
+                key={order.orderId || order._id}
                 order={order}
                 onView={onView}
                 onUpdateStatus={onUpdateStatus}
@@ -55,6 +59,7 @@ const OrdersTable = ({
               />
             ))}
           </tbody>
+
         </table>
       </div>
     </div>

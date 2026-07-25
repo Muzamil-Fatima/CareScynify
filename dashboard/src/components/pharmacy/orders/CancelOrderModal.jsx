@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
+
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 
-const CancelOrderModal = ({ isOpen, order, onClose, onConfirm }) => {
-  const [reason, setReason] = useState("");
-
+const CancelOrderModal = ({
+  isOpen,
+  order,
+  onClose,
+  onConfirm,
+  reason,
+  setReason,
+}) => {
   if (!isOpen || !order) return null;
 
   const handleConfirm = () => {
-    onConfirm(order, reason);
+    onConfirm();
     setReason("");
     onClose();
   };
@@ -16,14 +22,12 @@ const CancelOrderModal = ({ isOpen, order, onClose, onConfirm }) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="w-full max-w-md rounded-2xl bg-white shadow-xl overflow-hidden">
-
         {/* Header */}
         <div className="flex items-center justify-between border-b px-5 py-4">
           <div className="flex items-center gap-2">
             <WarningAmberRoundedIcon className="text-red-500" />
-            <h2 className="text-lg font-bold text-gray-900">
-              Cancel Order?
-            </h2>
+
+            <h2 className="text-lg font-bold text-gray-900">Cancel Order?</h2>
           </div>
 
           <button
@@ -36,13 +40,11 @@ const CancelOrderModal = ({ isOpen, order, onClose, onConfirm }) => {
 
         {/* Body */}
         <div className="p-5 space-y-4">
-
           <p className="text-gray-600">
-            This action cannot be undone. Are you sure you want to cancel
-            order <span className="font-semibold">#{order._id}</span>?
+            This action cannot be undone. Are you sure you want to cancel order{" "}
+            <span className="font-semibold">#{order.orderId}</span>?
           </p>
 
-          {/* Optional Reason */}
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">
               Reason (optional)

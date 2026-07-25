@@ -5,32 +5,24 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 
 import OrderStatusBadge from "./OrderStatusBadge";
 
-const OrderRow = ({
-  order,
-  onView,
-  onUpdateStatus,
-}) => {
+const OrderRow = ({ order, onView, onUpdateStatus }) => {
   return (
     <tr className="hover:bg-gray-50 transition-colors">
       {/* Order ID */}
       <td className="px-6 py-4 whitespace-nowrap">
-        <p className="font-semibold text-blue-600">
-          #{order._id}
-        </p>
+        <p className="font-semibold text-purple-600">#{order.orderId}</p>
       </td>
 
       {/* Patient */}
       <td className="px-6 py-4 whitespace-nowrap">
         <p className="font-medium text-gray-900">
-          {order.patient?.name}
+          {order.deliveryInfo?.fullName || "N/A"}
         </p>
       </td>
 
       {/* Items */}
       <td className="px-6 py-4 whitespace-nowrap">
-        <span className="text-gray-700">
-          {order.items?.length || 0} Items
-        </span>
+        <span className="text-gray-700">{order.items?.length || 0} Items</span>
       </td>
 
       {/* Amount */}
@@ -42,7 +34,7 @@ const OrderRow = ({
 
       {/* Status */}
       <td className="px-6 py-4 whitespace-nowrap">
-        <OrderStatusBadge status={order.status} />
+        <OrderStatusBadge status={order.orderStatus} />
       </td>
 
       {/* Date */}
@@ -58,7 +50,7 @@ const OrderRow = ({
         <div className="flex items-center justify-center gap-2">
           <button
             onClick={() => onView(order)}
-            className="flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 transition hover:bg-blue-100"
+            className="flex items-center gap-1 rounded-lg border border-purple-200 bg-purple-50 px-3 py-2 text-sm font-medium text-purple-600 transition hover:bg-purple-100"
           >
             <VisibilityRoundedIcon fontSize="small" />
             View

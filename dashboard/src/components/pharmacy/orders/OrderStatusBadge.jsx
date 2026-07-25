@@ -7,7 +7,7 @@ const OrderStatusBadge = ({ status }) => {
         return "bg-yellow-100 text-yellow-700 border-yellow-200";
 
       case "Confirmed":
-        return "bg-blue-100 text-blue-700 border-blue-200";
+        return "bg-purple-100 text-purple-700 border-purple-200";
 
       case "Preparing":
         return "bg-indigo-100 text-indigo-700 border-indigo-200";
@@ -29,7 +29,7 @@ const OrderStatusBadge = ({ status }) => {
   return (
     <span
       className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${getStatusStyles(
-        status
+        status,
       )}`}
     >
       {status}

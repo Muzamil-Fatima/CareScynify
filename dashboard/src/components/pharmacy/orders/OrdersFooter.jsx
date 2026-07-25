@@ -12,8 +12,7 @@ const OrdersFooter = ({
   return (
     <div className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
       <p className="text-sm text-gray-600">
-        Showing{" "}
-        <span className="font-semibold text-gray-900">{start}</span>
+        Showing <span className="font-semibold text-gray-900">{start}</span>
         {" - "}
         <span className="font-semibold text-gray-900">{end}</span>
         {" of "}

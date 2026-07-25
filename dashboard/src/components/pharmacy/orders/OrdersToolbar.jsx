@@ -22,7 +22,7 @@ const OrdersToolbar = ({
             value={search}
             onChange={(e) => onSearchChange?.(e.target.value)}
             placeholder="Search Order..."
-            className="w-full rounded-xl border border-gray-300 py-3 pl-12 pr-4 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="w-full rounded-xl border border-gray-300 py-3 pl-12 pr-4 outline-none transition focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
           />
         </div>
 
@@ -38,7 +38,7 @@ const OrdersToolbar = ({
 
           <button
             onClick={onExport}
-            className="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-medium text-white transition hover:bg-blue-700"
+            className="flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-3 font-medium text-white transition hover:bg-purple-700"
           >
             <DownloadRoundedIcon />
             <span>Export</span>

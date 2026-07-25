@@ -1,7 +1,13 @@
 import { createContext, useContext } from "react";
 
-const OrderContext = createContext();
+export const OrderContext = createContext(null);
 
-export const useOrder = () => useContext(OrderContext);
+export const useOrderContext = () => {
+  const context = useContext(OrderContext);
 
-export default OrderContext;
+  if (!context) {
+    throw new Error("useOrderContext must be used inside OrderProvider.");
+  }
+
+  return context;
+};

@@ -3,18 +3,12 @@ import React from "react";
 import FilterAltRoundedIcon from "@mui/icons-material/FilterAltRounded";
 import RestartAltRoundedIcon from "@mui/icons-material/RestartAltRounded";
 
-const OrdersFilters = ({
-  filters,
-  onFilterChange,
-  onReset,
-}) => {
+const OrdersFilters = ({ filters, onFilterChange, onReset }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
       <div className="flex items-center gap-2 mb-5">
-        <FilterAltRoundedIcon className="text-blue-600" />
-        <h2 className="text-lg font-semibold text-gray-800">
-          Filters
-        </h2>
+        <FilterAltRoundedIcon className="text-purple-600" />
+        <h2 className="text-lg font-semibold text-gray-800">Filters</h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -26,10 +20,8 @@ const OrdersFilters = ({
 
           <select
             value={filters.status}
-            onChange={(e) =>
-              onFilterChange("status", e.target.value)
-            }
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none"
+            onChange={(e) => onFilterChange("status", e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-100 outline-none"
           >
             <option value="">All Status</option>
             <option value="Pending">Pending</option>
@@ -47,10 +39,8 @@ const OrdersFilters = ({
 
           <select
             value={filters.payment}
-            onChange={(e) =>
-              onFilterChange("payment", e.target.value)
-            }
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none"
+            onChange={(e) => onFilterChange("payment", e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-100 outline-none"
           >
             <option value="">All Payments</option>
             <option value="Cash">Cash</option>
@@ -68,10 +58,8 @@ const OrdersFilters = ({
           <input
             type="date"
             value={filters.date}
-            onChange={(e) =>
-              onFilterChange("date", e.target.value)
-            }
-            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none"
+            onChange={(e) => onFilterChange("date", e.target.value)}
+            className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-100 outline-none"
           />
         </div>
 

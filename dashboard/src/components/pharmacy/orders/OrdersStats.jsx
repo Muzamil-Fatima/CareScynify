@@ -18,8 +18,8 @@ const OrdersStats = ({
       title: "Total Orders",
       value: totalOrders,
       icon: <ShoppingBagRoundedIcon fontSize="large" />,
-      bg: "bg-blue-100",
-      color: "text-blue-600",
+      bg: "bg-purple-100",
+      color: "text-purple-600",
     },
     {
       title: "Pending",

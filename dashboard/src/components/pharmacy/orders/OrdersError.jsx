@@ -3,10 +3,7 @@ import React from "react";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 
-const OrdersError = ({
-  message = "Unable to load orders.",
-  onRetry,
-}) => {
+const OrdersError = ({ message = "Unable to load orders.", onRetry }) => {
   return (
     <div className="flex flex-col items-center justify-center rounded-2xl border border-red-200 bg-white px-6 py-16 text-center shadow-sm">
       {/* Icon */}
@@ -23,9 +20,7 @@ const OrdersError = ({
       </h2>
 
       {/* Message */}
-      <p className="mt-2 max-w-md text-gray-500">
-        {message}
-      </p>
+      <p className="mt-2 max-w-md text-gray-500">{message}</p>
 
       {/* Retry Button */}
       <button
