@@ -41,18 +41,18 @@ export const addReport = async (req, res) => {
       streamifier.createReadStream(req.file.buffer).pipe(stream);
     });
 
-    console.log("Cloudinary Result:", result);
+    // console.log("Cloudinary Result:", result);
 
     //  Create proper file URL
     let fileUrl = result.secure_url;
 
-    console.log("Final File URL:", fileUrl);
-    console.log("Cloudinary Result:", {
-      secure_url: result.secure_url,
-      public_id: result.public_id,
-      resource_type: result.resource_type,
-      format: result.format,
-    });
+    // console.log("Final File URL:", fileUrl);
+    // console.log("Cloudinary Result:", {
+    //   secure_url: result.secure_url,
+    //   public_id: result.public_id,
+    //   resource_type: result.resource_type,
+    //   format: result.format,
+    // });
     // Save report in DB
     const report = await Report.create({
       userId: req.userId,
@@ -78,13 +78,13 @@ export const addReport = async (req, res) => {
 
       await report.save();
     } catch (error) {
-      console.log("Background AI Processing Error:", error.message || error);
+      // console.log("Background AI Processing Error:", error.message || error);
 
       report.status = "Failed";
       await report.save();
     }
   } catch (error) {
-    console.log("Upload Error:", error);
+    // console.log("Upload Error:", error);
 
     res.status(500).json({
       message: error.message,

@@ -154,7 +154,7 @@ export const updateDoctorProfile = async (req, res) => {
       doctor,
     });
   } catch (error) {
-    console.log("Update Profile Error:", error);
+    // console.log("Update Profile Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -345,7 +345,7 @@ export const addDoctorCredential = async (req, res) => {
       credential: doctor.credentials[doctor.credentials.length - 1],
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     res.status(500).json({
       success: false,

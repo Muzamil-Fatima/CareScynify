@@ -12,13 +12,17 @@ const DoctorCard = ({ doctor }) => {
   return (
     <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition border border-gray-100">
       {/* Avatar */}
-      <div className="flex justify-center mb-3">
-        <img
-          src={doctor.user?.avatar?.url}
-          alt={doctor.user?.name}
-          className="w-26 h-26 rounded-full object-cover"
-        />
-      </div>
+     {doctor.user?.avatar?.url ? (
+  <img
+    src={doctor.user.avatar.url}
+    alt={doctor.user?.name}
+    className="w-26 h-26 rounded-full object-cover"
+  />
+) : (
+  <div className="w-26 h-26 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+    👤
+  </div>
+)}
 
       {/* Name */}
       <h2 className="text-lg font-semibold text-center">{doctor.user?.name}</h2>

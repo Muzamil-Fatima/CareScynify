@@ -223,11 +223,11 @@ const verifyOtp = asyncHandler(async (req, res) => {
 // 2 factor authentication
 const toggleTwoFactor = async (req, res) => {
   try {
-    console.log("REQ USER:", req.user);
+    // console.log("REQ USER:", req.user);
 
     const user = await User.findById(req.user._id);
 
-    console.log("DB USER BEFORE:", user.twoFactorEnabled);
+    // console.log("DB USER BEFORE:", user.twoFactorEnabled);
 
     if (!user) {
       return res.status(404).json({
@@ -239,7 +239,7 @@ const toggleTwoFactor = async (req, res) => {
 
     await user.save();
 
-    console.log("DB USER AFTER:", user.twoFactorEnabled);
+    // console.log("DB USER AFTER:", user.twoFactorEnabled);
 
     res.status(200).json({
       success: true,
@@ -288,7 +288,7 @@ const deleteAccount = async (req, res) => {
       message: "Account deleted successfully",
     });
   } catch (error) {
-    console.log("DELETE ACCOUNT ERROR:", error);
+    // console.log("DELETE ACCOUNT ERROR:", error);
 
     return res.status(500).json({
       message: "Server error",

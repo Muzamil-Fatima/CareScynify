@@ -13,7 +13,7 @@ try {
   const users = await User.find({ role: "patient" });
 
   if (!users.length) {
-    console.log("No patient users found");
+    // console.log("No patient users found");
     process.exit(1);
   }
 
@@ -52,7 +52,7 @@ try {
 
   await Patient.insertMany(patients);
 
-  console.log(`${patients.length} patients created successfully`);
+  // console.log(`${patients.length} patients created successfully`);
 } catch (error) {
   console.log("Seed error:", error.message);
 } finally {

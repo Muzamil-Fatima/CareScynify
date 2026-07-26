@@ -174,11 +174,7 @@ p-5
 "
           >
             <h2
-              className="
-text-lg
-font-semibold
-text-slate-900
-"
+              className="text-lg font-semibold text-slate-900"
             >
               Weekly Sales
             </h2>

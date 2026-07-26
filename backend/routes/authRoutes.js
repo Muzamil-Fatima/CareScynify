@@ -50,7 +50,7 @@ router.get(
       // redirect to frontend
       res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
     } catch (error) {
-      console.log("Google Login error:", error);
+      // console.log("Google Login error:", error);
       res.redirect(`${process.env.FRONTEND_URL}/login?error=google_failed`);
     }
   },

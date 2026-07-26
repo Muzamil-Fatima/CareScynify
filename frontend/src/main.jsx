@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import React,{ StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
@@ -27,7 +27,9 @@ createRoot(document.getElementById("root")).render(
                     <SymptomProvider>
                       <BrowserRouter>
                         <QueryClientProvider client={queryClient}>
-                          <App />
+                          <React.StrictMode>
+                            <App />
+                          </React.StrictMode>
                         </QueryClientProvider>
                       </BrowserRouter>
                     </SymptomProvider>

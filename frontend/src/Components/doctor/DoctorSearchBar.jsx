@@ -1,11 +1,42 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 
+const placeholders = [
+  "Search by doctor name...",
+  "Search by specialization (e.g. Cardiologist)...",
+  
+  "Search by hospital or clinic...",
+  "Search by symptoms...",
+];
+
+const quickFilters = [
+  "Cardiologist",
+  "Dermatologist",
+  "Neurologist",
+  "Dentist",
+  "Pediatrician",
+];
+
 const DoctorSearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState("");
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
 
-  const handleSearch = (value) => {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const search = (value = query) => {
+    onSearch?.(value.trim());
+  };
+
+  const handleChange = (e) => {
+    const value = e.target.value;
     setQuery(value);
     onSearch?.(value);
   };
@@ -15,27 +46,64 @@ const DoctorSearchBar = ({ onSearch }) => {
     onSearch?.("");
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      search();
+    }
+
+    if (e.key === "Escape") {
+      clearSearch();
+    }
+  };
+
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-2xl shadow-sm p-3 flex items-center gap-2">
+    <div className="space-y-3">
+      {/* Search Box */}
+      <div className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-all duration-300 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-100">
 
-      {/* Search Icon */}
-      <SearchOutlinedIcon className="text-gray-400" />
+        <SearchOutlinedIcon className="text-gray-500" />
 
-      {/* Input */}
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => handleSearch(e.target.value)}
-        placeholder="Search doctors, specialties, hospitals..."
-        className="w-full outline-none text-sm text-gray-700"
-      />
+        <input
+          type="text"
+          value={query}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholders[placeholderIndex]}
+          className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-500 outline-none"
+        />
 
-      {/* Clear Button */}
-      {query && (
-        <button onClick={clearSearch}>
-          <CloseOutlinedIcon className="text-gray-400 hover:text-gray-600" />
+        {query && (
+          <button
+            onClick={clearSearch}
+            className="rounded-full p-1 hover:bg-gray-100"
+          >
+            <CloseOutlinedIcon className="text-gray-500" />
+          </button>
+        )}
+
+        <button
+          onClick={() => search()}
+          className="hidden sm:block rounded-lg bg-purple-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-purple-700"
+        >
+          Search
         </button>
-      )}
+      </div>
+
+      {/* Quick Filters */}
+      <div className="flex flex-wrap gap-2">
+        {quickFilters.map((item) => (
+          <button
+            key={item}
+            onClick={() => {
+              setQuery(item);
+              onSearch?.(item);
+            }}
+            className="rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 transition hover:bg-purple-100"
+          >
+            {item}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

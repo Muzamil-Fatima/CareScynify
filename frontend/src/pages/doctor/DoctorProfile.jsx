@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDoctorProfile } from "../../hooks/useDoctorProfile";
+import { useDoctorContext } from "../../context/doctor/DoctorContext";
 
 import DoctorProfileHeader from "../../Components/doctor/DoctorProfileHeader";
 import DoctorExperience from "../../Components/doctor/DoctorExperience";
@@ -12,13 +13,25 @@ const DoctorProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { doctor, reviews, loading } = useDoctorProfile(id);
+  const { selectedDoctor } = useDoctorContext();
 
-  if (loading && !doctor) {
-    return <div className="text-center py-10">Loading...</div>;
+  const { doctor: apiDoctor, reviews, loading } = useDoctorProfile(id);
+
+  const doctor = apiDoctor || selectedDoctor;
+  // loading  skeleton
+  if (!doctor && loading) {
+    return (
+      <div className="text-center py-10">
+        <div className="animate-pulse space-y-4">
+          <div className="h-32 bg-gray-200 rounded-xl"></div>
+          <div className="h-10 bg-gray-200 rounded"></div>
+          <div className="h-40 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
   }
 
-  if (!doctor) {
+  if (!doctor && !loading) {
     return <div className="text-center py-10">Doctor not found</div>;
   }
 

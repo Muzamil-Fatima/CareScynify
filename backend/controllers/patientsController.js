@@ -8,7 +8,7 @@ export const getPatientProfile = async (req, res) => {
     const user = await User.findById(req.user._id).select(
       "name email avatar phone cnic dob",
     );
-    console.log("user =", user);
+    // console.log("user =", user);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -16,7 +16,7 @@ export const getPatientProfile = async (req, res) => {
     const patient = await Patient.findOne({
       userId: req.user._id,
     });
-    console.log("patient =", patient);
+    // console.log("patient =", patient);
     return res.json({
       user: {
         name: user.name,

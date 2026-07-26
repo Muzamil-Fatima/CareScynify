@@ -1,4 +1,17 @@
 @import "tailwindcss";
+/* home  dcotor page */
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.25s ease;
+}
 /* report module */
 @keyframes fadeIn {
   from {
