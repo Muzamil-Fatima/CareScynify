@@ -362,11 +362,14 @@ export const createAppointment = async (req, res) => {
     reservation.reservedUntil = null;
 
     await reservation.save();
-    req.io.emit("slot-updated", {
-      doctorId: reservation.doctorId,
-      workplaceId: reservation.workplaceId,
+    const io = getIO();
+
+    io.emit("slot-updated", {
+      doctorId: reservation.doctorId.toString(),
+      workplaceId: reservation.workplaceId.toString(),
       date: reservation.appointmentDate,
     });
+
     return res.status(201).json({
       message: "Appointment is now pending approval",
       appointment: reservation,

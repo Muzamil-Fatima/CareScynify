@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { socket } from "../socket/socket.js";
 import { toast } from "react-toastify";
 import {
@@ -13,21 +13,9 @@ export const useAppointment = () => {
   const [bookingLoading, setBookingLoading] = useState(false);
   const [reserveLoading, setReserveLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
-  useEffect(() => {
-    fetchAppointments();
 
-    const handleUpdate = () => {
-      fetchAppointments();
-    };
-
-    socket.on("slot-updated", handleUpdate);
-
-    return () => {
-      socket.off("slot-updated", handleUpdate);
-    };
-  }, []);
   // GET ALL APPOINTMENTS
-  const fetchAppointments = async () => {
+  const fetchAppointments = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -51,7 +39,20 @@ export const useAppointment = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+  useEffect(() => {
+    fetchAppointments();
+
+    const handleUpdate = () => {
+      fetchAppointments();
+    };
+
+    socket.on("slot-updated", handleUpdate);
+
+    return () => {
+      socket.off("slot-updated", handleUpdate);
+    };
+  }, [fetchAppointments]);
   const reserveAppointment = async (data) => {
     try {
       setReserveLoading(true);
@@ -98,14 +99,14 @@ export const useAppointment = () => {
     }
   };
 
-return {
-  appointments,
-  loading,
-  bookingLoading,
-  reserveLoading,
-  reserveAppointment,
-  bookAppointment,
-  cancel,
-  refetch: fetchAppointments,
-};
+  return {
+    appointments,
+    loading,
+    bookingLoading,
+    reserveLoading,
+    reserveAppointment,
+    bookAppointment,
+    cancel,
+    refetch: fetchAppointments,
+  };
 };

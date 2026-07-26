@@ -1,12 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import StarIcon from "@mui/icons-material/Star";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import LocalHospitalOutlinedIcon from "@mui/icons-material/LocalHospitalOutlined";
 import WorkOutlineOutlinedIcon from "@mui/icons-material/WorkOutlineOutlined";
 
-const DoctorProfileHeader = ({ doctor }) => {
-  const navigate = useNavigate();
+const DoctorProfileHeader = ({ doctor, onBook }) => {
 
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row gap-5">
@@ -62,7 +60,7 @@ const DoctorProfileHeader = ({ doctor }) => {
         {/* BUTTON */}
         <div className="flex gap-3 pt-2">
           <button
-            onClick={() => navigate(`/doctor/${doctor?._id}/book`)}
+          onClick={() => onBook(doctor)}
             className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition"
           >
             Book Appointment

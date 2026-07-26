@@ -27,7 +27,6 @@ const AppointmentCard = ({ item, onCancel }) => {
   const [openModal, setOpenModal] = useState(false);
   const [openReview, setOpenReview] = useState(false);
 
-  
   const doctor = item?.doctorId?.userId;
 
   const handleCancel = () => {
@@ -54,13 +53,12 @@ const AppointmentCard = ({ item, onCancel }) => {
     <>
       {/* CARD */}
       <div className="bg-white rounded-2xl shadow-sm hover:shadow-md transition p-5 space-y-4">
-
         {/* DOCTOR INFO */}
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <img
               src={
-                doctor?.avatar ||
+                doctor?.avatar?.url ||
                 "https://ui-avatars.com/api/?name=Doctor&background=0D8ABC&color=fff"
               }
               className="w-12 h-12 rounded-full object-cover"
@@ -80,7 +78,7 @@ const AppointmentCard = ({ item, onCancel }) => {
 
           <span
             className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusStyle(
-              item.status
+              item.status,
             )}`}
           >
             {item.status}
@@ -114,7 +112,6 @@ const AppointmentCard = ({ item, onCancel }) => {
 
         {/* ACTION BUTTONS */}
         <div className="flex justify-between items-center">
-
           {/* CANCEL */}
           <div>
             {item.status !== "cancelled" && item.status !== "completed" && (
@@ -139,7 +136,6 @@ const AppointmentCard = ({ item, onCancel }) => {
               </button>
             )}
           </div>
-
         </div>
       </div>
 
@@ -152,10 +148,7 @@ const AppointmentCard = ({ item, onCancel }) => {
 
       {/* REVIEW MODAL */}
       {openReview && (
-        <ReviewModal
-          appointment={item}
-          onClose={() => setOpenReview(false)}
-        />
+        <ReviewModal appointment={item} onClose={() => setOpenReview(false)} />
       )}
     </>
   );

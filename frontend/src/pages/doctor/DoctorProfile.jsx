@@ -40,7 +40,11 @@ const DoctorProfile = () => {
       {/* HEADER */}
       <DoctorProfileHeader
         doctor={doctor}
-        onBook={() => navigate(`/doctor/${id}/book`)}
+          onBook={() =>
+    navigate(`/doctor/${id}/book`, {
+      state: { doctor }
+    })
+  }
       />
 
       {/* MAIN LAYOUT */}

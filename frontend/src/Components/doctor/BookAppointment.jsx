@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { getAvailableSlots } from "../../api/appointmentApi";
 import { useDoctorProfile } from "../../hooks/useDoctorProfile";
 import { useAppointment } from "../../hooks/useAppointments";
@@ -13,8 +13,14 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 const BookAppointment = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const passedDoctor = location.state?.doctor;
 
-  const { doctor, loading } = useDoctorProfile(id);
+  const { doctor: apiDoctor, loading } = useDoctorProfile(
+    passedDoctor ? null : id,
+  );
+
+  const doctor = passedDoctor || apiDoctor;
   const { bookAppointment, reserveAppointment, bookingLoading } =
     useAppointment();
   const [bookingError, setBookingError] = useState("");
@@ -25,13 +31,19 @@ const BookAppointment = () => {
   );
 
   const [time, setTime] = useState("");
-  const [selectedWorkplace, setSelectedWorkplace] = useState(null);
 
   const [appointmentType, setAppointmentType] = useState("online");
+  const [selectedWorkplace, setSelectedWorkplace] = useState(null);
+
+  useEffect(() => {
+    if (doctor?.workplaces?.length && !selectedWorkplace) {
+      setSelectedWorkplace(doctor.workplaces[0]);
+    }
+  }, [doctor, selectedWorkplace]);
 
   const workplace = useMemo(() => {
-    return selectedWorkplace || doctor?.workplaces?.[0] || null;
-  }, [selectedWorkplace, doctor]);
+    return selectedWorkplace || null;
+  }, [selectedWorkplace]);
 
   /* ---------------- DATES ---------------- */
   const dates = useMemo(() => {
@@ -55,34 +67,30 @@ const BookAppointment = () => {
   const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState("");
   const [loadingSlots, setLoadingSlots] = useState(false);
- const fetchSlots = useCallback(
-  async (showLoader = true) => {
-    if (!doctor?._id || !workplace?._id || !date) return;
+  const fetchSlots = useCallback(
+    async (showLoader = true) => {
+      if (!doctor?._id || !workplace?._id || !date) return;
 
-    try {
-      if (showLoader) {
-        setLoadingSlots(true);
+      try {
+        if (showLoader) {
+          setLoadingSlots(true);
+        }
+
+        const data = await getAvailableSlots(doctor._id, workplace._id, date);
+
+        setSlots(data || []);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        if (showLoader) {
+          setLoadingSlots(false);
+        }
       }
-
-      const data = await getAvailableSlots(
-        doctor._id,
-        workplace._id,
-        date,
-      );
-
-      setSlots(data || []);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      if (showLoader) {
-        setLoadingSlots(false);
-      }
-    }
-  },
-  [doctor, workplace, date],
-);
+    },
+    [doctor, workplace, date],
+  );
   useEffect(() => {
-    fetchSlots(true);
+    fetchSlots(false);
   }, [fetchSlots]);
   useEffect(() => {
     const handleSlotUpdate = (data) => {
