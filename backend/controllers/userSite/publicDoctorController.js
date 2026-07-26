@@ -121,3 +121,112 @@ export const getDoctorById = async (req, res) => {
     });
   }
 };
+// search doctor
+export const searchDoctors = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    const doctors = await Doctor.find({
+      $or: [
+        {
+          specialization: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+        {
+          treatableConditions: {
+            $regex: query,
+            $options: "i",
+          },
+        },
+      ],
+    }).populate("userId", "name avatar");
+
+    const formattedDoctors = doctors.map((doctor) => ({
+      ...doctor.toObject(),
+      user: doctor.userId,
+    }));
+
+    res.json({
+      success: true,
+      doctors: formattedDoctors,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+export const filterDoctors = async (req, res) => {
+  try {
+    const { specialty, experience, fee, rating, available } = req.query;
+
+    let filter = {};
+
+    // Specialty
+    if (specialty) {
+      filter.specialization = {
+        $regex: specialty,
+        $options: "i",
+      };
+    }
+
+
+    // Experience
+    if (experience) {
+      filter.experience = {
+        $regex: `^${experience}`,
+        $options: "i",
+      };
+    }
+
+
+    // Fee Filter
+    if (fee) {
+
+      if (fee === "low") {
+        filter["workplaces.settings.appointmentFee"] = {
+          $lt: 1000,
+        };
+      }
+
+      if (fee === "mid") {
+        filter["workplaces.settings.appointmentFee"] = {
+          $gte: 1000,
+          $lte: 3000,
+        };
+      }
+
+      if (fee === "high") {
+        filter["workplaces.settings.appointmentFee"] = {
+          $gt: 3000,
+        };
+      }
+    }
+
+
+    const doctors = await Doctor.find(filter)
+      .populate("userId", "name avatar");
+
+
+    const formattedDoctors = doctors.map((doctor) => ({
+      ...doctor.toObject(),
+      user: doctor.userId,
+    }));
+
+
+    res.json({
+      success: true,
+      doctors: formattedDoctors,
+    });
+
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message,
+    });
+
+  }
+};

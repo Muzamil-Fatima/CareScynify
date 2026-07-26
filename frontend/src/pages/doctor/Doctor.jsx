@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import TuneIcon from "@mui/icons-material/Tune";
 
@@ -11,6 +11,7 @@ const initialFilters = {
   specialty: "",
   rating: "",
   experience: "",
+  fee: "",
   available: false,
   search: "",
 };
@@ -23,7 +24,12 @@ const Doctor = () => {
 
   const { doctors, loading, error, pagination, page, setPage } =
     useDoctor(filters);
-
+  const handleSearch = useCallback((value) => {
+    setFilters((prev) => ({
+      ...prev,
+      search: value,
+    }));
+  }, []);
   const clearFilters = () => {
     setFilters(initialFilters);
   };
@@ -51,7 +57,18 @@ const Doctor = () => {
       label: `${filters.experience}+ Years`,
     });
   }
+  if (filters.fee) {
+    const feeLabels = {
+      low: "Under 1000",
+      mid: "1000 - 3000",
+      high: "3000+",
+    };
 
+    filterChips.push({
+      key: "fee",
+      label: `💰 ${feeLabels[filters.fee]}`,
+    });
+  }
   if (filters.available) {
     filterChips.push({
       key: "available",
@@ -82,14 +99,7 @@ const Doctor = () => {
           {/* Search + Mobile Filter */}
           <div className="flex items-center gap-3 mb-5">
             <div className="flex-1">
-              <DoctorSearchBar
-                onSearch={(value) =>
-                  setFilters((prev) => ({
-                    ...prev,
-                    search: value,
-                  }))
-                }
-              />
+              <DoctorSearchBar onSearch={handleSearch} />
             </div>
 
             {/* Mobile Filter Button */}

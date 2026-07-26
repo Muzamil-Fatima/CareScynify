@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
@@ -6,7 +5,7 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 const placeholders = [
   "Search by doctor name...",
   "Search by specialization (e.g. Cardiologist)...",
-  
+
   "Search by hospital or clinic...",
   "Search by symptoms...",
 ];
@@ -22,7 +21,14 @@ const quickFilters = [
 const DoctorSearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState("");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
+useEffect(() => {
+  const timer = setTimeout(() => {
+    onSearch?.(query.trim());
+  }, 500);
 
+  return () => clearTimeout(timer);
+
+}, [query, onSearch]);
   useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
@@ -36,14 +42,11 @@ const DoctorSearchBar = ({ onSearch }) => {
   };
 
   const handleChange = (e) => {
-    const value = e.target.value;
-    setQuery(value);
-    onSearch?.(value);
+    setQuery(e.target.value);
   };
 
   const clearSearch = () => {
     setQuery("");
-    onSearch?.("");
   };
 
   const handleKeyDown = (e) => {
@@ -60,7 +63,6 @@ const DoctorSearchBar = ({ onSearch }) => {
     <div className="space-y-3">
       {/* Search Box */}
       <div className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-all duration-300 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-100">
-
         <SearchOutlinedIcon className="text-gray-500" />
 
         <input
@@ -94,10 +96,9 @@ const DoctorSearchBar = ({ onSearch }) => {
         {quickFilters.map((item) => (
           <button
             key={item}
-            onClick={() => {
-              setQuery(item);
-              onSearch?.(item);
-            }}
+          onClick={() => {
+  setQuery(item);
+}}
             className="rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 transition hover:bg-purple-100"
           >
             {item}

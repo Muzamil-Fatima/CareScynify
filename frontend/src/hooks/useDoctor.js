@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { getDoctors } from "../api/doctorApi";
+import { getDoctors, searchDoctors, filterDoctors } from "../api/doctorApi";
 
 export const useDoctor = (filters = {}) => {
   const [doctors, setDoctors] = useState([]);
@@ -9,44 +9,66 @@ export const useDoctor = (filters = {}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const { search, specialty, experience, fee, rating, available } = filters;
+
   const fetchDoctors = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const params = new URLSearchParams();
+      let data;
 
-      if (filters.search) {
-        params.append("search", filters.search);
+      //  Search API
+      if (search) {
+        data = await searchDoctors(search);
+
+        setDoctors(data.doctors || data);
+        setPagination({});
       }
 
-      if (filters.specialty) {
-        params.append("specialization", filters.specialty);
+      // Filter API
+      else if (specialty || experience || fee || rating || available) {
+        data = await filterDoctors({
+          specialty,
+          experience,
+          fee,
+          rating,
+          available,
+        });
+
+        setDoctors(data.doctors || data);
+        setPagination({});
       }
 
-      if (filters.available) {
-        params.append("consultationType", "online");
+      // Normal Doctor Listing API
+      else {
+        const params = new URLSearchParams();
+
+        params.append("page", page);
+        params.append("limit", 10);
+
+        data = await getDoctors(params.toString());
+
+        setDoctors(data.doctors || []);
+        setPagination(data.pagination || {});
       }
-
-      params.append("page", page);
-      params.append("limit", 10);
-
-      const data = await getDoctors(params.toString());
-
-      setDoctors(data.doctors);
-      setPagination(data.pagination);
     } catch (err) {
-      setError(err.message);
+      setError(
+        err?.response?.data?.message ||
+          err.message ||
+          "Failed to fetch doctors",
+      );
     } finally {
       setLoading(false);
     }
-  }, [filters.search, filters.specialty, filters.available, page]);
+  }, [search, specialty, experience, fee, rating, available, page]);
 
-  // Reset to page 1 whenever filters change
+  // Reset pagination when filters/search change
   useEffect(() => {
     setPage(1);
-  }, [filters.search, filters.specialty, filters.available]);
+  }, [search, specialty, experience, fee, rating, available]);
 
+  // Fetch doctors
   useEffect(() => {
     fetchDoctors();
   }, [fetchDoctors]);
