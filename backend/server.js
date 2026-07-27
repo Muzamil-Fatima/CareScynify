@@ -92,7 +92,7 @@ app.use("/api/pharmacy", profileRoutes);
 app.use("/api/cart", cartRoutes);
 // Pharmacy Order Routes
 app.use("/api/pharmacy/orders", pharmacyOrderRoutes);
-// =======================================================
+// =======================================================Lab
 app.use("/api/laboratory", labProfileRoutes);
 // server listen
 const server = http.createServer(app);

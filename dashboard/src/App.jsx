@@ -122,11 +122,11 @@ function App() {
             <Route path="/pharmacy/profile" element={<PharmacyProfile />} />
             {/* Lab  */}
             <Route path="/lab/dashboard" element={<LabDashboard />} />
-            <Route path="/lab/processing" element={<LabTestProcess />} />
-            <Route path="/lab/samples" element={<LabSampleQueue />} />
-            <Route path="/lab/patients" element={<LabPatients />} />
-            <Route path="/lab/tests" element={<LabTests />} />
             <Route path="/lab/profile" element={<LabProfile />} />
+            <Route path="/lab/tests" element={<LabTests />} />
+            <Route path="/lab/patients" element={<LabPatients />} />
+            <Route path="/lab/samples" element={<LabSampleQueue />} />
+            <Route path="/lab/processing" element={<LabTestProcess />} />
 
             {/* admin */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

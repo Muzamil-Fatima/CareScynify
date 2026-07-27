@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 import LabProfileContext from "./LabProfileContext";
+
 import {
   getLabProfile,
   updateLabProfile,
@@ -9,6 +10,7 @@ import {
 
 const LabProfileProvider = ({ children }) => {
   const [dirty, setIsDirty] = useState(false);
+
   const [loading, setLoading] = useState(true);
 
   const [profile, setProfile] = useState({
@@ -30,6 +32,7 @@ const LabProfileProvider = ({ children }) => {
         });
       } catch (err) {
         console.error("Fetch Laboratory Profile Error:", err);
+
         toast.error("Failed to load profile");
       } finally {
         setLoading(false);
@@ -47,17 +50,28 @@ const LabProfileProvider = ({ children }) => {
       try {
         const payload = {
           // ================= USER =================
+
           name: profile.user?.name,
+
           email: profile.user?.email,
+
           phone: profile.user?.phone,
+
           dob: profile.user?.dob,
+
           cnic: profile.user?.cnic,
 
           // ================= LABORATORY =================
+
           ...profile.laboratory,
+
+          // ================= AVATAR =================
+
+          avatar: profile.user?.avatar,
         };
 
         // Remove empty values
+
         Object.keys(payload).forEach((key) => {
           if (
             payload[key] === "" ||
@@ -68,8 +82,6 @@ const LabProfileProvider = ({ children }) => {
           }
         });
 
-        // console.log("Saving Laboratory Profile:", payload);
-
         await updateLabProfile(payload);
 
         setIsDirty(false);
@@ -77,6 +89,7 @@ const LabProfileProvider = ({ children }) => {
         toast.success("Profile saved successfully");
       } catch (err) {
         console.error("Auto Save Error:", err);
+
         toast.error("Failed to save profile");
       }
     }, 1200);
@@ -88,11 +101,13 @@ const LabProfileProvider = ({ children }) => {
     <LabProfileContext.Provider
       value={{
         profile,
+
         setProfile,
 
         loading,
 
         user: profile.user,
+
         laboratory: profile.laboratory,
 
         setIsDirty,
