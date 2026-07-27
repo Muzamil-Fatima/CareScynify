@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import PhoneInput from "../../../components/PhoneInput";
+import PhoneInput from "../../common/PhoneInput";
 import useDoctorPatient from "../../../hooks/useDoctorPatient";
 const AddPatient = ({ open, onClose }) => {
   const [formData, setFormData] = useState({

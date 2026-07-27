@@ -1,117 +1,143 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 
 import LabPatientsHeader from "../../components/laboratory/labPatients/LabPatientsHeader";
 import LabPatientForm from "../../components/laboratory/labPatients/LabPatientForm";
 import LabPatientsTable from "../../components/laboratory/labPatients/LabPatientsTable";
 
-export default function LabPatients() {
-  // Mock Data for Patients List
-  const [patients, setPatients] = useState([
-    {
-      id: "PT-101",
-      name: "Ali Khan",
-      age: 28,
-      gender: "Male",
-      contact: "0300-1234567",
-      tests: "Blood CBC",
-      date: "2026-05-21",
-    },
-    {
-      id: "PT-102",
-      name: "Sara Raza",
-      age: 24,
-      gender: "Female",
-      contact: "0321-7654321",
-      tests: "Lipid Panel",
-      date: "2026-05-21",
-    },
-    {
-      id: "PT-103",
-      name: "M. Hassan",
-      age: 35,
-      gender: "Male",
-      contact: "0333-9876543",
-      tests: "Thyroid Profile",
-      date: "2026-05-20",
-    },
-    {
-      id: "PT-104",
-      name: "Fatima Ahmed",
-      age: 42,
-      gender: "Female",
-      contact: "0345-4567890",
-      tests: "Urine Routine",
-      date: "2026-05-19",
-    },
-  ]);
+import useLabAddPatients from "../../hooks/laboratory/useLabAddPatients";
+import useLabTests from "../../hooks/laboratory/useLabTests";
 
-  // Form Fields State
+export default function LabPatients() {
+  const { patients, createPatient, editPatient, removePatient } =
+    useLabAddPatients();
+
+  const { testsList, getLabTests } = useLabTests();
+
+  const [editingPatient, setEditingPatient] = useState(null);
+
   const [formData, setFormData] = useState({
     name: "",
+    mobile: "",
     age: "",
-    gender: "Male",
-    contact: "",
-    tests: "",
+    gender: "",
+    testId: "",
+    notes: "",
   });
 
-  // Search State
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Handle Input Changes
+  useEffect(() => {
+    getLabTests();
+  }, [getLabTests]);
+
+  // Input Change
   const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
+    }));
+  };
+
+  // Reset Form
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      mobile: "",
+      age: "",
+      gender: "",
+      testId: "",
+      notes: "",
+    });
+
+    setEditingPatient(null);
+  };
+
+  // Edit Click
+  const handleEditPatient = (patient) => {
+    console.log("Edit Patient:", patient);
+
+    setEditingPatient(patient);
+
+    setFormData({
+      name: patient.name || "",
+
+      mobile: patient.mobile || "",
+
+      age: patient.age || "",
+
+      gender: patient.gender || "",
+
+      testId: patient.testId?._id || "",
+
+      notes: patient.notes || "",
     });
   };
 
-  // Add Patient
-  const handleFormSubmit = (e) => {
+  // Add / Update Submit
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.contact) {
-      alert("Please fill name and contact details");
+    if (
+      !formData.name ||
+      !formData.mobile ||
+      !formData.age ||
+      !formData.gender ||
+      !formData.testId
+    ) {
+      toast.error("Please fill all required fields.");
+
       return;
     }
 
-    const newPatient = {
-      id: `PT-${Math.floor(100 + Math.random() * 900)}`,
-      name: formData.name,
-      age: parseInt(formData.age) || "N/A",
-      gender: formData.gender,
-      contact: formData.contact,
-      tests: formData.tests || "Routine Checkup",
-      date: new Date().toISOString().split("T")[0],
-    };
+    try {
+      if (editingPatient) {
+        await editPatient(editingPatient._id, formData);
 
-    setPatients([newPatient, ...patients]);
+        toast.success("Patient updated successfully.");
+      } else {
+        await createPatient(formData);
 
-    setFormData({
-      name: "",
-      age: "",
-      gender: "Male",
-      contact: "",
-      tests: "",
-    });
+        toast.success("Patient added successfully.");
+      }
+
+      resetForm();
+    } catch (error) {
+      console.error(error);
+
+      toast.error(error?.response?.data?.message || "Operation failed.");
+    }
   };
 
   // Delete Patient
-  const handleDeletePatient = (id) => {
-    if (
-      window.confirm("Kya aap is patient ka record delete karna chahte hain?")
-    ) {
-      setPatients(patients.filter((p) => p.id !== id));
+  // Delete Patient
+  const handleDeletePatient = async (id) => {
+    console.log("Delete Patient ID:", id);
+
+    try {
+      await removePatient(id);
+
+      toast.success("Patient deleted successfully.");
+    } catch (error) {
+      console.error(error);
+
+      toast.error(error?.response?.data?.message || "Delete failed.");
     }
   };
 
   // Search Filter
-  const filteredPatients = patients.filter(
-    (p) =>
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.contact.includes(searchTerm),
-  );
+  const filteredPatients = useMemo(() => {
+    return patients.filter((item) => {
+      const search = searchTerm.toLowerCase();
+
+      return (
+        item.name?.toLowerCase().includes(search) ||
+        item.mobile?.includes(searchTerm) ||
+        item.testId?.name?.toLowerCase().includes(search) ||
+        item._id?.toLowerCase().includes(search)
+      );
+    });
+  }, [patients, searchTerm]);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-violet-50 via-white to-fuchsia-50">
@@ -126,11 +152,15 @@ export default function LabPatients() {
             formData={formData}
             handleInputChange={handleInputChange}
             handleFormSubmit={handleFormSubmit}
+            testsList={testsList}
+            editingPatient={editingPatient}
+            resetForm={resetForm}
           />
 
           <LabPatientsTable
             filteredPatients={filteredPatients}
             handleDeletePatient={handleDeletePatient}
+            handleEditPatient={handleEditPatient}
           />
         </div>
       </main>

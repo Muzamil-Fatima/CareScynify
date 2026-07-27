@@ -32,7 +32,8 @@ import publicPharmacyRoutes from "./routes/userSite/publicPharmacyRoutes.js";
 import publicMedicineRoutes from "./routes/userSite/publicMedicineRoutes.js";
 // laboratory
 import labProfileRoutes from "./routes/laboratory/labProfileRoutes.js";
-import labTestRoutes from "./routes/laboratory/labTestRoutes.js"
+import labTestRoutes from "./routes/laboratory/labTestRoutes.js";
+import labAddPatientRoutes from "./routes/laboratory/labAddPatientRoutes.js";
 //Configuration
 connectDB();
 connectCloudinary();
@@ -96,6 +97,7 @@ app.use("/api/pharmacy/orders", pharmacyOrderRoutes);
 // =======================================================Lab
 app.use("/api/laboratory", labProfileRoutes);
 app.use("/api/lab-tests", labTestRoutes);
+app.use("/api/lab/patients", labAddPatientRoutes);
 // server listen
 const server = http.createServer(app);
 

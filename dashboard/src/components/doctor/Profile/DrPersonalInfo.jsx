@@ -1,5 +1,5 @@
 import React from "react";
-import PhoneInput from "../../PhoneInput";
+import PhoneInput from "../../common/PhoneInput";
 import { useDoctor } from "../../../context/doctor/DoctorContext";
 
 const DrPersonalInfo = () => {
