@@ -1,5 +1,11 @@
+
 import React, { useState } from "react";
-import { Pause, Play, CheckCircle2, FileText, Loader2 } from "lucide-react";
+import {
+  Pause,
+  Play,
+  CheckCircle2,
+  FileText,
+} from "lucide-react";
 
 export default function LabTestProcess() {
   const [tests] = useState([
@@ -29,82 +35,117 @@ export default function LabTestProcess() {
     },
   ]);
 
-  const steps = ["Sample Received", "Preparation", "Running", "Verification"];
+  const steps = [
+    "Sample Received",
+    "Preparation",
+    "Running",
+    "Verification",
+  ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
-      <main className="flex-1 p-8">
-        <h2 className="text-2xl font-bold mb-6">Test Process</h2>
+    <div className="min-h-screen bg-gray-100 p-8">
+      <main className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-800">
+            Test Process
+          </h2>
+          <p className="text-gray-500 mt-1">
+            Track and manage laboratory testing workflow.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {tests.map((t) => (
             <div
               key={t.id}
-              className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm"
+              className="bg-white rounded-2xl border border-gray-100 shadow-md p-6"
             >
+              {/* Header */}
               <div className="flex justify-between mb-6">
                 <div>
-                  <h3 className="font-bold text-slate-800">{t.patient}</h3>
-                  <p className="text-[10px] text-slate-400 font-bold">
+                  <h3 className="font-semibold text-gray-800">
+                    {t.patient}
+                  </h3>
+
+                  <p className="text-xs text-gray-500 mt-1">
                     {t.test} • {t.id}
                   </p>
                 </div>
+
                 <div className="text-right">
-                  <p className="text-xs font-bold text-slate-700">
+                  <p className="text-sm font-semibold text-purple-700">
                     {t.status} • {t.progress}%
                   </p>
-                  <p className="text-[10px] text-slate-400 capitalize">
-                    {t.status === "Completed" ? "Finished" : "Processing"}
+
+                  <p className="text-xs text-gray-500">
+                    {t.status === "Completed"
+                      ? "Finished"
+                      : "Processing"}
                   </p>
                 </div>
               </div>
 
-              {/* Advanced Stepper */}
+              {/* Stepper */}
               <div className="relative mb-8 px-2">
-                <div className="flex justify-between mb-2">
+                <div className="absolute top-3 left-6 right-6 h-0.5 bg-gray-200"></div>
+
+                <div className="relative flex justify-between">
                   {steps.map((step, idx) => (
-                    <div key={idx} className="flex flex-col items-center">
+                    <div
+                      key={idx}
+                      className="flex flex-col items-center"
+                    >
                       <div
-                        className={`w-6 h-6 rounded-full flex items-center justify-center border-2 ${idx < t.stage ? "bg-emerald-500 border-emerald-500 text-white" : "bg-slate-100 border-slate-200"}`}
+                        className={`w-7 h-7 rounded-full border-2 flex items-center justify-center ${
+                          idx < t.stage
+                            ? "bg-purple-600 border-purple-600 text-white"
+                            : "bg-gray-100 border-gray-300"
+                        }`}
                       >
                         {idx < t.stage ? (
-                          <CheckCircle2 size={12} />
+                          <CheckCircle2 size={14} />
                         ) : (
-                          <div className="w-2 h-2 rounded-full bg-slate-300"></div>
+                          <div className="w-2 h-2 rounded-full bg-gray-400"></div>
                         )}
                       </div>
+
+                      <span
+                        className={`mt-3 text-[10px] font-medium text-center ${
+                          idx < t.stage
+                            ? "text-purple-700"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {step}
+                      </span>
                     </div>
                   ))}
                 </div>
-                <div className="absolute top-3 left-6 right-6 h-0.5 bg-slate-100 z-0"></div>
-                <div className="flex justify-between text-[9px] font-bold text-slate-400 uppercase mt-2">
-                  {steps.map((step, i) => (
-                    <span
-                      key={i}
-                      className={i < t.stage ? "text-emerald-600" : ""}
-                    >
-                      {step}
-                    </span>
-                  ))}
-                </div>
               </div>
 
+              {/* Buttons */}
               <div className="flex gap-3">
                 {t.status === "Completed" ? (
-                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold">
-                    <FileText size={14} /> View Report
+                  <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition">
+                    <FileText size={16} />
+                    View Report
                   </button>
                 ) : (
                   <>
-                    <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold">
+                    <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition">
                       {t.status === "Paused" ? (
-                        <Play size={14} />
+                        <Play size={16} />
                       ) : (
-                        <Pause size={14} />
+                        <Pause size={16} />
                       )}
-                      {t.status === "Paused" ? "Resume" : "Pause"}
+
+                      {t.status === "Paused"
+                        ? "Resume"
+                        : "Pause"}
                     </button>
-                    <button className="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold">
+
+                    <button className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-700 font-medium hover:bg-purple-50 transition">
                       Complete
                     </button>
                   </>

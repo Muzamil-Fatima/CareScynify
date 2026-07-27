@@ -11,6 +11,7 @@ import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
 import MedicineProvider from "./context/pharmacy/MedicineProvider.jsx";
 import DoctorPatientProvider from "./context/patients/DoctorPatientProvider.jsx";
 import OrderProvider from "./context/pharmacy/OrderProvider.jsx";
+import LabProfileProvider from "./context/laboratory/LabProfileProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -20,11 +21,13 @@ createRoot(document.getElementById("root")).render(
             <OrderProvider>
               <MedicineProvider>
                 <NotificationProvider>
-                  <DoctorPatientProvider>
-                    <DoctorProvider>
-                      <App />
-                    </DoctorProvider>
-                  </DoctorPatientProvider>
+                  <LabProfileProvider>
+                    <DoctorPatientProvider>
+                      <DoctorProvider>
+                        <App />
+                      </DoctorProvider>
+                    </DoctorPatientProvider>
+                  </LabProfileProvider>
                 </NotificationProvider>
               </MedicineProvider>
             </OrderProvider>

@@ -31,6 +31,7 @@ import LabTestProcess from "./pages/laboratory/LabTestProcess.jsx";
 import LabSampleQueue from "./pages/laboratory/LabSampleQueue.jsx";
 import LabPatients from "./pages/laboratory/LabPatients.jsx";
 import LabTests from "./pages/laboratory/LabTests.jsx";
+import LabProfile from "./pages/laboratory/LabProfile.jsx";
 // admin
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 function App() {
@@ -90,12 +91,12 @@ function App() {
             <Route path="/doctor/reviews" element={<DrReview />} />
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
             <Route path="/patients" element={<Patients />} />
-            
+
             <Route
               path="/doctor/patient/profile/:patientId/:appointmentId"
               element={<PatientProfile />}
             />
-               
+
             <Route
               path="/doctor/patient/profile/:patientId"
               element={<PatientProfile />}
@@ -125,9 +126,10 @@ function App() {
             <Route path="/lab/samples" element={<LabSampleQueue />} />
             <Route path="/lab/patients" element={<LabPatients />} />
             <Route path="/lab/tests" element={<LabTests />} />
+            <Route path="/lab/profile" element={<LabProfile />} />
+
             {/* admin */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
-
           </Routes>
         </div>
       </div>

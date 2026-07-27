@@ -19,7 +19,6 @@ import ShoppingBagRoundedIcon from "@mui/icons-material/ShoppingBagRounded";
 // lab
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 // admin
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
@@ -71,6 +70,11 @@ export const menuByRole = {
       icon: <DashboardIcon />,
     },
     {
+      name: "Patients",
+      path: "/lab/patients",
+      icon: <PeopleIcon />,
+    },
+    {
       name: "Test Orders",
       path: "/lab/tests",
       icon: <AssignmentIcon />,
@@ -85,15 +89,11 @@ export const menuByRole = {
       path: "/lab/processing",
       icon: <ScienceIcon />,
     },
+
     {
-      name: "Completed Reports",
-      path: "/lab/reports",
-      icon: <CheckCircleIcon />,
-    },
-    {
-      name: "Patients",
-      path: "/lab/patients",
-      icon: <PeopleIcon />,
+      name: "Profile",
+      path: "/lab/profile",
+      icon: <PersonIcon />,
     },
   ],
 

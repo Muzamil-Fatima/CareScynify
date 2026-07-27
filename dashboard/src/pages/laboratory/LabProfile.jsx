@@ -3,17 +3,16 @@ import React, { useRef, useState } from "react";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import { toast } from "react-hot-toast";
 
-import LabPersonalInfo from "../../components/laboratory/Profile/LabPersonalInfo";
-import LabContactInfo from "../../components/laboratory/Profile/LabContactInfo";
-import LabDetails from "../../components/laboratory/Profile/LabDetails";
-import LabServices from "../../components/laboratory/Profile/LabServices";
-import LabWorkingHours from "../../components/laboratory/Profile/LabWorkingHours";
+import LabPersonalInfo from "../../components/laboratory/profile/LabPersonalInfo";
+import LabContactInfo from "../../components/laboratory/profile/LabContactInfo";
+import LabDetails from "../../components/laboratory/profile/LabDetails";
+import LabServices from "../../components/laboratory/profile/LabServices";
+import LabWorkingHours from "../../components/laboratory/profile/LabWorkingHours";
 
-import { updateUserProfile } from "../../api/userApi";
-import { useLaboratory } from "../../context/laboratory/LaboratoryContext";
+import { useLabProfile } from "../../context/laboratory/LabProfileContext";
 
 const LaboratoryProfile = () => {
-  const { profile, setProfile, setIsDirty } = useLaboratory();
+  const { profile, setProfile, setIsDirty } = useLabProfile();
 
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
