@@ -2,7 +2,7 @@ import React from "react";
 import LabPatientTableRow from "./LabPatientTableRow";
 
 export default function LabPatientsTable({
-  filteredPatients,
+  filteredPatients = [],
   handleDeletePatient,
 }) {
   return (
@@ -65,7 +65,7 @@ export default function LabPatientsTable({
               ) : (
                 filteredPatients.map((patient) => (
                   <LabPatientTableRow
-                    key={patient.id}
+                    key={patient._id}
                     patient={patient}
                     handleDeletePatient={handleDeletePatient}
                   />
@@ -77,6 +77,7 @@ export default function LabPatientsTable({
       </div>
 
       {/* Footer */}
+
       <div className="border-t border-violet-100 bg-linear-to-r from-violet-50 to-white px-6 py-4 flex justify-between items-center">
         <span className="text-sm text-slate-500">
           CareScynify Patient Module v1.2

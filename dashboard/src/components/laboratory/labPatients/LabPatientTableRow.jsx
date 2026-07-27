@@ -5,7 +5,9 @@ export default function LabPatientTableRow({ patient, handleDeletePatient }) {
   return (
     <tr className="hover:bg-violet-50/60 transition-all duration-300">
       <td className="px-6 py-5">
-        <span className="font-bold text-violet-700">{patient.id}</span>
+        <span className="font-bold text-violet-700">
+          {patient._id?.slice(-6)}
+        </span>
       </td>
 
       <td className="px-6 py-5">
@@ -24,7 +26,7 @@ export default function LabPatientTableRow({ patient, handleDeletePatient }) {
 
       <td className="px-6 py-5">
         <span className="inline-flex items-center rounded-full border border-violet-200 bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">
-          {patient.tests}
+          {patient.tests?.name ? patient.tests.name : patient.tests}
         </span>
       </td>
 
@@ -40,7 +42,7 @@ export default function LabPatientTableRow({ patient, handleDeletePatient }) {
 
           <button
             type="button"
-            onClick={() => handleDeletePatient(patient.id)}
+            onClick={() => handleDeletePatient(patient._id)}
             className="p-2 rounded-xl text-red-500 hover:bg-red-100 transition-all duration-300"
           >
             <Trash2 size={16} />

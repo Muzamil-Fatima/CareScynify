@@ -1,10 +1,11 @@
 import React from "react";
-import { FlaskConical, PlusCircle } from "lucide-react";
+import { FlaskConical, PlusCircle, Save } from "lucide-react";
 
 export default function LabTestForm({
   formData,
   handleInputChange,
   handleFormSubmit,
+  selectedTest,
 }) {
   return (
     <div className="lg:col-span-1 rounded-3xl border border-violet-100 bg-white/80 backdrop-blur-xl p-6 shadow-xl h-fit">
@@ -15,11 +16,13 @@ export default function LabTestForm({
 
         <div>
           <h3 className="text-base font-bold text-slate-800">
-            Add Test Profile
+            {selectedTest ? "Update Test Profile" : "Add Test Profile"}
           </h3>
 
           <p className="text-xs text-slate-500">
-            Create laboratory test profile
+            {selectedTest
+              ? "Update laboratory test profile"
+              : "Create laboratory test profile"}
           </p>
         </div>
       </div>
@@ -99,8 +102,11 @@ export default function LabTestForm({
           type="submit"
           className="w-full mt-2 flex items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-violet-600 via-purple-600 to-fuchsia-600 py-3 px-4 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
         >
-          <PlusCircle size={16} />
-          <span>Create Test Profile</span>
+          {selectedTest ? <Save size={16} /> : <PlusCircle size={16} />}
+
+          <span>
+            {selectedTest ? "Update Test Profile" : "Create Test Profile"}
+          </span>
         </button>
       </form>
     </div>

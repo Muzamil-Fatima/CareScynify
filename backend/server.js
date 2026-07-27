@@ -26,12 +26,13 @@ import doctorPatientRoutes from "./routes/doctorPatientRoutes.js";
 import medicineRoutes from "./routes/pharmacy/medicineRoutes.js";
 import profileRoutes from "./routes/pharmacy/profileRoutes.js";
 import cartRoutes from "./routes/pharmacy/cartRoutes.js";
-import pharmacyOrderRoutes from "./routes/pharmacy/pharmacyOrderRoutes.js"
+import pharmacyOrderRoutes from "./routes/pharmacy/pharmacyOrderRoutes.js";
 // website
 import publicPharmacyRoutes from "./routes/userSite/publicPharmacyRoutes.js";
 import publicMedicineRoutes from "./routes/userSite/publicMedicineRoutes.js";
 // laboratory
-import labProfileRoutes from "./routes/laboratory/labProfileRoutes.js"
+import labProfileRoutes from "./routes/laboratory/labProfileRoutes.js";
+import labTestRoutes from "./routes/laboratory/labTestRoutes.js"
 //Configuration
 connectDB();
 connectCloudinary();
@@ -94,6 +95,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/pharmacy/orders", pharmacyOrderRoutes);
 // =======================================================Lab
 app.use("/api/laboratory", labProfileRoutes);
+app.use("/api/lab-tests", labTestRoutes);
 // server listen
 const server = http.createServer(app);
 

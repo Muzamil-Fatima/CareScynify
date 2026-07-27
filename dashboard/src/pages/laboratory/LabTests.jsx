@@ -1,54 +1,21 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import LabTestsHeader from "../../components/laboratory/labTests/LabTestsHeader";
 import LabTestForm from "../../components/laboratory/labTests/LabTestForm";
 import LabTestsTable from "../../components/laboratory/labTests/LabTestsTable";
 
+import useLabTest from "../../hooks/laboratory/useLabTests";
+
 export default function LabTests() {
-  // Mock Data for Available Lab Tests
-  const [testsList, setTestsList] = useState([
-    {
-      code: "T-CBC",
-      name: "Complete Blood Count (CBC)",
-      category: "Hematology",
-      price: 1200,
-      turnAround: "4 Hours",
-      status: "Active",
-    },
-    {
-      code: "T-LIP",
-      name: "Lipid Profile / Panel",
-      category: "Biochemistry",
-      price: 2500,
-      turnAround: "6 Hours",
-      status: "Active",
-    },
-    {
-      code: "T-THY",
-      name: "Thyroid Profile (T3, T4, TSH)",
-      category: "Endocrinology",
-      price: 3200,
-      turnAround: "12 Hours",
-      status: "Active",
-    },
-    {
-      code: "T-RBS",
-      name: "Random Blood Sugar (RBS)",
-      category: "Biochemistry",
-      price: 300,
-      turnAround: "1 Hour",
-      status: "Active",
-    },
-    {
-      code: "T-LFT",
-      name: "Liver Function Test (LFT)",
-      category: "Biochemistry",
-      price: 2200,
-      turnAround: "8 Hours",
-      status: "Active",
-    },
-  ]);
+  const {
+    testsList = [],
+    getLabTests,
+    createTest,
+    updateTest,
+    deleteTest,
+  } = useLabTest();
+
+  const [selectedTest, setSelectedTest] = useState(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -61,64 +28,93 @@ export default function LabTests() {
   // Search State
   const [searchTerm, setSearchTerm] = useState("");
 
+  // Load Lab Tests
+  useEffect(() => {
+    getLabTests();
+  }, [getLabTests]);
+
   // Handle Input Changes
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // Edit Test
+  const handleEditTest = (test) => {
+    setSelectedTest(test);
+
     setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+      name: test.name,
+      category: test.category,
+      price: test.price,
+      turnAround: test.turnAround,
     });
   };
 
-  // Add Test
-  const handleFormSubmit = (e) => {
+  // Create / Update Test
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.name || !formData.price || !formData.turnAround) {
-      alert("Please enter test name, price, and turnaround time!");
       return;
     }
 
-    const randomCode = `T-${formData.name
-      .substring(0, 3)
-      .toUpperCase()}-${Math.floor(10 + Math.random() * 90)}`;
+    try {
+      if (selectedTest) {
+        await updateTest(selectedTest._id, {
+          name: formData.name,
+          category: formData.category,
+          price: Number(formData.price),
+          turnAround: formData.turnAround,
+        });
 
-    const newTest = {
-      code: randomCode,
-      name: formData.name,
-      category: formData.category,
-      price: parseInt(formData.price),
-      turnAround: formData.turnAround,
-      status: "Active",
-    };
+        setSelectedTest(null);
+      } else {
+        await createTest({
+          name: formData.name,
+          category: formData.category,
+          price: Number(formData.price),
+          turnAround: formData.turnAround,
+        });
+      }
 
-    setTestsList([newTest, ...testsList]);
-
-    setFormData({
-      name: "",
-      category: "Biochemistry",
-      price: "",
-      turnAround: "",
-    });
+      setFormData({
+        name: "",
+        category: "Biochemistry",
+        price: "",
+        turnAround: "",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   // Delete Test
-  const handleDeleteTest = (code) => {
-    if (
-      window.confirm(
-        "Kya aap is test profile ko hamesha ke liye delete karna chahte hain?"
-      )
-    ) {
-      setTestsList(testsList.filter((t) => t.code !== code));
+  const handleDeleteTest = async (id) => {
+    try {
+      await deleteTest(id);
+    } catch (error) {
+      console.log(error);
     }
   };
 
   // Search Filter
-  const filteredTests = testsList.filter(
-    (t) =>
-      t.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      t.category.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredTests = testsList.filter((t) => {
+    const name = t.name?.toLowerCase() || "";
+    const code = t.code?.toLowerCase() || "";
+    const category = t.category?.toLowerCase() || "";
+    const search = searchTerm.toLowerCase();
+
+    return (
+      name.includes(search) ||
+      code.includes(search) ||
+      category.includes(search)
+    );
+  });
 
   return (
     <div className="min-h-screen bg-linear-to-br from-violet-50 via-white to-fuchsia-50">
@@ -133,11 +129,13 @@ export default function LabTests() {
             formData={formData}
             handleInputChange={handleInputChange}
             handleFormSubmit={handleFormSubmit}
+            selectedTest={selectedTest}
           />
 
           <LabTestsTable
             filteredTests={filteredTests}
             handleDeleteTest={handleDeleteTest}
+            handleEditTest={handleEditTest}
           />
         </div>
       </main>

@@ -1,11 +1,17 @@
 import React from "react";
 import { DollarSign, Clock, Edit, Trash2 } from "lucide-react";
 
-export default function LabTestTableRow({ test, handleDeleteTest }) {
+export default function LabTestTableRow({
+  test,
+  handleEditTest,
+  handleDeleteTest,
+}) {
   return (
     <tr className="hover:bg-violet-50/70 transition-all duration-300">
       <td className="p-4 pl-6">
-        <span className="font-mono font-bold text-violet-700">{test.code}</span>
+        <span className="font-mono font-bold text-violet-700">
+          {test.code}
+        </span>
       </td>
 
       <td className="p-4">
@@ -23,7 +29,7 @@ export default function LabTestTableRow({ test, handleDeleteTest }) {
       <td className="p-4">
         <div className="flex items-center gap-1 font-bold text-slate-800">
           <DollarSign size={14} className="text-violet-500" />
-          <span>{test.price.toLocaleString()}</span>
+          <span>{Number(test.price).toLocaleString()}</span>
         </div>
       </td>
 
@@ -38,9 +44,7 @@ export default function LabTestTableRow({ test, handleDeleteTest }) {
         <div className="flex items-center justify-center gap-2">
           <button
             type="button"
-            onClick={() =>
-              alert(`Edit config options for ${test.code} coming soon!`)
-            }
+            onClick={() => handleEditTest(test)}
             className="rounded-xl p-2 text-violet-600 hover:bg-violet-100 transition-all duration-300"
           >
             <Edit size={15} />
@@ -48,7 +52,7 @@ export default function LabTestTableRow({ test, handleDeleteTest }) {
 
           <button
             type="button"
-            onClick={() => handleDeleteTest(test.code)}
+            onClick={() => handleDeleteTest(test._id)}
             className="rounded-xl p-2 text-red-500 hover:bg-red-100 transition-all duration-300"
           >
             <Trash2 size={15} />

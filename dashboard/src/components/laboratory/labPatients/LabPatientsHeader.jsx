@@ -1,7 +1,10 @@
 import React from "react";
 import { Search } from "lucide-react";
 
-export default function LabPatientsHeader({ searchTerm, setSearchTerm }) {
+export default function LabPatientsHeader({
+  searchTerm,
+  setSearchTerm,
+}) {
   return (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-5 mb-8">
       <div>
@@ -14,11 +17,14 @@ export default function LabPatientsHeader({ searchTerm, setSearchTerm }) {
         </p>
       </div>
 
+
       <div className="relative w-full lg:w-96">
+
         <Search
           size={18}
           className="absolute left-4 top-1/2 -translate-y-1/2 text-violet-400"
         />
+
 
         <input
           type="text"
@@ -27,7 +33,10 @@ export default function LabPatientsHeader({ searchTerm, setSearchTerm }) {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full rounded-2xl border border-violet-200 bg-white/80 backdrop-blur-xl py-3 pl-11 pr-4 text-sm shadow-md outline-none transition-all duration-300 focus:border-violet-500 focus:ring-4 focus:ring-violet-100"
         />
+
       </div>
+
+
     </div>
   );
 }

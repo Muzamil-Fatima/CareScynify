@@ -5,6 +5,7 @@ export default function LabPatientForm({
   formData,
   handleInputChange,
   handleFormSubmit,
+  testsList = [],
 }) {
   return (
     <div className="rounded-3xl border border-violet-100 bg-white/80 backdrop-blur-xl shadow-xl p-7 h-fit">
@@ -63,9 +64,11 @@ export default function LabPatientForm({
               onChange={handleInputChange}
               className="w-full rounded-2xl border border-violet-200 bg-violet-50/50 px-4 py-3 text-sm outline-none transition focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-100"
             >
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
+              <option value="Male">Male</option>
+
+              <option value="Female">Female</option>
+
+              <option value="Other">Other</option>
             </select>
           </div>
         </div>
@@ -90,14 +93,20 @@ export default function LabPatientForm({
             Assigned Test
           </label>
 
-          <input
-            type="text"
+          <select
             name="tests"
             value={formData.tests}
             onChange={handleInputChange}
-            placeholder="Blood CBC"
             className="w-full rounded-2xl border border-violet-200 bg-violet-50/50 px-4 py-3 text-sm outline-none transition focus:border-violet-500 focus:bg-white focus:ring-4 focus:ring-violet-100"
-          />
+          >
+            <option value="">Select Test</option>
+
+            {testsList.map((test) => (
+              <option key={test._id} value={test._id}>
+                {test.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <button
