@@ -51,7 +51,7 @@ export default function LabReportDetails() {
       <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-8">
         {/* Header */}
 
-        <div className="flex justify-between items-start border-b pb-6">
+        <div className="flex justify-between items-start border-b border-gray-300 pb-6">
           <div>
             <h1 className="text-3xl font-bold text-purple-700">
               Laboratory Report
@@ -168,14 +168,14 @@ export default function LabReportDetails() {
         <div className="mt-8">
           <h2 className="font-bold text-gray-800 mb-3">Overall Remarks</h2>
 
-          <div className="bg-gray-50 border rounded-xl p-5">
+          <div className="bg-gray-50 border  border-gray-300 rounded-xl p-5">
             {report.overallRemarks || "No remarks available."}
           </div>
         </div>
 
         {/* Footer */}
 
-        <div className="border-t mt-10 pt-8 flex justify-between">
+        <div className="border-t border-gray-300 mt-10 pt-8 flex justify-between">
           <div>
             <p className="text-gray-500 text-sm">Verified By</p>
 

@@ -85,11 +85,11 @@ const filteredSamples = samples?.filter((item) =>
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by patient name..."
-              className="w-full pl-10 pr-4 py-3 rounded-xl border bg-white shadow-sm outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300 bg-white shadow-sm outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
 
-          <button className="flex items-center gap-2 px-5 py-3 bg-white border rounded-xl">
+          <button className="flex items-center gap-2 px-5 py-3 bg-white border border-gray-300 rounded-xl">
             <Filter size={18} />
             Filter
           </button>
