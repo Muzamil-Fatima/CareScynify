@@ -1,5 +1,5 @@
 import React from "react";
-import { usePatient } from "../../context/patients/PatientContext";
+import { usePatient } from "../../../context/patients/PatientContext";
 
 const MedicalHistory = () => {
   const { profile, setProfile, setIsDirty } = usePatient();

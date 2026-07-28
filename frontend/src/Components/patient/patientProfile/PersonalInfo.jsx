@@ -1,7 +1,6 @@
 import React, { useMemo } from "react";
-import PhoneInput from "../PhoneInput";
-import { usePatient } from "../../context/patients/PatientContext";
-
+import { usePatient } from "../../../context/patients/PatientContext";
+import PhoneInput from "../../common/PhoneInput";
 const PersonalInfo = () => {
   const { profile, setProfile, setIsDirty } = usePatient();
 

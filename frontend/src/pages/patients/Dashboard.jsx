@@ -1,12 +1,12 @@
 
 import React from "react";
-import DashboardHero from "../../Components/patientDashboard/DashboardHero";
-import StatsCards from "../../Components/patientDashboard/StatsCards";
-import UpcomingAppointments from "../../Components/patientDashboard/UpcomingAppointments";
-import AIAnalyzerCard from "../../Components/patientDashboard/AIAnalyzerCard";
-import RecentReports from "../../Components/patientDashboard/RecentReports";
-import HealthTips from "../../Components/patientDashboard/HealthTips";
-import HealthcareServices from "../../Components/patientDashboard/HealthcareServices";
+import DashboardHero from "../../Components/patient/patientDashboard/DashboardHero";
+import StatsCards from "../../Components/patient/patientDashboard/StatsCards";
+import UpcomingAppointments from "../../Components/patient/patientDashboard/UpcomingAppointments";
+import AIAnalyzerCard from "../../Components/patient/patientDashboard/AIAnalyzerCard";
+import RecentReports from "../../Components/patient/patientDashboard/RecentReports";
+import HealthTips from "../../Components/patient/patientDashboard/HealthTips";
+import HealthcareServices from "../../Components/patient/patientDashboard/HealthcareServices";
 
 const Dashboard = () => {
   return (

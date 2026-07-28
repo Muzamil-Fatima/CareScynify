@@ -1,6 +1,6 @@
 import React from "react";
-import { usePatient } from "../../context/patients/PatientContext";
-import PhoneInput from "../PhoneInput";
+import { usePatient } from "../../../context/patients/PatientContext";
+import PhoneInput from "../../common/PhoneInput";
 
 const EmergencyContact = () => {
   const { profile, setProfile, setIsDirty } = usePatient();

@@ -1,7 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import SideBar from "../Components/SideBar";
-import Navbar from "../Components/Navbar";
+import Navbar from "../Components/common/Navbar";
 
 const AppLayout = () => {
   return (

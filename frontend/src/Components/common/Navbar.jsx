@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Activity } from "lucide-react";
-import CartDrawer from "./pharmacy/cart/CartDrawer";
+import CartDrawer from "../pharmacy/cart/CartDrawer.jsx";
 import MedicalServicesOutlinedIcon from "@mui/icons-material/MedicalServicesOutlined";
 import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
 import LocalPharmacyOutlinedIcon from "@mui/icons-material/LocalPharmacyOutlined";
@@ -10,8 +10,8 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { useAuth } from "../hooks/useAuth.js";
-import { useCartContext } from "../context/pharmacy/CartContext.js";
+import { useAuth } from "../../hooks/useAuth.js";
+import { useCartContext } from "../../context/pharmacy/CartContext.js";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);

@@ -33,7 +33,7 @@ import Reports from "./pages/patients/Reports";
 import PdfViewer from "./Components/reports/ReportViewer";
 import Settings from "./pages/patients/Settings";
 import RootLayout from "./layout/RootLayout";
-import Security from "./Components/settings/Security";
+import Security from "./Components/patient/settings/Security";
 import SymptomAnalyzer from "./pages/patients/SymptomAnalyzer";
 import MedicineDetails from "./pages/pharmacy/MedicineDetail";
 import OrderSuccess from "./pages/pharmacy/OrderSuccess";

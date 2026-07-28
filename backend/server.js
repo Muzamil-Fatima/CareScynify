@@ -81,6 +81,8 @@ app.use("/api/doctor", doctorRoutes);
 app.use("/api/report", reportRoutes);
 // public doctor routes
 app.use("/api/doctors", publicDoctorRoutes);
+// public lab routes
+app.use("/api/labs", publicDoctorRoutes);
 // appointment routes
 app.use("/api/appointments", appointmentRoutes);
 // prescription routes
