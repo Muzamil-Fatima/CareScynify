@@ -12,6 +12,7 @@ const initialFilters = {
   homeCollection: false,
   available: false,
 };
+// lab filter
 
 const LabFilters = ({ onFilterChange }) => {
   const [filters, setFilters] = useState(initialFilters);
