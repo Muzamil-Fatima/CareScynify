@@ -77,11 +77,7 @@ const LabPersonalInfo = () => {
             placeholder="REG-123456"
             value={laboratory.registrationNumber || ""}
             onChange={(e) =>
-              handleChange(
-                "laboratory",
-                "registrationNumber",
-                e.target.value
-              )
+              handleChange("laboratory", "registrationNumber", e.target.value)
             }
           />
         </div>
@@ -125,8 +121,8 @@ const LabPersonalInfo = () => {
               laboratory.verificationStatus === "verified"
                 ? "bg-green-50 border-green-300 text-green-700"
                 : laboratory.verificationStatus === "rejected"
-                ? "bg-red-50 border-red-300 text-red-700"
-                : "bg-yellow-50 border-yellow-300 text-yellow-700"
+                  ? "bg-red-50 border-red-300 text-red-700"
+                  : "bg-yellow-50 border-yellow-300 text-yellow-700"
             }`}
           >
             {laboratory.verificationStatus
@@ -145,8 +141,8 @@ const LabPersonalInfo = () => {
               user.status === "active"
                 ? "bg-green-50 border-green-300 text-green-700"
                 : user.status === "inactive"
-                ? "bg-gray-100 border-gray-300 text-gray-600"
-                : "bg-red-50 border-red-300 text-red-700"
+                  ? "bg-gray-100 border-gray-300 text-gray-600"
+                  : "bg-red-50 border-red-300 text-red-700"
             }`}
           >
             {user.status
@@ -154,7 +150,14 @@ const LabPersonalInfo = () => {
               : "Active"}
           </div>
         </div>
+        {/* lab ID */}
+        <div>
+          <label className={labelClass}>Laboratory ID</label>
 
+          <div className="rounded-xl px-4 py-3 font-medium border bg-gray-100 border-gray-300 text-gray-600">
+            {laboratory.labId || "Not assigned"}
+          </div>
+        </div>
         {/* Description */}
         <div className="md:col-span-2">
           <label className={labelClass}>Description</label>

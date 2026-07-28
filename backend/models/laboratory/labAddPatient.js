@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const labPatientSchema = new mongoose.Schema(
   {
     // Laboratory
@@ -91,18 +90,6 @@ const labPatientSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
-);
-
-// Prevent duplicate registration of the same mobile number for the same test in the same laboratory
-labPatientSchema.index(
-  {
-    laboratoryId: 1,
-    mobile: 1,
-    testId: 1,
-  },
-  {
-    unique: true,
   },
 );
 

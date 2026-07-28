@@ -43,19 +43,13 @@ export const addPatient = async (req, res) => {
       });
     }
 
-    let patientData = {
-      patientId: null,
-      name,
-      mobile,
-      age,
-      gender,
-    };
+    let patientData;
 
     // Registered Patient
     if (patientId) {
       const patient = await Patient.findById(patientId).populate(
         "userId",
-        "name phone",
+        "name phone dob",
       );
 
       if (!patient) {
@@ -74,6 +68,20 @@ export const addPatient = async (req, res) => {
             new Date(patient.userId.dob).getFullYear()
           : age,
         gender: patient.gender,
+      };
+    } else {
+      // Walk-in Patient — create a Patient record too, so it gets a patientCode
+      const newPatient = await Patient.create({
+        userId: null,
+        gender: gender?.toLowerCase() || "other",
+      });
+
+      patientData = {
+        patientId: newPatient._id,
+        name,
+        mobile,
+        age,
+        gender,
       };
     }
 
@@ -115,7 +123,6 @@ export const addPatient = async (req, res) => {
     });
   }
 };
-
 // Get Laboratory Patients
 export const getPatients = async (req, res) => {
   try {

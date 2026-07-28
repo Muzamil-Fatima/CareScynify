@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
-
+import generateCustomId from "../utils/generateCustomId.js";
 const patientSchema = new mongoose.Schema(
   {
+    patientCode: {
+      type: String,
+      unique: true,
+      index: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      default:null,
     },
 
     // PERSONAL INFO
@@ -107,7 +112,11 @@ const patientSchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
-
+patientSchema.pre("save", async function () {
+  if (!this.patientCode) {
+    this.patientCode = await generateCustomId("PT");
+  }
+});
 const Patient =
   mongoose.models.Patient || mongoose.model("Patient", patientSchema);
 

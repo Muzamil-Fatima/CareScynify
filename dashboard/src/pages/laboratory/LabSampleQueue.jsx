@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Search,
   Filter,
@@ -8,41 +7,44 @@ import {
   Clock,
 } from "lucide-react";
 
+import useLabSample from "../../hooks/laboratory/useLabSamples";
+import LabSampleModal from "../../components/laboratory/LabSampleModal";
+
 export default function LabSampleQueue() {
-  const [queue] = useState([
-    {
-      id: "L-2026-001",
-      name: "Ali Khan",
-      test: "CBC",
-      priority: "High",
-      status: "Pending",
-    },
-    {
-      id: "L-2026-002",
-      name: "Fatima Z.",
-      test: "Glucose",
-      priority: "Normal",
-      status: "Collected",
-    },
-    {
-      id: "L-2026-003",
-      name: "Ahmed Raza",
-      test: "Thyroid",
-      priority: "High",
-      status: "Processing",
-    },
-  ]);
+  const { samples, fetchLabSamples, changeSampleStatus, addLabSample } =
+    useLabSample();
+
+  const [search, setSearch] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    fetchLabSamples();
+  }, [fetchLabSamples]);
+
+  const filteredSamples = samples?.filter((item) =>
+    item.patientName?.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const getStatusColor = (status) => {
     switch (status) {
       case "Pending":
         return "bg-yellow-100 text-yellow-700";
+
       case "Collected":
         return "bg-purple-100 text-purple-700";
+
       case "Processing":
         return "bg-indigo-100 text-indigo-700";
-      default:
+
+      case "Completed":
         return "bg-green-100 text-green-700";
+
+      case "Rejected":
+        return "bg-red-100 text-red-700";
+
+      default:
+        return "bg-gray-100 text-gray-700";
     }
   };
 
@@ -50,22 +52,26 @@ export default function LabSampleQueue() {
     <div className="min-h-screen bg-gray-100 p-8">
       <main className="max-w-7xl mx-auto">
         {/* Header */}
+
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-3xl font-bold text-gray-800">
-              Sample Queue
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-800">Sample Queue</h2>
+
             <p className="text-sm text-gray-500">
               Manage all incoming lab samples
             </p>
           </div>
 
-          <button className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold transition">
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold"
+          >
             + New Sample
           </button>
         </div>
 
         {/* Search & Filter */}
+
         <div className="flex gap-4 mb-6">
           <div className="relative flex-1">
             <Search
@@ -74,54 +80,68 @@ export default function LabSampleQueue() {
             />
 
             <input
-              type="text"
-              placeholder="Search by name or ID..."
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-white shadow-sm outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by patient name..."
+              className="w-full pl-10 pr-4 py-3 rounded-xl border bg-white shadow-sm outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
 
-          <button className="flex items-center gap-2 px-5 py-3 bg-white border border-gray-200 rounded-xl shadow-sm text-gray-700 font-medium hover:bg-purple-50 transition">
+          <button className="flex items-center gap-2 px-5 py-3 bg-white border rounded-xl">
             <Filter size={18} />
             Filter
           </button>
         </div>
 
         {/* Table */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-md overflow-hidden">
+
+        <div className="bg-white rounded-2xl shadow-md overflow-hidden">
           <table className="w-full text-left">
-            <thead className="bg-purple-50 border-b border-gray-100">
-              <tr className="text-xs uppercase text-gray-500 font-semibold">
+            <thead className="bg-purple-50">
+              <tr className="text-xs uppercase text-gray-500">
                 <th className="p-4">Sample ID</th>
+
                 <th className="p-4">Patient Name</th>
-                <th className="p-4">Test Type</th>
+
+                <th className="p-4">Tests</th>
+
                 <th className="p-4">Priority</th>
+
                 <th className="p-4">Status</th>
+
                 <th className="p-4">Actions</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-gray-100">
-              {queue.map((item) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-purple-50 transition text-sm"
-                >
+              {filteredSamples?.map((item) => (
+                <tr key={item._id} className="hover:bg-purple-50 transition">
                   <td className="p-4 font-semibold text-purple-700">
-                    {item.id}
+                    {item.sampleId}
                   </td>
 
                   <td className="p-4 font-medium text-gray-800">
-                    {item.name}
+                    {item.patientName}
                   </td>
 
-                  <td className="p-4 text-gray-600">{item.test}</td>
+                  <td className="p-4 text-gray-600">
+                    {item.tests?.map((test, index) => (
+                      <span key={index}>
+                        {test.testName}
+
+                        {index !== item.tests.length - 1 && ", "}
+                      </span>
+                    ))}
+                  </td>
 
                   <td className="p-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-semibold ${
                         item.priority === "High"
                           ? "bg-red-100 text-red-700"
-                          : "bg-green-100 text-green-700"
+                          : item.priority === "Urgent"
+                            ? "bg-orange-100 text-orange-700"
+                            : "bg-green-100 text-green-700"
                       }`}
                     >
                       {item.priority}
@@ -130,25 +150,39 @@ export default function LabSampleQueue() {
 
                   <td className="p-4">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(
-                        item.status
-                      )}`}
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(item.sampleStatus)}`}
                     >
-                      {item.status}
+                      {item.sampleStatus}
                     </span>
                   </td>
 
                   <td className="p-4">
                     <div className="flex gap-2">
-                      <button className="p-2 rounded-lg hover:bg-purple-100 text-purple-600 transition">
+                      <button
+                        title="Collected"
+                        onClick={() =>
+                          changeSampleStatus(item._id, "Collected")
+                        }
+                        className="p-2 rounded-lg hover:bg-purple-100 text-purple-600"
+                      >
                         <Clock size={16} />
                       </button>
 
-                      <button className="p-2 rounded-lg hover:bg-green-100 text-green-600 transition">
+                      <button
+                        title="Completed"
+                        onClick={() =>
+                          changeSampleStatus(item._id, "Completed")
+                        }
+                        className="p-2 rounded-lg hover:bg-green-100 text-green-600"
+                      >
                         <CheckCircle2 size={16} />
                       </button>
 
-                      <button className="p-2 rounded-lg hover:bg-red-100 text-red-600 transition">
+                      <button
+                        title="Rejected"
+                        onClick={() => changeSampleStatus(item._id, "Rejected")}
+                        className="p-2 rounded-lg hover:bg-red-100 text-red-600"
+                      >
                         <AlertTriangle size={16} />
                       </button>
                     </div>
@@ -159,6 +193,14 @@ export default function LabSampleQueue() {
           </table>
         </div>
       </main>
+
+      {/* New Sample Modal */}
+      {showModal && (
+        <LabSampleModal
+          closeModal={() => setShowModal(false)}
+          addLabSample={addLabSample}
+        />
+      )}
     </div>
   );
 }

@@ -126,6 +126,7 @@ function App() {
             <Route path="/lab/tests" element={<LabTests />} />
             <Route path="/lab/patients" element={<LabPatients />} />
             <Route path="/lab/samples" element={<LabSampleQueue />} />
+            {/* <Route path="/lab/bookings" element={<LabBookings />} /> */}
             <Route path="/lab/processing" element={<LabTestProcess />} />
 
             {/* admin */}

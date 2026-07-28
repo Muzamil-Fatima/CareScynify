@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import generateCustomId from "../../utils/generateCustomId.js";
 const operatingHourSchema = new mongoose.Schema(
   {
     day: {
@@ -24,6 +24,11 @@ const operatingHourSchema = new mongoose.Schema(
 
 const laboratorySchema = new mongoose.Schema(
   {
+      labId: {
+      type: String,
+      unique: true,
+      index: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -178,5 +183,11 @@ const laboratorySchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+// hook
+laboratorySchema.pre("save", async function (next) {
+  if (!this.labId) {
+    this.labId = await generateCustomId("LAB");
+  }
+});
 export const Laboratory= mongoose.model("Laboratory", laboratorySchema);
 export default Laboratory;

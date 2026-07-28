@@ -11,7 +11,7 @@ export default function LabPatientTableRow({
       {/* ID */}
       <td className="px-6 py-5">
         <span className="font-bold text-violet-700">
-          {patient?._id?.slice(-6)}
+          {patient?.patientId?.patientCode || patient?._id?.slice(-6)}
         </span>
       </td>
 
