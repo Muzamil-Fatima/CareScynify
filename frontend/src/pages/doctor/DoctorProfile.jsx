@@ -3,11 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useDoctorProfile } from "../../hooks/useDoctorProfile";
 import { useDoctorContext } from "../../context/doctor/DoctorContext";
 
-import DoctorProfileHeader from "../../Components/doctor/DoctorProfileHeader";
-import DoctorExperience from "../../Components/doctor/DoctorExperience";
-import DoctorAvailability from "../../Components/doctor/DoctorAvailability";
-import DoctorReviews from "../../Components/doctor/DoctorReviews";
-import DoctorAbout from "../../Components/doctor/DoctorAbout";
+import DoctorProfileHeader from "../../components/doctor/DoctorProfileHeader";
+import DoctorExperience from "../../components/doctor/DoctorExperience";
+import DoctorAvailability from "../../components/doctor/DoctorAvailability";
+import DoctorReviews from "../../components/doctor/DoctorReviews";
+import DoctorAbout from "../../components/doctor/DoctorAbout";
 
 const DoctorProfile = () => {
   const { id } = useParams();

@@ -3,9 +3,9 @@ import AddIcon from "@mui/icons-material/Add";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 
-import UploadReportModal from "../../Components/reports/UploadReportModal";
-import ReportCard from "../../Components/reports/ReportCard";
-import ReportTabs from "../../Components/reports/ReportTabs";
+import UploadReportModal from "../../components/reports/UploadReportModal";
+import ReportCard from "../../components/reports/ReportCard";
+import ReportTabs from "../../components/reports/ReportTabs";
 
 import { addReport, getReports } from "../../api/reportApi";
 

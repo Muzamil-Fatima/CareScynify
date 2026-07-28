@@ -2,11 +2,11 @@ import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import TuneIcon from "@mui/icons-material/Tune";
 
-import DoctorSearchBar from "../../Components/doctor/DoctorSearchBar";
-import DoctorFilters from "../../Components/doctor/DoctorFilters";
-import DoctorList from "../../Components/doctor/DoctorList";
+import DoctorSearchBar from "../../components/doctor/DoctorSearchBar";
+import DoctorFilters from "../../components/doctor/DoctorFilters";
+import DoctorList from "../../components/doctor/DoctorList";
 import { useDoctor } from "../../hooks/useDoctor";
-import Pagination from "../../Components/common/Pagination";
+import Pagination from "../../components/common/Pagination";
 const initialFilters = {
   specialty: "",
   rating: "",

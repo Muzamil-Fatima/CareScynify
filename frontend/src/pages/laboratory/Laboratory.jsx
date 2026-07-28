@@ -2,12 +2,12 @@ import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import TuneIcon from "@mui/icons-material/Tune";
 
-import LabSearchBar from "../../Components/laboratory/LabSearchBar";
-import LabFilters from "../../Components/laboratory/LabFilters";
-import LabList from "../../Components/laboratory/LabList";
+import LabSearchBar from "../../components/laboratory/LabSearchBar";
+import LabFilters from "../../components/laboratory/LabFilters";
+import LabList from "../../components/laboratory/LabList";
 
 import useLaboratories from "../../hooks/laboratory/useLaboratories";
-import Pagination from "../../Components/common/Pagination";
+import Pagination from "../../components/common/Pagination";
 
 const initialFilters = {
   city: "",

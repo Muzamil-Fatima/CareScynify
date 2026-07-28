@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
-import ChatBotButton from "../Components/chatbot/ChatBotButton";
-import ChatBotModal from "../Components/chatbot/ChatBotModal";
+import ChatBotButton from "../components/chatbot/ChatBotButton";
+import ChatBotModal from "../components/chatbot/ChatBotModal";
 
 const RootLayout = ({ children }) => {
   const [open, setOpen] = useState(false);

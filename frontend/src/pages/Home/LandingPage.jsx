@@ -1,12 +1,12 @@
 // pages/Home/LandingPage.jsx
-import Hero from "../../Components/home/Hero";
-import PulseDivider from "../../Components/home/PulseDivider";
-import Specializations from "../../Components/home/Specializations";
-import Services from "../../Components/home/Services";
-import HowItWorks from "../../Components/home/HowItWorks";
-import Testimonials from "../../Components/home/Testimonials";
-import CTA from "../../Components/home/CTA";
-// import Footer from "../../Components/home/Footer";
+import Hero from "../../components/home/Hero";
+import PulseDivider from "../../components/home/PulseDivider";
+import Specializations from "../../components/home/Specializations";
+import Services from "../../components/home/Services";
+import HowItWorks from "../../components/home/HowItWorks";
+import Testimonials from "../../components/home/Testimonials";
+import CTA from "../../components/home/CTA";
+// import Footer from "../../components/home/Footer";
 
 export default function LandingPage() {
   return (

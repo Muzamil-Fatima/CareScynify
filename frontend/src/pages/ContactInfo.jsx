@@ -1,6 +1,6 @@
 import React from "react";
-import Message from "../Components/ContactUs/Message";
-import GetInTouch from "../Components/ContactUs/GetInTouch";
+import Message from "../components/ContactUs/Message";
+import GetInTouch from "../components/ContactUs/GetInTouch";
 const ContactInfo = () => {
   return (
     <div>

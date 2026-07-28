@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import MedicineSearchBar from "../../Components/pharmacy/medicines/MedicineSearchBar";
-import MedicineFilters from "../../Components/pharmacy/medicines/MedicineFilters";
-import MedicineList from "../../Components/pharmacy/medicines/MedicineList";
+import MedicineSearchBar from "../../components/pharmacy/medicines/MedicineSearchBar";
+import MedicineFilters from "../../components/pharmacy/medicines/MedicineFilters";
+import MedicineList from "../../components/pharmacy/medicines/MedicineList";
 
 import { useMedicine } from "../../hooks/pharmacy/useMedicines";
 

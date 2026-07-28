@@ -1,7 +1,7 @@
 import React from "react";
 // import AboutImg from "../../assets/images/AboutImage.png";
-import WeDo from "../Components/About/WeDo";
-import OurTec from "../Components/About/OurTec";
+import WeDo from "../components/About/WeDo";
+import OurTec from "../components/About/OurTec";
 
 const AboutUs = () => {
   return (

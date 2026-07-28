@@ -2,9 +2,9 @@ import React, { useRef, useState } from "react";
 import { Avatar, IconButton, Box } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 
-import MedicalHistory from "../../Components/patient/patientProfile/MedicalHistory";
-import EmergencyContact from "../../Components/patient/patientProfile/EmergencyContact";
-import PersonalInfo from "../../Components/patient/patientProfile/PersonalInfo";
+import MedicalHistory from "../../components/patient/patientProfile/MedicalHistory";
+import EmergencyContact from "../../components/patient/patientProfile/EmergencyContact";
+import PersonalInfo from "../../components/patient/patientProfile/PersonalInfo";
 
 import { updateUserProfile } from "../../api/userApi";
 import { getPatientProfile } from "../../api/patientApi";

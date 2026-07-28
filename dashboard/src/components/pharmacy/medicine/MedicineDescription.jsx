@@ -1,4 +1,4 @@
-// src/components/pharmacy/MedicineDescription.jsx
+
 
 import React from "react";
 
