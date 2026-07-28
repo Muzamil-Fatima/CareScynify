@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
+/* pdf download  */
+@media print {
+  body {
+    background: white !important;
+  }
 
+  button {
+    display: none !important;
+  }
+}
 .open-width {
   width: 16rem; /* 64 in Tailwind = 16rem */
 }

@@ -2,22 +2,24 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import useLabSample from "../../hooks/laboratory/useLabSamples";
 import usePatients from "../../hooks/laboratory/useLabAddPatients";
-
+import useLabTests from "../../hooks/laboratory/useLabTests";
 const getPatientName = (p) => {
   if (typeof p?.name === "string" && p.name.trim()) return p.name;
   return "Unnamed Patient";
 };
 
 const getPatientCode = (p) => p?.patientId?.patientCode || "";
-const getPatientObjectId = (p) => p?.patientId?._id || p?.patientId || "";
 
 export default function LabSampleModal({ closeModal }) {
   const { addLabSample } = useLabSample();
   const { patients } = usePatients();
+  const { testsList, getLabTests } = useLabTests();
+  const [testSearch, setTestSearch] = useState("");
+  const [showTestDropdown, setShowTestDropdown] = useState(false);
 
+  const testWrapperRef = useRef(null);
   const [formData, setFormData] = useState({
-    patientId: "", // will store the real ObjectId (Patient._id)
-    patientName: "",
+    labPatientId: "", // will store the real ObjectId (Patient._id)
     tests: [{ testName: "" }],
     priority: "Normal",
   });
@@ -25,14 +27,48 @@ export default function LabSampleModal({ closeModal }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const wrapperRef = useRef(null);
+  const filteredTests = useMemo(() => {
+    if (!testSearch.trim()) {
+      return (testsList || []).slice(0, 5);
+    }
 
+    return (testsList || []).filter((test) =>
+      test.name.toLowerCase().includes(testSearch.toLowerCase()),
+    );
+  }, [testsList, testSearch]);
+  useEffect(() => {
+    getLabTests();
+  }, [getLabTests]);
+  const handleSelectTest = (test) => {
+    setFormData({
+      ...formData,
+      tests: [
+        {
+          testId: test._id,
+          testName: test.name,
+        },
+      ],
+    });
+
+    setTestSearch(test.name);
+    setShowTestDropdown(false);
+  };
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setShowDropdown(false);
       }
+
+      if (
+        testWrapperRef.current &&
+        !testWrapperRef.current.contains(e.target)
+      ) {
+        setShowTestDropdown(false);
+      }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
@@ -48,31 +84,23 @@ export default function LabSampleModal({ closeModal }) {
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
+
     setFormData({
       ...formData,
-      patientName: e.target.value,
-      patientId: "", // clear selection when typing manually
+      labPatientId: "",
     });
+
     setShowDropdown(true);
   };
-
   const handleSelectPatient = (patient) => {
     setFormData({
       ...formData,
-      patientId: getPatientObjectId(patient), // real ObjectId for backend
-      patientName: getPatientName(patient),
+      labPatientId: patient._id,
     });
+
     setSearchTerm(getPatientName(patient));
     setShowDropdown(false);
   };
-
-  const handleTestChange = (value) => {
-    setFormData({
-      ...formData,
-      tests: [{ testName: value }],
-    });
-  };
-
   const handlePriorityChange = (e) => {
     setFormData({
       ...formData,
@@ -83,7 +111,7 @@ export default function LabSampleModal({ closeModal }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.patientId) {
+    if (!formData.labPatientId) {
       alert("Please select a valid patient from the list.");
       return;
     }
@@ -143,16 +171,59 @@ export default function LabSampleModal({ closeModal }) {
             )}
           </div>
 
-          <div>
-            <label className="text-sm font-medium">Test Name</label>
+          <div className="relative" ref={testWrapperRef}>
+            <label className="text-sm font-medium">Lab Test</label>
 
             <input
-              value={formData.tests[0].testName}
-              onChange={(e) => handleTestChange(e.target.value)}
+              value={testSearch}
+              onChange={(e) => {
+                setTestSearch(e.target.value);
+
+                setFormData({
+                  ...formData,
+                  tests: [
+                    {
+                      testId: "",
+                      testName: e.target.value,
+                    },
+                  ],
+                });
+
+                setShowTestDropdown(true);
+              }}
+              onFocus={() => setShowTestDropdown(true)}
               className="w-full border rounded-xl px-4 py-3 mt-1"
-              placeholder="CBC, Glucose..."
+              placeholder="Search Lab Test..."
+              autoComplete="off"
               required
             />
+
+            {showTestDropdown && filteredTests.length > 0 && (
+              <div className="absolute z-20 w-full bg-white border rounded-xl mt-1 shadow-lg max-h-52 overflow-y-auto">
+                {filteredTests.map((test) => (
+                  <button
+                    key={test._id}
+                    type="button"
+                    onClick={() => handleSelectTest(test)}
+                    className="w-full text-left px-4 py-3 hover:bg-purple-50"
+                  >
+                    <div className="font-medium">
+                      {test.name || "No Test Name"}
+                    </div>
+
+                    <div className="text-xs text-gray-500">
+                      Rs. {test.price}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {showTestDropdown && testSearch && filteredTests.length === 0 && (
+              <div className="absolute z-20 w-full bg-white border rounded-xl mt-1 px-4 py-3 text-sm text-gray-500 shadow-lg">
+                No test found
+              </div>
+            )}
           </div>
 
           <div>

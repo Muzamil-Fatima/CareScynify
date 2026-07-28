@@ -1,54 +1,78 @@
 import LabSample from "../../models/laboratory/LabSample.js";
+import LabPatient from "../../models/laboratory/labAddPatient.js";
+
 
 // Create New Sample
 export const createLabSample = async (req, res) => {
   try {
-    const { patientId, patientName, tests, priority } = req.body;
+    const { labPatientId, tests, priority } = req.body;
+
+    const labPatient = await LabPatient.findById(labPatientId);
+
+    if (!labPatient) {
+      return res.status(404).json({
+        success: false,
+        message: "Lab patient not found",
+      });
+    }
+
     const sample = await LabSample.create({
       laboratoryId: req.user._id,
-      patientId,
-      patientName,
+
+      labPatientId: labPatient._id,
+
+      patientId: labPatient.patientId || null,
+
       tests,
+
       priority,
     });
 
     res.status(201).json({
       success: true,
-
       message: "Lab sample created successfully",
-
       sample,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-
       message: error.message,
     });
   }
 };
-
+// Get All Lab Samples
 // Get All Lab Samples
 export const getLabSamples = async (req, res) => {
   try {
     const samples = await LabSample.find({
       laboratoryId: req.user._id,
     })
-      .populate("patientId")
-      .populate("tests.testId")
+      .populate({
+        path: "labPatientId",
+        select: "name mobile age gender",
+      })
+      .populate({
+        path: "patientId",
+        select: "name",
+      })
+      .populate({
+        path: "tests.testId",
+      })
       .sort({
         createdAt: -1,
       });
 
+    console.log(JSON.stringify(samples, null, 2));
+
     res.status(200).json({
       success: true,
-
       samples,
     });
   } catch (error) {
+    console.error("Get Lab Samples Error:", error);
+
     res.status(500).json({
       success: false,
-
       message: error.message,
     });
   }
@@ -59,7 +83,7 @@ export const getLabSamples = async (req, res) => {
 export const getLabSampleById = async (req, res) => {
   try {
     const sample = await LabSample.findById(req.params.id)
-      .populate("patientId")
+      .populate("labPatientId")
       .populate("tests.testId");
 
     if (!sample) {

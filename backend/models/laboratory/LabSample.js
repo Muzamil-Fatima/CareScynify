@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import generateCustomId from "../../utils/generateCustomId.js";
+import Counter from "../Counter.js";
 
 const labSampleSchema = new mongoose.Schema(
   {
@@ -16,14 +17,18 @@ const labSampleSchema = new mongoose.Schema(
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
+      default: null,
+    },
+    reportId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "LabReport",
+      default: null,
+    },
+    labPatientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "LabPatient",
       required: true,
     },
-
-    patientName: {
-      type: String,
-      required: true,
-    },
-
     tests: [
       {
         testId: {
@@ -61,11 +66,6 @@ const labSampleSchema = new mongoose.Schema(
       default: "Pending",
     },
 
-    reportId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "LabReport",
-    },
-
     notes: {
       type: String,
       default: "",
@@ -76,13 +76,22 @@ const labSampleSchema = new mongoose.Schema(
   },
 );
 
-// Compound unique index: sampleId only needs to be unique per lab
-labSampleSchema.index({ laboratoryId: 1, sampleId: 1 }, { unique: true });
-
-// hook — runs on validate, BEFORE required-field validation would fire
 labSampleSchema.pre("validate", async function (next) {
   if (!this.sampleId) {
-    this.sampleId = await generateCustomId("SMP", this.laboratoryId);
+    const year = new Date().getFullYear().toString().slice(-2);
+
+    const key = `SMP-${year}-${this.laboratoryId.toString()}`;
+
+    const counter = await Counter.findOneAndUpdate(
+      { key },
+      { $inc: { seq: 1 } },
+      {
+        new: true,
+        upsert: true,
+      },
+    );
+
+    this.sampleId = `SMP${year}${String(counter.seq).padStart(5, "0")}`;
   }
 });
 

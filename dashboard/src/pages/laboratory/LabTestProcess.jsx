@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { Play, CheckCircle2, FileText } from "lucide-react";
 import useLabSample from "../../hooks/laboratory/useLabSamples";
-
+import { useNavigate } from "react-router-dom";
 export default function LabTestProcess() {
   const { samples, fetchLabSamples, changeSampleStatus } = useLabSample();
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchLabSamples();
@@ -104,16 +105,27 @@ export default function LabTestProcess() {
 
                 <div className="flex gap-3">
                   {t.sampleStatus === "Completed" ? (
-                    <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition">
-                      <FileText size={16} />
-                      View Report
-                    </button>
+                    t.reportId ? (
+                      <button
+                        onClick={() => navigate(`/lab/reports/${t.reportId}`)}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition"
+                      >
+                        <FileText size={16} />
+                        View Report
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => navigate(`/lab/reports/create/${t._id}`)}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium transition"
+                      >
+                        <FileText size={16} />
+                        Create Report
+                      </button>
+                    )
                   ) : (
                     <>
                       <button
-                        onClick={() =>
-                          changeSampleStatus(t._id, nextStatus)
-                        }
+                        onClick={() => changeSampleStatus(t._id, nextStatus)}
                         className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition"
                       >
                         <Play size={16} />

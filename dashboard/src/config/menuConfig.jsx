@@ -20,6 +20,7 @@ import ShoppingBagRoundedIcon from "@mui/icons-material/ShoppingBagRounded";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import DescriptionIcon from "@mui/icons-material/Description";
 // admin
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
@@ -89,7 +90,11 @@ export const menuByRole = {
       path: "/lab/processing",
       icon: <ScienceIcon />,
     },
-
+    {
+      name: "Reports",
+      path: "/lab/reports",
+      icon: <DescriptionIcon />,
+    },
     {
       name: "Profile",
       path: "/lab/profile",

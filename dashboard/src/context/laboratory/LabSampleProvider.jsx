@@ -37,14 +37,13 @@ export default function LabSampleProvider({ children }) {
   }, []);
 
   // Get Single Sample
-
   const fetchLabSampleById = async (id) => {
     try {
       const data = await getLabSampleById(id);
 
       setSelectedSample(data.sample);
 
-      return data;
+      return data.sample;
     } catch (error) {
       console.log(error);
 

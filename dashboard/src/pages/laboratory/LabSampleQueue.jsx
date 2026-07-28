@@ -22,9 +22,11 @@ export default function LabSampleQueue() {
     fetchLabSamples();
   }, [fetchLabSamples]);
 
-  const filteredSamples = samples?.filter((item) =>
-    item.patientName?.toLowerCase().includes(search.toLowerCase()),
-  );
+const filteredSamples = samples?.filter((item) =>
+  (item.labPatientId?.name || "")
+    .toLowerCase()
+    .includes(search.toLowerCase()),
+);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -121,7 +123,7 @@ export default function LabSampleQueue() {
                   </td>
 
                   <td className="p-4 font-medium text-gray-800">
-                    {item.patientName}
+                    {item.labPatientId?.name || "Unknown Patient"}
                   </td>
 
                   <td className="p-4 text-gray-600">

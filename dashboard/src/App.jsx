@@ -32,6 +32,9 @@ import LabSampleQueue from "./pages/laboratory/LabSampleQueue.jsx";
 import LabPatients from "./pages/laboratory/LabPatients.jsx";
 import LabTests from "./pages/laboratory/LabTests.jsx";
 import LabProfile from "./pages/laboratory/LabProfile.jsx";
+import LabCreateReport from "./pages/laboratory/LabCreateReport.jsx";
+import LabReports from "./pages/laboratory/LabReports.jsx";
+import LabReportDetails from "./pages/laboratory/LabReportDetails.jsx";
 // admin
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
 function App() {
@@ -128,6 +131,10 @@ function App() {
             <Route path="/lab/samples" element={<LabSampleQueue />} />
             {/* <Route path="/lab/bookings" element={<LabBookings />} /> */}
             <Route path="/lab/processing" element={<LabTestProcess />} />
+            {/* Reports */}
+            <Route path="/lab/reports/create/:sampleId" element={<LabCreateReport />} />
+            <Route path="/lab/reports" element={<LabReports />} />
+            <Route path="/lab/reports/:reportId" element={<LabReportDetails />} />
 
             {/* admin */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />
