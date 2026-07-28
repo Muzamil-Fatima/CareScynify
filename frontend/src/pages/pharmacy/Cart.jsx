@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import CartItem from "../../Components/pharmacy/cart/CartItem";
-import CartSummary from "../../components/pharmacy/cart/CartSummary";
+import CartSummary from "../../Components/pharmacy/cart/CartSummary";
 import { useCartContext } from "../../context/pharmacy/CartContext";
 
 const Cart = () => {
