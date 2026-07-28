@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 // import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../Utils/api.js";
+import { BASE_URL } from "../../utils/api.js";
 import { useAuth } from "../../hooks/useAuth.js";
 const Login = () => {
   const [email, setEmail] = useState("");

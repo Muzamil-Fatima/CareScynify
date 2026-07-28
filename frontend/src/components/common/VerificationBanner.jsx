@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toast } from "react-hot-toast";
-import { BASE_URL } from "../../Utils/api";
+import { BASE_URL } from "../../utils/api";
 
 const VerificationBanner = () => {
   const resendVerification = async () => {
