@@ -1,15 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useLabContext } from "../../context/laboratory/LabContext";
 
 const LabCard = ({ laboratory }) => {
   const navigate = useNavigate();
 
-  const { setSelectedLaboratory } = useLabContext();
-
   const handleClick = () => {
-    setSelectedLaboratory(laboratory);
-
     navigate(`/laboratory/${laboratory._id}`);
   };
 
@@ -85,7 +80,7 @@ const LabCard = ({ laboratory }) => {
         onClick={handleClick}
         className="mt-4 w-full cursor-pointer bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
       >
-        View Tests
+        View Lab
       </button>
     </div>
   );

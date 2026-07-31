@@ -27,9 +27,9 @@ export const filterLabTest = async (filters) => {
 
   return res.data;
 };
-
-// Get testoratory profile
-export const getLabTestProfile = async (id) => {
+// Get single lab test detail
+export const getLabTestById = async (id) => {
   const res = await api.get(`/api/lab/test/${id}`);
-  return res.data;
+
+  return res.data.test;
 };

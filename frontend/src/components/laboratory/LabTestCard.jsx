@@ -1,13 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useLabContext } from "../../context/laboratory/LabContext";
 
 const LabTestCard = ({ labtest }) => {
   const navigate = useNavigate();
-  const { setSelectedLabTest } = useLabContext();
 
   const handleClick = () => {
-    setSelectedLabTest(labtest);
     navigate(`/labtest/${labtest._id}`);
   };
 

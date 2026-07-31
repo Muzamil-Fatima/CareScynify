@@ -149,29 +149,64 @@ export const getLaboratoryById = async (req, res) => {
   try {
     const laboratory = await Laboratory.findById(req.params.id).populate(
       "userId",
-      "name avatar",
+      "name email phone avatar"
     );
 
     if (!laboratory) {
       return res.status(404).json({
         success: false,
-
         message: "Laboratory not found",
       });
     }
 
-    res.json({
+    return res.status(200).json({
       success: true,
-
       laboratory: {
-        ...laboratory._doc,
+        _id: laboratory._id,
+        labId: laboratory.labId,
+        labName: laboratory.labName,
+        description: laboratory.description,
+        verificationStatus: laboratory.verificationStatus,
 
+        // Contact
+        alternatePhone: laboratory.alternatePhone,
+        website: laboratory.website,
+        whatsapp: laboratory.whatsapp,
+        supportPhone: laboratory.supportPhone,
+
+        // Address
+        address: laboratory.address,
+        city: laboratory.city,
+        province: laboratory.province,
+        country: laboratory.country,
+        postalCode: laboratory.postalCode,
+        mapLink: laboratory.mapLink,
+
+        // Lab Information
+        labType: laboratory.labType,
+        homeSampleCollection: laboratory.homeSampleCollection,
+        onlineReports: laboratory.onlineReports,
+        emergencyTesting: laboratory.emergencyTesting,
+        onlineBooking: laboratory.onlineBooking,
+        digitalReports: laboratory.digitalReports,
+        isOpen: laboratory.isOpen,
+        operatingHours: laboratory.operatingHours,
+
+        // Dates
+        createdAt: laboratory.createdAt,
+        updatedAt: laboratory.updatedAt,
+
+        // Owner/User
         user: laboratory.userId,
       },
     });
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
+    console.error("Get Laboratory By ID Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch laboratory.",
+      error: error.message,
     });
   }
 };

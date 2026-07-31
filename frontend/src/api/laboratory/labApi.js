@@ -29,8 +29,12 @@ export const filterLaboratories = async (filters) => {
 };
 
 // Get laboratory profile
-export const getLaboratoryProfile = async (id) => {
+export const getLaboratoryById = async (id) => {
   const res = await api.get(`/api/labs/${id}`);
-
+  return res.data;
+};
+// Get all tests of a laboratory
+export const getLabTestsByLaboratory = async (labId) => {
+  const res = await api.get(`/api/lab/test/laboratory/${labId}`);
   return res.data;
 };

@@ -3,6 +3,7 @@ import {
   getLabTest,
   searchLabTest,
   filterLabTest,
+  getLabTestById,
 } from "../../api/laboratory/labTestApi";
 
 const useLabTest = (filters = {}) => {
@@ -66,6 +67,11 @@ const useLabTest = (filters = {}) => {
     }
   }, [search, category, status, laboratoryId, page]);
 
+  const fetchLabTestById = useCallback(async (id) => {
+    const data = await getLabTestById(id);
+    return data;
+  }, []);
+
   useEffect(() => {
     setPage(1);
   }, [search, category, status, laboratoryId]);
@@ -82,6 +88,7 @@ const useLabTest = (filters = {}) => {
     loading,
     error,
     refetch: fetchTests,
+    fetchLabTestById,
   };
 };
 

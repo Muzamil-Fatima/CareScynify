@@ -5,6 +5,7 @@ import {
   getLabTestById,
   searchLabTest,
   filterLabTest,
+  getLabTestsByLaboratory
 } from "../../controllers/userSite/publicLabTestController.js";
 
 const router = express.Router();
@@ -20,5 +21,6 @@ router.get("/filter", filterLabTest);
 
 // test profile
 router.get("/:id", getLabTestById);
-
+// lab all test
+router.get("/laboratory/:labId", getLabTestsByLaboratory);
 export default router;

@@ -85,10 +85,17 @@ export const getLabTest = async (req, res) => {
   }
 };
 
-// Get lab test by id
+// Get Lab Test by ID
+// Get Lab Test by ID
 export const getLabTestById = async (req, res) => {
   try {
-    const test = await LabTest.findById(req.params.id);
+    const test = await LabTest.findById(req.params.id).populate({
+      path: "laboratoryId",
+      populate: {
+        path: "userId",
+        select: "name email phone avatar",
+      },
+    });
 
     if (!test) {
       return res.status(404).json({
@@ -99,9 +106,56 @@ export const getLabTestById = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      test,
+      test: {
+        _id: test._id,
+        name: test.name,
+        code: test.code,
+        category: test.category,
+        description: test.description,
+        sampleType: test.sampleType,
+        preparation: test.preparation,
+        turnAround: test.turnAround,
+        price: test.price,
+        status: test.status,
+        createdAt: test.createdAt,
+        updatedAt: test.updatedAt,
+
+        laboratoryId: {
+          _id: test.laboratoryId?._id,
+          labId: test.laboratoryId?.labId,
+          labName: test.laboratoryId?.labName,
+          description: test.laboratoryId?.description,
+
+          verificationStatus: test.laboratoryId?.verificationStatus,
+
+          alternatePhone: test.laboratoryId?.alternatePhone,
+          supportPhone: test.laboratoryId?.supportPhone,
+          whatsapp: test.laboratoryId?.whatsapp,
+          website: test.laboratoryId?.website,
+
+          address: test.laboratoryId?.address,
+          city: test.laboratoryId?.city,
+          province: test.laboratoryId?.province,
+          country: test.laboratoryId?.country,
+          postalCode: test.laboratoryId?.postalCode,
+          mapLink: test.laboratoryId?.mapLink,
+
+          labType: test.laboratoryId?.labType,
+          homeSampleCollection: test.laboratoryId?.homeSampleCollection,
+          onlineReports: test.laboratoryId?.onlineReports,
+          emergencyTesting: test.laboratoryId?.emergencyTesting,
+          onlineBooking: test.laboratoryId?.onlineBooking,
+          digitalReports: test.laboratoryId?.digitalReports,
+          isOpen: test.laboratoryId?.isOpen,
+          operatingHours: test.laboratoryId?.operatingHours,
+
+          user: test.laboratoryId?.userId,
+        },
+      },
     });
   } catch (error) {
+    console.error("Get Lab Test By ID Error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
@@ -151,6 +205,27 @@ export const filterLabTest = async (req, res) => {
       tests,
     });
   } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+// Get all tests of a specific laboratory
+export const getLabTestsByLaboratory = async (req, res) => {
+  try {
+    const tests = await LabTest.find({
+      laboratoryId: req.params.labId,
+      status: "Active",
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      tests,
+    });
+  } catch (error) {
+    console.error("Get Laboratory Tests Error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
