@@ -1,8 +1,9 @@
-import Laboratory from "../../models/laboratory/laboratoryModel.js";
+import Laboratory from "../../models/laboratory/labModel.js";
 
 // Get all laboratories with pagination, search and filters
 export const getLaboratories = async (req, res) => {
   try {
+    console.log("getLaboratories called");
     let { page = 1, limit = 12, search, city, labType } = req.query;
 
     page = parseInt(page);
@@ -11,7 +12,7 @@ export const getLaboratories = async (req, res) => {
     const skip = (page - 1) * limit;
 
     const matchStage = {
-      verificationStatus: "approved",
+      verificationStatus: "verified",
 
       ...(city && {
         city: {

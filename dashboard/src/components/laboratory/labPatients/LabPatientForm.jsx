@@ -147,7 +147,7 @@ export default function LabPatientForm({
         <div className="flex flex-col sm:flex-row gap-3">
           <button
             type="submit"
-            className="flex-1 w-full rounded-2xl bg-linear-to-r from-violet-600 via-purple-600 to-fuchsia-600 py-3 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2"
+            className="flex-1 w-full cursor-pointer rounded-2xl bg-linear-to-r from-violet-600 via-purple-600 to-fuchsia-600 py-3 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-2"
           >
             {editingPatient ? (
               <>

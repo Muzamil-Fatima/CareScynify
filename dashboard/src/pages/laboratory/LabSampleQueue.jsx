@@ -66,7 +66,7 @@ const filteredSamples = samples?.filter((item) =>
 
           <button
             onClick={() => setShowModal(true)}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl font-semibold"
+            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 cursor-pointer rounded-xl font-semibold"
           >
             + New Sample
           </button>

@@ -7,11 +7,12 @@ import Switch from "@mui/material/Switch";
 
 const initialFilters = {
   city: "",
-  test: "",
+  search: "",
   rating: "",
   homeCollection: false,
   available: false,
 };
+
 // lab filter
 
 const LabFilters = ({ onFilterChange }) => {
@@ -34,7 +35,7 @@ const LabFilters = ({ onFilterChange }) => {
 
   const hasActiveFilters =
     filters.city ||
-    filters.test ||
+    filters.search ||
     filters.rating ||
     filters.homeCollection ||
     filters.available;
@@ -88,7 +89,7 @@ const LabFilters = ({ onFilterChange }) => {
 
       <div className="mb-5">
         <label className="mb-2 block text-sm font-medium text-gray-700">
-          Test
+          Search Laboratory
         </label>
 
         <div className="relative">
@@ -99,22 +100,18 @@ const LabFilters = ({ onFilterChange }) => {
 
           <input
             list="tests"
-            value={filters.test}
-            onChange={(e) => handleChange("test", e.target.value)}
-            placeholder="Search test..."
+            value={filters.search}
+            onChange={(e) => handleChange("search", e.target.value)}
+            placeholder="Search laboratory..."
             className="h-11 w-full rounded-xl border border-gray-200 pl-10 pr-4 text-sm outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
           />
 
-          <datalist id="tests">
-            <option value="CBC" />
-
-            <option value="Blood Sugar" />
-
-            <option value="LFT" />
-
-            <option value="Urine Test" />
-
-            <option value="MRI" />
+          <datalist>
+            <option value="Chughtai Lab" />
+            <option value="Excel Labs" />
+            <option value="IDC" />
+            <option value="Mughal Lab" />
+            <option value="Al-Noor Lab" />
           </datalist>
         </div>
       </div>

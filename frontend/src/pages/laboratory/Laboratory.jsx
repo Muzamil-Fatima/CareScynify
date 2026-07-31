@@ -5,14 +5,28 @@ import TuneIcon from "@mui/icons-material/Tune";
 import LabSearchBar from "../../components/laboratory/LabSearchBar";
 import LabFilters from "../../components/laboratory/LabFilters";
 import LabList from "../../components/laboratory/LabList";
+import TestList from "../../components/laboratory/LabTestList";
 
 import useLaboratories from "../../hooks/laboratory/useLaboratories";
+import useLabTest from "../../hooks/laboratory/useLabTest";
+import LabTestFilters from "../../components/laboratory/LabTestFilters";
 import Pagination from "../../components/common/Pagination";
 
 const initialFilters = {
+  searchType: "laboratory",
+
+  // Laboratory filters
   city: "",
   rating: "",
   homeCollection: false,
+  available: false,
+
+  // Test filters
+  category: "",
+  status: "",
+  laboratoryId: "",
+
+  // Common search
   search: "",
 };
 
@@ -21,10 +35,25 @@ const Laboratory = () => {
 
   const [filters, setFilters] = useState(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
-
   const { laboratories, loading, error, pagination, page, setPage } =
     useLaboratories(filters);
+  const {
+    tests,
+    loading: testLoading,
+    error: testError,
+    pagination: testPagination,
+    page: testPage,
+    setPage: setTestPage,
+  } = useLabTest(filters);
+  const isLaboratory = filters.searchType === "laboratory";
 
+  const currentLoading = isLaboratory ? loading : testLoading;
+  const currentError = isLaboratory ? error : testError;
+  const currentPagination = isLaboratory ? pagination : testPagination;
+
+  const currentPage = isLaboratory ? page : testPage;
+
+  const currentSetPage = isLaboratory ? setPage : setTestPage;
   const handleSearch = useCallback((value) => {
     setFilters((prev) => ({
       ...prev,
@@ -73,10 +102,57 @@ const Laboratory = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Filters */}
-
         <aside className="hidden lg:block">
-          <div className="sticky top-24 rounded-xl border bg-white p-5 shadow-sm">
-            <LabFilters onFilterChange={setFilters} />
+          <div className="sticky top-24 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            {/* Search By */}
+
+            <div className="mb-5">
+              <label className="mb-2 block text-sm font-medium text-gray-700">
+                Search By
+              </label>
+
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      searchType: "laboratory",
+                    }))
+                  }
+                  className={`h-11 rounded-xl border text-sm font-medium ${
+                    isLaboratory
+                      ? "border-purple-500 bg-purple-50 text-purple-700"
+                      : "border-gray-200"
+                  }`}
+                >
+                  Laboratories
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      searchType: "test",
+                    }))
+                  }
+                  className={`h-11 rounded-xl border text-sm font-medium ${
+                    !isLaboratory
+                      ? "border-purple-500 bg-purple-50 text-purple-700"
+                      : "border-gray-200"
+                  }`}
+                >
+                  Tests
+                </button>
+              </div>
+            </div>
+
+            {isLaboratory ? (
+              <LabFilters onFilterChange={setFilters} />
+            ) : (
+              <LabTestFilters onFilterChange={setFilters} />
+            )}
           </div>
         </aside>
 
@@ -90,7 +166,7 @@ const Laboratory = () => {
 
             <button
               onClick={() => setShowFilters(true)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-lg border bg-white"
+              className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white"
             >
               <TuneIcon fontSize="small" />
               Filters
@@ -122,60 +198,82 @@ const Laboratory = () => {
             </div>
           )}
 
-          {!loading && !error && (
+          {!currentLoading && !currentError && (
             <div className="mb-4 text-sm text-gray-500">
-              {laboratories.length} Laboratory
-              {laboratories.length !== 1 && "ies"} Found
+              {filters.searchType === "laboratory" ? (
+                <>
+                  {laboratories.length} Laborator
+                  {laboratories.length !== 1 ? "ies" : "y"} Found
+                </>
+              ) : (
+                <>
+                  {tests?.length || 0} Test{tests?.length !== 1 ? "s" : ""}{" "}
+                  Found
+                </>
+              )}
             </div>
           )}
 
-          {loading && (
-            <div className="bg-white border rounded-xl py-16 text-center">
-              Loading laboratories...
+          {currentLoading && (
+            <div className="bg-white border  border-gray-200 rounded-xl py-16 text-center">
+              {isLaboratory ? "Loading laboratories..." : "Loading tests..."}
             </div>
           )}
 
-          {error && (
-            <div className="bg-white border rounded-xl py-16 text-center text-red-500">
-              {error}
+          {currentError && (
+            <div className="bg-white border border-gray-200  rounded-xl py-16 text-center text-red-500">
+              {currentError}
             </div>
           )}
 
-          {!loading && !error && laboratories.length === 0 && (
-            <div className="bg-white border rounded-xl py-16 text-center">
-              <h2 className="text-xl font-semibold">No Laboratories Found</h2>
+          {!currentLoading &&
+            !currentError &&
+            (filters.searchType === "laboratory"
+              ? laboratories.length === 0
+              : (tests?.length || 0) === 0) && (
+              <div className="bg-white border border-gray-200  rounded-xl py-16 text-center">
+                <h2 className="text-xl font-semibold">
+                  {filters.searchType === "laboratory"
+                    ? "No Laboratories Found"
+                    : "No Tests Found"}
+                </h2>
 
-              <p className="text-gray-500 mt-2">
-                Try changing your search or filters.
-              </p>
+                <p className="text-gray-500 mt-2">
+                  Try changing your search or filters.
+                </p>
 
-              <button
-                onClick={clearFilters}
-                className="mt-5 bg-purple-600 text-white px-5 py-2 rounded-lg"
-              >
-                Clear Filters
-              </button>
-            </div>
-          )}
-
-          {!error && laboratories.length > 0 && (
-            <>
-              <div className="min-h-[900px]">
-                <LabList
-                  laboratories={laboratories}
-                  onViewTests={(lab) =>
-                    navigate(`/laboratory/${lab._id}/tests`)
-                  }
-                />
+                <button
+                  onClick={clearFilters}
+                  className="mt-5 bg-purple-600 text-white px-5 py-2 rounded-lg"
+                >
+                  Clear Filters
+                </button>
               </div>
+            )}
 
-              <Pagination
-                currentPage={page}
-                totalPages={pagination?.totalPages || 1}
-                onPageChange={setPage}
-              />
-            </>
-          )}
+          {!currentError &&
+            (isLaboratory ? laboratories.length > 0 : tests.length > 0) && (
+              <>
+                <div className="min-h-[900px]">
+                  {filters.searchType === "laboratory" ? (
+                    <LabList
+                      laboratories={laboratories}
+                      onViewTests={(lab) =>
+                        navigate(`/laboratory/${lab._id}/tests`)
+                      }
+                    />
+                  ) : (
+                    <TestList tests={tests} />
+                  )}
+                </div>
+
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={currentPagination?.totalPages || 1}
+                  onPageChange={currentSetPage}
+                />
+              </>
+            )}
         </main>
       </div>
 
@@ -190,12 +288,21 @@ const Laboratory = () => {
 
           <div className="fixed left-0 top-0 h-full w-80 bg-white z-50 lg:hidden">
             <div className="p-5">
-              <LabFilters
-                onFilterChange={(newFilters) => {
-                  setFilters(newFilters);
-                  setShowFilters(false);
-                }}
-              />
+              {isLaboratory ? (
+                <LabFilters
+                  onFilterChange={(newFilters) => {
+                    setFilters(newFilters);
+                    setShowFilters(false);
+                  }}
+                />
+              ) : (
+                <LabTestFilters
+                  onFilterChange={(newFilters) => {
+                    setFilters(newFilters);
+                    setShowFilters(false);
+                  }}
+                />
+              )}
             </div>
           </div>
         </>

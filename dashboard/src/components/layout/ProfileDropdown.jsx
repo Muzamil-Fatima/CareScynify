@@ -5,7 +5,13 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 
-const ProfileDropdown = ({ isOpen, onClose, userName, userEmail, onLogout }) => {
+const ProfileDropdown = ({
+  isOpen,
+  onClose,
+  userName,
+  userEmail,
+  onLogout,
+}) => {
   const navigate = useNavigate();
 
   if (!isOpen) return null;
@@ -17,17 +23,17 @@ const ProfileDropdown = ({ isOpen, onClose, userName, userEmail, onLogout }) => 
 
   return (
     <div className="absolute right-0 mt-2 w-64 bg-white border rounded-2xl shadow-xl py-2 z-50">
-
       {/* USER INFO */}
       <div className="px-4 py-3 border-b">
-        <p className="text-xs text-purple-600 font-semibold uppercase">Signed in as</p>
+        <p className="text-xs text-purple-600 font-semibold uppercase">
+          Signed in as
+        </p>
         <p className="text-sm font-bold">{userName}</p>
         <p className="text-xs text-slate-400">{userEmail}</p>
       </div>
 
       {/* ACTIONS */}
       <div className="p-2 space-y-1">
-
         <button
           onClick={() => goToSettings("personal")}
           className="w-full flex items-center gap-3 px-3 py-2 hover:bg-purple-50 rounded-xl"
@@ -43,7 +49,6 @@ const ProfileDropdown = ({ isOpen, onClose, userName, userEmail, onLogout }) => 
           <SettingsOutlinedIcon fontSize="small" />
           Account Settings
         </button>
-
       </div>
 
       {/* LOGOUT */}

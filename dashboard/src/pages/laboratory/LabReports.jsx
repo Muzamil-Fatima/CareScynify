@@ -122,7 +122,7 @@ export default function LabReports() {
                 <div className="mt-8 flex gap-3">
                   <button
                     onClick={() => navigate(`/lab/reports/${report._id}`)}
-                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white py-3 transition"
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white py-3 transition cursor-pointer"
                   >
                     <Eye size={18} />
                     View Report

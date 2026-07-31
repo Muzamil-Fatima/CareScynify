@@ -6,13 +6,13 @@ import LabPatientForm from "../../components/laboratory/labPatients/LabPatientFo
 import LabPatientsTable from "../../components/laboratory/labPatients/LabPatientsTable";
 
 import useLabAddPatients from "../../hooks/laboratory/useLabAddPatients";
-import useLabTests from "../../hooks/laboratory/useLabTests";
+import useLabTest from "../../hooks/laboratory/useLabTest";
 
 export default function LabPatients() {
   const { patients, createPatient, editPatient, removePatient } =
     useLabAddPatients();
 
-  const { testsList, getLabTests } = useLabTests();
+  const { testsList, getLabTests } = useLabTest();
 
   const [editingPatient, setEditingPatient] = useState(null);
 

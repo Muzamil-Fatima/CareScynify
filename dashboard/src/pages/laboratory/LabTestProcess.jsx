@@ -108,7 +108,7 @@ export default function LabTestProcess() {
                     t.reportId ? (
                       <button
                         onClick={() => navigate(`/lab/reports/${t.reportId}`)}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-medium transition cursor-pointer"
                       >
                         <FileText size={16} />
                         View Report

@@ -9,10 +9,11 @@ import AppLayout from "./layout/AppLayout";
 import LandingPage from "./pages/Home/LandingPage";
 import AboutUs from "./pages/AboutUs";
 import Doctor from "./pages/doctor/Doctor";
-import Laboratory from "./pages/laboratory/Laboratory";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
 import BookAppointment from "./components/doctor/BookAppointment";
 import RoleSelection from "./pages/RoleSelection";
+// laboratory
+import Laboratory from "./pages/laboratory/Laboratory";
 // pharmacy
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Medicine from "./pages/pharmacy/Medicine";
@@ -24,6 +25,7 @@ import Signup from "./pages/Auth/SignUp";
 import Forget from "./pages/Auth/Forget";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import ResetPassword from "./pages/Auth/ResetPassword";
+import VerificationBanner from "./components/common/VerificationBanner";
 
 //  App Pages
 import PatientProfile from "./pages/patients/PatientProfile";
@@ -63,11 +65,14 @@ function App() {
         <Route element={<PublicLayout />}>
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<AboutUs />} />
+          <Route path="/role-selection" element={<RoleSelection />} />
+          <Route path="/verification/banner" element={<VerificationBanner />} />
+          {/* doctor */}
           <Route path="/doctor" element={<Doctor />} />
           <Route path="/doctor/:id" element={<DoctorProfile />} />
           <Route path="/doctor/:id/book" element={<BookAppointment />} />
-          <Route path="/laboratory" element={<Laboratory />} />
-          <Route path="/role-selection" element={<RoleSelection />} />
+          {/* laboratory */}
+          <Route path="/laboratory" element={<Laboratory />} /> 
           {/* pharmacy */}
           <Route path="/pharmacy" element={<Pharmacy />} />
           <Route path="/medicine" element={<Medicine />} />

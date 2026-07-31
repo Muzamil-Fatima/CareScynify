@@ -62,7 +62,7 @@ const useLaboratories = (filters = {}) => {
 
         params.append("page", page);
 
-        params.append("limit", 10);
+        params.append("limit", 12);
 
         data = await getLaboratories(params.toString());
 

@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import useLabSample from "../../hooks/laboratory/useLabSamples";
 import usePatients from "../../hooks/laboratory/useLabAddPatients";
-import useLabTests from "../../hooks/laboratory/useLabTests";
+import useLabTest from "../../hooks/laboratory/useLabTest";
 const getPatientName = (p) => {
   if (typeof p?.name === "string" && p.name.trim()) return p.name;
   return "Unnamed Patient";
@@ -13,7 +13,7 @@ const getPatientCode = (p) => p?.patientId?.patientCode || "";
 export default function LabSampleModal({ closeModal }) {
   const { addLabSample } = useLabSample();
   const { patients } = usePatients();
-  const { testsList, getLabTests } = useLabTests();
+  const { testsList, getLabTests } = useLabTest();
   const [testSearch, setTestSearch] = useState("");
   const [showTestDropdown, setShowTestDropdown] = useState(false);
 

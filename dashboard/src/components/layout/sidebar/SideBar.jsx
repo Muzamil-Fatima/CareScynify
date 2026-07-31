@@ -34,7 +34,7 @@ const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
       <nav className="flex-1 overflow-y-auto py-4 px-3 scrollbar-none">
         <ul className="space-y-1.5">
           {menuItem.map((item) => (
-            <li key={item.name}>
+            <li key={item.name} title={item.title}>
               <NavLink
                 to={item.path}
                 onClick={() => {

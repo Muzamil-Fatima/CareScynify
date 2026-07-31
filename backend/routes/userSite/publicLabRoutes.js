@@ -5,7 +5,7 @@ import {
   getLaboratoryById,
   searchLaboratories,
   filterLaboratories,
-} from "../../controllers/userSite/publicLaboratoryController.js";
+} from "../../controllers/userSite/publicLabController.js";
 
 const router = express.Router();
 

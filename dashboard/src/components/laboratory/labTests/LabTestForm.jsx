@@ -100,7 +100,7 @@ export default function LabTestForm({
 
         <button
           type="submit"
-          className="w-full mt-2 flex items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-violet-600 via-purple-600 to-fuchsia-600 py-3 px-4 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
+          className="w-full mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-2xl bg-linear-to-r from-violet-600 via-purple-600 to-fuchsia-600 py-3 px-4 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
         >
           {selectedTest ? <Save size={16} /> : <PlusCircle size={16} />}
 
