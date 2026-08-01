@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import useLabSample from "../../hooks/laboratory/useLabSamples";
 import usePatients from "../../hooks/laboratory/useLabAddPatients";
-import useLabTest from "../../hooks/laboratory/useLabTest";
+import useLabTest from "../../hooks/laboratory/useLabTests";
 const getPatientName = (p) => {
   if (typeof p?.name === "string" && p.name.trim()) return p.name;
   return "Unnamed Patient";

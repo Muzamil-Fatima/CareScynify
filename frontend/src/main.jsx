@@ -14,6 +14,7 @@ import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
 import CartProvider from "./context/pharmacy/CartProvider.jsx";
 import OrderProvider from "./context/pharmacy/OrderProvider.jsx";
 import LabTestProvider from "./context/laboratory/LabTestProvider.jsx";
+import LabTestBookingProvider from "./context/laboratory/LabTestBookingProvider.jsx";
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -22,23 +23,25 @@ createRoot(document.getElementById("root")).render(
         <PatientProvider>
           <LabProvider>
             <LabTestProvider>
-              <DoctorProvider>
-                <OrderProvider>
-                  <CartProvider>
-                    <AuthProvider>
-                      <SymptomProvider>
-                        <BrowserRouter>
-                          <QueryClientProvider client={queryClient}>
-                            <React.StrictMode>
-                              <App />
-                            </React.StrictMode>
-                          </QueryClientProvider>
-                        </BrowserRouter>
-                      </SymptomProvider>
-                    </AuthProvider>
-                  </CartProvider>
-                </OrderProvider>
-              </DoctorProvider>
+              <LabTestBookingProvider>
+                <DoctorProvider>
+                  <OrderProvider>
+                    <CartProvider>
+                      <AuthProvider>
+                        <SymptomProvider>
+                          <BrowserRouter>
+                            <QueryClientProvider client={queryClient}>
+                              <React.StrictMode>
+                                <App />
+                              </React.StrictMode>
+                            </QueryClientProvider>
+                          </BrowserRouter>
+                        </SymptomProvider>
+                      </AuthProvider>
+                    </CartProvider>
+                  </OrderProvider>
+                </DoctorProvider>
+              </LabTestBookingProvider>
             </LabTestProvider>
           </LabProvider>
         </PatientProvider>

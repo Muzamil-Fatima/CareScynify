@@ -43,6 +43,9 @@ import MedicineDetails from "./pages/pharmacy/MedicineDetail";
 import OrderSuccess from "./pages/pharmacy/OrderSuccess";
 import MyOrders from "./pages/patients/MyOrder";
 import OrderDetails from "./pages/patients/OrderDetails";
+import MyLabTest from "./pages/patients/MyLabTest";
+import LabTestDetails from "./pages/patients/LabTestDetails";
+import TestBookSuccess from "./pages/laboratory/TestBookSuccess";
 function App() {
   return (
     <RootLayout>
@@ -85,6 +88,8 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/order-success/:orderId" element={<OrderSuccess />} />
+          <Route path="/test-book-success/:sampleId" element={<TestBookSuccess />}/>
+
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
@@ -104,6 +109,8 @@ function App() {
           <Route path="/security" element={<Security />} />
           <Route path="/orders" element={<MyOrders />} />
           <Route path="/orders/:orderId" element={<OrderDetails />} />
+          <Route path="/lab-tests" element={<MyLabTest />} />
+          <Route path ="/lab-tests/:id" element={<LabTestDetails />}/>
           <Route path="/symptom-analyzer" element={<SymptomAnalyzer />} />
         </Route>
       </Routes>

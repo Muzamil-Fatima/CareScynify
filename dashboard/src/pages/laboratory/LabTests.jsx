@@ -4,7 +4,7 @@ import LabTestsHeader from "../../components/laboratory/labTests/LabTestsHeader"
 import LabTestForm from "../../components/laboratory/labTests/LabTestForm";
 import LabTestsTable from "../../components/laboratory/labTests/LabTestsTable";
 
-import useLabTest from "../../hooks/laboratory/useLabTest";
+import useLabTest from "../../hooks/laboratory/useLabTests";
 
 export default function LabTests() {
   const {

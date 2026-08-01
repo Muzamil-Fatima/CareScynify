@@ -31,7 +31,8 @@ import pharmacyOrderRoutes from "./routes/pharmacy/pharmacyOrderRoutes.js";
 import publicPharmacyRoutes from "./routes/userSite/publicPharmacyRoutes.js";
 import publicMedicineRoutes from "./routes/userSite/publicMedicineRoutes.js";
 import publicLabRoutes from "./routes/userSite/publicLabRoutes.js";
-import publicLabTestRoutes from "./routes/userSite/publicLabTestRoutes.js"
+import publicLabTestRoutes from "./routes/userSite/publicLabTestRoutes.js";
+import bookLabTestRoutes from "./routes/laboratory/bookLabTestRoutes.js";
 // laboratory
 import labProfileRoutes from "./routes/laboratory/labProfileRoutes.js";
 import labTestRoutes from "./routes/laboratory/labTestRoutes.js";
@@ -86,6 +87,8 @@ app.use("/api/doctors", publicDoctorRoutes);
 // public lab routes
 app.use("/api/labs", publicLabRoutes);
 app.use("/api/lab/test", publicLabTestRoutes);
+// book lab test
+app.use("/api/lab-booking", bookLabTestRoutes);
 // appointment routes
 app.use("/api/appointments", appointmentRoutes);
 // prescription routes

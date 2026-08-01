@@ -6,7 +6,7 @@ import LabPatientForm from "../../components/laboratory/labPatients/LabPatientFo
 import LabPatientsTable from "../../components/laboratory/labPatients/LabPatientsTable";
 
 import useLabAddPatients from "../../hooks/laboratory/useLabAddPatients";
-import useLabTest from "../../hooks/laboratory/useLabTest";
+import useLabTest from "../../hooks/laboratory/useLabTests";
 
 export default function LabPatients() {
   const { patients, createPatient, editPatient, removePatient } =

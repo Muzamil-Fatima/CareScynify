@@ -41,7 +41,6 @@ export const createLabSample = async (req, res) => {
   }
 };
 // Get All Lab Samples
-// Get All Lab Samples
 export const getLabSamples = async (req, res) => {
   try {
     const samples = await LabSample.find({
@@ -77,9 +76,7 @@ export const getLabSamples = async (req, res) => {
     });
   }
 };
-
 // Get Single Sample
-
 export const getLabSampleById = async (req, res) => {
   try {
     const sample = await LabSample.findById(req.params.id)
@@ -107,9 +104,7 @@ export const getLabSampleById = async (req, res) => {
     });
   }
 };
-
 // Update Sample Status
-
 export const updateLabSampleStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -149,9 +144,7 @@ export const updateLabSampleStatus = async (req, res) => {
     });
   }
 };
-
 // Update Individual Test Status
-
 export const updateTestStatus = async (req, res) => {
   try {
     const { testId, status } = req.body;
@@ -191,9 +184,7 @@ export const updateTestStatus = async (req, res) => {
     });
   }
 };
-
 // Delete Sample
-
 export const deleteLabSample = async (req, res) => {
   try {
     const sample = await LabSample.findByIdAndDelete(req.params.id);
