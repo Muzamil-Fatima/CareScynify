@@ -16,6 +16,7 @@ import LabTestProvider from "./context/laboratory/LabTestProvider.jsx";
 import LabAddPatientProvider from "./context/laboratory/LabAddPatientProvider.jsx";
 import LabSampleProvider from "./context/laboratory/LabSampleProvider.jsx";
 import LabReportProvider from "./context/laboratory/LabReportProvider.jsx";
+import LabDashboardProvider from "./context/laboratory/LabDashboardProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -26,19 +27,21 @@ createRoot(document.getElementById("root")).render(
               <MedicineProvider>
                 <NotificationProvider>
                   <LabTestProvider>
-                    <LabProfileProvider>
-                      <LabAddPatientProvider>
-                        <LabSampleProvider>
-                          <LabReportProvider>
-                            <DoctorPatientProvider>
-                              <DoctorProvider>
-                                <App />
-                              </DoctorProvider>
-                            </DoctorPatientProvider>
-                          </LabReportProvider>
-                        </LabSampleProvider>
-                      </LabAddPatientProvider>
-                    </LabProfileProvider>
+                    <LabDashboardProvider>
+                      <LabProfileProvider>
+                        <LabAddPatientProvider>
+                          <LabSampleProvider>
+                            <LabReportProvider>
+                              <DoctorPatientProvider>
+                                <DoctorProvider>
+                                  <App />
+                                </DoctorProvider>
+                              </DoctorPatientProvider>
+                            </LabReportProvider>
+                          </LabSampleProvider>
+                        </LabAddPatientProvider>
+                      </LabProfileProvider>
+                    </LabDashboardProvider>
                   </LabTestProvider>
                 </NotificationProvider>
               </MedicineProvider>

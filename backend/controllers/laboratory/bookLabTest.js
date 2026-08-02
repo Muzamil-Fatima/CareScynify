@@ -1,5 +1,4 @@
 import Laboratory from "../../models/laboratory/labModel.js";
-import LabPatient from "../../models/laboratory/labAddPatient.js";
 import LabSample from "../../models/laboratory/LabSample.js";
 import LabTest from "../../models/laboratory/LabTest.js";
 import Patient from "../../models/patientModel.js";
@@ -33,7 +32,7 @@ export const bookLabSample = async (req, res) => {
       });
     }
 
-    // Test
+    // Lab Test
     const test = await LabTest.findById(testId);
 
     if (!test) {
@@ -50,29 +49,11 @@ export const bookLabSample = async (req, res) => {
       });
     }
 
-    // Find existing Lab Patient
-    let labPatient = await LabPatient.findOne({
-      laboratoryId: laboratory._id,
-      patientId: patient._id,
-    });
-
-    // Create Lab Patient if not exists
-    if (!labPatient) {
-      labPatient = await LabPatient.create({
-        laboratoryId: laboratory._id,
-        patientId: patient._id,
-        patientName: patient.fullName,
-        phone: patient.phone,
-        gender: patient.gender,
-        age: patient.age,
-      });
-    }
-
     // Create Sample
     const sample = await LabSample.create({
-      laboratoryId: laboratory._id,
+      laboratoryId: laboratory._id, // Always Laboratory document ID
       patientId: patient._id,
-      labPatientId: labPatient._id,
+      labPatientId: null,
       priority,
       notes,
       tests: [

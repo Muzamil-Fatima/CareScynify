@@ -42,7 +42,7 @@ const LabCreateReport = () => {
 
           sampleObjectId: data._id,
 
-          patientName: data.labPatientId?.name || "Unknown Patient",
+          patientName: data.labPatientId?.name || data.patientId?.userId?.name || "Unknown Patient",
 
           sampleId: data.sampleId,
 

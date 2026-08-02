@@ -9,7 +9,7 @@ const labReportSchema = new mongoose.Schema(
     labPatientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "LabPatient",
-      required: true,
+      default: null,
     },
     laboratoryId: {
       type: mongoose.Schema.Types.ObjectId,

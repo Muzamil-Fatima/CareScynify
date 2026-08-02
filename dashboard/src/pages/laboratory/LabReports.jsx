@@ -79,7 +79,7 @@ export default function LabReports() {
                   <div>
                     <h2 className="font-bold text-lg text-gray-800">
                       {report.labPatientId?.name ||
-                        report.patientId?.name ||
+                         report.patientId?.userId?.name ||
                         "Unknown Patient"}
                     </h2>
 

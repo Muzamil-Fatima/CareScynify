@@ -87,7 +87,7 @@ export default function LabReportDetails() {
               <User className="text-purple-600" />
               <div>
                 <p className="text-gray-500 text-sm">Patient</p>
-                <h3 className="font-semibold">{report.labPatientId?.name || report.patientId?.name || "Unknown Patient"}</h3>
+                <h3 className="font-semibold">{report.labPatientId?.name || report.patientId?.userId?.name|| "Unknown Patient"}</h3>
               </div>
             </div>
 

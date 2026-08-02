@@ -3,7 +3,6 @@ import LabSample from "../../models/laboratory/LabSample.js";
 import Laboratory from "../../models/laboratory/labModel.js";
 
 // Create Report
-
 export const createLabReport = async (req, res) => {
   try {
     const { sampleId, results, overallRemarks } = req.body;
@@ -73,9 +72,7 @@ export const createLabReport = async (req, res) => {
     });
   }
 };
-
 //  Get All Reports
-
 export const getLabReports = async (req, res) => {
   try {
     const laboratory = await Laboratory.findOne({ userId: req.user.id });
@@ -91,7 +88,13 @@ export const getLabReports = async (req, res) => {
       laboratoryId: laboratory._id,
     })
       .populate("labPatientId", "name age gender mobile")
-      .populate("patientId", "name")
+      .populate({
+        path: "patientId",
+        populate: {
+          path: "userId",
+          select: "name email phone avatar",
+        },
+      })
       .populate("sampleId", "sampleId sampleStatus")
       .sort({ createdAt: -1 });
 
@@ -118,7 +121,10 @@ export const getLabReportById = async (req, res) => {
       })
       .populate({
         path: "patientId",
-        select: "name",
+        populate: {
+          path: "userId",
+          select: "name email phone avatar",
+        },
       })
       .populate({
         path: "sampleId",
@@ -153,7 +159,6 @@ export const getLabReportById = async (req, res) => {
     });
   }
 };
-
 // Update Report
 export const updateLabReport = async (req, res) => {
   try {
@@ -194,7 +199,6 @@ export const updateLabReport = async (req, res) => {
     });
   }
 };
-
 // Delete Report
 export const deleteLabReport = async (req, res) => {
   try {

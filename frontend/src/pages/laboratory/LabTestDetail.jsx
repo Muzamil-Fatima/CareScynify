@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useParams,useNavigate  } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import LabTestHeader from "../../components/laboratory/labTestDetail/LabTestHeader";
 import LabTestDescription from "../../components/laboratory/labTestDetail/LabTestDescription";
 import LabInfoCard from "../../components/laboratory/labTestDetail/LabInfoCard";
 
-import { bookLabSample } from "../../api/laboratory/bookLabTestApi";
 import useLabTest from "../../hooks/laboratory/useLabTest";
-
+import useLabBookTest from "../../hooks/laboratory/useBookLabTest";
 const LabTestDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { fetchLabTestById } = useLabTest();
 
   const [labtest, setLabTest] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const { loading, bookTest } = useLabBookTest();
 
   useEffect(() => {
     const fetchTest = async () => {
@@ -36,10 +35,11 @@ const LabTestDetail = () => {
     if (loading) return;
 
     try {
-      setLoading(true);
-
-      const res = await bookLabSample({
-        laboratoryId: test.laboratoryId,
+      const res = await bookTest({
+        laboratoryId:
+          typeof test.laboratoryId === "object"
+            ? test.laboratoryId._id
+            : test.laboratoryId,
         testId: test._id,
         priority: "Normal",
       });
@@ -49,8 +49,6 @@ const LabTestDetail = () => {
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
   if (!labtest) {

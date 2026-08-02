@@ -39,6 +39,7 @@ import labTestRoutes from "./routes/laboratory/labTestRoutes.js";
 import labAddPatientRoutes from "./routes/laboratory/labAddPatientRoutes.js";
 import labSampleRoutes from "./routes/laboratory/labSampleRoutes.js";
 import labReportRoutes from "./routes/laboratory/labReportRoutes.js";
+import labDashboardRoutes from "./routes/laboratory/labDashboardRoutes.js";
 //Configuration
 connectDB();
 connectCloudinary();
@@ -110,6 +111,7 @@ app.use("/api/lab-tests", labTestRoutes);
 app.use("/api/lab/patients", labAddPatientRoutes);
 app.use("/api/lab-samples", labSampleRoutes);
 app.use("/api/lab-reports", labReportRoutes);
+app.use("/api/lab/dashboard", labDashboardRoutes);
 // server listen
 const server = http.createServer(app);
 

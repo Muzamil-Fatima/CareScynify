@@ -27,7 +27,7 @@ const labSampleSchema = new mongoose.Schema(
     labPatientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "LabPatient",
-      required: true,
+      default: null
     },
     tests: [
       {

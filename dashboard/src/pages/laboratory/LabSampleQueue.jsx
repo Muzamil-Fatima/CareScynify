@@ -17,16 +17,17 @@ export default function LabSampleQueue() {
   const [search, setSearch] = useState("");
 
   const [showModal, setShowModal] = useState(false);
-
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [showPatientModal, setShowPatientModal] = useState(false);
   useEffect(() => {
     fetchLabSamples();
   }, [fetchLabSamples]);
 
-const filteredSamples = samples?.filter((item) =>
-  (item.labPatientId?.name || "")
-    .toLowerCase()
-    .includes(search.toLowerCase()),
-);
+  const filteredSamples = samples?.filter((item) =>
+    (item.labPatientId?.name || item.patientId?.userId?.name|| "")
+      .toLowerCase()
+      .includes(search.toLowerCase()),
+  );
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -122,8 +123,18 @@ const filteredSamples = samples?.filter((item) =>
                     {item.sampleId}
                   </td>
 
-                  <td className="p-4 font-medium text-gray-800">
-                    {item.labPatientId?.name || "Unknown Patient"}
+                  <td className="p-4">
+                    <button
+                      onClick={() => {
+                        setSelectedPatient(item);
+                        setShowPatientModal(true);
+                      }}
+                      className="font-medium text-purple-600 hover:underline cursor-pointer"
+                    >
+                      {item.labPatientId?.name ||
+                        item.patientId?.userId?.name ||
+                        "Unknown Patient"}
+                    </button>
                   </td>
 
                   <td className="p-4 text-gray-600">
@@ -195,7 +206,61 @@ const filteredSamples = samples?.filter((item) =>
           </table>
         </div>
       </main>
+      {showPatientModal && selectedPatient && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl">
+            <div className="flex justify-between items-center mb-5">
+              <h2 className="text-xl font-bold text-gray-800">
+                Patient Information
+              </h2>
 
+              <button
+                onClick={() => setShowPatientModal(false)}
+                className="text-gray-500 hover:text-red-500 text-xl"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <p>
+                <b>Name:</b>{" "}
+                {selectedPatient.labPatientId?.name ||
+                  selectedPatient.patientId?.userId?.name ||
+                  "N/A"}
+              </p>
+
+              <p>
+                <b>Email:</b>{" "}
+                {selectedPatient.patientId?.userId?.email || "N/A"}
+              </p>
+
+              <p>
+                <b>Phone:</b>{" "}+
+                {selectedPatient.patientId?.userId?.phone ||
+                  selectedPatient.labPatientId?.mobile ||
+                  "N/A"}
+              </p>
+
+              <p>
+                <b>Gender:</b>{" "}
+                {selectedPatient.labPatientId?.gender ||
+                  selectedPatient.patientId?.gender ||
+                  "N/A"}
+              </p>
+
+              <p>
+                <b>Sample ID:</b> {selectedPatient.sampleId}
+              </p>
+
+              <p>
+                <b>Tests:</b>{" "}
+                {selectedPatient.tests?.map((test) => test.testName).join(", ")}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       {/* New Sample Modal */}
       {showModal && (
         <LabSampleModal
