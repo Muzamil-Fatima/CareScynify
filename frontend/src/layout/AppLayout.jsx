@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import SideBar from "../components/sidebar/SideBar";
+import SideBar from "../components/patient/sidebar/SideBar";
 import Navbar from "../components/common/Navbar";
 
 const AppLayout = () => {

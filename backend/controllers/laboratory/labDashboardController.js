@@ -142,11 +142,9 @@ export const getTestPerformance = async (req, res) => {
           laboratoryId: laboratory._id,
         },
       },
-
       {
         $unwind: "$tests",
       },
-
       {
         $group: {
           _id: "$tests.testName",
@@ -157,15 +155,20 @@ export const getTestPerformance = async (req, res) => {
 
           completed: {
             $sum: {
-              $cond: [
-                {
-                  $eq: ["$tests.status", "Completed"],
-                },
-                1,
-                0,
-              ],
+              $cond: [{ $eq: ["$sampleStatus", "Completed"] }, 1, 0],
             },
           },
+
+          processing: {
+            $sum: {
+              $cond: [{ $eq: ["$sampleStatus", "Processing"] }, 1, 0],
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          total: -1,
         },
       },
     ]);

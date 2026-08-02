@@ -10,8 +10,8 @@ import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import ChatIcon from "@mui/icons-material/Chat";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
-import { useAuth } from "../../hooks/useAuth";
-import { logoutUser } from "../../api/authApi";
+import { useAuth } from "../../../hooks/useAuth";
+import { logoutUser } from "../../../api/authApi";
 const SideBar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
