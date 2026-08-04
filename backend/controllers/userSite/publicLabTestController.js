@@ -86,7 +86,6 @@ export const getLabTest = async (req, res) => {
 };
 
 // Get Lab Test by ID
-// Get Lab Test by ID
 export const getLabTestById = async (req, res) => {
   try {
     const test = await LabTest.findById(req.params.id).populate({

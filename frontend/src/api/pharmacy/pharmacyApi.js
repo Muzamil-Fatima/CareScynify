@@ -38,3 +38,9 @@ export const getPharmacyById = async (id) => {
   const res = await api.get(`/api/pharmacies/${id}`);
   return res.data;
 };
+// Get all medicines of a pharmacy
+export const getMedicinesByPharmacy = async (pharmacyId) => {
+  const res = await api.get(`/api/public/medicine/pharmacy/${pharmacyId}`);
+
+  return res.data;
+};

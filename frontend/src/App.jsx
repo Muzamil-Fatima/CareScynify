@@ -20,6 +20,10 @@ import LabTestDetail from "./pages/laboratory/LabTestDetail";
 import Pharmacy from "./pages/pharmacy/Pharmacy";
 import Cart from "./pages/pharmacy/Cart";
 import Checkout from "./pages/pharmacy/Checkout";
+import PharmacyDetail from "./pages/pharmacy/PharmacyDetail";
+import MedicineDetails from "./pages/pharmacy/MedicineDetail";
+import OrderSuccess from "./pages/pharmacy/OrderSuccess";
+
 //  auth pages
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/SignUp";
@@ -38,8 +42,6 @@ import Settings from "./pages/patients/Settings";
 import RootLayout from "./layout/RootLayout";
 import Security from "./components/patient/settings/Security";
 import SymptomAnalyzer from "./pages/patients/SymptomAnalyzer";
-import MedicineDetails from "./pages/pharmacy/MedicineDetail";
-import OrderSuccess from "./pages/pharmacy/OrderSuccess";
 import MyOrders from "./pages/patients/MyOrder";
 import OrderDetails from "./pages/patients/OrderDetails";
 import MyLabTest from "./pages/patients/MyLabTest";
@@ -81,12 +83,16 @@ function App() {
           <Route path="/labtest/:id" element={<LabTestDetail />} />
           {/* pharmacy */}
           <Route path="/pharmacy" element={<Pharmacy />} />
-          <Route path="/pharmacy/:id" element={<MedicineDetails />} />
+          <Route path="/pharmacy/:id" element={<PharmacyDetail />} />
+          <Route path="/medicine/:id" element={<MedicineDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-          <Route path="/lab-booking/my-tests/:id" element={<TestBookSuccess />}/>
+          <Route
+            path="/lab-booking/my-tests/:id"
+            element={<TestBookSuccess />}
+          />
 
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
@@ -108,7 +114,7 @@ function App() {
           <Route path="/orders" element={<MyOrders />} />
           <Route path="/orders/:orderId" element={<OrderDetails />} />
           <Route path="/lab-tests" element={<MyLabTest />} />
-          <Route path ="/lab-tests/:id" element={<LabTestDetails />}/>
+          <Route path="/lab-tests/:id" element={<LabTestDetails />} />
           <Route path="/symptom-analyzer" element={<SymptomAnalyzer />} />
         </Route>
       </Routes>

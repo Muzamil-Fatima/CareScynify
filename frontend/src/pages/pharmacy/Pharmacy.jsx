@@ -5,7 +5,7 @@ import SearchBar from "../../components/pharmacy/SearchBar";
 import PharmacyFilters from "../../components/pharmacy/PharmacyFilters";
 import MedicineFilter from "../../components/pharmacy/MedicineFilter";
 import PharmacyList from "../../components/pharmacy/PharmacyList";
-import PharmacyMedicine from "../../components/pharmacy/PharmacyDetail/PharmcyMedicine";
+import PharmacyMedicine from "../../components/pharmacy/pharmacyDetail/PharmacyMedicine";
 import Pagination from "../../components/common/Pagination";
 
 import usePharmacies from "../../hooks/pharmacy/usePharmacies";
