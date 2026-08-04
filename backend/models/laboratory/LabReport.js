@@ -16,7 +16,10 @@ const labReportSchema = new mongoose.Schema(
       ref: "Laboratory",
       required: true,
     },
-
+    pdfUrl: {
+      type: String,
+      default: "",
+    },
     sampleId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "LabSample",

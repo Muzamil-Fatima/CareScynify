@@ -1,8 +1,10 @@
+
 import { useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useState } from "react";
 import AIExplanation from "./AIExplanation";
+
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
@@ -10,9 +12,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.vers
 
 const ReportViewer = () => {
   const { state } = useLocation();
-  const [numPages, setNumPages] = useState(null);
   const navigate = useNavigate();
-  if (!state) return <div>No report found</div>;
+
+  const [numPages, setNumPages] = useState(null);
+
+  if (!state) {
+    return <div>No report found</div>;
+  }
 
   const { fileUrl, mimeType, title, explanation } = state;
 
@@ -21,12 +27,14 @@ const ReportViewer = () => {
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-gray-200 transition"
+          className="p-2 rounded-full hover:bg-gray-200"
         >
           <ArrowBackIcon />
         </button>
 
-        <h1 className="text-2xl font-semibold">{title}</h1>
+        <h1 className="text-2xl font-semibold">
+          {title}
+        </h1>
       </div>
 
       {mimeType === "application/pdf" ? (
@@ -36,12 +44,21 @@ const ReportViewer = () => {
           onLoadError={(error) => console.log("PDF Error:", error)}
         >
           {Array.from(new Array(numPages), (_, index) => (
-            <Page key={index + 1} pageNumber={index + 1} width={800} />
+            <Page
+              key={index + 1}
+              pageNumber={index + 1}
+              width={800}
+            />
           ))}
         </Document>
       ) : (
-        <img src={fileUrl} alt={title} />
+        <img
+          src={fileUrl}
+          alt={title}
+          className="max-w-full"
+        />
       )}
+
       <div className="mt-8">
         <AIExplanation explanation={explanation} />
       </div>

@@ -6,7 +6,14 @@ export const bookLabSample = async (data) => {
   return res.data;
 };
 
+// Get all booked lab tests
 export const getMyLabTests = async () => {
   const { data } = await api.get("/api/lab-booking/my-tests");
+  return data;
+};
+
+// Get single booked lab test
+export const getMyLabTestById = async (id) => {
+  const { data } = await api.get(`/api/lab-booking/my-tests/${id}`);
   return data;
 };

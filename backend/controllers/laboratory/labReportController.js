@@ -1,7 +1,28 @@
 import LabReport from "../../models/laboratory/LabReport.js";
 import LabSample from "../../models/laboratory/LabSample.js";
 import Laboratory from "../../models/laboratory/labModel.js";
+import cloudinary from "../../utils/cloudinary.js";
+import streamifier from "streamifier";
+import generateLabReportPdf from "../../utils/generateLabReportPdf.js";
+const uploadPdfToCloudinary = (buffer) => {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "lab-reports",
+        resource_type: "raw",
+        type: "upload",
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result.secure_url);
+      }
+    );
 
+    streamifier
+      .createReadStream(buffer)
+      .pipe(uploadStream);
+  });
+};
 // Create Report
 export const createLabReport = async (req, res) => {
   try {
@@ -16,9 +37,16 @@ export const createLabReport = async (req, res) => {
       });
     }
 
-    const sample = await LabSample.findById(sampleId);
-    // console.log(sample);
-    // console.log("patientId:", sample.patientId);
+    const sample = await LabSample.findById(sampleId)
+      .populate("labPatientId", "name age gender mobile")
+      .populate({
+        path: "patientId",
+        populate: {
+          path: "userId",
+          select: "name email",
+        },
+      });
+
     if (!sample) {
       return res.status(404).json({
         success: false,
@@ -40,21 +68,57 @@ export const createLabReport = async (req, res) => {
       });
     }
 
+    // Create Report
     const report = new LabReport({
       laboratoryId: laboratory._id,
       sampleId: sample._id,
-
-      // Main patient (if exists)
       patientId: sample.patientId || null,
       labPatientId: sample.labPatientId,
-
       results: results || [],
       overallRemarks: overallRemarks || "",
       verifiedBy: req.user.id,
+      reportStatus: "Verified",
     });
 
     await report.save();
 
+    // Populate report for PDF
+    await report.populate([
+      {
+        path: "laboratoryId",
+        select: "labName",
+      },
+      {
+        path: "labPatientId",
+        select: "name age gender mobile",
+      },
+      {
+        path: "patientId",
+        populate: {
+          path: "userId",
+          select: "name",
+        },
+      },
+      {
+        path: "sampleId",
+        select: "sampleId",
+      },
+      {
+        path: "verifiedBy",
+        select: "name",
+      },
+    ]);
+
+    // Generate PDF + Upload to Cloudinary
+    const pdfBuffer = await generateLabReportPdf(report);
+
+    const pdfUrl = await uploadPdfToCloudinary(pdfBuffer);
+
+    report.pdfUrl = pdfUrl;
+
+    await report.save();
+
+    // Attach report to sample
     sample.reportId = report._id;
     await sample.save();
 
@@ -64,8 +128,6 @@ export const createLabReport = async (req, res) => {
       report,
     });
   } catch (error) {
-    // console.error("Create Report Error:", error);
-
     res.status(500).json({
       success: false,
       message: error.message,

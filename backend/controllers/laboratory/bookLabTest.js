@@ -78,6 +78,48 @@ export const bookLabSample = async (req, res) => {
     });
   }
 };
+export const getMyLabTestById = async (req, res) => {
+  try {
+    // Logged-in patient
+    const patient = await Patient.findOne({ userId: req.user.id });
+
+    if (!patient) {
+      return res.status(404).json({
+        success: false,
+        message: "Patient not found.",
+      });
+    }
+
+    console.log("Requested Sample ID:", req.params.id);
+    console.log("Patient ID:", patient._id);
+
+    const sample = await LabSample.findOne({
+      _id: req.params.id,
+      patientId: patient._id,
+    }).populate("laboratoryId", "labName logo address");
+
+    console.log("Sample Found:", sample);
+
+    if (!sample) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      sample,
+    });
+  } catch (error) {
+    console.error("Get Booking Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 //  get all lab tests booked by the logged-in patient
 export const getMyLabTests = async (req, res) => {
   try {

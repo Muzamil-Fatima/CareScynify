@@ -1,4 +1,6 @@
 import Report from "../models/reportModel.js";
+import LabReport from "../models/laboratory/LabReport.js";
+import Patient from "../models/patientModel.js";
 import { generateMedicalExplanation } from "../services/ai/reportExplainService.js";
 import cloudinary from "../utils/cloudinary.js";
 import streamifier from "streamifier";
@@ -92,16 +94,62 @@ export const addReport = async (req, res) => {
   }
 };
 
-// GET REPORTS
+// // GET REPORTS
+// export const getReports = async (req, res) => {
+//   try {
+//     const userId = req.userId;
+
+//     const reports = await Report.find({ userId }).sort({
+//       createdAt: -1,
+//     });
+
+//     res.json(reports);
+//   } catch (err) {
+//     res.status(500).json({
+//       message: err.message,
+//     });
+//   }
+// };
 export const getReports = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const reports = await Report.find({ userId }).sort({
+    // User uploaded reports
+    const userReports = await Report.find({
+      userId: userId,
+    }).sort({
       createdAt: -1,
     });
 
-    res.json(reports);
+
+    const patient = await Patient.findOne({
+      userId: userId,
+    });
+
+    let labReports = [];
+
+    if (patient) {
+      labReports = await LabReport.find({
+        patientId: patient._id,
+      })
+        .sort({
+          createdAt: -1,
+        })
+        .lean();
+
+      // Add category for frontend
+      labReports = labReports.map((report) => ({
+        ...report,
+        category: "Lab",
+      }));
+    }
+
+
+    res.status(200).json({
+      reports: userReports,
+      labReports: labReports,
+    });
+
   } catch (err) {
     res.status(500).json({
       message: err.message,

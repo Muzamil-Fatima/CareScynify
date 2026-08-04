@@ -88,7 +88,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-          <Route path="/test-book-success/:sampleId" element={<TestBookSuccess />}/>
+          <Route path="/lab-booking/my-tests/:id" element={<TestBookSuccess />}/>
 
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />

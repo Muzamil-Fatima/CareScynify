@@ -13,16 +13,21 @@ const ReportCard = ({ report, getStatusStyle, handleDownload }) => {
           onClick={() =>
             navigate("/report-viewer", {
               state: {
-                fileUrl: report.fileUrl,
-                mimeType: report.mimeType,
-                title: report.title,
-                explanation: report.explanation,
+                fileUrl: report.fileUrl || report.pdfUrl,
+                mimeType: report.mimeType || "application/pdf",
+                title:
+                  report.title ||
+                  report.reportName ||
+                  `${report.results?.[0]?.testName || "Lab"} Report`,
+                explanation: report.explanation || "",
               },
             })
           }
           className="font-semibold text-purple-600 cursor-pointer hover:underline"
         >
-          {report.title}
+          {report.title ||
+            report.reportName ||
+            `${report.results?.[0]?.testName || "Lab"} Report`}
         </h2>
       </div>
 
@@ -39,14 +44,21 @@ const ReportCard = ({ report, getStatusStyle, handleDownload }) => {
       <div className="flex justify-between mt-4">
         <span
           className={`px-3 py-1 rounded-full text-xs ${getStatusStyle(
-            report.status,
+            report.status || report.reportStatus,
           )}`}
         >
-          {report.status}
+          {report.status || report.reportStatus}
         </span>
 
         <button
-          onClick={() => handleDownload(report.fileUrl, report.title)}
+          onClick={() =>
+            handleDownload(
+              report.fileUrl || report.pdfUrl,
+              report.title ||
+                report.reportName ||
+                `${report.results?.[0]?.testName || "Lab"} Report`,
+            )
+          }
           className="text-purple-600 flex gap-1"
         >
           <DownloadOutlinedIcon />

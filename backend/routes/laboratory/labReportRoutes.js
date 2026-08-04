@@ -8,10 +8,10 @@ import {
 } from "../../controllers/laboratory/labReportController.js";
 
 import { protect } from "../../middleware/auth.js";
+import upload from "../../middleware/upload.js";
 
 const router = express.Router();
-
-router.post("/", protect, createLabReport);
+router.post("/", protect, upload.single("pdf"), createLabReport);
 router.get("/", protect, getLabReports);
 router.get("/:id", protect, getLabReportById);
 router.put("/:id", protect, updateLabReport);

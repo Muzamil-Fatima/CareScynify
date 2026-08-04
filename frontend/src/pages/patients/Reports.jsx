@@ -10,22 +10,27 @@ import ReportTabs from "../../components/reports/ReportTabs";
 import { addReport, getReports } from "../../api/reportApi";
 
 const Reports = () => {
-  const [activeTab, setActiveTab] = useState("All");
+  const [activeTab, setActiveTab] = useState("All Reports");
   const [openModal, setOpenModal] = useState(false);
   const [uploadStatus, setUploadStatus] = useState(null);
 
   const queryClient = useQueryClient();
+const {
+  data,
+  isLoading,
+  error,
+} = useQuery({
+  queryKey: ["reports"],
+  queryFn: getReports,
+  staleTime: 0,
+  refetchOnWindowFocus: true,
+});
 
-  // FETCH REPORTS
-  const {
-    data: reports = [],
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["reports"],
-    queryFn: getReports,
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
+
+const reports = [
+  ...(data?.reports || []),
+  ...(data?.labReports || []),
+];
 
   // LOADING STATE
   if (isLoading) {
@@ -38,24 +43,34 @@ const Reports = () => {
   }
 
   // FILTER REPORTS
-  const filteredReports =
-    activeTab === "All"
-      ? reports
-      : reports.filter((report) => report.category === activeTab);
+ const filteredReports =
+  activeTab === "All Reports"
+    ? reports
+    : activeTab === "Lab Reports"
+    ? reports.filter((report) => report.pdfUrl)
+    : activeTab === "Uploaded Reports"
+    ? reports.filter((report) => report.fileUrl)
+    : activeTab === "Doctor Prescriptions"
+    ? reports.filter(
+        (report) => report.category === "Prescription"
+      )
+    : [];
 
   // DOWNLOAD REPORT
-  const handleDownload = (fileUrl) => {
-    if (!fileUrl) return;
+const handleDownload = (report) => {
+  const url = report.fileUrl || report.pdfUrl;
 
-    const link = document.createElement("a");
-    link.href = fileUrl;
-    link.target = "_blank";
-    link.rel = "noopener";
+  if (!url) return;
 
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  };
+  const link = document.createElement("a");
+  link.href = url;
+  link.target = "_blank";
+  link.rel = "noopener";
+
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
 
   // UPLOAD REPORT
   const handleUpload = async (file, category) => {
@@ -173,7 +188,7 @@ const Reports = () => {
               key={report._id}
               report={report}
               getStatusStyle={getStatusStyle}
-              handleDownload={handleDownload}
+              onClick={() => handleDownload(report)}
             />
           ))
         ) : (

@@ -44,9 +44,9 @@ const LabTestDetail = () => {
         priority: "Normal",
       });
 
-      if (res.success) {
-        navigate(`/test-book-success/${res.sample._id}`);
-      }
+    if (res.success) {
+  navigate(`/lab-booking/my-tests/${res.sample._id}`);
+}
     } catch (error) {
       console.error(error);
     }
