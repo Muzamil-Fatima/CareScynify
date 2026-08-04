@@ -10,7 +10,7 @@ const patientSchema = new mongoose.Schema(
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      default:null,
+      default: null,
     },
 
     // PERSONAL INFO
@@ -110,7 +110,7 @@ const patientSchema = new mongoose.Schema(
       default: "active",
     },
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 patientSchema.pre("save", async function () {
   if (!this.patientCode) {

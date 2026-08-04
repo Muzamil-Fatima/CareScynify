@@ -27,7 +27,7 @@ const labSampleSchema = new mongoose.Schema(
     labPatientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "LabPatient",
-      default: null
+      default: null,
     },
     tests: [
       {
@@ -71,9 +71,7 @@ const labSampleSchema = new mongoose.Schema(
       default: "",
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true, versionKey: false },
 );
 
 labSampleSchema.pre("validate", async function (next) {

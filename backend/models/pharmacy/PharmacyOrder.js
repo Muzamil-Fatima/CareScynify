@@ -74,11 +74,11 @@ const pharmacyOrderSchema = new mongoose.Schema(
       required: true,
     },
 
-paymentMethod: {
-  type: String,
-  enum: ["Cash on Delivery", "Card", "Online"],
-  default: "Cash on Delivery",
-},
+    paymentMethod: {
+      type: String,
+      enum: ["Cash on Delivery", "Card", "Online"],
+      default: "Cash on Delivery",
+    },
 
     paymentStatus: {
       type: String,
@@ -99,9 +99,7 @@ paymentMethod: {
       default: "Pending",
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true, versionKey: false },
 );
 
 const PharmacyOrder =

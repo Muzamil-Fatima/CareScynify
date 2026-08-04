@@ -18,7 +18,6 @@ import LaboratoryDetail from "./pages/laboratory/LaboratoryDetail";
 import LabTestDetail from "./pages/laboratory/LabTestDetail";
 // pharmacy
 import Pharmacy from "./pages/pharmacy/Pharmacy";
-import Medicine from "./pages/pharmacy/Medicine";
 import Cart from "./pages/pharmacy/Cart";
 import Checkout from "./pages/pharmacy/Checkout";
 //  auth pages
@@ -82,8 +81,7 @@ function App() {
           <Route path="/labtest/:id" element={<LabTestDetail />} />
           {/* pharmacy */}
           <Route path="/pharmacy" element={<Pharmacy />} />
-          <Route path="/medicine" element={<Medicine />} />
-          <Route path="/medicine/:id" element={<MedicineDetails />} />
+          <Route path="/pharmacy/:id" element={<MedicineDetails />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />

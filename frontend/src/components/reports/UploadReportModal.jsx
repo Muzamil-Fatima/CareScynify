@@ -22,11 +22,8 @@ const UploadReportModal = ({ open, setOpen, handleUpload }) => {
           onChange={(e) => setCategory(e.target.value)}
           className="w-full border p-2 rounded mb-4"
         >
-          <option value="Lab">Lab</option>
-          <option value="Radiology">Radiology</option>
-          <option value="Doctor">Doctor</option>
-          <option value="Vitals">Vitals</option>
-          <option value="Pharmacy">Pharmacy</option>
+          <option value="Lab Reports">Lab Report</option>
+          <option value="Doctor Prescriptions">Doctor Prescription</option>
           <option value="Other">Other</option>
         </select>
 

@@ -3,11 +3,11 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useMedicineDetails } from "../../hooks/pharmacy/useMedicineDetails";
 import { useCart } from "../../hooks/pharmacy/useCart";
-import MedicineGallery from "../../components/pharmacy/medicines/medicineDetails/MedicineGallery";
-import MedicineInfo from "../../components/pharmacy/medicines/medicineDetails/MedicineInfo";
-import QuantitySelector from "../../components/pharmacy/medicines/medicineDetails/QuantitySelector";
-import AddToCart from "../../components/pharmacy/medicines/medicineDetails/AddToCart";
-import RelatedMedicines from "../../components/pharmacy/medicines/medicineDetails/RelatedMedicines";
+import MedicineGallery from "../../components/pharmacy/medicineDetails/MedicineGallery";
+import MedicineInfo from "../../components/pharmacy/medicineDetails/MedicineInfo";
+import QuantitySelector from "../../components/pharmacy/medicineDetails/QuantitySelector";
+import AddToCart from "../../components/pharmacy/medicineDetails/AddToCart";
+import RelatedMedicines from "../../components/pharmacy/medicineDetails/RelatedMedicines";
 
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 const MedicineDetails = () => {

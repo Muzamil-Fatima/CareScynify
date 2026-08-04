@@ -88,9 +88,7 @@ const labPatientSchema = new mongoose.Schema(
       trim: true,
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true, versionKey: false },
 );
 
 const LabPatient =

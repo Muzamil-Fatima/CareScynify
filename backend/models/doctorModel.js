@@ -167,7 +167,7 @@ const drSchema = new mongoose.Schema(
       ref: "Organization",
     },
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 
 const Doctor = mongoose.model("Doctor", drSchema);

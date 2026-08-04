@@ -7,16 +7,15 @@ import cookiesParser from "cookie-parser";
 import http from "http";
 import { initSocket } from "./config/socket.js";
 
-//Files
+//Files connection
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
+import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import authRoutes from "./routes/authRoutes.js";
 import patientsRoutes from "./routes/patientsRoutes.js";
 import doctorRoutes from "./routes/doctorRoutes.js";
 import reportRoutes from "./routes/reportRoutes.js";
-import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import userRouter from "./routes/userRoutes.js";
-import publicDoctorRoutes from "./routes/userSite/publicDoctorRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import prescriptionRoutes from "./routes/prescriptionRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
@@ -28,6 +27,7 @@ import profileRoutes from "./routes/pharmacy/profileRoutes.js";
 import cartRoutes from "./routes/pharmacy/cartRoutes.js";
 import pharmacyOrderRoutes from "./routes/pharmacy/pharmacyOrderRoutes.js";
 // website
+import publicDoctorRoutes from "./routes/userSite/publicDoctorRoutes.js";
 import publicPharmacyRoutes from "./routes/userSite/publicPharmacyRoutes.js";
 import publicMedicineRoutes from "./routes/userSite/publicMedicineRoutes.js";
 import publicLabRoutes from "./routes/userSite/publicLabRoutes.js";
@@ -53,7 +53,6 @@ app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookiesParser());
-// removeUnverifiedAccounts();
 
 // allow request
 const corsOptions = {
@@ -70,24 +69,24 @@ const corsOptions = {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
 };
 app.use(cors(corsOptions));
-// ========================== website
+// ======================================= website
 // Routes
 app.use("/api/auth", authRoutes);
 //  user routes
 app.use("/api/user", userRouter);
 // use patient routes
 app.use("/api/patient", patientsRoutes);
-app.use("/api/public/pharmacies", publicPharmacyRoutes);
+app.use("/api/pharmacies", publicPharmacyRoutes);
 app.use("/api/public/medicine", publicMedicineRoutes);
-// dr router
-app.use("/api/doctor", doctorRoutes);
-// report router
-app.use("/api/report", reportRoutes);
 // public doctor routes
 app.use("/api/doctors", publicDoctorRoutes);
 // public lab routes
 app.use("/api/labs", publicLabRoutes);
 app.use("/api/lab/test", publicLabTestRoutes);
+// ========================================= dr router
+app.use("/api/doctor", doctorRoutes);
+// report router
+app.use("/api/report", reportRoutes);
 // book lab test
 app.use("/api/lab-booking", bookLabTestRoutes);
 // appointment routes
@@ -99,7 +98,7 @@ app.use("/api/review", reviewRoutes);
 // symptom Analysis
 app.use("/api/symptomAnalysis", symptomRoutes);
 app.use("/api/doctor-patients", doctorPatientRoutes);
-// pharmacy
+// ================================================== pharmacy
 app.use("/api/medicineRoutes", medicineRoutes);
 app.use("/api/pharmacy", profileRoutes);
 app.use("/api/cart", cartRoutes);

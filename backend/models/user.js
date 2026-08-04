@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema(
   {
     userId: { type: Number },
     // username: { type: String, unique: true },
-    name: { type: String, required: [true, "Name is required"] },
+    name: { type: String, trim: true, required: [true, "Name is required"] },
     password: {
       type: String,
       required: true,
@@ -17,6 +17,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       lowercase: true,
+      index: true,
     },
 
     dob: {
@@ -28,9 +29,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: true,
       sparse: true,
+      index: true,
     },
-    phone: String,
-    address: String,
+    phone: { type: String, index: true },
+    address: { type: String, trim: true },
     accountVerified: { type: Boolean, default: false },
     resetTokenExpire: Date,
     resetToken: String,
@@ -38,8 +40,8 @@ const userSchema = new mongoose.Schema(
     verificationCodeExpire: Date,
     resetPasswordOTP: String,
     resetPasswordExpire: Date,
-    googleId: { type: String },
-    authProvider: { type: String },
+    googleId: { type: String, trim: true },
+    authProvider: { type: String, trim: true },
 
     // verificationCode: Number,
     avatar: {
@@ -95,7 +97,7 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllPharmacies } from "../api/pharmacy/pharmacyApi";
+import { getPharmacies } from "../api/pharmacy/pharmacyApi";
 
 export const usePharmacy = () => {
   const [pharmacies, setPharmacies] = useState([]);
@@ -11,7 +11,7 @@ export const usePharmacy = () => {
       try {
         setLoading(true);
 
-        const data = await getAllPharmacies();
+        const data = await getPharmacies();
 
         setPharmacies(data.pharmacies || []);
       } catch (error) {

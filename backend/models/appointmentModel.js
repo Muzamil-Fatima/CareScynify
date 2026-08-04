@@ -46,7 +46,7 @@ const appointmentSchema = new mongoose.Schema(
 
     reservedUntil: Date,
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 appointmentSchema.index(
   {

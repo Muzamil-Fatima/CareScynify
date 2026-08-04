@@ -4,6 +4,7 @@ import Laboratory from "../../models/laboratory/labModel.js";
 import cloudinary from "../../utils/cloudinary.js";
 import streamifier from "streamifier";
 import generateLabReportPdf from "../../utils/generateLabReportPdf.js";
+import { generateMedicalExplanation } from "../../services/ai/reportExplainService.js";
 const uploadPdfToCloudinary = (buffer) => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
@@ -15,14 +16,13 @@ const uploadPdfToCloudinary = (buffer) => {
       (error, result) => {
         if (error) reject(error);
         else resolve(result.secure_url);
-      }
+      },
     );
 
-    streamifier
-      .createReadStream(buffer)
-      .pipe(uploadStream);
+    streamifier.createReadStream(buffer).pipe(uploadStream);
   });
 };
+// Create Report
 // Create Report
 export const createLabReport = async (req, res) => {
   try {
@@ -109,24 +109,43 @@ export const createLabReport = async (req, res) => {
       },
     ]);
 
-    // Generate PDF + Upload to Cloudinary
+    // Generate PDF
     const pdfBuffer = await generateLabReportPdf(report);
 
+    // Upload PDF
     const pdfUrl = await uploadPdfToCloudinary(pdfBuffer);
 
+    // Save PDF URL
     report.pdfUrl = pdfUrl;
-
     await report.save();
 
-    // Attach report to sample
+    // Link report with sample
     sample.reportId = report._id;
     await sample.save();
 
+    // Send response immediately
     res.status(201).json({
       success: true,
       message: "Lab report created successfully.",
       report,
     });
+
+    // ============================
+    // Generate AI Summary (Background)
+    // ============================
+    try {
+      const explanation = await generateMedicalExplanation(
+        pdfUrl,
+        "application/pdf",
+      );
+
+      report.explanation = explanation;
+      await report.save();
+
+      console.log("AI Summary generated successfully.");
+    } catch (error) {
+      console.error("AI Summary Error:", error.message);
+    }
   } catch (error) {
     res.status(500).json({
       success: false,

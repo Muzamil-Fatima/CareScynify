@@ -19,12 +19,12 @@ const operatingHourSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const laboratorySchema = new mongoose.Schema(
   {
-      labId: {
+    labId: {
       type: String,
       unique: true,
       index: true,
@@ -136,13 +136,7 @@ const laboratorySchema = new mongoose.Schema(
     // Laboratory Details
     labType: {
       type: String,
-      enum: [
-        "Diagnostic",
-        "Clinical",
-        "Pathology",
-        "Radiology",
-        "Research",
-      ],
+      enum: ["Diagnostic", "Clinical", "Pathology", "Radiology", "Research"],
       default: "Diagnostic",
     },
 
@@ -179,9 +173,7 @@ const laboratorySchema = new mongoose.Schema(
       default: false,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true, versionKey: false },
 );
 // hook
 laboratorySchema.pre("save", async function (next) {
@@ -189,5 +181,5 @@ laboratorySchema.pre("save", async function (next) {
     this.labId = await generateCustomId("LAB");
   }
 });
-export const Laboratory= mongoose.model("Laboratory", laboratorySchema);
+export const Laboratory = mongoose.model("Laboratory", laboratorySchema);
 export default Laboratory;

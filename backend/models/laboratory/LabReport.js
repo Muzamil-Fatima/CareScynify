@@ -35,7 +35,10 @@ const labReportSchema = new mongoose.Schema(
       enum: ["Draft", "Verified"],
       default: "Draft",
     },
-
+    explanation: {
+      type: String,
+      default: "",
+    },
     results: [
       {
         testName: String,

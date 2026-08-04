@@ -144,7 +144,6 @@ export const getLaboratories = async (req, res) => {
 };
 
 // Get laboratory by id
-
 export const getLaboratoryById = async (req, res) => {
   try {
     const laboratory = await Laboratory.findById(req.params.id).populate(
@@ -212,7 +211,6 @@ export const getLaboratoryById = async (req, res) => {
 };
 
 // Search laboratories
-
 export const searchLaboratories = async (req, res) => {
   try {
     const { query } = req.query;
@@ -261,7 +259,6 @@ export const searchLaboratories = async (req, res) => {
 };
 
 // Filter laboratories
-
 export const filterLaboratories = async (req, res) => {
   try {
     const {

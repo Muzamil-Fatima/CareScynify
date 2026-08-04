@@ -1,5 +1,5 @@
 import Medicine from "../../models/pharmacy/Medicine.js";
-
+//  get all medicines
 export const getAllMedicines = async (req, res) => {
   try {
     const medicines = await Medicine.find({
@@ -23,7 +23,7 @@ export const getAllMedicines = async (req, res) => {
     });
   }
 };
-
+//  get all medicines by pharmacy id
 export const getMedicineById = async (req, res) => {
   try {
     const medicine = await Medicine.findOne({

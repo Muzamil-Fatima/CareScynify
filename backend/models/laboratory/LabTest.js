@@ -41,9 +41,7 @@ const labTestSchema = new mongoose.Schema(
       default: "Active",
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true, versionKey: false },
 );
 
 export const LabTest = mongoose.model("LabTest", labTestSchema);

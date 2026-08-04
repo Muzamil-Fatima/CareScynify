@@ -94,9 +94,7 @@ const medicineSchema = new mongoose.Schema(
       default: true,
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true, versionKey: false },
 );
 
 const Medicine =

@@ -35,11 +35,8 @@ const doctorPatientSchema = new mongoose.Schema(
       default: true,
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true, versionKey: false },
 );
-
 
 // Same doctor cannot add same patient twice
 doctorPatientSchema.index(
@@ -49,13 +46,11 @@ doctorPatientSchema.index(
   },
   {
     unique: true,
-  }
+  },
 );
-
 
 const DoctorPatient =
   mongoose.models.DoctorPatient ||
   mongoose.model("DoctorPatient", doctorPatientSchema);
-
 
 export default DoctorPatient;

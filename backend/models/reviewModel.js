@@ -33,7 +33,7 @@ const reviewSchema = new mongoose.Schema(
 
     editableUntil: Date,
   },
-  { timestamps: true },
+  { timestamps: true, versionKey: false },
 );
 const Review = mongoose.models.Review || mongoose.model("Review", reviewSchema);
 export default Review;

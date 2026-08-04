@@ -13,13 +13,7 @@ const notificationSchema = new mongoose.Schema(
 
     type: {
       type: String,
-      enum: [
-        "appointment",
-        "emergency",
-        "payment",
-        "message",
-        "system",
-      ],
+      enum: ["appointment", "emergency", "payment", "message", "system"],
     },
 
     priority: {
@@ -43,7 +37,7 @@ const notificationSchema = new mongoose.Schema(
       patientId: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true, versionKey: false },
 );
 
 export default mongoose.model("Notification", notificationSchema);
