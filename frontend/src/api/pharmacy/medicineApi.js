@@ -2,7 +2,7 @@ import { api } from "../axios";
 
 // Get all medicines
 export const getAllMedicines = async (params = "") => {
-  const res = await api.get(`/api/public/medicine?${params}`);
+  const res = await api.get(`/api/medicine?${params}`);
   return res.data;
 };
 
@@ -12,7 +12,7 @@ export const searchMedicine = async (
   page = 1,
   limit = 10
 ) => {
-  const res = await api.get("/api/public/medicine/search", {
+  const res = await api.get("/api/medicine/search", {
     params: {
       query,
       page,
@@ -25,7 +25,7 @@ export const searchMedicine = async (
 
 // Filter medicines
 export const filterMedicine = async (filters) => {
-  const res = await api.get("/api/public/medicine/filter", {
+  const res = await api.get("/api/medicine/filter", {
     params: filters,
   });
 
@@ -34,7 +34,7 @@ export const filterMedicine = async (filters) => {
 
 // Get single medicine detail
 export const getMedicineById = async (id) => {
-  const res = await api.get(`/api/public/medicine/${id}`);
+  const res = await api.get(`/api/medicine/${id}`);
   return res.data.medicine;
 };
 

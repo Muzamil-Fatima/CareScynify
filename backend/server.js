@@ -77,7 +77,7 @@ app.use("/api/user", userRouter);
 // use patient routes
 app.use("/api/patient", patientsRoutes);
 app.use("/api/pharmacies", publicPharmacyRoutes);
-app.use("/api/public/medicine", publicMedicineRoutes);
+app.use("/api/medicine", publicMedicineRoutes);
 // public doctor routes
 app.use("/api/doctors", publicDoctorRoutes);
 // public lab routes

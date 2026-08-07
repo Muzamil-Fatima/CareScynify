@@ -15,7 +15,7 @@ export const useMedicineDetails = (id) => {
 
       const data = await getMedicineById(id);
 
-      setMedicine(data.medicine);
+      setMedicine(data); // ✅ Fixed
     } catch (err) {
       setError(
         err?.response?.data?.message || "Failed to fetch medicine."
