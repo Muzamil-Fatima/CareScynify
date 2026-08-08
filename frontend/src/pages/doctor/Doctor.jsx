@@ -9,6 +9,7 @@ import { useDoctor } from "../../hooks/useDoctor";
 import Pagination from "../../components/common/Pagination";
 const initialFilters = {
   specialty: "",
+  location: "",
   rating: "",
   experience: "",
   fee: "",
@@ -43,7 +44,12 @@ const Doctor = () => {
       label: filters.specialty,
     });
   }
-
+  if (filters.location) {
+    filterChips.push({
+      key: "location",
+      label: `📍 ${filters.location}`,
+    });
+  }
   if (filters.rating) {
     filterChips.push({
       key: "rating",

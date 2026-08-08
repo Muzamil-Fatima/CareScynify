@@ -9,7 +9,8 @@ export const useDoctor = (filters = {}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { search, specialty, experience, fee, rating, available } = filters;
+  const { search, specialty, location, experience, fee, rating, available } =
+    filters;
 
   const fetchDoctors = useCallback(async () => {
     try {
@@ -18,7 +19,7 @@ export const useDoctor = (filters = {}) => {
 
       let data;
 
-      //  Search API
+      // Search API
       if (search) {
         data = await searchDoctors(search);
 
@@ -27,9 +28,17 @@ export const useDoctor = (filters = {}) => {
       }
 
       // Filter API
-      else if (specialty || experience || fee || rating || available) {
+      else if (
+        specialty ||
+        location ||
+        experience ||
+        fee ||
+        rating ||
+        available
+      ) {
         data = await filterDoctors({
           specialty,
+          location,
           experience,
           fee,
           rating,
@@ -61,12 +70,12 @@ export const useDoctor = (filters = {}) => {
     } finally {
       setLoading(false);
     }
-  }, [search, specialty, experience, fee, rating, available, page]);
+  }, [search, specialty, location, experience, fee, rating, available, page]);
 
   // Reset pagination when filters/search change
   useEffect(() => {
     setPage(1);
-  }, [search, specialty, experience, fee, rating, available]);
+  }, [search, specialty, location, experience, fee, rating, available]);
 
   // Fetch doctors
   useEffect(() => {

@@ -160,7 +160,8 @@ export const searchDoctors = async (req, res) => {
 };
 export const filterDoctors = async (req, res) => {
   try {
-    const { specialty, experience, fee, rating, available } = req.query;
+    const { specialty, location, experience, fee, rating, available } =
+      req.query;
 
     let filter = {};
 
@@ -172,6 +173,13 @@ export const filterDoctors = async (req, res) => {
       };
     }
 
+    // Location
+    if (location) {
+      filter["workplaces.location"] = {
+        $regex: location,
+        $options: "i",
+      };
+    }
 
     // Experience
     if (experience) {
@@ -181,10 +189,8 @@ export const filterDoctors = async (req, res) => {
       };
     }
 
-
-    // Fee Filter
+    // Fee
     if (fee) {
-
       if (fee === "low") {
         filter["workplaces.settings.appointmentFee"] = {
           $lt: 1000,
@@ -205,28 +211,26 @@ export const filterDoctors = async (req, res) => {
       }
     }
 
+    console.log("MONGO FILTER:", filter);
 
-    const doctors = await Doctor.find(filter)
-      .populate("userId", "name avatar");
+    const doctors = await Doctor.find(filter).populate("userId", "name avatar");
 
+    console.log("DOCTORS FOUND:", doctors.length);
 
     const formattedDoctors = doctors.map((doctor) => ({
       ...doctor.toObject(),
       user: doctor.userId,
     }));
 
-
     res.json({
       success: true,
       doctors: formattedDoctors,
     });
-
-
   } catch (error) {
+    console.error("FILTER ERROR:", error);
 
     res.status(500).json({
       message: error.message,
     });
-
   }
 };

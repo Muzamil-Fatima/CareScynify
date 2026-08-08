@@ -7,6 +7,7 @@ import Switch from "@mui/material/Switch";
 
 const initialFilters = {
   specialty: "",
+  location: "",
   experience: "",
   fee: "",
   rating: "",
@@ -33,6 +34,7 @@ const DoctorFilters = ({ onFilterChange }) => {
 
   const hasActiveFilters =
     filters.specialty ||
+    filters.location ||
     filters.experience ||
     filters.fee ||
     filters.rating ||
@@ -40,13 +42,10 @@ const DoctorFilters = ({ onFilterChange }) => {
 
   return (
     <div className="rounded-2xl bg-white p-5 shadow-sm">
-
       {/* Header */}
       <div className="mb-6 flex items-center gap-2">
         <FilterAltOutlinedIcon className="text-purple-600" />
-        <h2 className="text-lg font-semibold text-gray-800">
-          Filters
-        </h2>
+        <h2 className="text-lg font-semibold text-gray-800">Filters</h2>
       </div>
 
       {/* Specialty */}
@@ -64,9 +63,7 @@ const DoctorFilters = ({ onFilterChange }) => {
           <input
             list="specialties"
             value={filters.specialty}
-            onChange={(e) =>
-              handleChange("specialty", e.target.value)
-            }
+            onChange={(e) => handleChange("specialty", e.target.value)}
             placeholder="Search specialty..."
             className="h-11 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-700 outline-none transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
           />
@@ -83,7 +80,26 @@ const DoctorFilters = ({ onFilterChange }) => {
           </datalist>
         </div>
       </div>
+      {/* Location */}
+      <div className="mb-5">
+        <label className="mb-2 block text-sm font-medium text-gray-700">
+          Location
+        </label>
 
+        <div className="relative">
+          <SearchOutlinedIcon
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            fontSize="small"
+          />
+
+          <input
+            value={filters.location}
+            onChange={(e) => handleChange("location", e.target.value)}
+            placeholder="Search city or area..."
+            className="h-11 w-full rounded-xl border border-gray-200 bg-white pl-10 pr-4 text-sm text-gray-700 outline-none transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
+          />
+        </div>
+      </div>
       {/* Experience */}
       <div className="mb-5">
         <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -92,9 +108,7 @@ const DoctorFilters = ({ onFilterChange }) => {
 
         <select
           value={filters.experience}
-          onChange={(e) =>
-            handleChange("experience", e.target.value)
-          }
+          onChange={(e) => handleChange("experience", e.target.value)}
           className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
         >
           <option value="">Any Experience</option>
@@ -113,9 +127,7 @@ const DoctorFilters = ({ onFilterChange }) => {
 
         <select
           value={filters.fee}
-          onChange={(e) =>
-            handleChange("fee", e.target.value)
-          }
+          onChange={(e) => handleChange("fee", e.target.value)}
           className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
         >
           <option value="">Any Fee</option>
@@ -128,18 +140,13 @@ const DoctorFilters = ({ onFilterChange }) => {
       {/* Rating */}
       <div className="mb-5">
         <label className="mb-2 flex items-center gap-1 text-sm font-medium text-gray-700">
-          <StarOutlinedIcon
-            fontSize="small"
-            className="text-yellow-500"
-          />
+          <StarOutlinedIcon fontSize="small" className="text-yellow-500" />
           Rating
         </label>
 
         <select
           value={filters.rating}
-          onChange={(e) =>
-            handleChange("rating", e.target.value)
-          }
+          onChange={(e) => handleChange("rating", e.target.value)}
           className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 outline-none transition-all focus:border-purple-500 focus:ring-2 focus:ring-purple-100"
         >
           <option value="">Any Rating</option>
@@ -152,19 +159,13 @@ const DoctorFilters = ({ onFilterChange }) => {
       {/* Available Today */}
       <div className="mb-6 flex items-center justify-between rounded-xl bg-gray-50 px-4 py-3">
         <div>
-          <p className="text-sm font-medium text-gray-700">
-            Available Today
-          </p>
-          <p className="text-xs text-gray-500">
-            Show only available doctors
-          </p>
+          <p className="text-sm font-medium text-gray-700">Available Today</p>
+          <p className="text-xs text-gray-500">Show only available doctors</p>
         </div>
 
         <Switch
           checked={filters.available}
-          onChange={(e) =>
-            handleChange("available", e.target.checked)
-          }
+          onChange={(e) => handleChange("available", e.target.checked)}
           color="secondary"
         />
       </div>
