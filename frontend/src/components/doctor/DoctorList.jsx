@@ -7,7 +7,7 @@ const DoctorList = ({ doctors, onViewProfile, onBook }) => {
 
   if (safeDoctors.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+      <div className="flex flex-col  border border-gray-200 items-center justify-center py-20 text-gray-500">
         <p className="text-lg font-medium">No doctors found</p>
         <p className="text-sm">Try changing filters or search criteria</p>
       </div>
