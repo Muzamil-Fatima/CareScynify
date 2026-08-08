@@ -1,4 +1,4 @@
-import Doctor from "../../models/doctorModel.js";
+import Doctor from "../../models/doctor/doctorModel.js";
 import User from "../../models/user.js";
 import cloudinary from "../../utils/cloudinary.js";
 import streamifier from "streamifier";

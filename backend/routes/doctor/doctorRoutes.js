@@ -11,23 +11,23 @@ import {
   addDoctorCredential,
   getDoctorCredentials,
   deleteDoctorCredential,
-} from "../controllers/doctor/doctorController.js";
+} from "../../controllers/doctor/doctorController.js";
 import {
   addWorkplace,
   updateWorkplace,
   deleteWorkplace,
   getWorkplaces,
-} from "../controllers/doctor/doctorWorkPlacesController.js";
+} from "../../controllers/doctor/doctorWorkPlacesController.js";
 import {
   getConsultantHours,
   addConsultantHours,
   updateConsultantHours,
   deleteConsultantHours,
   getConsultantSlots,
-} from "../controllers/doctor/doctorConsultantController.js";
-import { updateWorkplaceSettings } from "../controllers/doctor/workplaceSettingsController.js";
-import { protect } from "../middleware/auth.js";
-import upload from "../middleware/upload.js";
+} from "../../controllers/doctor/doctorConsultantController.js";
+import { updateWorkplaceSettings } from "../../controllers/doctor/workplaceSettingsController.js";
+import { protect } from "../../middleware/auth.js";
+import upload from "../../middleware/upload.js";
 const router = express.Router();
 
 // Get logged-in doctor profile

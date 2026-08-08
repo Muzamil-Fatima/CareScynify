@@ -1,4 +1,4 @@
-import Doctor from "../../models/doctorModel.js";
+import Doctor from "../../models/doctor/doctorModel.js";
 export const updateWorkplaceSettings = async (req, res) => {
   try {
     const doctor = await Doctor.findOne({ userId: req.user._id });

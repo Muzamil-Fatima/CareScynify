@@ -1,33 +1,19 @@
 import React, { useContext } from "react";
 import DoctorContext from "../../../context/doctor/DoctorContext";
-import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
 
 import { Box, Typography, Button, Avatar, Stack, Chip } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import KeyboardArrowLeftRoundedIcon from "@mui/icons-material/KeyboardArrowLeftRounded";
 import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
-
-const DashboardHero = () => {
+const DashboardHero = ({ data }) => {
   const { profile, activeWorkplaceId, setActiveWorkplaceId } =
     useContext(DoctorContext);
 
   const doctorName = profile?.user?.name || "Doctor";
-  const doctorAvatar = profile?.user?.avatar || "";
+  const doctorAvatar = profile?.user?.avatar?.url || "";
 
-  const { appointments } = useDoctorAppointments(activeWorkplaceId);
-
-  const today = new Date().toISOString().split("T")[0];
-
-  const todayAppointments = appointments.filter((appt) => {
-    if (!appt.appointmentDate) return false;
-
-    const isToday =
-      new Date(appt.appointmentDate).toISOString().split("T")[0] === today;
-
-    return isToday && appt.status === "confirmed";
-  }).length;
-
+  const todayAppointments = data?.todayAppointments || 0;
   const workplaces = profile?.doctor?.workplaces || [];
 
   const allWorkplaces = [{ _id: "all", name: "All Workplaces" }, ...workplaces];

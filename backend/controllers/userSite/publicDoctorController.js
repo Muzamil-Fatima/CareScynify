@@ -1,4 +1,4 @@
-import Doctor from "../../models/doctorModel.js";
+import Doctor from "../../models/doctor/doctorModel.js";
 
 // Get all doctors with pagination, search, and filters
 export const getDoctors = async (req, res) => {

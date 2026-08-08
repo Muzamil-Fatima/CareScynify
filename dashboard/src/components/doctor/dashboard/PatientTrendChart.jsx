@@ -1,6 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
-import DoctorContext from "../../../context/doctor/DoctorContext";
-import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -25,63 +23,10 @@ import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVert";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-const PatientTrendChart = () => {
-  const { activeWorkplaceId } = useContext(DoctorContext);
-  const [filter, setFilter] = useState("week");
-
-  const { appointments } = useDoctorAppointments(activeWorkplaceId);
-  const data = useMemo(() => {
-    const slots = [
-      { name: "9 AM", patients: 0 },
-      { name: "11 AM", patients: 0 },
-      { name: "1 PM", patients: 0 },
-      { name: "3 PM", patients: 0 },
-      { name: "5 PM", patients: 0 },
-      { name: "7 PM", patients: 0 },
-    ];
-
-    const today = new Date();
-
-    const filteredAppointments = appointments.filter((appt) => {
-      if (appt.status !== "confirmed" && appt.status !== "completed")
-        return false;
-
-      const apptDate = new Date(appt.appointmentDate);
-
-      // This Week
-      if (filter === "week") {
-        const weekAgo = new Date();
-        weekAgo.setDate(today.getDate() - 7);
-
-        return apptDate >= weekAgo && apptDate <= today;
-      }
-
-      // This Month
-      if (filter === "month") {
-        return (
-          apptDate.getMonth() === today.getMonth() &&
-          apptDate.getFullYear() === today.getFullYear()
-        );
-      }
-
-      return true;
-    });
-
-    filteredAppointments.forEach((appt) => {
-      const hour = Number(appt.appointmentTime?.split(":")[0]);
-
-      if (hour >= 8 && hour < 10) slots[0].patients++;
-      else if (hour >= 10 && hour < 12) slots[1].patients++;
-      else if (hour >= 12 && hour < 14) slots[2].patients++;
-      else if (hour >= 14 && hour < 16) slots[3].patients++;
-      else if (hour >= 16 && hour < 18) slots[4].patients++;
-      else if (hour >= 18 && hour < 20) slots[5].patients++;
-    });
-
-    return slots;
-  }, [appointments, filter]);
+const PatientTrendChart = ({ data }) => {
+  const chartData = data?.data || [];
   const handleExport = () => {
-    const csvContent = data
+    const csvContent = chartData
       .map((item) => `${item.name},${item.patients}`)
       .join("\n");
 
@@ -98,8 +43,8 @@ const PatientTrendChart = () => {
 
     window.URL.revokeObjectURL(url);
   };
-  const totalPatients = data.reduce((sum, d) => sum + d.patients, 0);
-  const peak = Math.max(...data.map((d) => d.patients));
+  const totalPatients = data?.totalPatients || 0;
+  const peak = data?.peak || 0;
   const [anchorEl, setAnchorEl] = useState(null);
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -145,7 +90,6 @@ const PatientTrendChart = () => {
           >
             <MenuItem
               onClick={() => {
-                setFilter("week");
                 handleClose();
               }}
             >
@@ -154,7 +98,6 @@ const PatientTrendChart = () => {
 
             <MenuItem
               onClick={() => {
-                setFilter("month");
                 handleClose();
               }}
             >
@@ -202,7 +145,7 @@ const PatientTrendChart = () => {
         {/* Chart */}
         <Box height={260}>
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={data}>
+            <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} />
 
               <XAxis dataKey="name" tickLine={false} axisLine={false} />

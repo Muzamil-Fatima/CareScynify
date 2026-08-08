@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 // import { ColorModeContext } from "../theme";
 import { useAuth } from "../../hooks/useAuth";
 import ProfileDropdown from "./ProfileDropdown";
+import { useLocation } from "react-router-dom";
 
 // Material UI Icons
 import SearchIcon from "@mui/icons-material/Search";
@@ -13,11 +14,11 @@ const TopBar = () => {
   const { user, logout } = useAuth() || {};
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-
+  const userRole = user?.role;
   // Fallbacks for user info
   const userName = user?.name || "Dr. Alex Taylor";
   const userEmail = user?.email || "alex.taylor@carescynify.com";
-
+  const location = useLocation();
   // Handles closing when clicking anywhere outside of the dropdown container
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -28,22 +29,53 @@ const TopBar = () => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+  const getSearchPlaceholder = () => {
+    const path = location.pathname;
 
+    if (path.includes("/appointments")) {
+      return "Search appointments...";
+    }
+
+    if (path.includes("/patients")) {
+      return "Search patients...";
+    }
+
+    if (path.includes("/reviews")) {
+      return "Search reviews...";
+    }
+
+    if (path.includes("/schedule")) {
+      return "Search schedule...";
+    }
+
+    if (path.includes("/pharmacy")) {
+      return "Search pharmacies...";
+    }
+
+    if (path.includes("/lab")) {
+      return "Search laboratory...";
+    }
+
+    return "Search...";
+  };
   return (
     <div className="flex justify-between items-center p-4 bg-white/80 backdrop-blur-md border-b border-purple-50 relative z-30">
-      {/* Search Input Bar */}
-      <div className="flex items-center bg-slate-50 border border-purple-100/80 rounded-xl px-3 group focus-within:border-purple-400 focus-within:bg-white transition-all duration-200">
-        <SearchIcon
-          fontSize="small"
-          className="text-slate-400 group-focus-within:text-purple-600 transition-colors"
-        />
-        <input
-          type="text"
-          placeholder="Search patients, records..."
-          className="ml-2 bg-transparent outline-none py-2 text-sm text-slate-700 w-48 md:w-64 placeholder-slate-400"
-        />
-      </div>
-
+      {userRole?.toLowerCase() === "doctor" && (
+        <>
+          {/* Search Input Bar */}
+          <div className="flex items-center bg-slate-50 border border-purple-100/80 rounded-xl px-3 group focus-within:border-purple-400 focus-within:bg-white transition-all duration-200">
+            <SearchIcon
+              fontSize="small"
+              className="text-slate-400 group-focus-within:text-purple-600 transition-colors"
+            />
+            <input
+              type="text"
+              placeholder={getSearchPlaceholder()}
+              className="ml-2 bg-transparent outline-none py-2 text-sm text-slate-700 w-48 md:w-64 placeholder-slate-400"
+            />
+          </div>
+        </>
+      )}
       {/* Action System Buttons */}
       <div className="flex items-center gap-2">
         {/* button */}
@@ -73,6 +105,7 @@ const TopBar = () => {
             onClose={() => setIsDropdownOpen(false)}
             userName={userName}
             userEmail={userEmail}
+            userRole={userRole}
             onLogout={logout}
           />
         </div>

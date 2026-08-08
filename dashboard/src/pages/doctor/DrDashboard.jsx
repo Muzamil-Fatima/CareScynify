@@ -7,16 +7,17 @@ import ProfileStatusCard from "../../components/doctor/dashboard/ProfileStatusCa
 import QuickActionsCard from "../../components/doctor/dashboard/QuickActionsCard";
 import RevenueChart from "../../components/doctor/dashboard/RevenueChart";
 import StatsSection from "../../components/doctor/dashboard/StatsSection";
-
+import useDoctorDashboard from "../../hooks/doctor/useDoctorDashboard";
 const DrDashboard = () => {
+  const { dashboard } = useDoctorDashboard();
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
       {/* Hero Section */}
-      <DashboardHero />
+      <DashboardHero data={dashboard?.hero} />
 
       {/* Stats Section */}
       <Box mt={3}>
-        <StatsSection />
+        <StatsSection data={dashboard?.stats} />
       </Box>
 
       {/* Charts + Profile Section */}
@@ -44,9 +45,9 @@ const DrDashboard = () => {
           },
         }}
       >
-        <RevenueChart />
-        <PatientTrendChart />
-        <ProfileStatusCard />
+        <RevenueChart data={dashboard?.revenue} />
+        <PatientTrendChart data={dashboard?.patientTrend} />
+        <ProfileStatusCard data={dashboard?.profile} />
       </Box>
 
       {/* Quick Actions */}

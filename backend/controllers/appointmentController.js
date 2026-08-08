@@ -1,5 +1,5 @@
 import Appointment from "../models/appointmentModel.js";
-import Doctor from "../models/doctorModel.js";
+import Doctor from "../models/doctor/doctorModel.js";
 import Patient from "../models/patientModel.js";
 import { getIO } from "../config/socket.js";
 /* ---------------- HELPERS ---------------- */

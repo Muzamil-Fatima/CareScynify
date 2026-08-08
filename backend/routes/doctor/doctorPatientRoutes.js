@@ -1,12 +1,12 @@
 import express from "express";
-import { protect } from "../middleware/auth.js";
+import { protect } from "../../middleware/auth.js";
 import {
   addDoctorPatient,
   updateDoctorPatient,
   deleteDoctorPatient,
   getDoctorPatient,
   getDoctorPatients
-} from "../controllers/doctor/DoctorPatientController.js";
+} from "../../controllers/doctor/DoctorPatientController.js";
 
 const router = express.Router();
 

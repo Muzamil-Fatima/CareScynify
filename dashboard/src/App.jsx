@@ -86,7 +86,6 @@ function App() {
           <Routes>
             <Route path="/appointment" element={<Appointment />} />
             {/* Doctor  */}
-
             <Route path="/doctor/dashboard" element={<DrDashboard />} />
             <Route path="/doctor/schedule" element={<DrSchedule />} />
             <Route path="/doctor/appointments" element={<Appointment />} />
@@ -94,16 +93,8 @@ function App() {
             <Route path="/doctor/reviews" element={<DrReview />} />
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
             <Route path="/patients" element={<Patients />} />
-
-            <Route
-              path="/doctor/patient/profile/:patientId/:appointmentId"
-              element={<PatientProfile />}
-            />
-
-            <Route
-              path="/doctor/patient/profile/:patientId"
-              element={<PatientProfile />}
-            />
+            <Route path="/doctor/patient/profile/:patientId/:appointmentId" element={<PatientProfile />} />
+            <Route path="/doctor/patient/profile/:patientId" element={<PatientProfile />} />
             {/* setting */}
             <Route path="/settings" element={<SettingsLayout />}>
               <Route path="personal" element={<ProfileInfo />} />

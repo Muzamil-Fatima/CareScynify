@@ -12,15 +12,18 @@ import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
 import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import authRoutes from "./routes/authRoutes.js";
-import patientsRoutes from "./routes/patientsRoutes.js";
-import doctorRoutes from "./routes/doctorRoutes.js";
-import reportRoutes from "./routes/reportRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+// patient routes
+import reportRoutes from "./routes/reportRoutes.js";
+import patientsRoutes from "./routes/patientsRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
-import prescriptionRoutes from "./routes/prescriptionRoutes.js";
-import reviewRoutes from "./routes/reviewRoutes.js";
 import symptomRoutes from "./routes/symptomRoutes.js";
-import doctorPatientRoutes from "./routes/doctorPatientRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
+// doctor routes
+import doctorRoutes from "./routes/doctor/doctorRoutes.js";
+import prescriptionRoutes from "./routes/doctor/prescriptionRoutes.js";
+import doctorPatientRoutes from "./routes/doctor/doctorPatientRoutes.js";
+import doctorDashboardRoutes from "./routes/doctor/doctorDashboardRoutes.js";
 // pharmacy
 import medicineRoutes from "./routes/pharmacy/medicineRoutes.js";
 import profileRoutes from "./routes/pharmacy/profileRoutes.js";
@@ -99,6 +102,7 @@ app.use("/api/review", reviewRoutes);
 // symptom Analysis
 app.use("/api/symptomAnalysis", symptomRoutes);
 app.use("/api/doctor-patients", doctorPatientRoutes);
+app.use("/api/doctor/dashboard", doctorDashboardRoutes);
 // ================================================== pharmacy
 app.use("/api/medicineRoutes", medicineRoutes);
 app.use("/api/pharmacy", profileRoutes);

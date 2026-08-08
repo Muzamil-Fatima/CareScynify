@@ -1,117 +1,49 @@
-import React, { useContext, useState, useEffect } from "react";
-import DoctorContext from "../../../context/doctor/DoctorContext";
-import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
+import React from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
-import { getDoctorReviews } from "../../../api/reviewApi";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import AttachMoneyRoundedIcon from "@mui/icons-material/AttachMoneyRounded";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import LocalHospitalRoundedIcon from "@mui/icons-material/LocalHospitalRounded";
 
-const StatsSection = () => {
-  const [reviews, setReviews] = useState([]);
-
-  const { profile, activeWorkplaceId } = useContext(DoctorContext);
-
-  const { appointments } = useDoctorAppointments(activeWorkplaceId);
-
-  const today = new Date().toISOString().split("T")[0];
-
-  const todayAppointments = appointments.filter((appt) => {
-    if (!appt.appointmentDate) return false;
-
-    const isToday =
-      new Date(appt.appointmentDate).toISOString().split("T")[0] === today;
-
-    return isToday && appt.status === "confirmed";
-  }).length;
-
-  const totalPatients = new Set(appointments.map((a) => a.patientId)).size;
-
-  const totalWorkplaces = profile?.doctor?.workplaces?.length || 0;
-  const monthlyRevenue = appointments.reduce((total, appt) => {
-    if (appt.status !== "completed") return total;
-
-    const workplace = profile?.doctor?.workplaces?.find(
-      (w) => w._id?.toString() === appt.workplaceId?.toString(),
-    );
-
-    const fee = workplace?.settings?.appointmentFee || 0;
-
-    return total + fee;
-  }, 0);
-
-  useEffect(() => {
-    const fetchReviews = async () => {
-      try {
-        const data = await getDoctorReviews();
-        setReviews(data || []);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchReviews();
-  }, []);
-  const averageRating =
-    reviews.length > 0
-      ? (
-          reviews.reduce((acc, item) => acc + item.rating, 0) / reviews.length
-        ).toFixed(1)
-      : 0;
-  const completedAppointments = appointments.filter(
-    (a) => a.status === "completed",
-  ).length;
-
-  const pendingAppointments = appointments.filter(
-    (a) => a.status === "pending" || a.status === "confirmed",
-  ).length;
-
-  const onlineWorkplaces = profile?.doctor?.workplaces?.filter(
-    (w) =>
-      w.settings?.consultationType === "online" ||
-      w.settings?.consultationType === "online_physical",
-  ).length;
+const StatsSection = ({ data }) => {
   const stats = [
     {
       title: "Today's Appointments",
-      value: todayAppointments,
-      growth: `${pendingAppointments} upcoming`,
+      value: data?.todayAppointments || 0,
+      growth: `${data?.pendingAppointments || 0} upcoming`,
       icon: <EventAvailableRoundedIcon />,
       color: "#4f46e5",
       bg: "#eef2ff",
     },
     {
       title: "Total Patients",
-      value: totalPatients,
-      growth: `${completedAppointments} treated`,
+      value: data?.totalPatients || 0,
+      growth: `${data?.completedAppointments || 0} treated`,
       icon: <PeopleAltRoundedIcon />,
       color: "#059669",
       bg: "#ecfdf5",
     },
     {
       title: "Monthly Revenue",
-      value: `Rs ${monthlyRevenue.toLocaleString()}`,
-      growth: `${
-        appointments.filter((a) => a.status === "completed").length
-      } completed appointments`,
+      value: `Rs ${(data?.monthlyRevenue || 0).toLocaleString()}`,
+      growth: `${data?.completedAppointments || 0} completed appointments`,
       icon: <AttachMoneyRoundedIcon />,
       color: "#ea580c",
       bg: "#fff7ed",
     },
     {
       title: "Patient Reviews",
-      value: reviews.length,
-      growth: `${averageRating} ★ Average`,
+      value: data?.reviewsCount || 0,
+      growth: `${data?.averageRating || 0} ★ Average`,
       icon: <StarRoundedIcon />,
       color: "#eab308",
       bg: "#fefce8",
     },
     {
       title: "Workplaces",
-      value: totalWorkplaces,
-      growth: `${onlineWorkplaces} online available`,
+      value: data?.totalWorkplaces || 0,
+      growth: `${data?.onlineWorkplaces || 0} online available`,
       icon: <LocalHospitalRoundedIcon />,
       color: "#0891b2",
       bg: "#ecfeff",

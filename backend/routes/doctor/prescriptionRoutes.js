@@ -6,13 +6,11 @@ getPrescriptionByAppointment,
 getPatientPrescriptions,
 getPrescriptionById,
 deletePrescription,
-
-
   getMyPrescriptions,
   getMyPrescriptionById,
-} from "../controllers/doctor/prescriptionController.js";
+} from "../../controllers/doctor/prescriptionController.js";
 
-import { protect } from "../middleware/auth.js";
+import { protect } from "../../middleware/auth.js";
 const router = express.Router();
 
 // Create

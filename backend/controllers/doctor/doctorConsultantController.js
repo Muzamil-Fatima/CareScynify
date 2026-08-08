@@ -1,5 +1,5 @@
-import Doctor from "../../models/doctorModel.js";
 
+import Doctor from "../../models/doctor/doctorModel.js";
 // UTILS
 const toMinutes = (t = "") => {
   if (!t || !t.includes(":")) return null;

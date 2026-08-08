@@ -1,4 +1,3 @@
-
 import React from "react";
 import {
   Card,
@@ -16,47 +15,22 @@ import SecurityRoundedIcon from "@mui/icons-material/SecurityRounded";
 import BadgeRoundedIcon from "@mui/icons-material/BadgeRounded";
 import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
 
-const ProfileStatusCard = () => {
-  const profileCompletion = 82;
+const ProfileStatusCard = ({ data }) => {
 
-  const statusItems = [
-    {
-      label: "Identity Verification",
-      status: "Verified",
-      icon: <VerifiedUserRoundedIcon />,
-      color: "#16a34a",
-      bg: "#ecfdf5",
-    },
-    {
-      label: "Account Security",
-      status: "Strong",
-      icon: <SecurityRoundedIcon />,
-      color: "#4f46e5",
-      bg: "#eef2ff",
-    },
-    {
-      label: "Medical Credentials",
-      status: "Approved",
-      icon: <SchoolRoundedIcon />,
-      color: "#0ea5e9",
-      bg: "#e0f2fe",
-    },
-    {
-      label: "Profile Badge",
-      status: "Active",
-      icon: <BadgeRoundedIcon />,
-      color: "#f59e0b",
-      bg: "#fffbeb",
-    },
-  ];
-
+  const profileCompletion = data?.profileCompletion || 0;
+  const statusItems = data?.statusItems || [];
+  const iconMap = {
+    verified: <VerifiedUserRoundedIcon />,
+    security: <SecurityRoundedIcon />,
+    credentials: <SchoolRoundedIcon />,
+    badge: <BadgeRoundedIcon />,
+  };
   return (
     <Card
       sx={{
         borderRadius: "22px",
         border: "1px solid #e2e8f0",
-        boxShadow:
-          "0 1px 3px rgba(0,0,0,0.04), 0 10px 25px rgba(0,0,0,0.04)",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 10px 25px rgba(0,0,0,0.04)",
       }}
     >
       <CardContent sx={{ p: 3 }}>
@@ -72,11 +46,7 @@ const ProfileStatusCard = () => {
 
         {/* Progress */}
         <Box mb={3}>
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            mb={1}
-          >
+          <Stack direction="row" justifyContent="space-between" mb={1}>
             <Typography variant="body2" fontWeight={600}>
               Profile Completion
             </Typography>
@@ -94,10 +64,7 @@ const ProfileStatusCard = () => {
               backgroundColor: "#e2e8f0",
               "& .MuiLinearProgress-bar": {
                 borderRadius: 5,
-                backgroundColor:
-                  profileCompletion > 80
-                    ? "#16a34a"
-                    : "#f59e0b",
+                backgroundColor: profileCompletion > 80 ? "#16a34a" : "#f59e0b",
               },
             }}
           />
@@ -131,7 +98,7 @@ const ProfileStatusCard = () => {
                     backgroundColor: "#fff",
                   }}
                 >
-                  {item.icon}
+                  {iconMap[item.icon]}
                 </Box>
 
                 <Typography fontWeight={600} fontSize={14}>

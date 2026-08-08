@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Medicine from "./pharmacy/Medicine.js";
+import Medicine from "../pharmacy/Medicine.js";
 const PrescriptionSchema = new mongoose.Schema(
   {
     appointmentId: {
