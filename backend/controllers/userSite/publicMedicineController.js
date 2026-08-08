@@ -183,13 +183,52 @@ export const searchMedicine = async (req, res) => {
 // Filter Medicines
 export const filterMedicine = async (req, res) => {
   try {
-    const { category, pharmacyId, isActive } = req.query;
+    const { name, category, price, pharmacyId, isActive } = req.query;
 
     const filter = {};
 
-    if (category) filter.category = category;
-    if (pharmacyId) filter.pharmacyId = pharmacyId;
-    if (isActive !== undefined) filter.isActive = isActive === "true";
+    // Medicine Name
+    if (name) {
+      filter.name = {
+        $regex: name,
+        $options: "i",
+      };
+    }
+
+    // Category
+    if (category) {
+      filter.category = category;
+    }
+
+    // Pharmacy
+    if (pharmacyId) {
+      filter.pharmacyId = pharmacyId;
+    }
+
+    // Active Status
+    if (isActive !== undefined) {
+      filter.isActive = isActive === "true";
+    }
+
+    // Price Range
+    if (price === "low") {
+      filter.unitPrice = {
+        $lt: 500,
+      };
+    }
+
+    if (price === "mid") {
+      filter.unitPrice = {
+        $gte: 500,
+        $lte: 1500,
+      };
+    }
+
+    if (price === "high") {
+      filter.unitPrice = {
+        $gt: 1500,
+      };
+    }
 
     const medicines = await Medicine.find(filter)
       .populate("pharmacyId", "pharmacyName city homeDelivery")

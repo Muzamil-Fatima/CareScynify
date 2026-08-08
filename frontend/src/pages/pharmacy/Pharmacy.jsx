@@ -21,16 +21,17 @@ const initialFilters = {
   available: false,
 
   // Medicine
+  name: "",
   category: "",
-  prescription: "",
+  price: "",
   pharmacyId: "",
+  isActive: false,
 
   // Search
   search: "",
 };
 
 const Pharmacy = () => {
-
   const [filters, setFilters] = useState(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -290,7 +291,7 @@ const Pharmacy = () => {
             <>
               <div className="min-h-[900px]">
                 {isPharmacy ? (
-                 <PharmacyList pharmacies={pharmacies} />
+                  <PharmacyList pharmacies={pharmacies} />
                 ) : (
                   <PharmacyMedicine medicines={medicines} />
                 )}

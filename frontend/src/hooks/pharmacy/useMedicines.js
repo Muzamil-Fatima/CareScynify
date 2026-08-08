@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getAllMedicines } from "../../api/pharmacy/medicineApi";
+import { filterMedicine } from "../../api/pharmacy/medicineApi";
 
 export const useMedicine = (filters = {}) => {
   const [medicines, setMedicines] = useState([]);
@@ -11,21 +11,41 @@ export const useMedicine = (filters = {}) => {
       setLoading(true);
       setError("");
 
-      const data = await getAllMedicines(filters);
+      const medicineFilters = {
+        // Main SearchBar search
+        name: filters.search || "",
+
+        // Medicine filters
+        category: filters.category || "",
+        price: filters.price || "",
+        pharmacyId: filters.pharmacyId || "",
+        isActive: filters.isActive || false,
+      };
+
+      const data = await filterMedicine(medicineFilters);
 
       setMedicines(data.medicines || []);
     } catch (err) {
       setError(
-        err?.response?.data?.message || "Failed to fetch medicines."
+        err?.response?.data?.message ||
+          "Failed to fetch medicines."
       );
     } finally {
       setLoading(false);
     }
-  }, [filters]);
+  }, [
+    filters.search,
+    filters.category,
+    filters.price,
+    filters.pharmacyId,
+    filters.isActive,
+  ]);
 
   useEffect(() => {
-    fetchMedicines();
-  }, [fetchMedicines]);
+    if (filters.searchType === "medicine") {
+      fetchMedicines();
+    }
+  }, [fetchMedicines, filters.searchType]);
 
   return {
     medicines,
