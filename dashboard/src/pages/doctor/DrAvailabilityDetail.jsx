@@ -5,7 +5,6 @@ import AppointmentSettings from "../../components/doctor/workPlace/AppointmentSe
 const DrAvailabilityDetail = ({ workplace }) => {
   return (
     <div className="space-y-8">
-
       {/* Header */}
       <div>
         <h2 className="text-2xl font-semibold text-gray-800">
@@ -18,7 +17,6 @@ const DrAvailabilityDetail = ({ workplace }) => {
 
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
         {/* Left */}
         <div className="md:col-span-2">
           <DrConsultation workplace={workplace} />
@@ -26,9 +24,8 @@ const DrAvailabilityDetail = ({ workplace }) => {
 
         {/* Right */}
         <div className="md:col-span-1">
-          <AppointmentSettings workplace={workplace} />
+          <AppointmentSettings key={workplace?._id} workplace={workplace} />
         </div>
-
       </div>
     </div>
   );

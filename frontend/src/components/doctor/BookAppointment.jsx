@@ -31,9 +31,22 @@ const BookAppointment = () => {
   );
 
   const [time, setTime] = useState("");
-
-  const [appointmentType, setAppointmentType] = useState("online");
   const [selectedWorkplace, setSelectedWorkplace] = useState(null);
+
+  const workplace = useMemo(() => {
+    return selectedWorkplace || null;
+  }, [selectedWorkplace]);
+
+  const [selectedConsultationType, setSelectedConsultationType] =
+    useState("online");
+
+  const consultationType = workplace?.settings?.consultationType;
+
+  const canOnline =
+    consultationType === "online" || consultationType === "online_physical";
+
+  const canPhysical =
+    consultationType === "physical" || consultationType === "online_physical";
 
   useEffect(() => {
     if (doctor?.workplaces?.length && !selectedWorkplace) {
@@ -41,9 +54,21 @@ const BookAppointment = () => {
     }
   }, [doctor, selectedWorkplace]);
 
-  const workplace = useMemo(() => {
-    return selectedWorkplace || null;
-  }, [selectedWorkplace]);
+  useEffect(() => {
+    if (!workplace) return;
+
+    const type = workplace.settings?.consultationType;
+
+    if (type === "online") {
+      setSelectedConsultationType("online");
+    } else if (type === "physical") {
+      setSelectedConsultationType("physical");
+    } else if (type === "online_physical") {
+      setSelectedConsultationType((prev) =>
+        prev === "online" || prev === "physical" ? prev : "online",
+      );
+    }
+  }, [workplace]);
 
   /* ---------------- DATES ---------------- */
   const dates = useMemo(() => {
@@ -110,7 +135,7 @@ const BookAppointment = () => {
   /* ---------------- RESET ---------------- */
   useEffect(() => {
     setTime("");
-  }, [appointmentType]);
+  }, [selectedConsultationType]);
 
   /* ---------------- BOOKING ---------------- */
   const handleBook = async () => {
@@ -124,7 +149,7 @@ const BookAppointment = () => {
         workplaceId: workplace._id,
         date,
         time: selectedSlot,
-        appointmentType,
+        consultationType: selectedConsultationType,
       });
 
       // Instant UI update
@@ -215,31 +240,40 @@ const BookAppointment = () => {
         {/* APPOINTMENT TYPE */}
         <div className="flex bg-gray-100 p-1 rounded-xl w-fit">
           <button
+            disabled={!canOnline}
             onClick={() => {
-              setAppointmentType("online");
+              if (!canOnline) return;
+
+              setSelectedConsultationType("online");
               setBookingError("");
             }}
             className={`px-4 py-2 rounded-lg text-sm transition ${
-              appointmentType === "online"
+              selectedConsultationType === "online"
                 ? "bg-white shadow text-purple-600"
-                : "text-gray-600"
+                : canOnline
+                  ? "text-gray-600 hover:bg-white/70"
+                  : "text-gray-300 cursor-not-allowed"
             }`}
           >
             💻 Online
           </button>
-
           <button
+            disabled={!canPhysical}
             onClick={() => {
-              setAppointmentType("physical");
+              if (!canPhysical) return;
+
+              setSelectedConsultationType("physical");
               setBookingError("");
             }}
             className={`px-4 py-2 rounded-lg text-sm transition ${
-              appointmentType === "physical"
+              selectedConsultationType === "physical"
                 ? "bg-white shadow text-purple-600"
-                : "text-gray-600"
+                : canPhysical
+                  ? "text-gray-600 hover:bg-white/70"
+                  : "text-gray-300 cursor-not-allowed"
             }`}
           >
-            🏥 physical
+            🏥 Physical
           </button>
         </div>
 
@@ -373,7 +407,7 @@ const BookAppointment = () => {
                                     workplaceId: workplace._id,
                                     date,
                                     time: slot.label,
-                                    appointmentType,
+                                    consultationType: selectedConsultationType,
                                   });
                                 } catch (err) {
                                   setBookingError(

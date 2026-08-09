@@ -1,11 +1,11 @@
 import express from "express";
 import {
-createPrescription,
-updatePrescription,
-getPrescriptionByAppointment,
-getPatientPrescriptions,
-getPrescriptionById,
-deletePrescription,
+  createPrescription,
+  updatePrescription,
+  getPrescriptionByAppointment,
+  getPatientPrescriptions,
+  getPrescriptionById,
+  deletePrescription,
   getMyPrescriptions,
   getMyPrescriptionById,
 } from "../../controllers/doctor/prescriptionController.js";
@@ -23,7 +23,7 @@ router.get("/patient/:patientId", protect, getPatientPrescriptions);
 router.get(
   "/appointment/:appointmentId",
   protect,
-  getPrescriptionByAppointment
+  getPrescriptionByAppointment,
 );
 
 // Patient routes
@@ -32,7 +32,7 @@ router.get("/getMyPrescriptions", protect, getMyPrescriptions);
 router.get(
   "/getMyPrescriptionById/:prescriptionId",
   protect,
-  getMyPrescriptionById
+  getMyPrescriptionById,
 );
 
 // Single Prescription

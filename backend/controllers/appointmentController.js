@@ -20,27 +20,33 @@ const now = () => new Date();
 export const getAvailableSlots = async (req, res) => {
   try {
     const { doctorId, workplaceId, date } = req.query;
-
     if (!doctorId || !workplaceId || !date) {
-      return res.status(400).json({ message: "Missing required fields" });
+      return res.status(400).json({
+        message: "Missing required fields",
+      });
     }
-
+    // Get doctor
     const doctor = await Doctor.findById(doctorId);
-    if (!doctor) return res.status(404).json({ message: "Doctor not found" });
-
+    if (!doctor) {
+      return res.status(404).json({
+        message: "Doctor not found",
+      });
+    }
+    // Get selected workplace
     const workplace = doctor.workplaces.id(workplaceId);
-    if (!workplace)
-      return res.status(404).json({ message: "Workplace not found" });
-
+    if (!workplace) {
+      return res.status(404).json({
+        message: "Workplace not found",
+      });
+    }
     const appointmentDate = normalizeDate(date);
     const currentTime = now();
-
-    // remove expired reservations (cleanup)
+    // Remove expired temporary reservations
     await Appointment.deleteMany({
       status: "reserved",
       reservedUntil: { $lte: currentTime },
     });
-
+    // Get all active bookings for THIS doctor + THIS workplace + THIS date
     const booked = await Appointment.find({
       doctorId,
       workplaceId,
@@ -51,74 +57,89 @@ export const getAvailableSlots = async (req, res) => {
           reservedUntil: { $gt: currentTime },
         },
         {
-          status: { $in: ["pending", "confirmed"] },
+          status: {
+            $in: ["pending", "confirmed"],
+          },
         },
       ],
     });
-
+    //  MAX PATIENTS PER DAY
+    const maxPatientsPerDay = workplace.settings?.maxPatientsPerDay ?? 999;
+    const bookedCount = booked.length;
+    // If daily limit is already reached,
+    // don't show any more slots.
+    if (bookedCount >= maxPatientsPerDay) {
+      return res.json([]);
+    }
+    const remainingCapacity = maxPatientsPerDay - bookedCount;
+    // GET WORKPLACE SLOTS FOR SELECTED DAY
     const day = new Date(date).toLocaleDateString("en-US", {
       weekday: "short",
       timeZone: "UTC",
     });
-
     const slots = workplace.slots?.[day] || [];
-
+    // CHECK TODAY
     const today = normalizeDate(new Date());
     const isToday = appointmentDate.getTime() === today.getTime();
-
+    // FILTER AVAILABLE SLOTS
     const availableSlots = slots
       .filter((slot) => {
+        // Hide already-passed slots if selected date is today
         if (isToday) {
           const [hours, minutes] = slot.startTime.split(":").map(Number);
-
           const slotDateTime = new Date();
           slotDateTime.setHours(hours, minutes, 0, 0);
-
           if (slotDateTime <= currentTime) {
             return false;
           }
         }
-
+        // Check whether this slot already has an appointment
         const appointment = booked.find(
           (a) => a.appointmentTime === slot.startTime,
         );
-
-        if (!appointment) return true;
-
+        // No booking → available
+        if (!appointment) {
+          return true;
+        }
+        // If this slot is temporarily reserved by current user,
+        // keep it visible.
         if (
           appointment.status === "reserved" &&
-          appointment.userId.toString() === req.user._id.toString()
+          appointment.userId?.toString() === req.user?._id?.toString()
         ) {
           return true;
         }
-
+        // Otherwise hide the slot
         return false;
       })
+      // Only show slots within remaining daily capacity
+      .slice(0, remainingCapacity)
       .map((slot) => {
         const appointment = booked.find(
           (a) => a.appointmentTime === slot.startTime,
         );
-
         return {
           label: slot.startTime,
           reservedByMe:
             appointment &&
             appointment.status === "reserved" &&
-            appointment.userId.toString() === req.user._id.toString(),
+            appointment.userId?.toString() === req.user?._id?.toString(),
         };
       });
-
     return res.json(availableSlots);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("Get Available Slots Error:", error);
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
 /* ---------------- RESERVE SLOT ---------------- */
 export const reserveSlot = async (req, res) => {
   try {
-    const { doctorId, workplaceId, date, time, appointmentType } = req.body;
+    const { doctorId, workplaceId, date, time, consultationType } = req.body;
 
-    if (!doctorId || !workplaceId || !date || !time || !appointmentType) {
+    if (!doctorId || !workplaceId || !date || !time || !consultationType) {
       return res.status(400).json({
         success: false,
         message: "Missing required fields",
@@ -159,7 +180,34 @@ export const reserveSlot = async (req, res) => {
         message: "Workplace not found.",
       });
     }
+    const allowedConsultationType = workplace.settings?.consultationType;
 
+    if (allowedConsultationType === "online" && consultationType !== "online") {
+      return res.status(400).json({
+        success: false,
+        message: "This workplace only supports online appointments.",
+      });
+    }
+
+    if (
+      allowedConsultationType === "physical" &&
+      consultationType !== "physical"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "This workplace only supports physical appointments.",
+      });
+    }
+
+    if (
+      allowedConsultationType === "online_physical" &&
+      !["online", "physical"].includes(consultationType)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid consultation type.",
+      });
+    }
     // Get patient profile
     const patient = await Patient.findOne({
       userId: req.user._id,
@@ -244,7 +292,7 @@ export const reserveSlot = async (req, res) => {
       previousReservation.appointmentDate = appointmentDate;
       previousReservation.appointmentTime = appointmentTime;
       previousReservation.endTime = endTime;
-      previousReservation.appointmentType = appointmentType;
+      previousReservation.consultationType = consultationType;
       previousReservation.reservedUntil = new Date(Date.now() + 10 * 60 * 1000);
 
       await previousReservation.save();
@@ -269,7 +317,7 @@ export const reserveSlot = async (req, res) => {
       appointmentDate,
       appointmentTime,
       endTime,
-      appointmentType,
+      consultationType,
       status: "reserved",
       reservedUntil: new Date(Date.now() + 10 * 60 * 1000),
     });

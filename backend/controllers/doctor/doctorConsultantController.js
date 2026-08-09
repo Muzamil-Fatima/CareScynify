@@ -1,4 +1,3 @@
-
 import Doctor from "../../models/doctor/doctorModel.js";
 // UTILS
 const toMinutes = (t = "") => {
@@ -12,7 +11,16 @@ const hasOverlap = (aStart, aEnd, bStart, bEnd) => {
   return aStart < bEnd && aEnd > bStart;
 };
 const generateWorkplaceSlots = (workplace) => {
-  const duration = workplace.settings?.appointmentDuration?.value || 30;
+  const durationObj = workplace.settings?.appointmentDuration;
+
+  let duration = 30;
+
+  if (durationObj?.value) {
+    duration =
+      durationObj.unit === "hours"
+        ? Number(durationObj.value) * 60
+        : Number(durationObj.value);
+  }
 
   const breakMinutes = workplace.settings?.breakMinutes || 0;
 
@@ -83,7 +91,6 @@ export const getConsultantHours = async (req, res) => {
     });
   }
 };
-
 // ADD WORKPLACE
 export const addConsultantHours = async (req, res) => {
   try {
@@ -127,7 +134,6 @@ export const addConsultantHours = async (req, res) => {
     });
   }
 };
-
 // DELETE WORKPLACE
 export const deleteConsultantHours = async (req, res) => {
   try {
@@ -169,7 +175,6 @@ export const deleteConsultantHours = async (req, res) => {
     });
   }
 };
-
 // GET AVAILABLE SLOTS
 export const getConsultantSlots = async (req, res) => {
   try {
@@ -254,7 +259,6 @@ export const getConsultantSlots = async (req, res) => {
     });
   }
 };
-
 // UPDATE CONSULTANT HOURS
 export const updateConsultantHours = async (req, res) => {
   try {

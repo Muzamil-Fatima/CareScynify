@@ -10,26 +10,52 @@ import {
 
 const usePrescription = () => {
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState("");
-
   const [prescription, setPrescription] = useState(null);
-
   const [history, setHistory] = useState([]);
 
-  // Create
+  // Create Prescription
   const create = useCallback(async (data) => {
     try {
       setLoading(true);
       setError("");
 
-      const res = await createPrescription(data);
+      // Required fields
+      if (!data?.appointmentId) {
+        throw new Error("Appointment is required.");
+      }
+
+      if (!data?.patientId) {
+        throw new Error("Patient is required.");
+      }
+
+      if (!data?.workplaceId) {
+        throw new Error("Workplace is required.");
+      }
+
+      const res = await createPrescription({
+        appointmentId: data.appointmentId,
+        patientId: data.patientId,
+        workplaceId: data.workplaceId,
+
+        diagnosis: data.diagnosis,
+        symptoms: data.symptoms,
+        medicines: data.medicines,
+        labTests: data.labTests,
+        advice: data.advice,
+        followUpDate: data.followUpDate,
+      });
 
       setPrescription(res.prescription);
 
       return res;
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to create prescription.");
+      const message =
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to create prescription.";
+
+      setError(message);
 
       throw err;
     } finally {
@@ -37,7 +63,7 @@ const usePrescription = () => {
     }
   }, []);
 
-  // Update
+  // Update Prescription
   const update = useCallback(async (prescriptionId, data) => {
     try {
       setLoading(true);
@@ -57,13 +83,15 @@ const usePrescription = () => {
     }
   }, []);
 
-  // Delete
+  // Delete Prescription
   const remove = useCallback(async (prescriptionId) => {
     try {
       setLoading(true);
       setError("");
 
       const res = await deletePrescription(prescriptionId);
+
+      setPrescription(null);
 
       return res;
     } catch (err) {
@@ -75,7 +103,7 @@ const usePrescription = () => {
     }
   }, []);
 
-  // Get by ID
+  // Get Prescription By ID
   const loadById = useCallback(async (prescriptionId) => {
     try {
       setLoading(true);
@@ -89,13 +117,15 @@ const usePrescription = () => {
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load prescription.");
 
+      setPrescription(null);
+
       return null;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Get by Appointment
+  // Get Prescription By Appointment
   const loadByAppointment = useCallback(async (appointmentId) => {
     try {
       setLoading(true);
@@ -107,7 +137,7 @@ const usePrescription = () => {
 
       return res.prescription;
     } catch (err) {
-      // 404 is normal when no prescription exists yet
+      // 404 means prescription does not exist yet
       if (err.response?.status !== 404) {
         setError(err.response?.data?.message || "Failed to load prescription.");
       }
@@ -120,7 +150,7 @@ const usePrescription = () => {
     }
   }, []);
 
-  // Patient History
+  // Get Patient Prescription History
   const loadHistory = useCallback(async (patientId) => {
     try {
       setLoading(true);
@@ -130,7 +160,7 @@ const usePrescription = () => {
 
       setHistory(res.prescriptions || []);
 
-      return res.prescriptions;
+      return res.prescriptions || [];
     } catch (err) {
       setError(
         err.response?.data?.message || "Failed to load prescription history.",
@@ -143,14 +173,18 @@ const usePrescription = () => {
       setLoading(false);
     }
   }, []);
+
+  // Clear Prescription
   const clearPrescription = useCallback(() => {
     setPrescription(null);
   }, []);
 
+  // Clear History
   const clearHistory = useCallback(() => {
     setHistory([]);
   }, []);
 
+  // Clear Error
   const clearError = useCallback(() => {
     setError("");
   }, []);

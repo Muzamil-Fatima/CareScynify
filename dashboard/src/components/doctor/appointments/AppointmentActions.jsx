@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-
+import DrBookAppointment from "../../../pages/doctor/DrBookAppointment"
 const AppointmentActions = ({ setActiveTab, activeTab }) => {
   const { appointments } = useDoctorAppointments();
-
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const pendingCount =
     appointments?.filter((item) => item.status === "pending").length || 0;
 
@@ -29,10 +29,18 @@ const AppointmentActions = ({ setActiveTab, activeTab }) => {
       </button>
 
       {/* New Appointment Button */}
-      <button className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-purple-600 rounded-xl transition-all duration-150 hover:bg-purple-700 shadow-sm">
+      <button
+        onClick={() => setShowBookingModal(true)}
+        className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-purple-600 rounded-xl transition-all duration-150 hover:bg-purple-700 shadow-sm"
+      >
         <span className="text-lg leading-none font-bold">+</span>
         <span>New Appointment</span>
       </button>
+      {showBookingModal && (
+        <DrBookAppointment
+          onClose={() => setShowBookingModal(false)}
+        />
+      )}
     </div>
   );
 };

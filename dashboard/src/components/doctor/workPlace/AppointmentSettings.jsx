@@ -1,38 +1,42 @@
+
 import React, {
   useCallback,
   useEffect,
   useMemo,
-  useState,
   useRef,
+  useState,
 } from "react";
 import { useDoctor } from "../../../context/doctor/DoctorContext";
 
 const AppointmentSettings = ({ workplace }) => {
-  const { profile, setIsDirty, saveWorkplaceSettings } = useDoctor();
+  const {
+    profile,
+    setIsDirty,
+    saveWorkplaceSettings,
+  } = useDoctor();
 
-  // stable workplace lookup
+  // Find the currently selected workplace
   const workplaceData = useMemo(() => {
-    return profile?.doctor?.workplaces?.find((w) => w._id === workplace?._id);
+    return profile?.doctor?.workplaces?.find(
+      (w) => w?._id === workplace?._id
+    );
   }, [profile?.doctor?.workplaces, workplace?._id]);
 
-  // local state
-  const isInitialLoad = useRef(true);
+  // Local settings for the CURRENT workplace
+  const [settings, setSettings] = useState(
+    workplaceData?.settings || {}
+  );
+
+  // Keep latest save function
   const saveRef = useRef(saveWorkplaceSettings);
 
   useEffect(() => {
     saveRef.current = saveWorkplaceSettings;
   }, [saveWorkplaceSettings]);
-  // sync from backend
-  const [settings, setSettings] = useState(() => workplaceData?.settings || {});
 
-  // autosave
+  // Autosave settings
   useEffect(() => {
     if (!workplace?._id) return;
-
-    if (isInitialLoad.current) {
-      isInitialLoad.current = false;
-      return;
-    }
 
     const timer = setTimeout(() => {
       saveRef.current(workplace._id, settings);
@@ -41,55 +45,60 @@ const AppointmentSettings = ({ workplace }) => {
     return () => clearTimeout(timer);
   }, [settings, workplace?._id]);
 
-  // update handler
+  // Update local workplace settings
   const updateWorkplace = useCallback(
     (updater) => {
-      setSettings((prev) => {
-        const next = updater(prev);
-        return next;
-      });
+      setSettings((prev) => updater(prev));
       setIsDirty(true);
     },
-    [setIsDirty],
+    [setIsDirty]
   );
 
   if (!workplace?._id) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+    <div className="space-y-5">
+
       {/* Appointment Duration */}
       <div>
-        <label className="block mb-2 font-medium">Appointment Duration</label>
+        <label className="block mb-2 font-medium">
+          Appointment Duration
+        </label>
 
         <div className="flex gap-3">
           <input
             type="number"
             min="0"
-            value={settings?.appointmentDuration?.value || ""}
+            value={settings?.appointmentDuration?.value ?? ""}
             onChange={(e) =>
               updateWorkplace((prev) => ({
                 ...prev,
                 appointmentDuration: {
                   ...(prev.appointmentDuration ?? {}),
-                  value: Number(e.target.value),
+                  value:
+                    e.target.value === ""
+                      ? ""
+                      : Number(e.target.value),
                 },
               }))
             }
-            className="w-24 px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="w-24 px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
 
           <select
-            value={settings?.appointmentDuration?.unit || "minutes"}
+            value={
+              settings?.appointmentDuration?.unit || "minutes"
+            }
             onChange={(e) =>
               updateWorkplace((prev) => ({
                 ...prev,
                 appointmentDuration: {
-                  ...prev.appointmentDuration,
+                  ...(prev.appointmentDuration ?? {}),
                   unit: e.target.value,
                 },
               }))
             }
-            className="px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+            className="px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
           >
             <option value="minutes">Minutes</option>
             <option value="hours">Hours</option>
@@ -99,7 +108,9 @@ const AppointmentSettings = ({ workplace }) => {
 
       {/* Appointment Fee */}
       <div>
-        <label className="block mb-2 font-medium">Appointment Fee</label>
+        <label className="block mb-2 font-medium">
+          Appointment Fee
+        </label>
 
         <input
           type="number"
@@ -110,16 +121,21 @@ const AppointmentSettings = ({ workplace }) => {
 
             updateWorkplace((prev) => ({
               ...prev,
-              appointmentFee: value === "" ? "" : Math.max(0, Number(value)),
+              appointmentFee:
+                value === ""
+                  ? ""
+                  : Math.max(0, Number(value)),
             }));
           }}
-          className="w-full px-3 py-2 border  bg-gray-50 border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
 
       {/* Consultation Type */}
       <div>
-        <label className="block mb-2 font-medium">Consultation Type</label>
+        <label className="block mb-2 font-medium">
+          Consultation Type
+        </label>
 
         <select
           value={settings?.consultationType || "online"}
@@ -129,17 +145,21 @@ const AppointmentSettings = ({ workplace }) => {
               consultationType: e.target.value,
             }))
           }
-          className="w-full px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
         >
           <option value="online">Online</option>
           <option value="physical">Physical</option>
-          <option value="online_physical">Online + Physical</option>
+          <option value="online_physical">
+            Online + Physical
+          </option>
         </select>
       </div>
 
       {/* Max Patients */}
       <div>
-        <label className="block mb-2 font-medium">Max Patients / Day</label>
+        <label className="block mb-2 font-medium">
+          Max Patients / Day
+        </label>
 
         <input
           type="number"
@@ -150,10 +170,13 @@ const AppointmentSettings = ({ workplace }) => {
 
             updateWorkplace((prev) => ({
               ...prev,
-              maxPatientsPerDay: value === "" ? "" : Math.max(0, Number(value)),
+              maxPatientsPerDay:
+                value === ""
+                  ? ""
+                  : Math.max(0, Number(value)),
             }));
           }}
-          className="w-full px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
 
@@ -172,10 +195,13 @@ const AppointmentSettings = ({ workplace }) => {
 
             updateWorkplace((prev) => ({
               ...prev,
-              breakMinutes: value === "" ? "" : Math.max(0, Number(value)),
+              breakMinutes:
+                value === ""
+                  ? ""
+                  : Math.max(0, Number(value)),
             }));
           }}
-          className="w-full px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
 
@@ -194,12 +220,16 @@ const AppointmentSettings = ({ workplace }) => {
 
             updateWorkplace((prev) => ({
               ...prev,
-              bookingWindow: value === "" ? "" : Math.max(0, Number(value)),
+              bookingWindow:
+                value === ""
+                  ? ""
+                  : Math.max(0, Number(value)),
             }));
           }}
-          className="w-full px-3 py-2  bg-gray-50 border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
+          className="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
         />
       </div>
+
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import Prescription from "../../models/doctor/PrescriptionModel.js";
 import Doctor from "../../models/doctor/doctorModel.js";
 export const createPrescription = async (req, res) => {
@@ -6,6 +5,7 @@ export const createPrescription = async (req, res) => {
     const {
       appointmentId,
       patientId,
+      workplaceId,
       diagnosis,
       symptoms,
       medicines,
@@ -13,7 +13,12 @@ export const createPrescription = async (req, res) => {
       advice,
       followUpDate,
     } = req.body;
-
+    if (!appointmentId || !workplaceId || !patientId) {
+      return res.status(400).json({
+        success: false,
+        message: "Appointment, workplace and patient are required.",
+      });
+    }
     // Find logged-in doctor
     const doctor = await Doctor.findOne({
       userId: req.user._id,
@@ -43,7 +48,7 @@ export const createPrescription = async (req, res) => {
       userId: req.user._id,
       patientId,
       doctorId: doctor._id,
-      workplaceId: doctor.workplaceId,
+      workplaceId,
       diagnosis,
       symptoms,
       medicines,
