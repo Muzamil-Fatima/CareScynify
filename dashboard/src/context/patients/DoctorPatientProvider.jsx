@@ -5,7 +5,7 @@ import {
   getDoctorPatient,
   updateDoctorPatient,
   deleteDoctorPatient,
-  getDoctorPatients,
+  getManualDoctorPatients,
 } from "../../api/doctorPatientApi";
 
 export const DoctorPatientProvider = ({ children }) => {
@@ -39,7 +39,7 @@ export const DoctorPatientProvider = ({ children }) => {
       setLoading(true);
       setError("");
 
-      const res = await getDoctorPatients();
+      const res = await getManualDoctorPatients();
 
       setPatients(res.patients || []);
 

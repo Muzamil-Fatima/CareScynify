@@ -49,8 +49,5 @@ doctorPatientSchema.index(
   },
 );
 
-const DoctorPatient =
-  mongoose.models.DoctorPatient ||
-  mongoose.model("DoctorPatient", doctorPatientSchema);
-
+const DoctorPatient = mongoose.model("DoctorPatient", doctorPatientSchema);
 export default DoctorPatient;

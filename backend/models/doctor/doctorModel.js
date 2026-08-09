@@ -1,7 +1,12 @@
 import mongoose from "mongoose";
-
+import generateCustomId from "../../utils/generateCustomId.js";
 const drSchema = new mongoose.Schema(
   {
+    drId: {
+      type: String,
+      unique: true,
+      index: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -169,6 +174,12 @@ const drSchema = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false },
 );
+// hook
+drSchema.pre("save", async function (next) {
+  if (!this.drId) {
+    this.drId = await generateCustomId("DR");
+  }
+});
 
 const Doctor = mongoose.model("Doctor", drSchema);
 export default Doctor;

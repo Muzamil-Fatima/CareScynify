@@ -1,5 +1,5 @@
+
 import React from "react";
-import { Card, CardContent, Typography, Box } from "@mui/material";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
 import AttachMoneyRoundedIcon from "@mui/icons-material/AttachMoneyRounded";
@@ -34,7 +34,7 @@ const StatsSection = ({ data }) => {
     },
     {
       title: "Patient Reviews",
-      value: data?.reviewsCount || 0,
+      value: data?.reviews || 0,
       growth: `${data?.averageRating || 0} ★ Average`,
       icon: <StarRoundedIcon />,
       color: "#eab308",
@@ -51,139 +51,126 @@ const StatsSection = ({ data }) => {
   ];
 
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: {
-          xs: `repeat(${stats.length}, minmax(220px, 1fr))`,
-          lg: `repeat(${stats.length}, 1fr)`,
-        },
-        gap: 2,
-        overflowX: "auto",
-        pb: 1,
-
-        "&::-webkit-scrollbar": {
-          height: 6,
-        },
-
-        "&::-webkit-scrollbar-thumb": {
-          backgroundColor: "#cbd5e1",
-          borderRadius: "10px",
-        },
-      }}
+    <div
+      className="grid grid-cols-[repeat(5,minmax(220px,1fr))] lg:grid-cols-5 gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:h-1.5 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-[10px] "
     >
       {stats.map((item, index) => (
-        <Card
+        <div
           key={index}
-          sx={{
-            borderRadius: "18px",
-            border: "1px solid #e2e8f0",
-            boxShadow:
-              "0 1px 3px rgba(0,0,0,0.04), 0 8px 20px rgba(0,0,0,0.04)",
-            transition: "all .3s ease",
-            minWidth: 0,
-
-            "&:hover": {
-              transform: "translateY(-4px)",
-              boxShadow: "0 12px 28px rgba(0,0,0,0.08)",
-            },
-          }}
+          className="
+            min-w-0
+            rounded-[18px]
+            border
+            border-slate-200
+            bg-white
+            shadow-[0_1px_3px_rgba(0,0,0,0.04),0_8px_20px_rgba(0,0,0,0.04)]
+            transition-all
+            duration-300
+            ease-in-out
+            hover:-translate-y-1
+            hover:shadow-[0_12px_28px_rgba(0,0,0,0.08)]
+          "
         >
-          <CardContent
-            sx={{
-              p: { xs: 1.5, sm: 2 },
-              display: "flex",
-              alignItems: "center",
-              gap: { xs: 1.2, md: 2 },
-
-              "&:last-child": {
-                pb: { xs: 1.5, sm: 2 },
-              },
-            }}
+          <div
+            className="
+              flex
+              items-center
+              p-3
+              sm:p-4
+              gap-3
+              md:gap-4
+            "
           >
             {/* Icon */}
-            <Box
-              sx={{
-                width: { xs: 40, sm: 46, md: 52 },
-                height: { xs: 40, sm: 46, md: 52 },
-                minWidth: { xs: 40, sm: 46, md: 52 },
-                borderRadius: "14px",
+            <div
+              className="
+                w-10
+                h-10
+                min-w-10
+                sm:w-11.5
+                sm:h-11.5
+                sm:min-w-11.5
+                md:w-13
+                md:h-13
+                md:min-w-13
+                rounded-[14px]
+                flex
+                items-center
+                justify-center
+              "
+              style={{
                 backgroundColor: item.bg,
                 color: item.color,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-
-                "& svg": {
-                  fontSize: {
-                    xs: "1.1rem",
-                    sm: "1.3rem",
-                    md: "1.6rem",
-                  },
-                },
               }}
             >
-              {item.icon}
-            </Box>
+              {React.cloneElement(item.icon, {
+                sx: {
+                  fontSize: "1.1rem",
+                  "@media (min-width: 640px)": {
+                    fontSize: "1.3rem",
+                  },
+                  "@media (min-width: 768px)": {
+                    fontSize: "1.6rem",
+                  },
+                },
+              })}
+            </div>
 
             {/* Text */}
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography
-                sx={{
-                  color: "#64748b",
-                  fontWeight: 500,
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  fontSize: {
-                    xs: "0.65rem",
-                    sm: "0.75rem",
-                    md: "0.85rem",
-                    lg: "0.9rem",
-                  },
-                }}
+            <div className="flex-1 min-w-0 self-start">
+              {/* Title */}
+              <div
+                className="
+                  text-slate-500
+                  font-medium
+                  whitespace-nowrap
+                  overflow-hidden
+                  text-ellipsis
+                  text-[0.65rem]
+                  sm:text-[0.75rem]
+                  md:text-[0.85rem]
+                  lg:text-[0.9rem]
+                "
               >
                 {item.title}
-              </Typography>
+              </div>
 
-              <Typography
-                sx={{
-                  color: "#0f172a",
-                  fontWeight: 700,
-                  lineHeight: 1.2,
-                  mt: 0.4,
-                  fontSize: {
-                    xs: "1rem",
-                    sm: "1.2rem",
-                    md: "1.4rem",
-                    lg: "1.6rem",
-                  },
-                }}
+              {/* Value */}
+              <div
+                className="
+                  text-slate-900
+                  font-bold
+                  leading-[1.2]
+                  mt-1
+                  text-base
+                  sm:text-[1.2rem]
+                  md:text-[1.4rem]
+                  lg:text-[1.6rem]
+                "
               >
                 {item.value}
-              </Typography>
+              </div>
 
+              {/* Growth */}
               {item.growth && (
-                <Typography
-                  sx={{
-                    color: "#10b981",
-                    fontWeight: 600,
-                    mt: 0.4,
-                    fontSize: {
-                      xs: "0.6rem",
-                      sm: "0.7rem",
-                      md: "0.8rem",
-                    },
-                  }}
+                <div
+                  className="
+                    text-emerald-500
+                    font-semibold
+                    mt-1
+                    text-[0.6rem]
+                    sm:text-[0.7rem]
+                    md:text-[0.8rem]
+                  "
                 >
                   {item.growth} this month
-                </Typography>
+                </div>
               )}
-            </Box>
-          </CardContent>
-        </Card>
+            </div>
+          </div>
+        </div>
       ))}
-    </Box>
+    </div>
   );
 };
 

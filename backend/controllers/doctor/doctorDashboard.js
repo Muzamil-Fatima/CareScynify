@@ -23,12 +23,17 @@ const getDateRange = (period) => {
     return { start, end };
   }
 
-  // Current 7 days
+  // Current Week: Monday → Sunday
   const start = new Date(now);
-  start.setDate(now.getDate() - 6);
+  const day = start.getDay();
+
+  const diff = day === 0 ? 6 : day - 1;
+
+  start.setDate(start.getDate() - diff);
   start.setHours(0, 0, 0, 0);
 
-  const end = new Date(now);
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
   end.setHours(23, 59, 59, 999);
 
   return { start, end };
@@ -115,10 +120,18 @@ export const getDoctorDashboard = async (req, res) => {
       (appointment) => appointment.status === "completed",
     );
 
-    const pendingAppointments = appointments.filter(
-      (appointment) =>
-        appointment.status === "pending" || appointment.status === "confirmed",
-    );
+    const pendingAppointments = appointments.filter((appointment) => {
+      if (
+        appointment.status !== "pending" &&
+        appointment.status !== "confirmed"
+      ) {
+        return false;
+      }
+
+      const appointmentDate = new Date(appointment.appointmentDate);
+
+      return appointmentDate > endOfToday;
+    });
 
     // TOTAL UNIQUE PATIENTS
 
@@ -149,7 +162,9 @@ export const getDoctorDashboard = async (req, res) => {
         (item) => item._id?.toString() === appointment.workplaceId?.toString(),
       );
 
-      return workplace?.settings?.appointmentFee || 0;
+      const fee = Number(workplace?.settings?.appointmentFee || 0);
+
+      return fee;
     };
 
     // MONTHLY REVENUE

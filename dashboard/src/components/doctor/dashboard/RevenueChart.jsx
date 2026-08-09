@@ -24,8 +24,7 @@ import {
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVert";
 
-const RevenueChart = ({ data }) => {
-  const [filter, setFilter] = useState("week");
+const RevenueChart = ({ data, period, setPeriod }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleOpen = (event) => {
@@ -60,7 +59,7 @@ const RevenueChart = ({ data }) => {
               Revenue Analytics
             </Typography>
             <Typography variant="body2" sx={{ color: "#64748b" }}>
-              {filter === "week"
+              {period === "week"
                 ? "Weekly earnings overview"
                 : "Monthly earnings overview"}
             </Typography>
@@ -78,7 +77,7 @@ const RevenueChart = ({ data }) => {
             >
               <MenuItem
                 onClick={() => {
-                  setFilter("week");
+                  setPeriod("week");
                   handleClose();
                 }}
               >
@@ -87,7 +86,7 @@ const RevenueChart = ({ data }) => {
 
               <MenuItem
                 onClick={() => {
-                  setFilter("month");
+                  setPeriod("month");
                   handleClose();
                 }}
               >
@@ -134,7 +133,7 @@ const RevenueChart = ({ data }) => {
               Rs {total.toLocaleString()}
             </Typography>
             <Typography variant="caption" sx={{ color: "#64748b" }}>
-              Total {filter} revenue
+              Total {period} revenue
             </Typography>
           </Box>
 

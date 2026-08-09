@@ -7,7 +7,7 @@ export const addDoctorPatient = async (data) => {
 };
 
 // Get All Doctor Patients 
-export const getDoctorPatients = async () => {
+export const getManualDoctorPatients = async () => {
   const res = await api.get("/api/doctor-patients");
   return res.data;
 };

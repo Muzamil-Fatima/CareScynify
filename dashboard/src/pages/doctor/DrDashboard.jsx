@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box } from "@mui/material";
 
 import DashboardHero from "../../components/doctor/dashboard/DashboardHero";
@@ -9,7 +9,9 @@ import RevenueChart from "../../components/doctor/dashboard/RevenueChart";
 import StatsSection from "../../components/doctor/dashboard/StatsSection";
 import useDoctorDashboard from "../../hooks/doctor/useDoctorDashboard";
 const DrDashboard = () => {
-  const { dashboard } = useDoctorDashboard();
+  const [period, setPeriod] = useState("week");
+
+  const { dashboard } = useDoctorDashboard(period);
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
       {/* Hero Section */}
@@ -45,7 +47,11 @@ const DrDashboard = () => {
           },
         }}
       >
-        <RevenueChart data={dashboard?.revenue} />
+        <RevenueChart
+          data={dashboard?.revenue}
+          period={period}
+          setPeriod={setPeriod}
+        />
         <PatientTrendChart data={dashboard?.patientTrend} />
         <ProfileStatusCard data={dashboard?.profile} />
       </Box>

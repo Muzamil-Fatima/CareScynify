@@ -30,16 +30,23 @@ const DrPatients = () => {
     .filter((item) => item?.patientId?._id)
     .map((item) => ({
       _id: item.patientId._id,
-      ...item.patientId.userId,
+      patientCode: item.patientId.patientCode,
+      name: item.patientId.userId?.name || "Unknown",
+      phone: item.patientId.userId?.phone || "-",
+      email: item.patientId.userId?.email || "-",
+      avatar: item.patientId.userId?.avatar?.url || "",
     }));
 
-  const manualPatients = doctorPatients.map((patient) => ({
-    _id: patient.patientId,
-    name: patient.userId?.name || "Unknown",
-    phone: patient.userId?.phone || "-",
-    email: patient.userId?.email || "-",
-    avatar: patient.userId?.avatar || "",
-  }));
+  const manualPatients = doctorPatients
+    .filter((patient) => patient?.patientId?._id)
+    .map((patient) => ({
+      _id: patient.patientId._id,
+      patientCode: patient.patientId.patientCode,
+      name: patient.patientId.userId?.name || "Unknown",
+      phone: patient.patientId.userId?.phone || "-",
+      email: patient.patientId.userId?.email || "-",
+      avatar: patient.patientId.userId?.avatar?.url || "",
+    }));
 
   // Get unique patients only
 
@@ -57,14 +64,16 @@ const DrPatients = () => {
   );
 
   return (
-    <div className="font-secondary font-medium text-[13px] mr-4">
-      <button
-        onClick={() => setOpenAddPatient(true)}
-        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700"
-      >
-        <AddRoundedIcon fontSize="small" />
-        Add Patient
-      </button>
+    <div className="font-secondary font-medium text-[13px] mr-4 ">
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => setOpenAddPatient(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700"
+        >
+          <AddRoundedIcon fontSize="small" />
+          Add Patient
+        </button>
+      </div>
       <div className="border border-gray-300/30 rounded-[15px] bg-white shadow-sm">
         {/* Header */}
         <div className="flex py-3 px-4 items-center justify-between border-b border-gray-300/30">
@@ -121,7 +130,7 @@ const DrPatients = () => {
                         }`}
                       >
                         <td className="px-4 py-3">
-                          #{(currentPage - 1) * rowsPerPage + index + 1}
+                          {user?.patientCode || "-"}
                         </td>
                         {/* Patient */}
                         <td className="px-4 py-3">
@@ -149,7 +158,7 @@ const DrPatients = () => {
 
                         {/* Phone */}
                         <td className="px-4 py-3 cursor-pointer">
-                          {user?.phone || "-"}
+                          + {user?.phone || "-"}
                         </td>
                       </tr>
                     ))

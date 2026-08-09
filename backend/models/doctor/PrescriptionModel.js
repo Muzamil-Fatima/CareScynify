@@ -1,7 +1,12 @@
 import mongoose from "mongoose";
 import Medicine from "../pharmacy/Medicine.js";
+import Counter from "../Counter.js";
 const PrescriptionSchema = new mongoose.Schema(
   {
+    prescriptionId: {
+      type: String,
+      index: true,
+    },
     appointmentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Appointment",
@@ -71,9 +76,28 @@ const PrescriptionSchema = new mongoose.Schema(
       default: "draft",
     },
   },
+
   { timestamps: true, versionKey: false },
 );
-const Prescription =
-  mongoose.models.Prescription ||
-  mongoose.model("Prescription", PrescriptionSchema);
+PrescriptionSchema.index({ doctorId: 1, prescriptionId: 1 }, { unique: true });
+PrescriptionSchema.pre("validate", async function (next) {
+  if (!this.prescriptionId) {
+    const year = new Date().getFullYear().toString().slice(-2);
+
+    const key = `RX-${year}-${this.doctorId.toString()}`;
+
+    const counter = await Counter.findOneAndUpdate(
+      { key },
+      { $inc: { seq: 1 } },
+      {
+        new: true,
+        upsert: true,
+      },
+    );
+
+    this.prescriptionId = `RX${year}${String(counter.seq).padStart(5, "0")}`;
+  }
+});
+
+const Prescription = mongoose.model("Prescription", PrescriptionSchema);
 export default Prescription;
