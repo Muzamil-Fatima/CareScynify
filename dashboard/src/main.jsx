@@ -17,6 +17,7 @@ import LabAddPatientProvider from "./context/laboratory/LabAddPatientProvider.js
 import LabSampleProvider from "./context/laboratory/LabSampleProvider.jsx";
 import LabReportProvider from "./context/laboratory/LabReportProvider.jsx";
 import LabDashboardProvider from "./context/laboratory/LabDashboardProvider.jsx";
+import VideoCallProvider from "./context/doctor/VideoCallProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -34,7 +35,9 @@ createRoot(document.getElementById("root")).render(
                             <LabReportProvider>
                               <DoctorPatientProvider>
                                 <DoctorProvider>
-                                  <App />
+                                  <VideoCallProvider>
+                                    <App />
+                                  </VideoCallProvider>
                                 </DoctorProvider>
                               </DoctorPatientProvider>
                             </LabReportProvider>

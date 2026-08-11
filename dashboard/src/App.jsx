@@ -1,23 +1,28 @@
 import { Route, Routes, useLocation } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import { useState } from "react";
-import Appointment from "./pages/doctor/DrAppointment.jsx";
-import Patients from "./pages/doctor/DrPatients.jsx";
-import DrDashboard from "./pages/doctor/DrDashboard.jsx";
-import DrSchedule from "./pages/doctor/DrSchedule.jsx";
-import Appointments from "./pages/doctor/DrAppointment.jsx";
-import AddNewDr from "./pages/doctor/AddNewDr.jsx";
-import DrReview from "./pages/doctor/DrReview.jsx";
+
 import TopBar from "./components/layout/TopBar.jsx";
 import SideBar from "./components/layout/sidebar/SideBar.jsx";
-import { Toaster } from "react-hot-toast";
-import SettingsLayout from "./components/settings/SettingsLayout.jsx";
-import ProfileInfo from "./components/settings/doctor/PersonalInfo";
-import Verification from "./components/settings/doctor/Verification";
+
+// setting routes
+import Notifications from "./components/settings/doctor/Notifications";
 import Credentials from "./components/settings/doctor/Credentials";
 import Security from "./components/settings/doctor/Security";
-import Notifications from "./components/settings/doctor/Notifications";
-import WorkPlaceSchedule from "./components/doctor/workPlace/WorkPlaceSchedule.jsx";
+import Verification from "./components/settings/doctor/Verification";
+import SettingsLayout from "./components/settings/SettingsLayout.jsx";
+import ProfileInfo from "./components/settings/doctor/PersonalInfo";
+// doctor routes
+import DrReview from "./pages/doctor/DrReview.jsx";
+import AddNewDr from "./pages/doctor/AddNewDr.jsx";
+import Appointments from "./pages/doctor/DrAppointment.jsx";
+import DrSchedule from "./pages/doctor/DrSchedule.jsx";
+import DrDashboard from "./pages/doctor/DrDashboard.jsx";
+import Patients from "./pages/doctor/DrPatients.jsx";
+import Appointment from "./pages/doctor/DrAppointment.jsx";
 import PatientProfile from "./pages/doctor/PatientProfile.jsx";
+import VideoConsultation from "./pages/doctor/VideoConsultation.jsx";
+import WorkPlaceSchedule from "./components/doctor/workPlace/WorkPlaceSchedule.jsx";
 // pharmacy route
 import PharmacyDashboard from "./pages/pharmacy/Dashboard.jsx";
 import Medicines from "./pages/pharmacy/Medicines.jsx";
@@ -93,8 +98,18 @@ function App() {
             <Route path="/doctor/reviews" element={<DrReview />} />
             <Route path="/workplace/schedule" element={<WorkPlaceSchedule />} />
             <Route path="/patients" element={<Patients />} />
-            <Route path="/doctor/patient/profile/:patientId/:appointmentId" element={<PatientProfile />} />
-            <Route path="/doctor/patient/profile/:patientId" element={<PatientProfile />} />
+            <Route
+              path="/doctor/patient/profile/:patientId/:appointmentId"
+              element={<PatientProfile />}
+            />
+            <Route
+              path="/doctor/patient/profile/:patientId"
+              element={<PatientProfile />}
+            />
+            <Route
+              path="/video/:appointmentId"
+              element={<VideoConsultation />}
+            />
             {/* setting */}
             <Route path="/settings" element={<SettingsLayout />}>
               <Route path="personal" element={<ProfileInfo />} />
@@ -123,9 +138,15 @@ function App() {
             {/* <Route path="/lab/bookings" element={<LabBookings />} /> */}
             <Route path="/lab/processing" element={<LabTestProcess />} />
             {/* Reports */}
-            <Route path="/lab/reports/create/:sampleId" element={<LabCreateReport />} />
+            <Route
+              path="/lab/reports/create/:sampleId"
+              element={<LabCreateReport />}
+            />
             <Route path="/lab/reports" element={<LabReports />} />
-            <Route path="/lab/reports/:reportId" element={<LabReportDetails />} />
+            <Route
+              path="/lab/reports/:reportId"
+              element={<LabReportDetails />}
+            />
 
             {/* admin */}
             <Route path="/admin/dashboard" element={<AdminDashboard />} />

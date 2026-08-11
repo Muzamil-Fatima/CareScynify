@@ -32,6 +32,7 @@ const AppointmentActions = ({
     >
       {item.appointmentType === "online" ? (
         <button
+          onClick={() => navigate(`/video/${item._id}`)}
           className="
           bg-violet-700 hover:bg-violet-800
           text-white rounded-lg

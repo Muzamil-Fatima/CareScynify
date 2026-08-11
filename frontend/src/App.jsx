@@ -46,6 +46,7 @@ import MyOrders from "./pages/patients/MyOrder";
 import OrderDetails from "./pages/patients/OrderDetails";
 import MyLabTest from "./pages/patients/MyLabTest";
 import LabTestDetails from "./pages/patients/LabTestDetails";
+import VideoConsultation from "./pages/patients/VideoConsultation";
 import TestBookSuccess from "./pages/laboratory/TestBookSuccess";
 function App() {
   return (
@@ -89,10 +90,7 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-          <Route
-            path="/lab-booking/my-tests/:id"
-            element={<TestBookSuccess />}
-          />
+          <Route path="/lab-booking/my-tests/:id" element={<TestBookSuccess />} />
 
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
@@ -116,6 +114,7 @@ function App() {
           <Route path="/lab-tests" element={<MyLabTest />} />
           <Route path="/lab-tests/:id" element={<LabTestDetails />} />
           <Route path="/symptom-analyzer" element={<SymptomAnalyzer />} />
+          <Route path="/video/:appointmentId" element={<VideoConsultation />} />
         </Route>
       </Routes>
     </RootLayout>
