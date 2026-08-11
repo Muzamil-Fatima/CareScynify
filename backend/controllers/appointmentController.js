@@ -620,7 +620,220 @@ export const cancelAppointment = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+/* ---------------- DOCTOR CREATE APPOINTMENT ---------------- */
+export const doctorCreateAppointment = async (req, res) => {
+  try {
+    const { doctorId, patientId, workplaceId, date, time, consultationType } =
+      req.body;
+    /* ---------------- VALIDATION ---------------- */
+    if (
+      !doctorId ||
+      !patientId ||
+      !workplaceId ||
+      !date ||
+      !time ||
+      !consultationType
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing required fields",
+      });
+    }
+    /* ---------------- AUTHENTICATED DOCTOR ---------------- */
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Please login first.",
+      });
+    }
+    const doctor = await Doctor.findOne({
+      _id: doctorId,
+      userId: req.user._id,
+    });
+    if (!doctor) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "You are not authorized to book an appointment for this doctor.",
+      });
+    }
+    /* ---------------- PATIENT ---------------- */
+    const patient = await Patient.findById(patientId);
+    if (!patient) {
+      return res.status(404).json({
+        success: false,
+        message: "Patient not found.",
+      });
+    }
+    /* ---------------- WORKPLACE ---------------- */
+    const workplace = doctor.workplaces.id(workplaceId);
+    if (!workplace) {
+      return res.status(404).json({
+        success: false,
+        message: "Workplace not found.",
+      });
+    }
+    /* ---------------- NORMALIZE DATE/TIME ---------------- */
+    const appointmentDate = normalizeDate(date);
+    const appointmentTime = normalizeTime(time);
+    /* ---------------- CHECK SLOT EXISTS ---------------- */
+    const day = new Date(date).toLocaleDateString("en-US", {
+      weekday: "short",
+      timeZone: "UTC",
+    });
+    const slots = workplace.slots?.[day] || [];
+    const selectedSlot = slots.find(
+      (slot) => normalizeTime(slot.startTime) === appointmentTime,
+    );
+    if (!selectedSlot) {
+      return res.status(400).json({
+        success: false,
+        message: "Selected time slot is not available for this workplace.",
+      });
+    }
+    /* ---------------- CONSULTATION TYPE ---------------- */
+    const allowedConsultationType = workplace.settings?.consultationType;
 
+    if (allowedConsultationType === "online" && consultationType !== "online") {
+      return res.status(400).json({
+        success: false,
+        message: "This workplace only supports online appointments.",
+      });
+    }
+    if (
+      allowedConsultationType === "physical" &&
+      consultationType !== "physical"
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "This workplace only supports physical appointments.",
+      });
+    }
+    if (
+      allowedConsultationType === "online_physical" &&
+      !["online", "physical"].includes(consultationType)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid consultation type.",
+      });
+    }
+    /* ---------------- PREVENT SAME PATIENT DUPLICATE ---------------- */
+    const existingPatientAppointment = await Appointment.findOne({
+      patientId: patient._id,
+      doctorId: doctor._id,
+      appointmentDate,
+      status: {
+        $in: ["reserved", "pending", "confirmed"],
+      },
+    });
+    if (existingPatientAppointment) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "This patient already has an appointment with this doctor on this date.",
+      });
+    }
+    /* ---------------- CHECK SLOT ---------------- */
+    const currentTime = new Date();
+
+    // Remove expired patient reservations
+    await Appointment.deleteMany({
+      status: "reserved",
+      reservedUntil: { $lte: currentTime },
+    });
+
+    const existingSlot = await Appointment.findOne({
+      doctorId: doctor._id,
+      workplaceId,
+      appointmentDate,
+      appointmentTime,
+      status: {
+        $in: ["reserved", "pending", "confirmed"],
+      },
+    });
+
+    if (existingSlot) {
+      return res.status(409).json({
+        success: false,
+        message: "This time slot is no longer available.",
+      });
+    }
+
+    /* ---------------- APPOINTMENT DURATION ---------------- */
+
+    const durationObj = workplace.settings?.appointmentDuration;
+
+    let durationInMinutes = 30;
+
+    if (durationObj) {
+      durationInMinutes =
+        durationObj.unit === "hours"
+          ? Number(durationObj.value) * 60
+          : Number(durationObj.value);
+    }
+
+    const [hours, minutes] = appointmentTime.split(":").map(Number);
+
+    const endDate = new Date();
+
+    endDate.setHours(hours, minutes, 0, 0);
+    endDate.setMinutes(endDate.getMinutes() + durationInMinutes);
+
+    const endTime = endDate.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+
+    /* ---------------- CREATE DIRECTLY AS PENDING ---------------- */
+
+    const appointment = await Appointment.create({
+      userId: patient.userId,
+      patientId: patient._id,
+      doctorId: doctor._id,
+      workplaceId,
+      appointmentDate,
+      appointmentTime,
+      endTime,
+      consultationType,
+      status: "pending",
+      // Doctor-created appointment does NOT need reservation
+      reservedUntil: null,
+    });
+    /* ---------------- SOCKET UPDATE ---------------- */
+    const io = getIO();
+    io.emit("slot-updated", {
+      doctorId: doctor._id.toString(),
+      workplaceId: workplaceId.toString(),
+      date: appointmentDate,
+    });
+    /* ---------------- RESPONSE ---------------- */
+    return res.status(201).json({
+      success: true,
+      message: "Appointment created successfully.",
+      appointment,
+    });
+  } catch (error) {
+    console.error("Doctor Create Appointment Error:", error);
+    /*
+     * If a unique slot constraint exists and
+     * patient + doctor tried to book simultaneously,
+     * MongoDB will reject the second request.
+     */
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "This time slot was just booked by someone else.",
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 export const deleteAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.findByIdAndDelete(req.params.id);

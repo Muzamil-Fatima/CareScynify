@@ -12,6 +12,7 @@ import {
   updateAppointmentStatus,
   cancelAppointment,
   deleteAppointment,
+  doctorCreateAppointment,
 } from "../controllers/appointmentController.js";
 
 const router = express.Router();
@@ -26,16 +27,12 @@ router.get("/", protect, getUserAppointments);
 
 router.get("/doctor", protect, getDoctorAppointments);
 router.get("/:id", protect, getAppointmentById);
-router.get(
-  "/doctor/patient/:patientId",
-  protect,
-  getDoctorPatientAppointments,
-);
+router.get("/doctor/patient/:patientId", protect, getDoctorPatientAppointments);
 /* ---------------- UPDATE / CANCEL ---------------- */
 router.patch("/:id/status", protect, updateAppointmentStatus);
 router.patch("/:id/cancel", protect, cancelAppointment);
 
 /* ---------------- DELETE ---------------- */
 router.delete("/:id", protect, deleteAppointment);
-
+router.post("/doctor/create", protect, doctorCreateAppointment);
 export default router;

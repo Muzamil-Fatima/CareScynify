@@ -1,455 +1,6 @@
-// import React, { useState } from "react";
-// import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-// import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-// import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
-// import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-// import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-// import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
+import React, { useEffect, useMemo, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
-// const DrBookAppointment = ({ doctor, onClose }) => {
-//   const [patientSearch, setPatientSearch] = useState("");
-//   const [selectedPatient, setSelectedPatient] = useState(null);
-
-//   const [appointmentType, setAppointmentType] = useState("online");
-//   const [selectedWorkplace, setSelectedWorkplace] = useState(
-//     doctor?.workplaces?.[0] || null,
-//   );
-
-//   const [offset, setOffset] = useState(0);
-//   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-
-//   const [selectedSlot, setSelectedSlot] = useState("");
-
-//   const patients = [
-//     {
-//       _id: "1",
-//       name: "Ali Ahmed",
-//       phone: "0300-1234567",
-//       avatar: null,
-//     },
-//     {
-//       _id: "2",
-//       name: "Muhammad Usman",
-//       phone: "0312-9876543",
-//       avatar: null,
-//     },
-//     {
-//       _id: "3",
-//       name: "Ayesha Khan",
-//       phone: "0321-5555555",
-//       avatar: null,
-//     },
-//   ];
-
-//   const filteredPatients = patients.filter(
-//     (patient) =>
-//       patient.name.toLowerCase().includes(patientSearch.toLowerCase()) ||
-//       patient.phone.includes(patientSearch),
-//   );
-
-//   const dates = [];
-
-//   for (let i = 0; i < 5; i++) {
-//     const d = new Date();
-
-//     d.setDate(d.getDate() + offset + i);
-
-//     dates.push({
-//       label: d.toLocaleDateString("en-US", {
-//         month: "short",
-//         day: "2-digit",
-//       }),
-//       value: d.toISOString().split("T")[0],
-//     });
-//   }
-
-//   const slots = [
-//     "09:00",
-//     "09:30",
-//     "10:00",
-//     "10:30",
-//     "11:00",
-//     "11:30",
-//     "02:00",
-//     "02:30",
-//     "03:00",
-//     "04:00",
-//     "06:00",
-//     "06:30",
-//   ];
-
-//   const formatSlotLabel = (label) => {
-//     const [hour, minute] = label.split(":").map(Number);
-
-//     const ampm = hour >= 12 ? "PM" : "AM";
-
-//     let h = hour % 12;
-
-//     if (h === 0) h = 12;
-
-//     return `${h}:${minute.toString().padStart(2, "0")} ${ampm}`;
-//   };
-
-//   const handleBook = () => {
-//     if (!selectedPatient) {
-//       return;
-//     }
-
-//     if (!selectedSlot) {
-//       return;
-//     }
-
-//     console.log({
-//       patientId: selectedPatient._id,
-//       doctorId: doctor?._id,
-//       workplaceId: selectedWorkplace?._id,
-//       date,
-//       time: selectedSlot,
-//       appointmentType,
-//     });
-//   };
-
-//   return (
-//     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
-//       <div className="w-full max-w-3xl max-h-[92vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-2xl bg-white shadow-2xl">
-//         {/* HEADER */}
-//         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
-//           <div>
-//             <h2 className="text-lg font-semibold text-gray-900">
-//               New Appointment
-//             </h2>
-
-//             <p className="mt-0.5 text-sm text-gray-500">
-//               Book an appointment for a patient
-//             </p>
-//           </div>
-
-//           <button
-//             onClick={onClose}
-//             className="rounded-full p-2 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
-//           >
-//             <CloseRoundedIcon />
-//           </button>
-//         </div>
-
-//         <div className="space-y-6 p-6">
-//           {/* DOCTOR */}
-//           <div>
-//             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-//               Doctor
-//             </p>
-
-//             <div className="flex items-center gap-3 rounded-xl border border-purple-100 bg-purple-50 p-3">
-//               <img
-//                 src={doctor?.user?.avatar?.url}
-//                 alt="Doctor"
-//                 className="h-12 w-12 rounded-full border border-white object-cover"
-//               />
-
-//               <div>
-//                 <h3 className="font-semibold text-gray-900">
-//                   {doctor?.user?.name}
-//                 </h3>
-
-//                 <p className="text-sm text-gray-500">
-//                   {doctor?.specialization}
-//                 </p>
-//               </div>
-
-//               <span className="ml-auto rounded-full bg-purple-100 px-3 py-1 text-xs font-medium text-purple-700">
-//                 You
-//               </span>
-//             </div>
-//           </div>
-
-//           {/* PATIENT */}
-//           <div>
-//             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-//               Patient
-//             </p>
-
-//             {selectedPatient ? (
-//               <div className="flex items-center gap-3 rounded-xl border border-purple-200 bg-purple-50 p-3">
-//                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 text-purple-600">
-//                   <PersonOutlineRoundedIcon />
-//                 </div>
-
-//                 <div className="flex-1">
-//                   <p className="font-medium text-gray-900">
-//                     {selectedPatient.name}
-//                   </p>
-
-//                   <p className="text-xs text-gray-500">
-//                     {selectedPatient.phone}
-//                   </p>
-//                 </div>
-
-//                 <button
-//                   onClick={() => setSelectedPatient(null)}
-//                   className="text-xs font-medium text-purple-600 hover:text-purple-700"
-//                 >
-//                   Change
-//                 </button>
-//               </div>
-//             ) : (
-//               <>
-//                 <div className="relative">
-//                   <SearchRoundedIcon
-//                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-//                     fontSize="small"
-//                   />
-
-//                   <input
-//                     type="text"
-//                     value={patientSearch}
-//                     onChange={(e) => setPatientSearch(e.target.value)}
-//                     placeholder="Search patient by name or phone..."
-//                     className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-purple-400 focus:bg-white focus:ring-2 focus:ring-purple-100"
-//                   />
-//                 </div>
-
-//                 {patientSearch && (
-//                   <div className="mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-//                     {filteredPatients.length > 0 ? (
-//                       filteredPatients.map((patient) => (
-//                         <button
-//                           key={patient._id}
-//                           onClick={() => {
-//                             setSelectedPatient(patient);
-//                             setPatientSearch("");
-//                           }}
-//                           className="flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50"
-//                         >
-//                           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500">
-//                             <PersonOutlineRoundedIcon fontSize="small" />
-//                           </div>
-//                           <div>
-//                             <p className="text-sm font-medium text-gray-900">
-//                               {patient.name}
-//                             </p>
-//                             <p className="text-xs text-gray-500">
-//                               {patient.phone}
-//                             </p>
-//                           </div>
-//                         </button>
-//                       ))
-//                     ) : (
-//                       <p className="px-4 py-4 text-sm text-gray-500">
-//                         No patients found.
-//                       </p>
-//                     )}
-//                   </div>
-//                 )}
-//               </>
-//             )}
-//           </div>
-//           {/* APPOINTMENT TYPE */}
-//           <div>
-//             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-//               Appointment Type
-//             </p>
-//             <div className="flex w-fit rounded-xl bg-gray-100 p-1">
-//               <button
-//                 onClick={() => {
-//                   setAppointmentType("online");
-//                   setSelectedSlot("");
-//                 }}
-//                 className={`rounded-lg px-5 py-2 text-sm transition ${
-//                   appointmentType === "online"
-//                     ? "bg-white font-medium text-purple-600 shadow-sm"
-//                     : "text-gray-600"
-//                 }`}
-//               >
-//                 💻 Online
-//               </button>
-//               <button
-//                 onClick={() => {
-//                   setAppointmentType("physical");
-//                   setSelectedSlot("");
-//                 }}
-//                 className={`rounded-lg px-5 py-2 text-sm transition ${
-//                   appointmentType === "physical"
-//                     ? "bg-white font-medium text-purple-600 shadow-sm"
-//                     : "text-gray-600"
-//                 }`}
-//               >
-//                 🏥 Physical
-//               </button>
-//             </div>
-//           </div>
-//           {/* WORKPLACES */}
-//           <div>
-//             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-//               Workplace
-//             </p>
-//             <div className="flex gap-2 overflow-x-auto pb-1">
-//               {doctor?.workplaces?.map((wp) => (
-//                 <button
-//                   key={wp._id}
-//                   onClick={() => {
-//                     setSelectedWorkplace(wp);
-//                     setSelectedSlot("");
-//                   }}
-//                   className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm transition ${
-//                     selectedWorkplace?._id === wp._id
-//                       ? "border-purple-600 bg-purple-600 text-white"
-//                       : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100"
-//                   }`}
-//                 >
-//                   {wp.name}
-//                 </button>
-//               ))}
-//             </div>
-//           </div>
-
-//           {/* DATE */}
-//           <div>
-//             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
-//               Date
-//             </p>
-//             <div className="flex items-center gap-2">
-//               <button
-//                 onClick={() => setOffset((prev) => Math.max(prev - 5, 0))}
-//                 className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200"
-//               >
-//                 <ArrowBackIosNewIcon fontSize="small" />
-//               </button>
-
-//               <div className="flex flex-1 gap-2">
-//                 {dates.map((d) => (
-//                   <button
-//                     key={d.value}
-//                     onClick={() => {
-//                       setDate(d.value);
-//                       setSelectedSlot("");
-//                     }}
-//                     className={`flex-1 rounded-lg border px-2 py-2 text-sm transition ${
-//                       date === d.value
-//                         ? "border-purple-600 bg-purple-600 text-white"
-//                         : "border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100"
-//                     }`}
-//                   >
-//                     {d.label}
-//                   </button>
-//                 ))}
-//               </div>
-//               <button
-//                 onClick={() => setOffset((prev) => prev + 5)}
-//                 className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200"
-//               >
-//                 <ArrowForwardIosIcon fontSize="small" />
-//               </button>
-//             </div>
-//           </div>
-//           {/* SLOTS */}
-//           <div>
-//             <div className="mb-3 flex items-center gap-2">
-//               <AccessTimeOutlinedIcon
-//                 fontSize="small"
-//                 className="text-gray-500"
-//               />
-//               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-//                 Available Time Slots
-//               </p>
-//             </div>
-//             {slots.length === 0 ? (
-//               <p className="rounded-xl bg-gray-50 px-4 py-5 text-center text-sm text-gray-400">
-//                 No availability for selected date
-//               </p>
-//             ) : (
-//               <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-//                 {slots.map((slot) => (
-//                   <button
-//                     key={slot}
-//                     onClick={() => setSelectedSlot(slot)}
-//                     className={`rounded-lg border px-3 py-2.5 text-sm transition ${
-//                       selectedSlot === slot
-//                         ? "border-purple-600 bg-purple-600 font-medium text-white"
-//                         : "border-gray-200 bg-gray-50 text-gray-700 hover:border-purple-200 hover:bg-purple-50"
-//                     }`}
-//                   >
-//                     {formatSlotLabel(slot)}
-//                   </button>
-//                 ))}
-//               </div>
-//             )}
-//           </div>
-//           {/* SELECTED SUMMARY */}
-//           {selectedPatient && selectedSlot && (
-//             <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-//               <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
-//                 Appointment Summary
-//               </p>
-
-//               <div className="grid grid-cols-2 gap-4 text-sm">
-//                 <div>
-//                   <p className="text-xs text-gray-400">Patient</p>
-//                   <p className="font-medium text-gray-900">
-//                     {selectedPatient.name}
-//                   </p>
-//                 </div>
-
-//                 <div>
-//                   <p className="text-xs text-gray-400">Doctor</p>
-//                   <p className="font-medium text-gray-900">
-//                     {doctor?.user?.name}
-//                   </p>
-//                 </div>
-
-//                 <div>
-//                   <p className="text-xs text-gray-400">Date</p>
-//                   <p className="font-medium text-gray-900">{date}</p>
-//                 </div>
-
-//                 <div>
-//                   <p className="text-xs text-gray-400">Time</p>
-//                   <p className="font-medium text-gray-900">
-//                     {formatSlotLabel(selectedSlot)}
-//                   </p>
-//                 </div>
-
-//                 <div>
-//                   <p className="text-xs text-gray-400">Workplace</p>
-//                   <p className="font-medium text-gray-900">
-//                     {selectedWorkplace?.name}
-//                   </p>
-//                 </div>
-
-//                 <div>
-//                   <p className="text-xs text-gray-400">Type</p>
-//                   <p className="font-medium capitalize text-gray-900">
-//                     {appointmentType}
-//                   </p>
-//                 </div>
-//               </div>
-//             </div>
-//           )}
-//         </div>
-
-//         {/* FOOTER */}
-//         <div className="sticky bottom-0 flex items-center justify-end gap-3 border-t border-gray-200 bg-white px-6 py-4">
-//           <button
-//             onClick={onClose}
-//             className="rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-600 transition hover:bg-gray-50"
-//           >
-//             Cancel
-//           </button>
-
-//           <button
-//             onClick={handleBook}
-//             disabled={!selectedPatient || !selectedSlot}
-//             className="rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"
-//           >
-//             Book Appointment
-//           </button>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default DrBookAppointment;
-import React, { useEffect, useMemo, useState, useCallback } from "react";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -457,90 +8,116 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 
-import { getAvailableSlots } from "../../api/doctor/drBookappointment";
 import { useAppointment } from "../../hooks/doctor/useDrBookAppointment";
+import { useDoctor } from "../../context/doctor/DoctorContext";
+import DoctorPatientContext from "../../context/patients/DoctorPatientContext";
 
 const DrBookAppointment = ({ doctor, onClose }) => {
-  const { bookAppointment, bookingLoading } = useAppointment();
+  const {
+    bookAppointment,
+    bookingLoading,
+    bookingError,
+    setBookingError,
+    fetchAvailableSlots,
+    slots,
+    slotsLoading,
+  } = useAppointment();
+  const navigate = useNavigate();
+  const { profile } = useDoctor();
+  const doctorId = profile?.doctor?._id || null;
+  // REAL DOCTOR PATIENTS
+
+  const { patients: doctorPatients, fetchPatients } =
+    useContext(DoctorPatientContext);
+
+  // Fetch real patients when appointment modal opens
+
+  useEffect(() => {
+    fetchPatients();
+  }, [fetchPatients]);
 
   /* ---------------- PATIENT ---------------- */
 
   const [patientSearch, setPatientSearch] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
 
-  /*
-   * Replace this with your real patients API/context.
-   * These are only temporary examples.
-   */
-  const patients = [
-    {
-      _id: "1",
-      name: "Ali Ahmed",
-      phone: "0300-1234567",
-      avatar: null,
-    },
-    {
-      _id: "2",
-      name: "Muhammad Usman",
-      phone: "0312-9876543",
-      avatar: null,
-    },
-    {
-      _id: "3",
-      name: "Ayesha Khan",
-      phone: "0321-5555555",
-      avatar: null,
-    },
-  ];
+  //  Convert DoctorPatientContext data into the format required by this component.
 
-  const filteredPatients = patients.filter(
-    (patient) =>
-      patient.name.toLowerCase().includes(patientSearch.toLowerCase()) ||
-      patient.phone.includes(patientSearch),
-  );
+  const patients = useMemo(() => {
+    return (doctorPatients || [])
+      .filter((patient) => patient?.patientId?._id)
+      .map((patient) => ({
+        _id: patient.patientId._id,
+        patientCode: patient.patientId.patientCode,
+        name: patient.patientId.userId?.name || "Unknown",
+        phone: patient.patientId.userId?.phone || "-",
+        email: patient.patientId.userId?.email || "-",
+        avatar: patient.patientId.userId?.avatar?.url || "",
+      }));
+  }, [doctorPatients]);
 
-  /* ---------------- WORKPLACE ---------------- */
+  // Search real patients by: name phone patient code
+  const filteredPatients = useMemo(() => {
+    const search = patientSearch.trim().toLowerCase();
 
-  const [selectedWorkplace, setSelectedWorkplace] = useState(
-    doctor?.workplaces?.[0] || null,
-  );
-
-  /*
-   * IMPORTANT:
-   * consultationType comes from the selected workplace.
-   */
-  const consultationType = selectedWorkplace?.settings?.consultationType || "";
-
-  const canOnline =
-    consultationType === "online" || consultationType === "online_physical";
-
-  const canPhysical =
-    consultationType === "physical" || consultationType === "online_physical";
-
-  const [selectedConsultationType, setSelectedConsultationType] =
-    useState("online");
-
-  /* ---------------- WORKPLACE CHANGE ---------------- */
-
-  useEffect(() => {
-    if (!selectedWorkplace) return;
-
-    const type = selectedWorkplace?.settings?.consultationType;
-
-    if (type === "online") {
-      setSelectedConsultationType("online");
-    } else if (type === "physical") {
-      setSelectedConsultationType("physical");
-    } else if (type === "online_physical") {
-      setSelectedConsultationType((prev) =>
-        prev === "online" || prev === "physical" ? prev : "online",
-      );
-    } else {
-      setSelectedConsultationType("");
+    if (!search) {
+      return [];
     }
 
-    setSelectedSlot("");
-  }, [selectedWorkplace]);
+    return patients.filter((patient) => {
+      return (
+        patient.name?.toLowerCase().includes(search) ||
+        patient.phone?.toLowerCase().includes(search) ||
+        patient.patientCode?.toLowerCase().includes(search)
+      );
+    });
+  }, [patients, patientSearch]);
+
+  /* ---------------- WORKPLACES ---------------- */
+
+  const workplaces = useMemo(
+    () => profile?.doctor?.workplaces ?? [],
+    [profile?.doctor?.workplaces],
+  );
+
+  const [selectedWorkplaceId, setSelectedWorkplaceId] = useState(null);
+
+  // If user has selected a workplace, use it. Otherwise automatically use the first workplace.
+
+  const selectedWorkplace = useMemo(() => {
+    if (!workplaces.length) return null;
+
+    if (selectedWorkplaceId) {
+      return (
+        workplaces.find((wp) => wp?._id === selectedWorkplaceId) ||
+        workplaces[0]
+      );
+    }
+
+    return workplaces[0];
+  }, [workplaces, selectedWorkplaceId]);
+
+  /* ---------------- APPOINTMENT STATE ---------------- */
+
+  const [selectedConsultationType, setSelectedConsultationType] = useState("");
+
+  const [selectedSlot, setSelectedSlot] = useState("");
+
+  // Get consultation type from selected workplace.
+
+  const workplaceConsultationType =
+    selectedWorkplace?.settings?.consultationType || "";
+
+  const effectiveConsultationType =
+    selectedConsultationType || workplaceConsultationType;
+
+  const canOnline =
+    workplaceConsultationType === "online" ||
+    workplaceConsultationType === "online_physical";
+
+  const canPhysical =
+    workplaceConsultationType === "physical" ||
+    workplaceConsultationType === "online_physical";
 
   /* ---------------- DATE ---------------- */
 
@@ -570,40 +147,25 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     return days;
   }, [offset]);
 
-  /* ---------------- SLOTS ---------------- */
+  /* ---------------- FETCH SLOTS ---------------- */
+  useEffect(() => {
+    const workplaceId = selectedWorkplace?._id;
 
-  const [slots, setSlots] = useState([]);
-  const [selectedSlot, setSelectedSlot] = useState("");
-  const [loadingSlots, setLoadingSlots] = useState(false);
-  const [bookingError, setBookingError] = useState("");
+    if (!doctorId || !workplaceId || !date) {
+      // console.log("Cannot fetch slots. Missing:", {  doctorId, workplaceId,  date, });
 
-  const fetchSlots = useCallback(async () => {
-    if (!doctor?._id || !selectedWorkplace?._id || !date) {
-      setSlots([]);
       return;
     }
 
-    try {
-      setLoadingSlots(true);
+    // console.log("Loading appointment slots:", { doctorId, workplaceId,  date,});
 
-      const data = await getAvailableSlots(
-        doctor._id,
-        selectedWorkplace._id,
-        date,
+    fetchAvailableSlots(doctorId, workplaceId, date).catch((error) => {
+      console.error(
+        "Fetch available slots error:",
+        error?.response?.data || error,
       );
-
-      setSlots(data || []);
-    } catch (error) {
-      console.error("Fetch available slots error:", error);
-      setSlots([]);
-    } finally {
-      setLoadingSlots(false);
-    }
-  }, [doctor?._id, selectedWorkplace?._id, date]);
-
-  useEffect(() => {
-    fetchSlots();
-  }, [fetchSlots]);
+    });
+  }, [doctorId, selectedWorkplace?._id, date, fetchAvailableSlots]);
 
   /* ---------------- SLOT FORMAT ---------------- */
 
@@ -618,6 +180,10 @@ const DrBookAppointment = ({ doctor, onClose }) => {
 
     let [hour, minute] = label.split(":").map(Number);
 
+    if (Number.isNaN(hour) || Number.isNaN(minute)) {
+      return label;
+    }
+
     const ampm = hour >= 12 ? "PM" : "AM";
 
     hour = hour % 12;
@@ -629,6 +195,8 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
   };
 
+  /* ---------------- CONVERT TIME ---------------- */
+
   const convertTo24Hour = (label) => {
     if (!label) return 0;
 
@@ -639,6 +207,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     }
 
     const [timePart, modifier] = label.split(" ");
+
     let hours = Number(timePart.split(":")[0]);
 
     if (modifier?.toLowerCase() === "pm" && hours !== 12) {
@@ -662,7 +231,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
       Evening: [],
     };
 
-    slots.forEach((slot) => {
+    (slots || []).forEach((slot) => {
       const hour = convertTo24Hour(slot.label);
 
       if (hour >= 0 && hour < 5) {
@@ -679,8 +248,26 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     return grouped;
   }, [slots]);
 
-  /* ---------------- BOOK APPOINTMENT ---------------- */
+  /* ---------------- SELECT WORKPLACE ---------------- */
 
+  const handleWorkplaceChange = (workplace) => {
+    setSelectedWorkplaceId(workplace?._id || null);
+
+    setSelectedSlot("");
+    setSelectedConsultationType("");
+    setBookingError("");
+  };
+
+  /* ---------------- SELECT PATIENT ---------------- */
+
+  const handlePatientSelect = (patient) => {
+    setSelectedPatient(patient);
+    setPatientSearch("");
+    setSelectedSlot("");
+    setBookingError("");
+  };
+
+  /* ---------------- BOOK APPOINTMENT ---------------- */
   const handleBook = async () => {
     if (!selectedPatient) {
       setBookingError("Please select a patient.");
@@ -697,7 +284,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
       return;
     }
 
-    if (!selectedConsultationType) {
+    if (!effectiveConsultationType) {
       setBookingError("Please select a consultation type.");
       return;
     }
@@ -705,37 +292,45 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     try {
       setBookingError("");
 
+      // Doctor creates appointment directly.
+      // Backend will atomically check whether
+      // patient or doctor already occupied this slot.
       await bookAppointment({
+        doctorId,
         patientId: selectedPatient._id,
-        doctorId: doctor._id,
         workplaceId: selectedWorkplace._id,
         date,
         time: selectedSlot,
-        consultationType: selectedConsultationType,
+        consultationType: effectiveConsultationType,
       });
 
       /*
-       * Refresh slots after successful booking.
-       * This is important because maxPatientsPerDay
-       * may have changed.
+       * Appointment successfully created.
+       *
+       * No need to reserve the slot separately.
+       * Backend already created it as "pending".
        */
-      await fetchSlots();
-
-      setSelectedSlot("");
 
       onClose?.();
+
+      // Go to Doctor Schedule
+      navigate("/doctor/schedule");
     } catch (error) {
-      console.error("Doctor booking error:", error);
+      console.error("Doctor booking error:", error?.response?.data || error);
 
-      setBookingError(
-        error?.response?.data?.message || "Failed to book appointment.",
-      );
+      //  If another request booked the slot at the same time, backend returns 409.
+      const message =
+        error?.response?.data?.message || "Failed to book appointment.";
 
-      /*
-       * Refresh in case another booking consumed
-       * the slot/capacity.
-       */
-      await fetchSlots();
+      setBookingError(message);
+
+      // Refresh slots so the UI reflects the latest availability.
+
+      try {
+        await fetchAvailableSlots(doctorId, selectedWorkplace._id, date);
+      } catch (refreshError) {
+        console.error("Failed to refresh slots:", refreshError);
+      }
     }
   };
 
@@ -743,6 +338,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6">
       <div className="w-full max-w-3xl max-h-[92vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden rounded-2xl bg-white shadow-2xl">
         {/* HEADER */}
+
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200 bg-white px-6 py-4">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">
@@ -764,25 +360,32 @@ const DrBookAppointment = ({ doctor, onClose }) => {
 
         <div className="space-y-6 p-6">
           {/* DOCTOR */}
+
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
               Doctor
             </p>
 
             <div className="flex items-center gap-3 rounded-xl border border-purple-100 bg-purple-50 p-3">
-              <img
-                src={doctor?.user?.avatar?.url}
-                alt="Doctor"
-                className="h-12 w-12 rounded-full border border-white object-cover"
-              />
+              {doctor?.user?.avatar?.url ? (
+                <img
+                  src={doctor.user.avatar.url}
+                  alt="Doctor"
+                  className="h-12 w-12 rounded-full border border-white object-cover"
+                />
+              ) : (
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-purple-600">
+                  <PersonOutlineRoundedIcon />
+                </div>
+              )}
 
               <div>
                 <h3 className="font-semibold text-gray-900">
-                  {doctor?.user?.name}
+                  {doctor?.user?.name || "Doctor"}
                 </h3>
 
                 <p className="text-sm text-gray-500">
-                  {doctor?.specialization}
+                  {doctor?.specialization || "-"}
                 </p>
               </div>
 
@@ -793,6 +396,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
           </div>
 
           {/* PATIENT */}
+
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
               Patient
@@ -800,9 +404,17 @@ const DrBookAppointment = ({ doctor, onClose }) => {
 
             {selectedPatient ? (
               <div className="flex items-center gap-3 rounded-xl border border-purple-200 bg-purple-50 p-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 text-purple-600">
-                  <PersonOutlineRoundedIcon />
-                </div>
+                {selectedPatient.avatar ? (
+                  <img
+                    src={selectedPatient.avatar}
+                    alt={selectedPatient.name}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100 text-purple-600">
+                    <PersonOutlineRoundedIcon />
+                  </div>
+                )}
 
                 <div className="flex-1">
                   <p className="font-medium text-gray-900">
@@ -812,6 +424,12 @@ const DrBookAppointment = ({ doctor, onClose }) => {
                   <p className="text-xs text-gray-500">
                     {selectedPatient.phone}
                   </p>
+
+                  {selectedPatient.patientCode && (
+                    <p className="text-xs text-gray-400">
+                      ID: {selectedPatient.patientCode}
+                    </p>
+                  )}
                 </div>
 
                 <button
@@ -819,6 +437,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
                     setSelectedPatient(null);
                     setPatientSearch("");
                     setSelectedSlot("");
+                    setBookingError("");
                   }}
                   className="text-xs font-medium text-purple-600 hover:text-purple-700"
                 >
@@ -837,7 +456,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
                     type="text"
                     value={patientSearch}
                     onChange={(e) => setPatientSearch(e.target.value)}
-                    placeholder="Search patient by name or phone..."
+                    placeholder="Search patient by name, phone or ID..."
                     className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3 pl-10 pr-4 text-sm outline-none transition focus:border-purple-400 focus:bg-white focus:ring-2 focus:ring-purple-100"
                   />
                 </div>
@@ -848,16 +467,20 @@ const DrBookAppointment = ({ doctor, onClose }) => {
                       filteredPatients.map((patient) => (
                         <button
                           key={patient._id}
-                          onClick={() => {
-                            setSelectedPatient(patient);
-                            setPatientSearch("");
-                            setSelectedSlot("");
-                          }}
+                          onClick={() => handlePatientSelect(patient)}
                           className="flex w-full items-center gap-3 border-b border-gray-100 px-4 py-3 text-left last:border-b-0 hover:bg-gray-50"
                         >
-                          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500">
-                            <PersonOutlineRoundedIcon fontSize="small" />
-                          </div>
+                          {patient.avatar ? (
+                            <img
+                              src={patient.avatar}
+                              alt={patient.name}
+                              className="h-9 w-9 rounded-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-500">
+                              <PersonOutlineRoundedIcon fontSize="small" />
+                            </div>
+                          )}
 
                           <div>
                             <p className="text-sm font-medium text-gray-900">
@@ -867,6 +490,12 @@ const DrBookAppointment = ({ doctor, onClose }) => {
                             <p className="text-xs text-gray-500">
                               {patient.phone}
                             </p>
+
+                            {patient.patientCode && (
+                              <p className="text-xs text-gray-400">
+                                ID: {patient.patientCode}
+                              </p>
+                            )}
                           </div>
                         </button>
                       ))
@@ -877,44 +506,54 @@ const DrBookAppointment = ({ doctor, onClose }) => {
                     )}
                   </div>
                 )}
+
+                {!patientSearch && patients.length === 0 && (
+                  <p className="mt-2 rounded-xl bg-gray-50 px-4 py-4 text-center text-sm text-gray-500">
+                    No patients available.
+                  </p>
+                )}
               </>
             )}
           </div>
 
           {/* WORKPLACES */}
+
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
               Workplace
             </p>
 
             <div className="flex gap-2 overflow-x-auto pb-1">
-              {doctor?.workplaces?.map((wp) => (
-                <button
-                  key={wp._id}
-                  onClick={() => {
-                    setSelectedWorkplace(wp);
-                    setSelectedSlot("");
-                    setBookingError("");
-                  }}
-                  className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm transition ${
-                    selectedWorkplace?._id === wp._id
-                      ? "border-purple-600 bg-purple-600 text-white"
-                      : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100"
-                  }`}
-                >
-                  {wp.name}
-                </button>
-              ))}
+              {workplaces.length > 0 ? (
+                workplaces.map((wp) => (
+                  <button
+                    key={wp._id}
+                    onClick={() => handleWorkplaceChange(wp)}
+                    className={`whitespace-nowrap rounded-full border px-4 py-2 text-sm transition ${
+                      selectedWorkplace?._id === wp._id
+                        ? "border-purple-600 bg-purple-600 text-white"
+                        : "border-gray-200 bg-gray-50 text-gray-600 hover:bg-gray-100"
+                    }`}
+                  >
+                    {wp.name}
+                  </button>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">No workplaces found.</p>
+              )}
             </div>
           </div>
 
           {/* CONSULTATION TYPE */}
+
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
               Consultation Type
             </p>
 
             <div className="flex w-fit rounded-xl bg-gray-100 p-1">
+              {/* ONLINE */}
+
               <button
                 disabled={!canOnline}
                 onClick={() => {
@@ -925,7 +564,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
                   setBookingError("");
                 }}
                 className={`rounded-lg px-5 py-2 text-sm transition ${
-                  selectedConsultationType === "online"
+                  effectiveConsultationType === "online"
                     ? "bg-white font-medium text-purple-600 shadow-sm"
                     : canOnline
                       ? "text-gray-600 hover:bg-white/70"
@@ -934,6 +573,8 @@ const DrBookAppointment = ({ doctor, onClose }) => {
               >
                 💻 Online
               </button>
+
+              {/* PHYSICAL */}
 
               <button
                 disabled={!canPhysical}
@@ -945,7 +586,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
                   setBookingError("");
                 }}
                 className={`rounded-lg px-5 py-2 text-sm transition ${
-                  selectedConsultationType === "physical"
+                  effectiveConsultationType === "physical"
                     ? "bg-white font-medium text-purple-600 shadow-sm"
                     : canPhysical
                       ? "text-gray-600 hover:bg-white/70"
@@ -958,6 +599,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
           </div>
 
           {/* DATE */}
+
           <div>
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
               Date
@@ -1001,6 +643,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
           </div>
 
           {/* SLOTS */}
+
           <div>
             <div className="mb-3 flex items-center gap-2">
               <AccessTimeOutlinedIcon
@@ -1013,11 +656,11 @@ const DrBookAppointment = ({ doctor, onClose }) => {
               </p>
             </div>
 
-            {loadingSlots ? (
+            {slotsLoading ? (
               <p className="rounded-xl bg-gray-50 px-4 py-5 text-center text-sm text-gray-400">
                 Loading available slots...
               </p>
-            ) : slots.length === 0 ? (
+            ) : !slots || slots.length === 0 ? (
               <p className="rounded-xl bg-gray-50 px-4 py-5 text-center text-sm text-gray-400">
                 No availability for selected date
               </p>
@@ -1058,6 +701,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
           </div>
 
           {/* ERROR */}
+
           {bookingError && (
             <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3">
               <p className="text-sm font-medium text-red-600">{bookingError}</p>
@@ -1065,6 +709,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
           )}
 
           {/* SUMMARY */}
+
           {selectedPatient && selectedSlot && (
             <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
               <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -1074,6 +719,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-xs text-gray-400">Patient</p>
+
                   <p className="font-medium text-gray-900">
                     {selectedPatient.name}
                   </p>
@@ -1081,6 +727,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
 
                 <div>
                   <p className="text-xs text-gray-400">Doctor</p>
+
                   <p className="font-medium text-gray-900">
                     {doctor?.user?.name}
                   </p>
@@ -1088,11 +735,13 @@ const DrBookAppointment = ({ doctor, onClose }) => {
 
                 <div>
                   <p className="text-xs text-gray-400">Date</p>
+
                   <p className="font-medium text-gray-900">{date}</p>
                 </div>
 
                 <div>
                   <p className="text-xs text-gray-400">Time</p>
+
                   <p className="font-medium text-gray-900">
                     {formatSlotLabel(selectedSlot)}
                   </p>
@@ -1100,6 +749,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
 
                 <div>
                   <p className="text-xs text-gray-400">Workplace</p>
+
                   <p className="font-medium text-gray-900">
                     {selectedWorkplace?.name}
                   </p>
@@ -1107,8 +757,9 @@ const DrBookAppointment = ({ doctor, onClose }) => {
 
                 <div>
                   <p className="text-xs text-gray-400">Consultation</p>
+
                   <p className="font-medium capitalize text-gray-900">
-                    {selectedConsultationType}
+                    {effectiveConsultationType}
                   </p>
                 </div>
               </div>
@@ -1117,6 +768,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
         </div>
 
         {/* FOOTER */}
+
         <div className="sticky bottom-0 flex items-center justify-end gap-3 border-t border-gray-200 bg-white px-6 py-4">
           <button
             onClick={onClose}
@@ -1131,7 +783,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
               !selectedPatient ||
               !selectedSlot ||
               !selectedWorkplace ||
-              !selectedConsultationType ||
+              !effectiveConsultationType ||
               bookingLoading
             }
             className="rounded-xl bg-purple-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-50"

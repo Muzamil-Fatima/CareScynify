@@ -21,7 +21,7 @@ const DoctorProvider = ({ children }) => {
     doctor: {
       specialization: "",
       qualifications: "",
-       about: "",
+      about: "",
       licenseNo: "",
       experience: "",
       education: [],
@@ -61,6 +61,7 @@ const DoctorProvider = ({ children }) => {
         setProfile({
           user: data?.user || {},
           doctor: {
+            _id: data?.doctor?._id || null,
             specialization: data?.doctor?.specialization || "",
             qualifications: data?.doctor?.qualifications || "",
             licenseNo: data?.doctor?.licenseNo || "",

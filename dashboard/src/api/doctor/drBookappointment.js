@@ -1,11 +1,21 @@
 import { api } from "../axios";
 
-// GET PROFILE
-export const drBookAppointment = async () => {
-  const res = await api.get("/api/patient/profile");
+// GET AVAILABLE SLOTS
+export const getAvailableSlots = async (doctorId, workplaceId, date) => {
+  const res = await api.get("/api/appointments/slots", {
+    params: {
+      doctorId,
+      workplaceId,
+      date,
+    },
+  });
+
   return res.data;
 };
-export const getAvailableSlots = async () => {
-  const res = await api.get("/api/patient/profile");
+
+// DOCTOR BOOKS APPOINTMENT FOR PATIENT
+export const doctorCreateAppointment = async (data) => {
+  const res = await api.post("/api/appointments/doctor/create", data);
+
   return res.data;
 };

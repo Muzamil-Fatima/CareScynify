@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const doctorPatientSchema = new mongoose.Schema(
   {
     // Doctor who added this patient
@@ -9,7 +8,6 @@ const doctorPatientSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-
     // Actual patient profile
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -37,7 +35,6 @@ const doctorPatientSchema = new mongoose.Schema(
   },
   { timestamps: true, versionKey: false },
 );
-
 // Same doctor cannot add same patient twice
 doctorPatientSchema.index(
   {
@@ -48,6 +45,5 @@ doctorPatientSchema.index(
     unique: true,
   },
 );
-
 const DoctorPatient = mongoose.model("DoctorPatient", doctorPatientSchema);
 export default DoctorPatient;
