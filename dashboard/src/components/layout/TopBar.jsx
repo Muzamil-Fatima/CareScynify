@@ -1,94 +1,135 @@
 import React, { useState, useRef, useEffect } from "react";
-// import { ColorModeContext } from "../theme";
+
 import { useAuth } from "../../hooks/useAuth";
 import ProfileDropdown from "./ProfileDropdown";
-import { useLocation } from "react-router-dom";
+import GlobalSearch from "./GlobalSearch";
+import useGlobalSearch from "../../hooks/doctor/useGlobalSearch";
 
-// Material UI Icons
-import SearchIcon from "@mui/icons-material/Search";
+import { useGlobalSearchContext } from "../../context/doctor/GlobalSearchContext";
+
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 
 const TopBar = () => {
-  // const colorMode = useContext(ColorModeContext);
   const { user, logout } = useAuth() || {};
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const dropdownRef = useRef(null);
+
   const userRole = user?.role;
-  // Fallbacks for user info
+
   const userName = user?.name || "Dr. Alex Taylor";
+
   const userEmail = user?.email || "alex.taylor@carescynify.com";
-  const location = useLocation();
-  // Handles closing when clicking anywhere outside of the dropdown container
+
+  /*
+   * Search configuration based on
+   * the current route.
+   */
+  const searchConfig = useGlobalSearch();
+
+  /*
+   * Global search state.
+   */
+  const { searchValue, setSearchValue } = useGlobalSearchContext();
+
+  /*
+   * Close profile dropdown when
+   * clicking outside.
+   */
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
-  const getSearchPlaceholder = () => {
-    const path = location.pathname;
 
-    if (path.includes("/appointments")) {
-      return "Search appointments...";
-    }
-
-    if (path.includes("/patients")) {
-      return "Search patients...";
-    }
-
-    if (path.includes("/reviews")) {
-      return "Search reviews...";
-    }
-
-    if (path.includes("/schedule")) {
-      return "Search schedule...";
-    }
-
-    if (path.includes("/pharmacy")) {
-      return "Search pharmacies...";
-    }
-
-    if (path.includes("/lab")) {
-      return "Search laboratory...";
-    }
-
-    return "Search...";
-  };
   return (
-    <div className="flex justify-between items-center p-4 bg-white/80 backdrop-blur-md border-b border-purple-50 relative z-30">
-      {userRole?.toLowerCase() === "doctor" && (
-        <>
-          {/* Search Input Bar */}
-          <div className="flex items-center bg-slate-50 border border-purple-100/80 rounded-xl px-3 group focus-within:border-purple-400 focus-within:bg-white transition-all duration-200">
-            <SearchIcon
-              fontSize="small"
-              className="text-slate-400 group-focus-within:text-purple-600 transition-colors"
-            />
-            <input
-              type="text"
-              placeholder={getSearchPlaceholder()}
-              className="ml-2 bg-transparent outline-none py-2 text-sm text-slate-700 w-48 md:w-64 placeholder-slate-400"
-            />
-          </div>
-        </>
+    <div
+      className="
+        flex
+        justify-between
+        items-center
+        p-4
+        bg-white/80
+        backdrop-blur-md
+        border-b
+        border-purple-50
+        relative
+        z-30
+      "
+    >
+      {/* =========================
+          GLOBAL SEARCH
+      ========================== */}
+
+      {userRole?.toLowerCase() === "doctor" && searchConfig && (
+        <GlobalSearch
+          value={searchValue}
+          onChange={setSearchValue}
+          placeholder={searchConfig.placeholder}
+        />
       )}
-      {/* Action System Buttons */}
-      <div className="flex items-center gap-2">
-        {/* button */}
-        <button className="p-2 text-slate-500 hover:text-purple-600 hover:bg-purple-50 rounded-xl transition relative">
+
+      {/* =========================
+          RIGHT SIDE ACTIONS
+      ========================== */}
+
+      <div className="flex items-center gap-2 ml-auto">
+        {/* Notifications */}
+
+        <button
+          type="button"
+          className="
+            p-2
+            text-slate-500
+            hover:text-purple-600
+            hover:bg-purple-50
+            rounded-xl
+            transition
+            relative
+          "
+        >
           <NotificationsOutlinedIcon fontSize="small" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-pink-500 rounded-full ring-2 ring-white"></span>
+
+          <span
+            className="
+              absolute
+              top-2
+              right-2
+              w-2
+              h-2
+              bg-pink-500
+              rounded-full
+              ring-2
+              ring-white
+            "
+          />
         </button>
 
-        {/* User Profile Action Trigger with Container */}
+        {/* Profile */}
+
         <div className="relative" ref={dropdownRef}>
           <button
+            type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className={`p-2 rounded-xl transition-all duration-200 flex items-center justify-center
+            className={`
+              p-2
+              rounded-xl
+              transition-all
+              duration-200
+              flex
+              items-center
+              justify-center
+
               ${
                 isDropdownOpen
                   ? "bg-purple-600 text-white shadow-md shadow-purple-200"
@@ -99,7 +140,6 @@ const TopBar = () => {
             <PersonOutlinedIcon />
           </button>
 
-          {/* Calling your separate profile component here */}
           <ProfileDropdown
             isOpen={isDropdownOpen}
             onClose={() => setIsDropdownOpen(false)}

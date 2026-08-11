@@ -1,20 +1,18 @@
-
 import React, { useState, useEffect } from "react";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
 import ScheduleHeader from "../../components/doctor/Schedule/ScheduleHeader";
 import DateFilterCard from "../../components/doctor/Schedule/DateFilterCard";
 import AppointmentList from "../../components/doctor/Schedule/AppointmentList";
+import { useGlobalSearchContext } from "../../context/doctor/GlobalSearchContext";
 
 const DrSchedule = () => {
-  const [date, setDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
 
   const [openMenu, setOpenMenu] = useState(null);
 
   const { appointments, loading, error, updateStatus, cancel } =
     useDoctorAppointments();
-
+  const { searchValue } = useGlobalSearchContext();
   useEffect(() => {
     document.documentElement.style.overflow = "hidden";
     document.body.style.overflow = "hidden";
@@ -32,7 +30,6 @@ const DrSchedule = () => {
   if (error) {
     return <div className="p-6 text-red-500">{error}</div>;
   }
-
   const filteredAppointments = appointments
     .filter((appointment) => {
       if (!appointment.appointmentDate) return false;
@@ -43,9 +40,24 @@ const DrSchedule = () => {
 
       return appointmentDate === date;
     })
-    .sort((a, b) =>
-      a.appointmentTime.localeCompare(b.appointmentTime)
-    );
+    .filter((appointment) => {
+      if (!searchValue.trim()) return true;
+
+      const search = searchValue.toLowerCase();
+
+      const patient = appointment.patientId;
+      const user = patient?.userId;
+
+      return (
+        user?.name?.toLowerCase().includes(search) ||
+        user?.email?.toLowerCase().includes(search) ||
+        user?.phone?.toLowerCase().includes(search) ||
+        patient?.patientCode?.toLowerCase().includes(search) ||
+        appointment?.status?.toLowerCase().includes(search) ||
+        appointment?.appointmentTime?.toLowerCase().includes(search)
+      );
+    })
+    .sort((a, b) => a.appointmentTime.localeCompare(b.appointmentTime));
 
   return (
     <div className="w-full h-full px-1">

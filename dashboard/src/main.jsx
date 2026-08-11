@@ -18,6 +18,7 @@ import LabSampleProvider from "./context/laboratory/LabSampleProvider.jsx";
 import LabReportProvider from "./context/laboratory/LabReportProvider.jsx";
 import LabDashboardProvider from "./context/laboratory/LabDashboardProvider.jsx";
 import VideoCallProvider from "./context/doctor/VideoCallProvider.jsx";
+import GlobalSearchProvider from "./context/doctor/GlobalSearchProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
@@ -35,9 +36,11 @@ createRoot(document.getElementById("root")).render(
                             <LabReportProvider>
                               <DoctorPatientProvider>
                                 <DoctorProvider>
-                                  <VideoCallProvider>
-                                    <App />
-                                  </VideoCallProvider>
+                                  <GlobalSearchProvider>
+                                    <VideoCallProvider>
+                                      <App />
+                                    </VideoCallProvider>
+                                  </GlobalSearchProvider>
                                 </DoctorProvider>
                               </DoctorPatientProvider>
                             </LabReportProvider>

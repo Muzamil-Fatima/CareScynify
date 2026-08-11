@@ -1,10 +1,11 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useDoctorAppointments from "../../hooks/useDoctorAppointments";
 import AddPatient from "../../components/doctor/PatientProfile/AddPatients";
 import DoctorContext from "../../context/doctor/DoctorContext";
 import DoctorPatientContext from "../../context/patients/DoctorPatientContext";
-import { useEffect } from "react";
+import useGlobalSearch from "../../hooks/doctor/useGlobalSearch";
+
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -15,17 +16,22 @@ const DrPatients = () => {
   const { appointments, loading } = useDoctorAppointments(activeWorkplaceId);
   const [openAddPatient, setOpenAddPatient] = useState(false);
   const navigate = useNavigate();
+  const {
+    searchValue,
+    results: searchResults,
+    loading: searchLoading,
+  } = useGlobalSearch();
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
   const openPatientProfile = (patientId) => {
     navigate(`/doctor/patient/profile/${patientId}`);
   };
   const { patients: doctorPatients, fetchPatients } =
     useContext(DoctorPatientContext);
-
   useEffect(() => {
     fetchPatients();
   }, [fetchPatients]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
+
   const appointmentPatients = appointments
     .filter((item) => item?.patientId?._id)
     .map((item) => ({
@@ -48,17 +54,45 @@ const DrPatients = () => {
       avatar: patient.patientId.userId?.avatar?.url || "",
     }));
 
-  // Get unique patients only
-
   const uniquePatients = Array.from(
     new Map(
       [...appointmentPatients, ...manualPatients].map((p) => [p._id, p]),
     ).values(),
   );
-  // Pagination
-  const totalPages = Math.ceil(uniquePatients.length / rowsPerPage);
 
-  const paginatedPatients = uniquePatients.slice(
+  const searchedPatients = Array.from(
+    new Map(
+      searchResults
+        .filter(
+          (result) =>
+            result?.type === "patient" || result?.type === "appointment",
+        )
+        .map((result) => {
+          const data = result?.data;
+          const patient = data?.patientId;
+          const user = patient?.userId;
+
+          return {
+            _id: patient?._id || result?.id,
+            patientCode: patient?.patientCode || "-",
+            name: user?.name || result?.title || "Unknown",
+            phone: user?.phone || "-",
+            email: user?.email || "-",
+            avatar: user?.avatar?.url || "",
+          };
+        })
+        .filter((patient) => patient?._id)
+        .map((patient) => [patient._id, patient]),
+    ).values(),
+  );
+
+  const displayedPatients = searchValue.trim()
+    ? searchedPatients
+    : uniquePatients;
+
+  const totalPages = Math.ceil(displayedPatients.length / rowsPerPage);
+
+  const paginatedPatients = displayedPatients.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage,
   );
@@ -82,7 +116,16 @@ const DrPatients = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="text-gray-600">Total: {uniquePatients.length}</div>
+            {searchLoading && searchValue.trim() && (
+              <div className="flex items-center gap-2 text-gray-500">
+                <div className="w-4 h-4 border-2 border-gray-300 border-t-indigo-600 rounded-full animate-spin" />
+                <span>Searching...</span>
+              </div>
+            )}
+
+            <div className="text-gray-600">
+              Total: {displayedPatients.length}
+            </div>
 
             <button className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
               <EventAvailableIcon fontSize="small" />
@@ -93,7 +136,7 @@ const DrPatients = () => {
         {/* Loading */}
         {loading ? (
           <div className="py-20 text-center">
-            <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin mx-auto"></div>
+            <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full mx-auto animate-spin"></div>
             <p className="mt-3 text-gray-500">Loading Patients...</p>
           </div>
         ) : (
@@ -114,10 +157,12 @@ const DrPatients = () => {
                   {paginatedPatients.length === 0 ? (
                     <tr>
                       <td
-                        colSpan="3"
+                        colSpan="4"
                         className="text-center py-10 text-gray-500"
                       >
-                        No Patients found
+                        {searchValue.trim()
+                          ? `No patients found for "${searchValue}"`
+                          : "No Patients found"}
                       </td>
                     </tr>
                   ) : (
@@ -170,13 +215,13 @@ const DrPatients = () => {
             {/* Pagination */}
             <div className="px-4 py-4 flex justify-between items-center">
               <p className="text-gray-600">
-                {uniquePatients.length === 0
+                {displayedPatients.length === 0
                   ? "0"
                   : `${(currentPage - 1) * rowsPerPage + 1} -
-                     ${Math.min(
-                       currentPage * rowsPerPage,
-                       uniquePatients.length,
-                     )} of ${uniquePatients.length}`}
+       ${Math.min(
+         currentPage * rowsPerPage,
+         displayedPatients.length,
+       )} of ${displayedPatients.length}`}
               </p>
 
               <div className="flex items-center gap-4">

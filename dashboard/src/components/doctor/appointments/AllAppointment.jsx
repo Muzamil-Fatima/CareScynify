@@ -1,7 +1,8 @@
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
 import DoctorContext from "../../../context/doctor/DoctorContext";
-import { useNavigate } from "react-router-dom";
+import { useGlobalSearchContext } from "../../../context/doctor/GlobalSearchContext";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
@@ -15,6 +16,7 @@ const AllAppointment = () => {
 
   const { appointments, loading, updateStatus, cancel } =
     useDoctorAppointments(activeWorkplaceId);
+  const { searchValue } = useGlobalSearchContext();
   const [timeFormat, setTimeFormat] = useState("12h");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -56,11 +58,28 @@ const AllAppointment = () => {
           hour12: false,
         });
   };
-  // Filter
-  const filteredAppointments =
-    statusFilter === "all"
-      ? appointments
-      : appointments.filter((item) => item.status === statusFilter);
+  // filter
+  const filteredAppointments = appointments.filter((item) => {
+    const patient = item.patientId;
+    const user = patient?.userId;
+
+    const search = searchValue.trim().toLowerCase();
+
+    const matchesSearch =
+      !search ||
+      user?.name?.toLowerCase().includes(search) ||
+      user?.email?.toLowerCase().includes(search) ||
+      user?.phone?.toLowerCase().includes(search) ||
+      patient?.patientCode?.toLowerCase().includes(search) ||
+      item.status?.toLowerCase().includes(search) ||
+      item.appointmentType?.toLowerCase().includes(search) ||
+      item.appointmentTime?.toLowerCase().includes(search);
+
+    const matchesStatus =
+      statusFilter === "all" || item.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
 
   // Pagination
   const totalPages = Math.ceil(filteredAppointments.length / rowsPerPage);
@@ -309,11 +328,10 @@ const AllAppointment = () => {
                               <div className="absolute right-4 mt-2 w-52 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
                                 {/* VIEW PROFILE */}
                                 <button
-                                onClick={() => {
-  openPatientProfile(item);
-  setOpenMenu(null);
-}}
-                               
+                                  onClick={() => {
+                                    openPatientProfile(item);
+                                    setOpenMenu(null);
+                                  }}
                                   className="w-full flex items-center gap-2 px-4 py-2 hover:bg-blue-50 text-left text-blue-700"
                                 >
                                   <PersonOutlineIcon
