@@ -1,10 +1,11 @@
+
 import React, { useState, useRef, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import { useAuth } from "../../hooks/useAuth";
 import ProfileDropdown from "./ProfileDropdown";
 import GlobalSearch from "./GlobalSearch";
 import useGlobalSearch from "../../hooks/doctor/useGlobalSearch";
-
 import { useGlobalSearchContext } from "../../context/doctor/GlobalSearchContext";
 
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -17,30 +18,37 @@ const TopBar = () => {
 
   const dropdownRef = useRef(null);
 
+  const location = useLocation();
+
   const userRole = user?.role;
 
   const userName = user?.name || "Dr. Alex Taylor";
-
   const userEmail = user?.email || "alex.taylor@carescynify.com";
 
-  /*
-   * Search configuration based on
-   * the current route.
-   */
+  // Search configuration
   const searchConfig = useGlobalSearch();
 
-  /*
-   * Global search state.
-   */
+  // Global search state
   const { searchValue, setSearchValue } = useGlobalSearchContext();
 
-  /*
-   * Close profile dropdown when
-   * clicking outside.
-   */
+  // Pages where search bar should appear
+  const searchablePages = [
+    "/doctor/schedule",
+    "/doctor/appointments",
+    "/patients",
+    "/doctor/reviews",
+  ];
+
+  const showSearch =
+    userRole?.toLowerCase() === "doctor" &&
+    searchablePages.includes(location.pathname);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
         setIsDropdownOpen(false);
       }
     };
@@ -67,11 +75,8 @@ const TopBar = () => {
         z-30
       "
     >
-      {/* =========================
-          GLOBAL SEARCH
-      ========================== */}
-
-      {userRole?.toLowerCase() === "doctor" && searchConfig && (
+      {/* LEFT SIDE — SEARCH ONLY ON SELECTED PAGES */}
+      {showSearch && searchConfig && (
         <GlobalSearch
           value={searchValue}
           onChange={setSearchValue}
@@ -79,13 +84,9 @@ const TopBar = () => {
         />
       )}
 
-      {/* =========================
-          RIGHT SIDE ACTIONS
-      ========================== */}
-
+      {/* RIGHT SIDE ACTIONS */}
       <div className="flex items-center gap-2 ml-auto">
         {/* Notifications */}
-
         <button
           type="button"
           className="
@@ -116,7 +117,6 @@ const TopBar = () => {
         </button>
 
         {/* Profile */}
-
         <div className="relative" ref={dropdownRef}>
           <button
             type="button"
@@ -129,7 +129,6 @@ const TopBar = () => {
               flex
               items-center
               justify-center
-
               ${
                 isDropdownOpen
                   ? "bg-purple-600 text-white shadow-md shadow-purple-200"

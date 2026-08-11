@@ -1,93 +1,157 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Grid,
-  Rating,
-  Avatar,
-  Chip,
-} from "@mui/material";
 
 import { getDoctorReviews } from "../../api/reviewApi";
+import useGlobalSearch from "../../hooks/doctor/useGlobalSearch";
 
 const DrReview = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const { searchValue, results: searchResults } = useGlobalSearch();
+
   useEffect(() => {
     const fetchReviews = async () => {
-      const data = await getDoctorReviews();
-      setReviews(data);
-      setLoading(false);
+      try {
+        const data = await getDoctorReviews();
+        setReviews(data);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+        setReviews([]);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchReviews();
   }, []);
 
+  // SEARCH REVIEWS
+
+  const isSearching = searchValue.trim().length > 0;
+
+  const displayedReviews = isSearching
+    ? searchResults
+        .filter((result) => result?.type === "review")
+        .map((result) => result?.data)
+        .filter((review) => review?._id)
+    : reviews;
+
+  // AVERAGE RATING
+
   const averageRating =
-    reviews.length > 0
-      ? reviews.reduce((acc, item) => acc + item.rating, 0) / reviews.length
+    displayedReviews.length > 0
+      ? displayedReviews.reduce(
+          (acc, item) => acc + Number(item?.rating || 0),
+          0,
+        ) / displayedReviews.length
       : 0;
 
   return (
-    <Box p={3}>
+    <div className="p-6">
       {/* Page Header */}
-      <Typography variant="h5" fontWeight="bold" mb={3}>
-        Patient Reviews
-      </Typography>
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">Patient Reviews</h2>
 
       {/* Rating Summary */}
-      <Card sx={{ mb: 4, borderRadius: 3 }}>
-        <CardContent>
-          <Typography variant="h6">Overall Rating</Typography>
+      <div className="mb-8 rounded-xl bg-white shadow-sm border border-gray-100">
+        <div className="p-6">
+          <h3 className="text-xl font-semibold text-gray-900">
+            Overall Rating
+          </h3>
 
-          <Box display="flex" alignItems="center" gap={2} mt={1}>
-            <Rating value={averageRating} precision={0.5} readOnly />
-            <Typography>{averageRating.toFixed(1)} / 5</Typography>
-            <Chip label={`${reviews.length} Reviews`} />
-          </Box>
-        </CardContent>
-      </Card>
+          <div className="flex items-center gap-4 mt-2">
+            {/* Rating */}
+            <div className="flex items-center gap-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={`text-2xl ${
+                    star <= averageRating ? "text-yellow-400" : "text-gray-300"
+                  }`}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
+
+            <span className="text-gray-700">
+              {averageRating.toFixed(1)} / 5
+            </span>
+
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-sm font-medium">
+              {displayedReviews.length} Reviews
+            </span>
+          </div>
+        </div>
+      </div>
 
       {/* Loading state */}
       {loading ? (
-        <Typography>Loading reviews...</Typography>
+        <p className="text-gray-700">Loading reviews...</p>
+      ) : displayedReviews.length === 0 ? (
+        <p className="text-gray-500">
+          {isSearching
+            ? `No reviews found for "${searchValue}"`
+            : "No reviews found."}
+        </p>
       ) : (
-        <Grid container spacing={3}>
-          {reviews.map((review) => (
-            <Grid size={{ xs: 12, md: 6 }} key={review._id}>
-              <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
-                <CardContent>
-                  {/* User Info */}
-                  <Box display="flex" alignItems="center" gap={2} mb={2}>
-                    <Avatar>{review.patient?.name?.[0] || "U"}</Avatar>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {displayedReviews.map((review) => (
+            <div
+              key={review._id}
+              className="rounded-xl bg-white shadow-md border border-gray-100"
+            >
+              <div className="p-6">
+                {/* User Info */}
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="shrink-0">
+                    {review?.patient?.avatar?.url ? (
+                      <img
+                        src={review.patient.avatar.url}
+                        alt={review?.patient?.name || "User"}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                        {review?.patient?.name?.[0] || "U"}
+                      </div>
+                    )}
+                  </div>
 
-                    <Box>
-                      <Typography fontWeight="bold">
-                        {review.patient?.name}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {new Date(review.createdAt).toDateString()}
-                      </Typography>
-                    </Box>
-                  </Box>
+                  <div>
+                    <p className="font-bold text-gray-900">
+                      {review?.patient?.name || "Unknown Patient"}
+                    </p>
 
-                  {/* Rating */}
-                  <Rating value={review.rating} readOnly />
+                    <p className="text-xs text-gray-500">
+                      {new Date(review?.createdAt).toDateString()}
+                    </p>
+                  </div>
+                </div>
 
-                  {/* Comment */}
-                  <Typography mt={2} color="text.secondary">
-                    {review.comment}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+                {/* Rating */}
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      className={`text-xl ${
+                        star <= review?.rating
+                          ? "text-yellow-400"
+                          : "text-gray-300"
+                      }`}
+                    >
+                      ★
+                    </span>
+                  ))}
+                </div>
+
+                {/* Comment */}
+                <p className="mt-4 text-gray-500">{review?.comment}</p>
+              </div>
+            </div>
           ))}
-        </Grid>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 

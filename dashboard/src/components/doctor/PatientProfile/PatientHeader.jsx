@@ -10,17 +10,15 @@ import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
 import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
 
 const PatientHeader = () => {
-   const { patient, loading } = usePatient();
-  
-    if (loading || !patient) {
-      return (
-        <div className="flex justify-center items-center py-10">
-          <p className="text-gray-500">Loading patient information...</p>
-        </div>
-      );
-    }
+  const { patient, loading } = usePatient();
 
-
+  if (loading || !patient) {
+    return (
+      <div className="flex justify-center items-center py-10">
+        <p className="text-gray-500">Loading patient information...</p>
+      </div>
+    );
+  }
 
   const calculateAge = (dob) => {
     if (!dob) return "--";
@@ -89,9 +87,9 @@ const PatientHeader = () => {
         {/* Left Section */}
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
           <div className="w-24 h-24 rounded-full overflow-hidden bg-violet-100 flex items-center justify-center shrink-0">
-            {patient?.avatar ? (
+            {patient?.avatar?.url ? (
               <img
-                src={patient?.avatar}
+                src={patient?.avatar?.url}
                 alt={patient?.name}
                 className="w-full h-full object-cover"
               />

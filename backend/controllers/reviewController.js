@@ -29,23 +29,27 @@ export const createReview = async (req, res) => {
 // dashboard doctor seen own review
 export const getDoctorReviews = async (req, res) => {
   try {
-    // 1. find doctor profile using logged-in user
+    // 1. Find doctor profile using logged-in user
     const doctor = await Doctor.findOne({ userId: req.user._id });
 
     if (!doctor) {
-      return res.status(404).json({ message: "Doctor profile not found" });
+      return res.status(404).json({
+        message: "Doctor profile not found",
+      });
     }
 
-    // 2. fetch reviews using doctor._id
+    // 2. Fetch reviews using doctor._id
     const reviews = await Review.find({
       doctor: doctor._id,
     })
-      .populate("patient", "name")
+      .populate("patient", "name avatar")
       .sort({ createdAt: -1 });
 
     res.json(reviews);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 

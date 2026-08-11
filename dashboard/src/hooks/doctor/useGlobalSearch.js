@@ -24,9 +24,7 @@ const useGlobalSearch = () => {
     type = "appointments";
     placeholder = "Search appointments...";
   } else if (path === "/doctor/patients" || path === "/patients") {
-    // IMPORTANT:
-    // Search both appointments and DoctorPatient records
-    // because CareScynify patients may exist through appointments.
+    // IMPORTANT: Search both appointments and DoctorPatient records because CareScynify patients may exist through appointments.
     type = "all";
     placeholder = "Search patients...";
   } else if (path === "/doctor/reviews") {
@@ -47,9 +45,7 @@ const useGlobalSearch = () => {
   useEffect(() => {
     const query = searchValue.trim();
 
-    // -------------------------------------------------------
     // Nothing to search
-    // -------------------------------------------------------
 
     if (!query || !type) {
       setResults([]);

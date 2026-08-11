@@ -58,7 +58,7 @@ const AllAppointment = () => {
           hour12: false,
         });
   };
-  // filter
+
   const filteredAppointments = appointments.filter((item) => {
     const patient = item.patientId;
     const user = patient?.userId;
@@ -251,10 +251,11 @@ const AllAppointment = () => {
                           {/* Patient */}
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
-                              {user?.avatar ? (
+                              {user?.avatar?.url ? (
                                 <img
-                                  src={user.avatar}
-                                  className="w-9 h-9 rounded-full"
+                                  src={user.avatar.url}
+                                  alt={user?.name}
+                                  className="w-9 h-9 rounded-full object-cover"
                                 />
                               ) : (
                                 <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center cursor-pointer ">

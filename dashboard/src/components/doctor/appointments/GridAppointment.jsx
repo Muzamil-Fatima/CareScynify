@@ -6,19 +6,29 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-
+import useGlobalSearch from "../../../hooks/doctor/useGlobalSearch";
 const GridAppointment = () => {
   const { activeWorkplaceId } = useContext(DoctorContext);
   const { appointments } = useDoctorAppointments(activeWorkplaceId);
   // State object to track which appointment is currently visible for each date
   const [currentIndices, setCurrentIndices] = useState({});
-
   // States to manage the modal
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const { searchValue, results: searchResults } = useGlobalSearch();
+  const displayedAppointments = searchValue.trim()
+    ? appointments.filter((appointment) =>
+        searchResults
+          .filter((result) => result?.type === "appointment")
+          .some(
+            (result) =>
+              String(result?.data?._id || result?.id) ===
+              String(appointment?._id),
+          ),
+      )
+    : appointments;
   // Prepares the appointment information to be compatible with the FullCalendar format
-  const calendarEvents = appointments.map((appointment) => ({
+  const calendarEvents = displayedAppointments.map((appointment) => ({
     id: appointment._id,
     title: appointment.patientId?.userId?.name || "Patient",
     start: `${new Date(appointment.appointmentDate).toISOString().split("T")[0]}T${appointment.appointmentTime}`,
@@ -29,7 +39,7 @@ const GridAppointment = () => {
       workplace: appointment.workplaceName,
       location: appointment.workplaceLocation,
 
-      patientAvatar: appointment.patientId?.userId?.avatar,
+      patientAvatar: appointment.patientId?.userId?.avatar?.url,
       patientPhone: appointment.patientId?.userId?.phone || "N/A",
       patientEmail: appointment.patientId?.userId?.email || "N/A",
 
@@ -73,7 +83,7 @@ const GridAppointment = () => {
       id: event.id,
       title: event.title,
       avatar: props.patientAvatar,
-       patientId: props.patientId, 
+      patientId: props.patientId,
       dateFormatted: new Date(event.start).toLocaleDateString("en-US", {
         weekday: "long",
         year: "numeric",
@@ -165,7 +175,7 @@ const GridAppointment = () => {
         </div>
 
         <div className="h-10 w-10 rounded-full overflow-hidden ring-4 ring-purple-50 bg-purple-100 flex items-center justify-center mb-1">
-          {avatar ? (
+          {avatar?.url ? (
             <img
               src={avatar}
               alt={currentActiveApp.title}
