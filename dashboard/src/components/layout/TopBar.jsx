@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
@@ -45,10 +44,7 @@ const TopBar = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
       }
     };
@@ -60,6 +56,16 @@ const TopBar = () => {
     };
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+
+      window.location.href =
+        import.meta.env.VITE_FRONTEND_URL || "http://localhost:5173";
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   return (
     <div
       className="
@@ -145,7 +151,7 @@ const TopBar = () => {
             userName={userName}
             userEmail={userEmail}
             userRole={userRole}
-            onLogout={logout}
+            onLogout={handleLogout}
           />
         </div>
       </div>

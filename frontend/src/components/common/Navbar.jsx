@@ -16,6 +16,13 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const { user } = useAuth();
+  const userRole = String(
+    user?.role || user?.userType || user?.accountType || "",
+  )
+    .toLowerCase()
+    .trim();
+
+  const isPatient = userRole === "patient";
   const { cartCount } = useCartContext();
   const navItemClass = ({ isActive }) =>
     `flex items-center gap-1.5 px-3 py-2 rounded-lg transition-all duration-200 ${
@@ -79,9 +86,9 @@ const Navbar = () => {
         {/* Auth */}
         {/* Auth */}
         <div className="hidden md:flex items-center gap-3">
-          {user ? (
+          {isPatient ? (
             <>
-              {/* Show Cart only on Pharmacy pages */}
+              {/* Cart - Patient only */}
               {isPharmacy && (
                 <button
                   onClick={() => setCartOpen(true)}
@@ -97,7 +104,7 @@ const Navbar = () => {
                 </button>
               )}
 
-              {/* Profile */}
+              {/* Patient Profile */}
               <Link to="/profile">
                 <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold shadow-sm hover:scale-105 transition">
                   {user?.name?.charAt(0).toUpperCase() || "U"}
@@ -106,6 +113,7 @@ const Navbar = () => {
             </>
           ) : (
             <>
+              {/* Everyone except Patient */}
               <Link
                 to="/login"
                 className="text-sm text-gray-700 hover:text-purple-700 transition"
@@ -179,7 +187,7 @@ const Navbar = () => {
             About
           </NavLink>
 
-          {!user && (
+          {!isPatient && (
             <>
               <NavLink
                 to="/login"
