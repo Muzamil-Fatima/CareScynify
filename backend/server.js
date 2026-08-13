@@ -10,7 +10,7 @@ import { initSocket } from "./config/socket.js";
 //Files connection
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
-import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
+// import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
 // patient routes
@@ -52,7 +52,7 @@ connectCloudinary();
 //Building Server
 const app = express();
 const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
-removeUnverifiedAccount();
+// removeUnverifiedAccount();
 app.use(passport.initialize());
 
 //Middleware

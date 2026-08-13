@@ -28,3 +28,9 @@ export const toggleTwoFactor = async () => {
 
   return res.data;
 };
+
+// RESEND VERIFICATION EMAIL
+export const resendVerification = async () => {
+  const res = await api.post("/api/auth/resend-verification");
+  return res.data;
+};

@@ -6,6 +6,7 @@ import PublicLayout from "./layout/PublicLayout";
 import AppLayout from "./layout/AppLayout";
 
 // public pages
+
 import LandingPage from "./pages/Home/LandingPage";
 import AboutUs from "./pages/AboutUs";
 import Doctor from "./pages/doctor/Doctor";

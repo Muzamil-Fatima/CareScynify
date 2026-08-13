@@ -48,7 +48,7 @@ export const verificationEmail = (name, verifyUrl) => {
       <br />
 
       <p style="font-size: 14px; color: #999;">
-        Sent with ❤️ by Muzamil
+        Sent with ❤️ by CareScynify
       </p>
     </div>
   `;
@@ -86,7 +86,7 @@ export const forgotPasswordEmail = (name, otp) => {
 
       <br />
       <p style="font-size: 14px; color: #999;">
-        Sent with ❤️ by Muzamil
+        Sent with ❤️ by CareScynify
       </p>
     </div>
   `;

@@ -63,6 +63,11 @@ export const verifyEmail = async (token) => {
   const res = await api.get(`/api/auth/verify/${token}`);
   return res.data;
 };
+// RESEND VERIFICATION EMAIL
+export const resendVerification = async () => {
+  const res = await api.post("/api/auth/resend-verification");
+  return res.data;
+};
 //
 // GOOGLE AUTH (redirect handled in backend)
 //

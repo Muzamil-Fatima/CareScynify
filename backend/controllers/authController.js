@@ -58,24 +58,106 @@ const signup = asyncHandler(async (req, res) => {
 const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
 
+  // console.log("VERIFY TOKEN:", token);
+
   const user = await User.findOne({
     verificationToken: token,
-    verificationCodeExpire: { $gt: Date.now() }, // check expiry
   });
 
+  // console.log("USER FOUND:", user?._id);
+  // console.log("ACCOUNT VERIFIED:", user?.accountVerified);
+  // console.log("TOKEN EXPIRE:", user?.verificationCodeExpire);
+  // console.log("NOW:", new Date());
+
   if (!user) {
-    return res
-      .status(400)
-      .json({ message: "Invalid or expired verification link" });
+    return res.status(400).json({
+      message: "Invalid or already used verification link",
+    });
   }
 
+  const dashboardRoles = [
+    "doctor",
+    "laboratory",
+    "pharmacy",
+    "admin",
+  ];
+
+  const frontendUrl = dashboardRoles.includes(user.role)
+    ? process.env.DASHBOARD_URL
+    : process.env.FRONTEND_URL;
+
+  // console.log("USER ROLE:", user.role);
+  // console.log("DASHBOARD_URL:", process.env.DASHBOARD_URL);
+  // console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+  // console.log("SELECTED FRONTEND URL:", frontendUrl);
+
+  if (!frontendUrl) {
+    return res.status(500).json({
+      message: "Frontend URL is not configured",
+    });
+  }
+
+  // Already verified
+  if (user.accountVerified) {
+    return res.redirect(`${frontendUrl}/?verified=already`);
+  }
+
+  // Expired
+  if (
+    !user.verificationCodeExpire ||
+    user.verificationCodeExpire < Date.now()
+  ) {
+    return res.status(400).json({
+      message: "Verification link has expired",
+    });
+  }
+
+  // Verify account
   user.accountVerified = true;
   user.verificationToken = undefined;
   user.verificationCodeExpire = undefined;
 
-  await user.save();
-  //  Redirect to frontend home page
-  res.redirect(`${process.env.FRONTEND_URL}/?verified=true`);
+  await user.save({ validateBeforeSave: false });
+
+  console.log("ACCOUNT VERIFIED SUCCESSFULLY");
+
+  return res.redirect(`${frontendUrl}/?verified=true`);
+});
+// -------------------- Resend Verification Email
+const resendVerification = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  if (user.accountVerified) {
+    return res.status(400).json({
+      message: "Account is already verified",
+    });
+  }
+
+  const verificationToken = crypto.randomBytes(32).toString("hex");
+
+  user.verificationToken = verificationToken;
+  user.verificationCodeExpire = Date.now() + 15 * 60 * 1000;
+
+  await user.save({ validateBeforeSave: false });
+
+  const verifyUrl = `${process.env.BACKEND_URL}/api/auth/verify/${verificationToken}`;
+
+  await sendEmail({
+    to: user.email,
+    subject: "Verify your email for CareScynify",
+    html: verificationEmail(user.name, verifyUrl),
+  });
+
+  res.status(200).json({
+    success: true,
+    message: "Verification email sent successfully",
+  });
 });
 
 // -------------------------------- login
@@ -106,6 +188,7 @@ const login = asyncHandler(async (req, res) => {
     name: existingUsr.name,
     email: existingUsr.email,
     role: existingUsr.role,
+    accountVerified: existingUsr.accountVerified,
     token,
   });
 });
@@ -296,7 +379,7 @@ const deleteAccount = async (req, res) => {
     });
   }
 };
-// change password 
+// change password
 const changePassword = asyncHandler(async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
@@ -308,10 +391,7 @@ const changePassword = asyncHandler(async (req, res) => {
     });
   }
 
-  const isMatch = await bcrypt.compare(
-    currentPassword,
-    user.password
-  );
+  const isMatch = await bcrypt.compare(currentPassword, user.password);
 
   if (!isMatch) {
     return res.status(400).json({
@@ -342,6 +422,6 @@ export {
   resendResetPasswordOTP,
   toggleTwoFactor,
   deleteAccount,
-  changePassword
-  // resendVerification,
+  changePassword,
+  resendVerification,
 };

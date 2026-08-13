@@ -12,7 +12,7 @@ import {
   verifyOtp,
   resetPassword,
   toggleTwoFactor,
-  // resendVerification,
+  resendVerification,
   resendResetPasswordOTP,
   deleteAccount,
   changePassword,
@@ -31,7 +31,7 @@ router.post("/resend-reset-otp", resendResetPasswordOTP);
 router.put("/change-password", protect, changePassword);
 router.patch("/toggle-2fa", protect, toggleTwoFactor);
 router.delete("/delete-account", deleteAccount);
-// router.post("/resend-verification", resendVerification);
+router.post("/resend-verification", protect, resendVerification);
 // Google OAuth routes
 router.get(
   "/google",
