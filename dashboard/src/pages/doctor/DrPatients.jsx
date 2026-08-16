@@ -1,7 +1,8 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import useDoctorAppointments from "../../hooks/useDoctorAppointments";
 import AddPatient from "../../components/doctor/PatientProfile/AddPatients";
+
+import useDoctorAppointments from "../../hooks/useDoctorAppointments";
 import DoctorContext from "../../context/doctor/DoctorContext";
 import DoctorPatientContext from "../../context/patients/DoctorPatientContext";
 import useGlobalSearch from "../../hooks/doctor/useGlobalSearch";
@@ -56,7 +57,7 @@ const DrPatients = () => {
 
   const uniquePatients = Array.from(
     new Map(
-      [...appointmentPatients, ...manualPatients].map((p) => [p._id, p]),
+      [ ...manualPatients, ...appointmentPatients].map((p) => [p._id, p]),
     ).values(),
   );
 
@@ -270,6 +271,7 @@ const DrPatients = () => {
       <AddPatient
         open={openAddPatient}
         onClose={() => setOpenAddPatient(false)}
+         onPatientAdded={fetchPatients}
       />
     </div>
   );

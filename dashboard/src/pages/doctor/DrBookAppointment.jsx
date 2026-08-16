@@ -36,7 +36,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     fetchPatients();
   }, [fetchPatients]);
 
-  /* ---------------- PATIENT ---------------- */
+  /*  PATIENT  */
 
   const [patientSearch, setPatientSearch] = useState("");
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -73,7 +73,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     });
   }, [patients, patientSearch]);
 
-  /* ---------------- WORKPLACES ---------------- */
+  /*  WORKPLACES  */
 
   const workplaces = useMemo(
     () => profile?.doctor?.workplaces ?? [],
@@ -97,7 +97,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     return workplaces[0];
   }, [workplaces, selectedWorkplaceId]);
 
-  /* ---------------- APPOINTMENT STATE ---------------- */
+  /*  APPOINTMENT STATE  */
 
   const [selectedConsultationType, setSelectedConsultationType] = useState("");
 
@@ -119,7 +119,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     workplaceConsultationType === "physical" ||
     workplaceConsultationType === "online_physical";
 
-  /* ---------------- DATE ---------------- */
+  /*  DATE  */
 
   const [offset, setOffset] = useState(0);
 
@@ -147,7 +147,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     return days;
   }, [offset]);
 
-  /* ---------------- FETCH SLOTS ---------------- */
+  /*  FETCH SLOTS  */
   useEffect(() => {
     const workplaceId = selectedWorkplace?._id;
 
@@ -167,7 +167,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     });
   }, [doctorId, selectedWorkplace?._id, date, fetchAvailableSlots]);
 
-  /* ---------------- SLOT FORMAT ---------------- */
+  /*  SLOT FORMAT  */
 
   const formatSlotLabel = (label) => {
     if (!label) return "";
@@ -195,7 +195,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
   };
 
-  /* ---------------- CONVERT TIME ---------------- */
+  /*  CONVERT TIME  */
 
   const convertTo24Hour = (label) => {
     if (!label) return 0;
@@ -221,7 +221,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     return hours;
   };
 
-  /* ---------------- GROUP SLOTS ---------------- */
+  /*  GROUP SLOTS  */
 
   const groupedSlots = useMemo(() => {
     const grouped = {
@@ -248,7 +248,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     return grouped;
   }, [slots]);
 
-  /* ---------------- SELECT WORKPLACE ---------------- */
+  /*  SELECT WORKPLACE  */
 
   const handleWorkplaceChange = (workplace) => {
     setSelectedWorkplaceId(workplace?._id || null);
@@ -258,7 +258,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     setBookingError("");
   };
 
-  /* ---------------- SELECT PATIENT ---------------- */
+  /*  SELECT PATIENT  */
 
   const handlePatientSelect = (patient) => {
     setSelectedPatient(patient);
@@ -267,7 +267,7 @@ const DrBookAppointment = ({ doctor, onClose }) => {
     setBookingError("");
   };
 
-  /* ---------------- BOOK APPOINTMENT ---------------- */
+  /*  BOOK APPOINTMENT  */
   const handleBook = async () => {
     if (!selectedPatient) {
       setBookingError("Please select a patient.");

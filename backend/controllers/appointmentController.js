@@ -1,8 +1,11 @@
 import Appointment from "../models/appointmentModel.js";
 import Doctor from "../models/doctor/doctorModel.js";
+import User from "../models/User.js";
 import Patient from "../models/patientModel.js";
 import { getIO } from "../config/socket.js";
-/* ---------------- HELPERS ---------------- */
+import { createNotification } from "../services/notificationService.js";
+import { notificationTemplates } from "../utils/notificationTemplates.js";
+/*  HELPERS  */
 
 const normalizeDate = (date) => {
   const d = new Date(date);
@@ -16,7 +19,7 @@ const normalizeTime = (t) => {
 
 const now = () => new Date();
 
-/* ---------------- GET AVAILABLE SLOTS ---------------- */
+/*  GET AVAILABLE SLOTS  */
 export const getAvailableSlots = async (req, res) => {
   try {
     const { doctorId, workplaceId, date } = req.query;
@@ -134,7 +137,7 @@ export const getAvailableSlots = async (req, res) => {
     });
   }
 };
-/* ---------------- RESERVE SLOT ---------------- */
+/*  RESERVE SLOT  */
 export const reserveSlot = async (req, res) => {
   try {
     const { doctorId, workplaceId, date, time, consultationType } = req.body;
@@ -347,7 +350,7 @@ export const reserveSlot = async (req, res) => {
     });
   }
 };
-/* ---------------- CREATE APPOINTMENT ---------------- */
+/*  CREATE APPOINTMENT  */
 export const createAppointment = async (req, res) => {
   try {
     const { doctorId, workplaceId, date, time } = req.body;
@@ -410,6 +413,7 @@ export const createAppointment = async (req, res) => {
     reservation.reservedUntil = null;
 
     await reservation.save();
+
     const io = getIO();
 
     io.emit("slot-updated", {
@@ -417,7 +421,19 @@ export const createAppointment = async (req, res) => {
       workplaceId: reservation.workplaceId.toString(),
       date: reservation.appointmentDate,
     });
+    const patientUser = await User.findById(req.user._id).select("name");
 
+    const doctor = await Doctor.findById(reservation.doctorId);
+
+    if (doctor) {
+      await createNotification({
+        recipient: doctor.userId,
+        sender: req.user._id,
+        ...notificationTemplates.newPatientAppointment({
+          patientName: patientUser?.name || "A patient",
+        }),
+      });
+    }
     return res.status(201).json({
       message: "Appointment is now pending approval",
       appointment: reservation,
@@ -426,7 +442,7 @@ export const createAppointment = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-/*-------------------- Doctor Get all appointment with patients -------------*/
+/*---- Doctor Get all appointment with patients -------------*/
 export const getDoctorAppointments = async (req, res) => {
   try {
     const doctor = await Doctor.findOne({
@@ -473,7 +489,7 @@ export const getDoctorAppointments = async (req, res) => {
     });
   }
 };
-/* ---------------- get user appointments in website  ---------------- */
+/*  get user appointments in website   */
 export const getUserAppointments = async (req, res) => {
   try {
     const patient = await Patient.findOne({
@@ -522,7 +538,7 @@ export const getUserAppointments = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-// ----------------- confirm + completed
+// - confirm + completed
 export const updateAppointmentStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -536,6 +552,24 @@ export const updateAppointmentStatus = async (req, res) => {
     appointment.status = status;
     await appointment.save();
 
+    if (status === "confirmed") {
+      const doctor = await Doctor.findById(appointment.doctorId).populate(
+        "userId",
+        "name",
+      );
+
+      if (doctor) {
+        const doctorUser = doctor.userId;
+
+        await createNotification({
+          recipient: appointment.userId,
+          sender: doctorUser?._id,
+          ...notificationTemplates.appointmentConfirmed({
+            doctorName: doctorUser?.name || "Doctor",
+          }),
+        });
+      }
+    }
     // SOCKET EMIT ADD HERE
     const io = req.app.get("io");
 
@@ -549,83 +583,228 @@ export const updateAppointmentStatus = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-/* ---------------- CANCEL APPOINTMENT ---------------- */
+/*  CANCEL APPOINTMENT  */
+/*  CANCEL APPOINTMENT  */
 export const cancelAppointment = async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id);
 
     if (!appointment) {
-      return res.status(404).json({ message: "Not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Appointment not found",
+      });
     }
 
-    // ADD THIS BLOCK HERE (VERY IMPORTANT)
     const user = req.user;
 
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Please login first",
+      });
+    }
+
+    /* 
+       GET DOCTOR
+     */
+
+    const doctor = await Doctor.findById(appointment.doctorId).populate(
+      "userId",
+      "name email",
+    );
+
+    if (!doctor || !doctor.userId) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    const doctorUser = doctor.userId;
+
+    /* 
+       PATIENT CANCELLATION
+     */
+
     if (user.role === "patient") {
+      // Make sure patient owns this appointment
+      if (
+        !appointment.userId ||
+        appointment.userId.toString() !== user._id.toString()
+      ) {
+        return res.status(403).json({
+          success: false,
+          message: "You are not allowed to cancel this appointment",
+        });
+      }
+
+      // Patient can cancel at least 1 hour before appointment
+      const appointmentDateString = appointment.appointmentDate
+        .toISOString()
+        .split("T")[0];
+
       const appointmentDateTime = new Date(
-        `${appointment.appointmentDate} ${appointment.appointmentTime}`,
+        `${appointmentDateString}T${appointment.appointmentTime}:00`,
       );
 
-      const diffMs = appointmentDateTime - new Date();
+      const diffMs = appointmentDateTime.getTime() - Date.now();
 
       if (diffMs < 60 * 60 * 1000) {
         return res.status(400).json({
-          message: "You can only cancel at least 1 hour before appointment",
+          success: false,
+          message:
+            "You can only cancel an appointment at least 1 hour before the appointment time.",
+        });
+      }
+    } else if (user.role === "doctor") {
+      /* 
+       DOCTOR CANCELLATION
+     */
+      const doctorProfile = await Doctor.findOne({
+        userId: user._id,
+      });
+
+      if (!doctorProfile) {
+        return res.status(404).json({
+          success: false,
+          message: "Doctor profile not found",
         });
       }
 
-      if (appointment.userId.toString() !== user._id.toString()) {
+      // Make sure appointment belongs to this doctor
+      if (
+        !appointment.doctorId ||
+        appointment.doctorId.toString() !== doctorProfile._id.toString()
+      ) {
         return res.status(403).json({
-          message: "Not allowed",
+          success: false,
+          message: "You are not allowed to cancel this appointment",
         });
       }
     }
-    // update appointment status
+
+    /* 
+       CHECK STATUS
+     */
+
+    if (["cancelled", "completed"].includes(appointment.status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Appointment is already ${appointment.status}.`,
+      });
+    }
+
+    /* 
+       CANCEL APPOINTMENT
+     */
+
     appointment.status = "cancelled";
     appointment.cancelledAt = new Date();
+
     await appointment.save();
 
-    // FREE SLOT AGAIN
-    const doctor = await Doctor.findById(appointment.doctorId);
-    const workplace = doctor.workplaces.id(appointment.workplaceId);
+    /* 
+       NOTIFICATIONS
+     */
 
-    const day = new Date(appointment.appointmentDate).toLocaleDateString(
-      "en-US",
-      { weekday: "short", timeZone: "UTC" },
-    );
+    // -----
+    // PATIENT CANCELLED
+    // → Notify Doctor
+    // → System notification + Email according to preferences
+    // -----
 
-    const slots = workplace.slots?.[day] || [];
-
-    const slotIndex = slots.findIndex(
-      (s) => s.startTime === appointment.appointmentTime,
-    );
-
-    if (slotIndex !== -1) {
-      workplace.slots[day][slotIndex].isBooked = false;
+    if (user.role === "patient") {
+      await createNotification({
+        recipient: doctorUser._id,
+        sender: user._id,
+        ...notificationTemplates.appointmentCancelled({
+          doctorName: doctorUser.name || "Doctor",
+        }),
+      });
     }
 
-    await doctor.save();
+    // -----
+    // DOCTOR CANCELLED
+    // → Notify Patient
+    // → System notification + Email according to preferences
+    // -----
+    else if (user.role === "doctor") {
+      if (appointment.userId) {
+        await createNotification({
+          recipient: appointment.userId,
+          sender: doctorUser._id,
+          ...notificationTemplates.appointmentCancelled({
+            doctorName: doctorUser.name || "Doctor",
+          }),
+        });
+      }
+    }
 
-    req.io.emit("slot-updated", {
-      doctorId: appointment.doctorId,
-      workplaceId: appointment.workplaceId,
+    /* 
+       FREE THE SLOT
+     */
+
+    const workplace = doctor.workplaces.id(appointment.workplaceId);
+
+    if (workplace) {
+      const day = new Date(appointment.appointmentDate).toLocaleDateString(
+        "en-US",
+        {
+          weekday: "short",
+          timeZone: "UTC",
+        },
+      );
+
+      const slots = workplace.slots?.[day] || [];
+
+      const slotIndex = slots.findIndex(
+        (slot) =>
+          normalizeTime(slot.startTime) ===
+          normalizeTime(appointment.appointmentTime),
+      );
+
+      if (slotIndex !== -1) {
+        workplace.slots[day][slotIndex].isBooked = false;
+      }
+
+      await doctor.save();
+    }
+
+    /*   REAL-TIME SLOT UPDATE  */
+
+    const io = getIO();
+
+    io.emit("slot-updated", {
+      doctorId: appointment.doctorId.toString(),
+      workplaceId: appointment.workplaceId.toString(),
       date: appointment.appointmentDate,
     });
 
-    return res.json({
+    /* 
+       RESPONSE
+     */
+
+    return res.status(200).json({
+      success: true,
       message: "Appointment cancelled successfully",
       appointment,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("Cancel Appointment Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
-/* ---------------- DOCTOR CREATE APPOINTMENT ---------------- */
+/*  DOCTOR CREATE APPOINTMENT  */
 export const doctorCreateAppointment = async (req, res) => {
   try {
     const { doctorId, patientId, workplaceId, date, time, consultationType } =
       req.body;
-    /* ---------------- VALIDATION ---------------- */
+    /*  VALIDATION  */
     if (
       !doctorId ||
       !patientId ||
@@ -639,7 +818,7 @@ export const doctorCreateAppointment = async (req, res) => {
         message: "Missing required fields",
       });
     }
-    /* ---------------- AUTHENTICATED DOCTOR ---------------- */
+    /*  AUTHENTICATED DOCTOR  */
     if (!req.user) {
       return res.status(401).json({
         success: false,
@@ -657,7 +836,7 @@ export const doctorCreateAppointment = async (req, res) => {
           "You are not authorized to book an appointment for this doctor.",
       });
     }
-    /* ---------------- PATIENT ---------------- */
+    /*  PATIENT  */
     const patient = await Patient.findById(patientId);
     if (!patient) {
       return res.status(404).json({
@@ -665,7 +844,7 @@ export const doctorCreateAppointment = async (req, res) => {
         message: "Patient not found.",
       });
     }
-    /* ---------------- WORKPLACE ---------------- */
+    /*  WORKPLACE  */
     const workplace = doctor.workplaces.id(workplaceId);
     if (!workplace) {
       return res.status(404).json({
@@ -673,10 +852,10 @@ export const doctorCreateAppointment = async (req, res) => {
         message: "Workplace not found.",
       });
     }
-    /* ---------------- NORMALIZE DATE/TIME ---------------- */
+    /*  NORMALIZE DATE/TIME  */
     const appointmentDate = normalizeDate(date);
     const appointmentTime = normalizeTime(time);
-    /* ---------------- CHECK SLOT EXISTS ---------------- */
+    /*  CHECK SLOT EXISTS  */
     const day = new Date(date).toLocaleDateString("en-US", {
       weekday: "short",
       timeZone: "UTC",
@@ -691,7 +870,7 @@ export const doctorCreateAppointment = async (req, res) => {
         message: "Selected time slot is not available for this workplace.",
       });
     }
-    /* ---------------- CONSULTATION TYPE ---------------- */
+    /*  CONSULTATION TYPE  */
     const allowedConsultationType = workplace.settings?.consultationType;
 
     if (allowedConsultationType === "online" && consultationType !== "online") {
@@ -718,7 +897,7 @@ export const doctorCreateAppointment = async (req, res) => {
         message: "Invalid consultation type.",
       });
     }
-    /* ---------------- PREVENT SAME PATIENT DUPLICATE ---------------- */
+    /*  PREVENT SAME PATIENT DUPLICATE  */
     const existingPatientAppointment = await Appointment.findOne({
       patientId: patient._id,
       doctorId: doctor._id,
@@ -734,7 +913,7 @@ export const doctorCreateAppointment = async (req, res) => {
           "This patient already has an appointment with this doctor on this date.",
       });
     }
-    /* ---------------- CHECK SLOT ---------------- */
+    /*  CHECK SLOT  */
     const currentTime = new Date();
 
     // Remove expired patient reservations
@@ -760,7 +939,7 @@ export const doctorCreateAppointment = async (req, res) => {
       });
     }
 
-    /* ---------------- APPOINTMENT DURATION ---------------- */
+    /*  APPOINTMENT DURATION  */
 
     const durationObj = workplace.settings?.appointmentDuration;
 
@@ -786,7 +965,7 @@ export const doctorCreateAppointment = async (req, res) => {
       hour12: false,
     });
 
-    /* ---------------- CREATE DIRECTLY AS PENDING ---------------- */
+    /*  CREATE DIRECTLY AS PENDING  */
 
     const appointment = await Appointment.create({
       userId: patient.userId,
@@ -801,14 +980,14 @@ export const doctorCreateAppointment = async (req, res) => {
       // Doctor-created appointment does NOT need reservation
       reservedUntil: null,
     });
-    /* ---------------- SOCKET UPDATE ---------------- */
+    /*  SOCKET UPDATE  */
     const io = getIO();
     io.emit("slot-updated", {
       doctorId: doctor._id.toString(),
       workplaceId: workplaceId.toString(),
       date: appointmentDate,
     });
-    /* ---------------- RESPONSE ---------------- */
+    /*  RESPONSE  */
     return res.status(201).json({
       success: true,
       message: "Appointment created successfully.",
@@ -832,6 +1011,205 @@ export const doctorCreateAppointment = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+/* ====
+   APPOINTMENT REMINDERS
+   ---------
+   Sends a reminder to BOTH:
+   1. Doctor
+   2. Patient
+
+   Default reminder time: 30 minutes before appointment.
+
+   This function should be called periodically from server.js
+   using setInterval().
+==== */
+
+export const sendAppointmentReminders = async () => {
+  try {
+    const currentTime = new Date();
+
+    // Reminder window:
+    // Find appointments starting between 29 and 30 minutes
+    // from now.
+    const reminderStart = new Date(currentTime.getTime() + 29 * 60 * 1000);
+
+    const reminderEnd = new Date(currentTime.getTime() + 30 * 60 * 1000);
+
+    /*
+     * Get upcoming appointments.
+     *
+     * Only pending and confirmed appointments should receive
+     * reminders.
+     */
+    const appointments = await Appointment.find({
+      status: {
+        $in: ["pending", "confirmed"],
+      },
+    })
+      .populate({
+        path: "doctorId",
+        populate: {
+          path: "userId",
+          select: "name",
+        },
+      })
+      .populate({
+        path: "patientId",
+        populate: {
+          path: "userId",
+          select: "name",
+        },
+      });
+
+    if (!appointments.length) {
+      return;
+    }
+
+    for (const appointment of appointments) {
+      try {
+        /*
+         * -----
+         * CREATE APPOINTMENT DATE + TIME
+         * -----
+         */
+
+        if (!appointment.appointmentDate || !appointment.appointmentTime) {
+          continue;
+        }
+
+        const appointmentDateString = appointment.appointmentDate
+          .toISOString()
+          .split("T")[0];
+
+        const appointmentDateTime = new Date(
+          `${appointmentDateString}T${normalizeTime(
+            appointment.appointmentTime,
+          )}:00`,
+        );
+
+        /*
+         * -----
+         * CHECK REMINDER WINDOW
+         * -----
+         */
+
+        if (
+          appointmentDateTime < reminderStart ||
+          appointmentDateTime > reminderEnd
+        ) {
+          continue;
+        }
+
+        /*
+         * -----
+         * PREVENT DUPLICATE REMINDERS
+         * -----
+         *
+         * We use a dynamic field on the appointment document.
+         *
+         * If your Appointment schema does not define this field,
+         * Mongoose strict mode may remove it.
+         *
+         * Therefore, use updateOne below to mark it.
+         */
+
+        if (appointment.reminderSent === true) {
+          continue;
+        }
+
+        /*
+         * -----
+         * GET DOCTOR USER
+         * -----
+         */
+
+        const doctorUser = appointment.doctorId?.userId;
+
+        /*
+         * -----
+         * GET PATIENT USER
+         * -----
+         */
+
+        const patientUser = appointment.patientId?.userId;
+
+        /*
+         * -----
+         * DOCTOR NAME
+         * -----
+         */
+
+        const doctorName = doctorUser?.name || "Doctor";
+
+        /*
+         * -----
+         * PATIENT NAME
+         * -----
+         */
+
+        const patientName = patientUser?.name || "Patient";
+
+        /*
+         * -----
+         * NOTIFY DOCTOR
+         * -----
+         */
+
+        if (doctorUser?._id) {
+          await createNotification({
+            recipient: doctorUser._id,
+            sender: patientUser?._id || null,
+            ...notificationTemplates.appointmentReminder({
+              doctorName,
+              patientName,
+              appointmentTime: appointment.appointmentTime,
+            }),
+          });
+        }
+
+        /*
+         * -----
+         * NOTIFY PATIENT
+         * -----
+         */
+
+        if (patientUser?._id) {
+          await createNotification({
+            recipient: patientUser._id,
+            sender: doctorUser?._id || null,
+            ...notificationTemplates.appointmentReminder({
+              doctorName,
+              patientName,
+              appointmentTime: appointment.appointmentTime,
+            }),
+          });
+        }
+
+        //  * MARK REMINDER AS SENT
+
+        await Appointment.updateOne(
+          { _id: appointment._id },
+          {
+            $set: {
+              reminderSent: true,
+            },
+          },
+        );
+
+        console.log(
+          `Appointment reminder sent successfully for appointment ${appointment._id}`,
+        );
+      } catch (appointmentError) {
+        console.error(
+          `Reminder failed for appointment ${appointment._id}:`,
+          appointmentError,
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Appointment Reminder Error:", error);
   }
 };
 export const deleteAppointment = async (req, res) => {

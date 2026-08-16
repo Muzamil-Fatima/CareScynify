@@ -96,6 +96,25 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    notificationSettings: {
+      type: Map,
+      of: new mongoose.Schema(
+        {
+          system: {
+            type: Boolean,
+            default: true,
+          },
+          email: {
+            type: Boolean,
+            default: true,
+          },
+        },
+        {
+          _id: false,
+        },
+      ),
+      default: {},
+    },
   },
   { timestamps: true, versionKey: false },
 );

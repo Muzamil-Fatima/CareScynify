@@ -1,12 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-
 // layouts
 import PublicLayout from "./layout/PublicLayout";
 import AppLayout from "./layout/AppLayout";
-
 // public pages
-
 import LandingPage from "./pages/Home/LandingPage";
 import AboutUs from "./pages/AboutUs";
 import Doctor from "./pages/doctor/Doctor";
@@ -24,7 +21,6 @@ import Checkout from "./pages/pharmacy/Checkout";
 import PharmacyDetail from "./pages/pharmacy/PharmacyDetail";
 import MedicineDetails from "./pages/pharmacy/MedicineDetail";
 import OrderSuccess from "./pages/pharmacy/OrderSuccess";
-
 //  auth pages
 import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/SignUp";
@@ -32,7 +28,6 @@ import Forget from "./pages/Auth/Forget";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import VerificationBanner from "./components/common/VerificationBanner";
-
 //  App Pages
 import PatientProfile from "./pages/patients/PatientProfile";
 import Dashboard from "./pages/patients/Dashboard";

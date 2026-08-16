@@ -10,7 +10,7 @@ import {
   verificationEmail,
   forgotPasswordEmail,
 } from "../utils/emailTemplates.js";
-// ------------------------------- signup
+//  signup
 const signup = asyncHandler(async (req, res) => {
   const { name, email, password, role } = req.body;
   if (!name || !email || !password) {
@@ -160,7 +160,7 @@ const resendVerification = asyncHandler(async (req, res) => {
   });
 });
 
-// -------------------------------- login
+// - login
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -410,7 +410,7 @@ const changePassword = asyncHandler(async (req, res) => {
 });
 // -------------------- Google Authentication Handle
 
-// ---------------------------------- export controllers
+// --- export controllers
 export {
   signup,
   login,

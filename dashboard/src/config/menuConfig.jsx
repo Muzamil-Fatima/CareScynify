@@ -11,6 +11,7 @@ import ScheduleIcon from "@mui/icons-material/Schedule";
 import EventNoteIcon from "@mui/icons-material/EventNote";
 import PersonIcon from "@mui/icons-material/Person";
 import RateReviewIcon from "@mui/icons-material/RateReview";
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 // pharmacy
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
@@ -44,6 +45,12 @@ export const menuByRole = {
       path: "/doctor/appointments",
       icon: <EventNoteIcon />,
       title: "Appointments",
+    },
+    {
+      name: "Ai ChatBot",
+      path: "/doctor/chatbot",
+      icon: <SmartToyIcon />,
+      title: "Medical Knowledge Base",
     },
 
     {

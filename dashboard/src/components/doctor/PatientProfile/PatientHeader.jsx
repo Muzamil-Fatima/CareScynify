@@ -1,6 +1,6 @@
 import React from "react";
 import { usePatient } from "../../../context/patients/PatientContext";
-
+import usePatientAppointments from "../../../hooks/usePatientAppointments";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import BloodtypeRoundedIcon from "@mui/icons-material/BloodtypeRounded";
 import FemaleRoundedIcon from "@mui/icons-material/FemaleRounded";
@@ -11,7 +11,10 @@ import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded
 
 const PatientHeader = () => {
   const { patient, loading } = usePatient();
+  const patientId = patient?._id;
 
+  const { appointments } = usePatientAppointments(patientId);
+  const lastAppointment = appointments?.[1];
   if (loading || !patient) {
     return (
       <div className="flex justify-center items-center py-10">
@@ -76,7 +79,7 @@ const PatientHeader = () => {
     {
       icon: <EventAvailableRoundedIcon className="text-violet-600" />,
       label: "Last Appointment",
-      value: "Pending",
+      value: lastAppointment?.status || "No appointment before",
       span: true,
     },
   ];

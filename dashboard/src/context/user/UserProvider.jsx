@@ -33,9 +33,9 @@ const UserProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  // =========================
+  
   // ADD LANGUAGE
-  // =========================
+  
   const addLanguage = async (payload) => {
     try {
       const res = await addLanguageAPI(payload);
@@ -48,9 +48,9 @@ const UserProvider = ({ children }) => {
     }
   };
 
-  // =========================
+  // 
   // UPDATE LANGUAGE
-  // =========================
+  // 
   const updateLanguage = async (id, payload) => {
     try {
       const res = await updateLanguageAPI(id, payload);
@@ -63,9 +63,9 @@ const UserProvider = ({ children }) => {
     }
   };
 
-  // =========================
+  // 
   // DELETE LANGUAGE
-  // =========================
+  // 
   const deleteLanguage = async (id) => {
     try {
       const res = await deleteLanguageAPI(id);

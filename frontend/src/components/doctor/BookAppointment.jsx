@@ -24,7 +24,7 @@ const BookAppointment = () => {
   const { bookAppointment, reserveAppointment, bookingLoading } =
     useAppointment();
   const [bookingError, setBookingError] = useState("");
-  /* ---------------- STATE ---------------- */
+  /*  STATE  */
   const [offset, setOffset] = useState(0);
   const [date, setDate] = useState(
     () => new Date().toISOString().split("T")[0],
@@ -70,7 +70,7 @@ const BookAppointment = () => {
     }
   }, [workplace]);
 
-  /* ---------------- DATES ---------------- */
+  /*  DATES  */
   const dates = useMemo(() => {
     const days = [];
     for (let i = 0; i < 5; i++) {
@@ -88,7 +88,7 @@ const BookAppointment = () => {
     return days;
   }, [offset]);
 
-  /* ---------------- SLOTS ---------------- */
+  /*  SLOTS  */
   const [slots, setSlots] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState("");
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -132,12 +132,12 @@ const BookAppointment = () => {
 
     return () => socket.off("slot-updated", handleSlotUpdate);
   }, [doctor, workplace, date, fetchSlots]);
-  /* ---------------- RESET ---------------- */
+  /*  RESET  */
   useEffect(() => {
     setTime("");
   }, [selectedConsultationType]);
 
-  /* ---------------- BOOKING ---------------- */
+  /*  BOOKING  */
   const handleBook = async () => {
     if (!selectedSlot || !workplace) return;
 
@@ -173,7 +173,7 @@ const BookAppointment = () => {
 
   if (!doctor) return <div className="text-center py-10">Doctor not found</div>;
 
-  /* ---------------- FORMAT SLOT LABEL (AM/PM FIX) ---------------- */
+  /*  FORMAT SLOT LABEL (AM/PM FIX)  */
   const formatSlotLabel = (label) => {
     if (!label) return "";
 
@@ -194,7 +194,7 @@ const BookAppointment = () => {
     return `${hour}:${min.toString().padStart(2, "0")} ${ampm}`;
   };
 
-  /* ---------------- GROUPING ---------------- */
+  /*  GROUPING  */
   const convertTo24Hour = (label) => {
     if (!label) return 0;
 

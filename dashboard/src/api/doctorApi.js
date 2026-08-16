@@ -1,5 +1,5 @@
 import { api } from "./axios";
-// --------------------------------- Profile Update ---------------------------------
+// -------- Profile Update --------
 // GET DOCTOR PROFILE
 export const getDoctorProfile = async () => {
   const res = await api.get("/api/doctor/profile");
@@ -10,7 +10,7 @@ export const updateDoctorProfile = async (payload) => {
   const res = await api.put("/api/doctor/profile", payload);
   return res.data;
 };
-// --------------------------------- Education ---------------------------------
+// -------- Education --------
 // UPDATE education
 export const updateDoctorEducation = async (id, payload) => {
   const res = await api.put(`/api/doctor/education/${id}`, payload);
@@ -28,7 +28,7 @@ export const deleteDoctorEducation = async (id) => {
   const res = await api.delete(`/api/doctor/education/${id}`);
   return res.data;
 };
-// --------------------------------- Experience ---------------------------------
+// -------- Experience --------
 
 // update doctor experience
 export const updateDoctorExperience = async (id, payload) => {
@@ -45,7 +45,7 @@ export const deleteDoctorExperience = async (id) => {
   const res = await api.delete(`/api/doctor/experience/${id}`);
   return res.data;
 };
-// --------------------------------- WorkPlace ---------------------------------
+// -------- WorkPlace --------
 
 // add doctor workplace
 export const addDoctorWorkplace = async (payload) => {
@@ -62,7 +62,7 @@ export const deleteDoctorWorkplace = async (id) => {
   const res = await api.delete(`/api/doctor/workplaces/${id}`);
   return res.data;
 };
-// ------------------------- workplace settings -------------------------
+//  workplace settings 
 export const updateWorkplaceSettings = async (workplaceId, payload) => {
   const res = await api.patch(
     `/api/doctor/workplaces/${workplaceId}/settings`,

@@ -6,13 +6,17 @@ import express from "express";
 import cookiesParser from "cookie-parser";
 import http from "http";
 import { initSocket } from "./config/socket.js";
-
+import path from "path";
+import { fileURLToPath } from "url";
 //Files connection
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+
 // import { removeUnverifiedAccount } from "./auto/removeUnverifiedAccounts.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRouter from "./routes/userRoutes.js";
+import { sendAppointmentReminders } from "./controllers/appointmentController.js";
 // patient routes
 import reportRoutes from "./routes/reportRoutes.js";
 import patientsRoutes from "./routes/patientsRoutes.js";
@@ -26,6 +30,7 @@ import doctorPatientRoutes from "./routes/doctor/doctorPatientRoutes.js";
 import doctorDashboardRoutes from "./routes/doctor/doctorDashboardRoutes.js";
 import videoRoutes from "./routes/doctor/videoRoutes.js";
 import globalSearchRoutes from "./routes/doctor/globalSearchRoutes.js";
+import doctorChatbotRoutes from "./routes/chatbot/doctorChatbotRoutes.js";
 // pharmacy
 import medicineRoutes from "./routes/pharmacy/medicineRoutes.js";
 import profileRoutes from "./routes/pharmacy/profileRoutes.js";
@@ -51,6 +56,8 @@ connectDB();
 connectCloudinary();
 //Building Server
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
 // removeUnverifiedAccount();
 app.use(passport.initialize());
@@ -59,7 +66,18 @@ app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookiesParser());
-
+// Serve locally uploaded files
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"), {
+    setHeaders: (res, filePath) => {
+      if (filePath.toLowerCase().endsWith(".pdf")) {
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", "inline");
+      }
+    },
+  }),
+);
 // allow request
 const corsOptions = {
   origin: function (origin, callback) {
@@ -74,10 +92,15 @@ const corsOptions = {
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
 };
+// ====================
 app.use(cors(corsOptions));
+setInterval(() => {
+  sendAppointmentReminders();
+}, 60 * 1000);
 // ======================================= website
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/notifications", notificationRoutes);
 //  user routes
 app.use("/api/user", userRouter);
 // use patient routes
@@ -107,6 +130,7 @@ app.use("/api/doctor-patients", doctorPatientRoutes);
 app.use("/api/doctor/dashboard", doctorDashboardRoutes);
 app.use("/api/doctor/video/call", videoRoutes);
 app.use("/api/global/search", globalSearchRoutes);
+app.use("/api/doctor/chatbot", doctorChatbotRoutes);
 // ================================================== pharmacy
 app.use("/api/medicineRoutes", medicineRoutes);
 app.use("/api/pharmacy", profileRoutes);

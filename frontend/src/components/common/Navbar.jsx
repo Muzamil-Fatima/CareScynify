@@ -12,6 +12,8 @@ import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { useAuth } from "../../hooks/useAuth.js";
 import { useCartContext } from "../../context/pharmacy/CartContext.js";
+import NotificationBell from "../notification/NotificationBell";
+import NotificationDrawer from "../notification/NotificationDrawer";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
@@ -104,12 +106,21 @@ const Navbar = () => {
                 </button>
               )}
 
-              {/* Patient Profile */}
-              <Link to="/profile">
-                <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold shadow-sm hover:scale-105 transition">
-                  {user?.name?.charAt(0).toUpperCase() || "U"}
+              {/* Notification + Patient Profile */}
+              <div className="flex items-center gap-2">
+                {/* Notification - Patient only */}
+                <div className="relative">
+                  <NotificationBell />
+                  <NotificationDrawer />
                 </div>
-              </Link>
+
+                {/* Patient Profile */}
+                <Link to="/profile">
+                  <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold shadow-sm hover:scale-105 transition">
+                    {user?.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+                </Link>
+              </div>
             </>
           ) : (
             <>

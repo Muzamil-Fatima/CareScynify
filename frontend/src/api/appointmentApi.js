@@ -1,6 +1,5 @@
 import { api } from "./axios";
 
-/* ---------------- SLOT SYSTEM ---------------- */
 
 // get available slots
 export const getAvailableSlots = async (doctorId, workplaceId, date) => {
@@ -39,7 +38,6 @@ export const getAppointmentById = async (id) => {
   return res.data;
 };
 
-/* ---------------- CANCEL ---------------- */
 // cancel appointment
 export const cancelAppointment = async (id) => {
   const res = await api.patch(`/api/appointments/${id}/cancel`);

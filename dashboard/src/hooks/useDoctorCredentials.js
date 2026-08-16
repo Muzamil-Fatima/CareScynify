@@ -10,7 +10,7 @@ const useDoctorCredentials = () => {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // -------------------------------- Get Credentials
+  // Get Credentials
   const fetchCredentials = useCallback(async () => {
     try {
       setLoading(true);
@@ -30,7 +30,7 @@ const useDoctorCredentials = () => {
     }
   }, []);
 
-  // -------------------------------- Upload Credential
+  // Upload Credential
   const uploadCredential = async (formData) => {
     try {
       setLoading(true);
@@ -61,7 +61,7 @@ const useDoctorCredentials = () => {
     }
   };
 
-  // -------------------------------- Delete Credential
+  // Delete Credential
   const removeCredential = async (id) => {
     try {
       setLoading(true);
@@ -91,7 +91,7 @@ const useDoctorCredentials = () => {
     }
   };
 
-  // -------------------------------- Initial Fetch
+  // Initial Fetch
   useEffect(() => {
     fetchCredentials();
   }, [fetchCredentials]);

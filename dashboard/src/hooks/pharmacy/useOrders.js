@@ -21,7 +21,7 @@ export const useOrders = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // ---------------- Fetch Orders ----------------
+  //  Fetch Orders 
 
   const fetchOrders = async () => {
     try {
@@ -45,7 +45,7 @@ export const useOrders = () => {
     fetchOrders();
   }, []);
 
-  // ---------------- Search + Filters ----------------
+  //  Search + Filters 
 
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
@@ -74,7 +74,7 @@ export const useOrders = () => {
     });
   }, [orders, search, filters]);
 
-  // ---------------- Pagination ----------------
+  //  Pagination 
 
   const totalOrders = filteredOrders.length;
 
@@ -98,7 +98,7 @@ export const useOrders = () => {
     totalOrders
   );
 
-  // ---------------- Statistics ----------------
+  //  Statistics 
 
   const statistics = useMemo(() => {
     return {
@@ -122,7 +122,7 @@ export const useOrders = () => {
     };
   }, [orders]);
 
-  // ---------------- Filters ----------------
+  //  Filters 
 
   const handleFilterChange = (field, value) => {
     setCurrentPage(1);
@@ -145,7 +145,7 @@ export const useOrders = () => {
     });
   };
 
-  // ---------------- Refresh ----------------
+  //  Refresh 
 
   const handleRefresh = () => {
     fetchOrders();

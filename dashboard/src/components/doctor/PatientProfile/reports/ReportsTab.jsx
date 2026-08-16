@@ -1,5 +1,6 @@
 import React from "react";
-import { usePatient } from "../../../context/patients/PatientContext";
+import { usePatient } from "../../../../context/patients/PatientContext";
+
 import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import DownloadRoundedIcon from "@mui/icons-material/DownloadRounded";
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
@@ -9,7 +10,10 @@ import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
 const ReportsTab = () => {
   const { reports = [], loading } = usePatient();
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   const formatDate = (date) => {
     if (!date) return "--";
 
@@ -18,6 +22,33 @@ const ReportsTab = () => {
       month: "short",
       year: "numeric",
     });
+  };
+
+  const handleViewReport = (report) => {
+    const fileUrl = report.fileUrl || report.pdfUrl;
+
+    if (!fileUrl) {
+      console.error("Report URL is missing:", report);
+      return;
+    }
+
+    window.open(fileUrl, "_blank", "noopener,noreferrer");
+  };
+
+  const handleDownloadReport = (report) => {
+    const fileUrl = report.fileUrl || report.pdfUrl;
+
+    if (!fileUrl) {
+      console.error("Report URL is missing:", report);
+      return;
+    }
+
+    const link = document.createElement("a");
+    link.href = fileUrl;
+    link.download = report.title || "medical-report.pdf";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.click();
   };
 
   return (
@@ -43,7 +74,7 @@ const ReportsTab = () => {
                   <div className="flex flex-wrap gap-5 mt-2 text-sm text-gray-500">
                     <div className="flex items-center gap-1">
                       <CategoryRoundedIcon fontSize="small" />
-                      {report.category}
+                      {report.category || "Other"}
                     </div>
 
                     <div className="flex items-center gap-1">
@@ -61,7 +92,7 @@ const ReportsTab = () => {
                     : "bg-yellow-100 text-yellow-700"
                 }`}
               >
-                {report.status}
+                {report.status || "Processing"}
               </span>
             </div>
 
@@ -80,22 +111,18 @@ const ReportsTab = () => {
 
             {/* Buttons */}
             <div className="flex gap-3 mt-6">
+              {/* VIEW */}
               <button
-                onClick={() => window.open(report.fileUrl, "_blank")}
+                onClick={() => handleViewReport(report)}
                 className="flex items-center gap-2 px-5 py-2 rounded-lg bg-violet-50 text-violet-700 hover:bg-violet-100 transition"
               >
                 <VisibilityRoundedIcon fontSize="small" />
                 View
               </button>
 
+              {/* DOWNLOAD */}
               <button
-                onClick={() => {
-                  const link = document.createElement("a");
-                  link.href = report.fileUrl;
-                  link.download = report.title;
-                  link.target = "_blank";
-                  link.click();
-                }}
+                onClick={() => handleDownloadReport(report)}
                 className="flex items-center gap-2 px-5 py-2 rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition"
               >
                 <DownloadRoundedIcon fontSize="small" />

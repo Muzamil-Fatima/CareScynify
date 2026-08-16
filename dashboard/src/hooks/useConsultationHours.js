@@ -11,115 +11,204 @@ export const useConsultationHours = (
   const requestRef = useRef(0);
   const debounceRef = useRef(null);
 
-  const toMinutes = (t = "") => {
-    if (!t || !t.includes(":")) return null;
-    const [h, m] = t.split(":").map(Number);
-    if (isNaN(h) || isNaN(m)) return null;
-    return h * 60 + m;
+  // TIME TO MINUTES
+
+  const toMinutes = (time = "") => {
+    if (!time || !time.includes(":")) return null;
+
+    const [hours, minutes] = time.split(":").map(Number);
+
+    if (isNaN(hours) || isNaN(minutes)) {
+      return null;
+    }
+
+    return hours * 60 + minutes;
   };
 
-  const hasConflict = (workplaceId, day, start1, end1) => {
-    const workplaces = profileRef.current?.doctor?.workplaces || [];
+  // CHECK ALL CONFLICTS FOR ONE DAY
 
-    for (let w of workplaces) {
-      if (w._id === workplaceId) continue;
+  const validateDayConflicts = (workplaces, day) => {
+    const newConflicts = {};
 
-      const slot = w?.availability?.[day];
-      if (!slot?.start || !slot?.end) continue;
+    for (const workplace of workplaces) {
+      const currentSlot = workplace?.availability?.[day];
 
-      const s2 = toMinutes(slot.start);
-      const e2 = toMinutes(slot.end);
+      if (!currentSlot?.start || !currentSlot?.end) {
+        continue;
+      }
 
-      if (start1 < e2 && end1 > s2) {
-        return w.name || "Another Workplace";
+      const currentStart = toMinutes(currentSlot.start);
+      const currentEnd = toMinutes(currentSlot.end);
+
+      if (
+        currentStart === null ||
+        currentEnd === null ||
+        currentStart >= currentEnd
+      ) {
+        newConflicts[`${workplace._id}-${day}`] = "Invalid time range";
+
+        continue;
+      }
+
+      // Check this workplace against EVERY other workplace
+      for (const otherWorkplace of workplaces) {
+        if (otherWorkplace._id === workplace._id) {
+          continue;
+        }
+
+        const otherSlot = otherWorkplace?.availability?.[day];
+
+        if (!otherSlot?.start || !otherSlot?.end) {
+          continue;
+        }
+
+        const otherStart = toMinutes(otherSlot.start);
+        const otherEnd = toMinutes(otherSlot.end);
+
+        if (
+          otherStart === null ||
+          otherEnd === null ||
+          otherStart >= otherEnd
+        ) {
+          continue;
+        }
+
+        const isOverlapping =
+          currentStart < otherEnd && currentEnd > otherStart;
+
+        if (isOverlapping) {
+          newConflicts[`${workplace._id}-${day}`] =
+            otherWorkplace.name || "Another Workplace";
+
+          // We found the actual workplace causing
+          // the conflict, so stop checking this one.
+          break;
+        }
       }
     }
-    return null;
+
+    return newConflicts;
   };
 
+  // UPDATE DAY TIME
+
   const setDayTime = (workplaceId, day, field, value) => {
-    const workplace = profileRef.current?.doctor?.workplaces?.find(
+    const currentWorkplaces = profileRef.current?.doctor?.workplaces || [];
+
+    const currentWorkplace = currentWorkplaces.find(
       (w) => w._id === workplaceId,
     );
 
-    const current = workplace?.availability?.[day] || {
+    const current = currentWorkplace?.availability?.[day] || {
       start: "",
       end: "",
     };
 
     const newStart = field === "start" ? value : current.start;
+
     const newEnd = field === "end" ? value : current.end;
 
-    const key = `${workplaceId}-${day}`;
+    // UPDATE PROFILE WITH NEW TIME
 
-    // CLEAR OLD ERROR FIRST
+    const updatedWorkplaces = currentWorkplaces.map((workplace) =>
+      workplace._id === workplaceId
+        ? {
+            ...workplace,
+            availability: {
+              ...workplace.availability,
+              [day]: {
+                start: newStart,
+                end: newEnd,
+              },
+            },
+          }
+        : workplace,
+    );
+
+    setProfile((prev) => ({
+      ...prev,
+      doctor: {
+        ...prev.doctor,
+        workplaces: updatedWorkplaces,
+      },
+    }));
+
+    // CLEAR OLD CONFLICTS FOR THIS DAY
+    // Then calculate them again using the NEW times.
     setConflicts((prev) => {
       const copy = { ...prev };
-      delete copy[key];
+
+      Object.keys(copy).forEach((key) => {
+        if (key.endsWith(`-${day}`)) {
+          delete copy[key];
+        }
+      });
+
       return copy;
     });
 
-    //  SKIP IF NOTHING CHANGED
+    // NOTHING CHANGED
+
     if (current.start === newStart && current.end === newEnd) {
       return true;
     }
 
-    //  UPDATE UI FIRST
-    setProfile((prev) => {
-      const updated = (prev.doctor?.workplaces || []).map((w) =>
-        w._id === workplaceId
-          ? {
-              ...w,
-              availability: {
-                ...w.availability,
-                [day]: { start: newStart, end: newEnd },
-              },
-            }
-          : w,
-      );
+    // WAIT UNTIL BOTH TIMES EXIST
 
-      return {
+    if (!newStart || !newEnd) {
+      return true;
+    }
+
+    // VALIDATE NEW TIME
+
+    const startMinutes = toMinutes(newStart);
+    const endMinutes = toMinutes(newEnd);
+
+    if (
+      startMinutes === null ||
+      endMinutes === null ||
+      startMinutes >= endMinutes
+    ) {
+      setConflicts((prev) => ({
         ...prev,
-        doctor: { ...prev.doctor, workplaces: updated },
+        [`${workplaceId}-${day}`]: "Invalid time range",
+      }));
+
+      return false;
+    }
+
+    // CHECK ALL WORKPLACES USING UPDATED DATA
+
+    const dayConflicts = validateDayConflicts(updatedWorkplaces, day);
+
+    // UPDATE CONFLICT STATE
+
+    setConflicts((prev) => {
+      const copy = { ...prev };
+
+      // Remove all old conflicts for this day
+      Object.keys(copy).forEach((key) => {
+        if (key.endsWith(`-${day}`)) {
+          delete copy[key];
+        }
+      });
+
+      // Add newly detected conflicts
+      return {
+        ...copy,
+        ...dayConflicts,
       };
     });
 
-    setIsDirty(true);
+    // IF CONFLICT EXISTS → DO NOT SAVE
 
-    // VALIDATION ONLY WHEN BOTH VALUES EXIST
-    if (!newStart || !newEnd) return true;
-
-    const startMin = toMinutes(newStart);
-    const endMin = toMinutes(newEnd);
-
-    //  INVALID RANGE
-    if (startMin === null || endMin === null) {
-      setConflicts((prev) => ({
-        ...prev,
-        [key]: "Invalid time range",
-      }));
-      return false;
-    }
-    if (startMin === null || endMin === null || startMin >= endMin) {
-      setConflicts((prev) => ({
-        ...prev,
-        [key]: "Invalid time range",
-      }));
+    if (Object.keys(dayConflicts).length > 0) {
+      clearTimeout(debounceRef.current);
       return false;
     }
 
-    //  CONFLICT CHECK
-    const conflict = hasConflict(workplaceId, day, startMin, endMin);
+    // NO CONFLICT → SAVE
 
-    if (conflict) {
-      setConflicts((prev) => ({
-        ...prev,
-        [key]: conflict,
-      }));
-      return false;
-    }
-
-    // DEBOUNCED API CALL
     clearTimeout(debounceRef.current);
 
     debounceRef.current = setTimeout(() => {
@@ -129,75 +218,155 @@ export const useConsultationHours = (
     return true;
   };
 
+  // SAVE TO SERVER
+
   const saveToServer = async (workplaceId, day, start, end) => {
+    const currentReq = ++requestRef.current;
+
+    const key = `${workplaceId}-${day}`;
+
+    try {
+      const res = await updateConsultantHours(workplaceId, {
+        availability: {
+          [day]: {
+            start,
+            end,
+          },
+        },
+      });
+
+      // Ignore old request
+      if (currentReq !== requestRef.current) {
+        return;
+      }
+
+      // Backend failed
+      if (!res?.success) {
+        toast.error(res?.message || "Failed to save consultation hours");
+
+        return;
+      }
+
+      // Remove conflict after successful save
+      setConflicts((prev) => {
+        const copy = { ...prev };
+        delete copy[key];
+        return copy;
+      });
+
+      toast.success(res?.message || "Consultation hours saved successfully");
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message || "Failed to save consultation hours",
+      );
+    }
+  };
+
+  // REMOVE DAY
+
+  const removeDay = async (workplaceId, day) => {
+    // Cancel pending time save
+    clearTimeout(debounceRef.current);
+
     const currentReq = ++requestRef.current;
 
     try {
       const res = await updateConsultantHours(workplaceId, {
         availability: {
-          [day]: { start, end },
+          [day]: null,
         },
       });
 
-      if (currentReq !== requestRef.current) return;
+      if (currentReq !== requestRef.current) {
+        return;
+      }
 
       if (!res?.success) {
-        toast.error(res?.message || "Update failed");
+        toast.error(res?.message || "Failed to remove day");
+
+        return;
       }
-    } catch (err) {
-      toast.error(err?.response?.data?.message || "Server error");
-    }
-  };
-const removeDay = async (workplaceId, day) => {
-  const currentReq = ++requestRef.current;
 
-  try {
-    const res = await updateConsultantHours(workplaceId, {
-      availability: {
-        [day]: null, // backend to remove
-      },
-    });
+      // UPDATE PROFILE
 
-    if (currentReq !== requestRef.current) return;
+      setProfile((prev) => {
+        const updatedWorkplaces = (prev.doctor?.workplaces || []).map(
+          (workplace) => {
+            if (workplace._id !== workplaceId) {
+              return workplace;
+            }
 
-    if (!res?.success) {
-      toast.error(res?.message || "Failed to remove day");
-      return;
-    }
+            const availability = {
+              ...(workplace.availability || {}),
+            };
 
-    setProfile((prev) => {
-      const updated = (prev.doctor?.workplaces || []).map((w) => {
-        if (w._id !== workplaceId) return w;
+            delete availability[day];
 
-        const copy = { ...(w.availability || {}) };
-        delete copy[day];
+            return {
+              ...workplace,
+              availability,
+            };
+          },
+        );
 
         return {
-          ...w,
-          availability: copy,
+          ...prev,
+          doctor: {
+            ...prev.doctor,
+            workplaces: updatedWorkplaces,
+          },
         };
       });
 
-      return {
-        ...prev,
-        doctor: {
-          ...prev.doctor,
-          workplaces: updated,
-        },
-      };
-    });
+      // RECALCULATE OTHER WORKPLACE CONFLICTS
 
-    setConflicts((prev) => {
-      const copy = { ...prev };
-      delete copy[`${workplaceId}-${day}`];
-      return copy;
-    });
+      const updatedWorkplaces = (
+        profileRef.current?.doctor?.workplaces || []
+      ).map((workplace) => {
+        if (workplace._id !== workplaceId) {
+          return workplace;
+        }
 
-    setIsDirty(true);
-  } catch (err) {
-    toast.error(err?.response?.data?.message || "Server error");
-  }
-};
+        const availability = {
+          ...(workplace.availability || {}),
+        };
 
-  return { setDayTime, removeDay };
+        delete availability[day];
+
+        return {
+          ...workplace,
+          availability,
+        };
+      });
+
+      const dayConflicts = validateDayConflicts(updatedWorkplaces, day);
+
+      setConflicts((prev) => {
+        const copy = { ...prev };
+
+        // Remove old conflicts for this day
+        Object.keys(copy).forEach((key) => {
+          if (key.endsWith(`-${day}`)) {
+            delete copy[key];
+          }
+        });
+
+        return {
+          ...copy,
+          ...dayConflicts,
+        };
+      });
+
+      toast.success(res?.message || "Consultation day removed successfully");
+    } catch (err) {
+      toast.error(err?.response?.data?.message || "Failed to remove day");
+    }
+  };
+
+  // RETURN
+
+  return {
+    setDayTime,
+    removeDay,
+  };
 };

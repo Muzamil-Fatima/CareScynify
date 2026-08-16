@@ -19,7 +19,10 @@ const appointmentSchema = new mongoose.Schema(
     workplaceId: {
       type: mongoose.Schema.Types.ObjectId,
     },
-
+    reminderSent: {
+      type: Boolean,
+      default: false,
+    },
     appointmentDate: {
       type: Date,
       required: true,

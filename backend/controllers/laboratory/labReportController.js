@@ -130,9 +130,9 @@ export const createLabReport = async (req, res) => {
       report,
     });
 
-    // ============================
+   
     // Generate AI Summary (Background)
-    // ============================
+ 
     try {
       const explanation = await generateMedicalExplanation(
         pdfUrl,

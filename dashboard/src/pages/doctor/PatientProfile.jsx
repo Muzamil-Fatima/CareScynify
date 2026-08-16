@@ -4,9 +4,8 @@ import PatientHeader from "../../components/doctor/PatientProfile/PatientHeader"
 import OverviewTab from "../../components/doctor/PatientProfile/OverviewTab";
 import MedicalInfoTab from "../../components/doctor/PatientProfile/MedicalInfoTab";
 import AppointmentHistoryTab from "../../components/doctor/PatientProfile/AppointmentHistoryTab";
-import ReportsTab from "../../components/doctor/PatientProfile/ReportsTab";
+import ReportsTab from "../../components/doctor/PatientProfile/reports/ReportsTab";
 import PrescriptionTab from "../../components/doctor/PatientProfile/PrescriptionTab";
-import DrNotesTab from "../../components/doctor/PatientProfile/DrNotesTab";
 const PatientProfileContent = () => {
   const [activeTab, setActiveTab] = useState("overview");
   const tabs = [
@@ -15,7 +14,6 @@ const PatientProfileContent = () => {
     { id: "appointments", label: "Appointments" },
     { id: "reports", label: "Reports" },
     { id: "prescriptions", label: "Prescriptions" },
-    { id: "notes", label: "Dr Notes" },
   ];
 
   return (

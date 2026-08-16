@@ -9,13 +9,13 @@ export const updateUserProfile = async (formData) => {
 
   return res.data;
 };
-// ---------------- USER PROFILE ----------------
+//  USER PROFILE 
 export const getUserProfile = async () => {
   const res = await api.get("/api/user/profile");
   return res.data;
 };
 
-// ---------------- LANGUAGES ----------------
+//  LANGUAGES 
 
 // ADD
 export const addLanguage = async (payload) => {

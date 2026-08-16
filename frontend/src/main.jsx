@@ -14,6 +14,7 @@ import PharmacyProvider from "./context/pharmacy/PharmacyProvider.jsx";
 import CartProvider from "./context/pharmacy/CartProvider.jsx";
 import OrderProvider from "./context/pharmacy/OrderProvider.jsx";
 import LabTestProvider from "./context/laboratory/LabTestProvider.jsx";
+import NotificationProvider from "./context/notification/NotificationProvider.jsx";
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -22,10 +23,11 @@ createRoot(document.getElementById("root")).render(
         <PatientProvider>
           <LabProvider>
             <LabTestProvider>
-                <DoctorProvider>
-                  <OrderProvider>
-                    <CartProvider>
-                      <AuthProvider>
+              <DoctorProvider>
+                <OrderProvider>
+                  <CartProvider>
+                    <AuthProvider>
+                      <NotificationProvider>
                         <SymptomProvider>
                           <BrowserRouter>
                             <QueryClientProvider client={queryClient}>
@@ -35,10 +37,11 @@ createRoot(document.getElementById("root")).render(
                             </QueryClientProvider>
                           </BrowserRouter>
                         </SymptomProvider>
-                      </AuthProvider>
-                    </CartProvider>
-                  </OrderProvider>
-                </DoctorProvider>
+                      </NotificationProvider>
+                    </AuthProvider>
+                  </CartProvider>
+                </OrderProvider>
+              </DoctorProvider>
             </LabTestProvider>
           </LabProvider>
         </PatientProvider>

@@ -19,41 +19,44 @@ import LabReportProvider from "./context/laboratory/LabReportProvider.jsx";
 import LabDashboardProvider from "./context/laboratory/LabDashboardProvider.jsx";
 import VideoCallProvider from "./context/doctor/VideoCallProvider.jsx";
 import GlobalSearchProvider from "./context/doctor/GlobalSearchProvider.jsx";
+import ChatbotProvider from "./context/chatbot/chatbotProvider.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <UserProvider>
-          <PharmacyProvider>
-            <OrderProvider>
-              <MedicineProvider>
-                <NotificationProvider>
-                  <LabTestProvider>
-                    <LabDashboardProvider>
-                      <LabProfileProvider>
-                        <LabAddPatientProvider>
-                          <LabSampleProvider>
-                            <LabReportProvider>
-                              <DoctorPatientProvider>
-                                <DoctorProvider>
-                                  <GlobalSearchProvider>
-                                    <VideoCallProvider>
-                                      <App />
-                                    </VideoCallProvider>
-                                  </GlobalSearchProvider>
-                                </DoctorProvider>
-                              </DoctorPatientProvider>
-                            </LabReportProvider>
-                          </LabSampleProvider>
-                        </LabAddPatientProvider>
-                      </LabProfileProvider>
-                    </LabDashboardProvider>
-                  </LabTestProvider>
-                </NotificationProvider>
-              </MedicineProvider>
-            </OrderProvider>
-          </PharmacyProvider>
-        </UserProvider>
+        <ChatbotProvider>
+          <UserProvider>
+            <PharmacyProvider>
+              <OrderProvider>
+                <MedicineProvider>
+                  <NotificationProvider>
+                    <LabTestProvider>
+                      <LabDashboardProvider>
+                        <LabProfileProvider>
+                          <LabAddPatientProvider>
+                            <LabSampleProvider>
+                              <LabReportProvider>
+                                <DoctorPatientProvider>
+                                  <DoctorProvider>
+                                    <GlobalSearchProvider>
+                                      <VideoCallProvider>
+                                        <App />
+                                      </VideoCallProvider>
+                                    </GlobalSearchProvider>
+                                  </DoctorProvider>
+                                </DoctorPatientProvider>
+                              </LabReportProvider>
+                            </LabSampleProvider>
+                          </LabAddPatientProvider>
+                        </LabProfileProvider>
+                      </LabDashboardProvider>
+                    </LabTestProvider>
+                  </NotificationProvider>
+                </MedicineProvider>
+              </OrderProvider>
+            </PharmacyProvider>
+          </UserProvider>
+        </ChatbotProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,

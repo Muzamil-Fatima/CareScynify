@@ -3,20 +3,29 @@ import Patient from "../models/patientModel.js";
 import User from "../models/user.js";
 import Report from "../models/reportModel.js";
 // GET PATIENT PROFILE
+
 export const getPatientProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select(
       "name email avatar phone cnic dob",
     );
-    // console.log("user =", user);
+
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({
+        message: "User not found",
+      });
     }
 
     const patient = await Patient.findOne({
       userId: req.user._id,
     });
-    // console.log("patient =", patient);
+
+    const reports = await Report.find({
+      userId: req.user._id,
+    }).sort({
+      createdAt: -1,
+    });
+
     return res.json({
       user: {
         name: user.name,
@@ -26,6 +35,7 @@ export const getPatientProfile = async (req, res) => {
         cnic: user.cnic,
         dob: user.dob,
       },
+
       patient: patient || {
         patientId: null,
         gender: "",
@@ -39,12 +49,15 @@ export const getPatientProfile = async (req, res) => {
         notes: "",
         status: "active",
       },
+
+      reports,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
-
 //  UPDATE PATIENT + USER PROFILE
 export const updatePatientProfile = async (req, res) => {
   try {

@@ -125,9 +125,9 @@ export const getPharmacyDashboard = async (req, res) => {
       },
     ];
 
-    // ==========================================
+    
     // INVENTORY
-    // ==========================================
+    
 
     const inventoryData = await Medicine.aggregate([
       {
@@ -162,9 +162,9 @@ export const getPharmacyDashboard = async (req, res) => {
       },
     ]);
 
-    // ==========================================
+    
     // RECENT ORDERS
-    // ==========================================
+    
 
     const recentOrders = await PharmacyOrder.find({
       pharmacyId,
@@ -176,9 +176,9 @@ export const getPharmacyDashboard = async (req, res) => {
       .limit(5)
       .select("orderId items totalAmount orderStatus createdAt");
 
-    // ==========================================
+    
     // RESPONSE
-    // ==========================================
+    
 
     return res.status(200).json({
       success: true,

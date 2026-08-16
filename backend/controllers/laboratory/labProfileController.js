@@ -108,7 +108,7 @@ export const updateLabProfile = async (req, res) => {
 
     await user.save();
 
-    // ================= LAB UPDATE =================
+    //  LAB UPDATE 
 
     let laboratory = await Laboratory.findOne({
       userId,

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import PhoneInput from "../../common/PhoneInput";
 import useDoctorPatient from "../../../hooks/useDoctorPatient";
-const AddPatient = ({ open, onClose }) => {
+const AddPatient = ({ open, onClose, onPatientAdded }) => {
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -17,7 +17,9 @@ const AddPatient = ({ open, onClose }) => {
       await addPatient(formData);
 
       toast.success("Patient added successfully.");
-
+if (onPatientAdded) {
+  await onPatientAdded();
+}
       setFormData({
         name: "",
         phone: "",

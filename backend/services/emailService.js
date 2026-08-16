@@ -1,24 +1,29 @@
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
 
-export const sendEmail = async (to, { subject, message }) => {
+const sendEmail = async ({ to, subject, text, html }) => {
   try {
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"CareScynify" <${process.env.EMAIL_USER}>`,
       to,
       subject,
-      text: message,
+      text,
+      html,
     });
 
-    // console.log("Email sent");
+    console.log(`Email sent to ${to}`);
   } catch (error) {
     console.error("Email Error:", error);
   }
 };
+
+export default sendEmail;

@@ -1,22 +1,14 @@
-import { useNotificationContext } from "../context/NotificationContext";
+import { useContext } from "react";
+import NotificationContext from "../context/notification/NotificationContext";
 
 export const useNotifications = () => {
-  const { state, dispatch } = useNotificationContext();
+  const context = useContext(NotificationContext);
 
-  const markAsRead = (id) => {
-    dispatch({ type: "MARK_AS_READ", payload: id });
-  };
+  if (!context) {
+    throw new Error(
+      "useNotifications must be used inside NotificationProvider"
+    );
+  }
 
-  const toggleDrawer = () => {
-    dispatch({ type: "TOGGLE_DRAWER" });
-  };
-
-  return {
-    notifications: state.notifications,
-    unreadCount: state.unreadCount,
-    openDrawer: state.openDrawer,
-    markAsRead,
-    toggleDrawer,
-    dispatch,
-  };
+  return context;
 };

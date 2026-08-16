@@ -18,7 +18,7 @@ export const useOrderDetails = () => {
 
   const [actionLoading, setActionLoading] = useState(false);
 
-  // ---------------- Details ----------------
+  //  Details 
 
   const openDetails = (order) => {
     setSelectedOrder(order);
@@ -30,7 +30,7 @@ export const useOrderDetails = () => {
     setSelectedOrder(null);
   };
 
-  // ---------------- Status ----------------
+  //  Status 
 
   const openStatus = (order) => {
     setSelectedOrder(order);
@@ -66,7 +66,7 @@ export const useOrderDetails = () => {
     }
   };
 
-  // ---------------- Cancel ----------------
+  //  Cancel 
 
   const openCancel = (order) => {
     setSelectedOrder(order);

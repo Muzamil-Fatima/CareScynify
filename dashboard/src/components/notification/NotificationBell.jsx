@@ -1,17 +1,37 @@
-import { useNotifications } from "../hooks/useNotifications";
+import React from "react";
+import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 
-export default function NotificationBell() {
+import { useNotifications } from "../../hooks/useNotifications";
+import NotificationBadge from "./NotificationBadge";
+
+const NotificationBell = () => {
   const { unreadCount, toggleDrawer } = useNotifications();
 
   return (
-    <div className="relative cursor-pointer" onClick={toggleDrawer}>
-      🔔
+    <button
+      type="button"
+      onClick={toggleDrawer}
+      className="
+        relative
+        flex
+        items-center
+        justify-center
+        w-10
+        h-10
+        rounded-full
+        text-slate-600
+        hover:text-purple-600
+        hover:bg-purple-50
+        transition-all
+        duration-200
+      "
+      aria-label="Notifications"
+    >
+      <NotificationsNoneOutlinedIcon fontSize="medium" />
 
-      {unreadCount > 0 && (
-        <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">
-          {unreadCount}
-        </span>
-      )}
-    </div>
+      <NotificationBadge count={unreadCount} />
+    </button>
   );
-}
+};
+
+export default NotificationBell;

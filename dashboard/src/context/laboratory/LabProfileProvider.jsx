@@ -49,7 +49,7 @@ const LabProfileProvider = ({ children }) => {
     const timeout = setTimeout(async () => {
       try {
         const payload = {
-          // ================= USER =================
+          //  USER 
 
           name: profile.user?.name,
 
@@ -61,11 +61,11 @@ const LabProfileProvider = ({ children }) => {
 
           cnic: profile.user?.cnic,
 
-          // ================= LABORATORY =================
+          //  LABORATORY 
 
           ...profile.laboratory,
 
-          // ================= AVATAR =================
+          //  AVATAR 
 
           avatar: profile.user?.avatar,
         };

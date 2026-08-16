@@ -46,14 +46,14 @@ const PharmacyProvider = ({ children }) => {
     const timeout = setTimeout(async () => {
       try {
         const payload = {
-          // ================= USER =================
+          //  USER 
           name: profile.user?.name,
           email: profile.user?.email,
           phone: profile.user?.phone,
           dob: profile.user?.dob,
           cnic: profile.user?.cnic,
 
-          // ================= PHARMACY =================
+          //  PHARMACY 
           ...profile.pharmacy,
         };
 

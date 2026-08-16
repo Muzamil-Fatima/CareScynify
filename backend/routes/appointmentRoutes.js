@@ -17,22 +17,22 @@ import {
 
 const router = express.Router();
 
-/* ---------------- SLOT SYSTEM ---------------- */
+/*  SLOT SYSTEM  */
 router.get("/slots", protect, getAvailableSlots);
 router.post("/reserve", protect, reserveSlot);
 
-/* ---------------- APPOINTMENTS ---------------- */
+/*  APPOINTMENTS  */
 router.post("/", protect, createAppointment);
 router.get("/", protect, getUserAppointments);
 
 router.get("/doctor", protect, getDoctorAppointments);
 router.get("/:id", protect, getAppointmentById);
 router.get("/doctor/patient/:patientId", protect, getDoctorPatientAppointments);
-/* ---------------- UPDATE / CANCEL ---------------- */
+/*  UPDATE / CANCEL  */
 router.patch("/:id/status", protect, updateAppointmentStatus);
 router.patch("/:id/cancel", protect, cancelAppointment);
 
-/* ---------------- DELETE ---------------- */
+/*  DELETE  */
 router.delete("/:id", protect, deleteAppointment);
 router.post("/doctor/create", protect, doctorCreateAppointment);
 export default router;

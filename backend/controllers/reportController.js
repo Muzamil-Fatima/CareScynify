@@ -1,10 +1,10 @@
+import mongoose from "mongoose";
 import Report from "../models/reportModel.js";
 import LabReport from "../models/laboratory/LabReport.js";
 import Patient from "../models/patientModel.js";
 import { generateMedicalExplanation } from "../services/ai/reportExplainService.js";
 import cloudinary from "../utils/cloudinary.js";
 import streamifier from "streamifier";
-// ADD REPORT
 export const addReport = async (req, res) => {
   try {
     const { category } = req.body;
@@ -23,9 +23,8 @@ export const addReport = async (req, res) => {
       });
     }
 
-    // Decide resource type
-    const resourceType =
-      req.file.mimetype === "application/pdf" ? "raw" : "image";
+    // Use "auto" so Cloudinary handles PDFs/images inline instead of forcing download
+    const resourceType = "auto";
 
     // Upload to Cloudinary
     const result = await new Promise((resolve, reject) => {
@@ -48,19 +47,13 @@ export const addReport = async (req, res) => {
     //  Create proper file URL
     let fileUrl = result.secure_url;
 
-    // console.log("Final File URL:", fileUrl);
-    // console.log("Cloudinary Result:", {
-    //   secure_url: result.secure_url,
-    //   public_id: result.public_id,
-    //   resource_type: result.resource_type,
-    //   format: result.format,
-    // });
     // Save report in DB
     const report = await Report.create({
       userId: req.userId,
       title: req.file.originalname,
       category,
       fileUrl,
+
       mimeType: req.file.mimetype,
       status: "Processing",
     });
@@ -94,22 +87,7 @@ export const addReport = async (req, res) => {
   }
 };
 
-// // GET REPORTS
-// export const getReports = async (req, res) => {
-//   try {
-//     const userId = req.userId;
-
-//     const reports = await Report.find({ userId }).sort({
-//       createdAt: -1,
-//     });
-
-//     res.json(reports);
-//   } catch (err) {
-//     res.status(500).json({
-//       message: err.message,
-//     });
-//   }
-// };
+// get reports
 export const getReports = async (req, res) => {
   try {
     const userId = req.userId;
@@ -120,7 +98,6 @@ export const getReports = async (req, res) => {
     }).sort({
       createdAt: -1,
     });
-
 
     const patient = await Patient.findOne({
       userId: userId,
@@ -144,15 +121,57 @@ export const getReports = async (req, res) => {
       }));
     }
 
-
     res.status(200).json({
       reports: userReports,
       labReports: labReports,
     });
-
   } catch (err) {
     res.status(500).json({
       message: err.message,
+    });
+  }
+};
+
+// GET SINGLE REPORT
+
+export const getReportById = async (req, res) => {
+  try {
+    const { reportId } = req.params;
+
+    if (!reportId) {
+      return res.status(400).json({
+        message: "Report ID is required",
+      });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(reportId)) {
+      return res.status(400).json({
+        message: "Invalid Report ID",
+      });
+    }
+
+    const report = await Report.findById(reportId);
+
+    if (!report) {
+      return res.status(404).json({
+        message: "Report not found",
+      });
+    }
+
+    // Security:
+    // Patient can only access their own report.
+    if (report.userId.toString() !== req.userId.toString()) {
+      return res.status(403).json({
+        message: "You are not authorized to view this report",
+      });
+    }
+
+    res.status(200).json(report);
+  } catch (error) {
+    console.error("getReportById Error:", error);
+
+    res.status(500).json({
+      message: error.message,
     });
   }
 };

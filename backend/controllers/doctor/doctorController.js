@@ -46,7 +46,7 @@ export const updateDoctorProfile = async (req, res) => {
       doctor = new Doctor({ userId });
     }
 
-    // ---------------- USER FIELDS ----------------
+    //  USER FIELDS 
     const { name, email, phone, address, avatar, dob, cnic } = req.body;
 
     if (name !== undefined) user.name = name;
@@ -59,7 +59,7 @@ export const updateDoctorProfile = async (req, res) => {
 
     await user.save();
 
-    // ---------------- DOCTOR FIELDS ----------------
+    //  DOCTOR FIELDS 
     const {
       specialization,
       experience,
@@ -100,7 +100,7 @@ export const updateDoctorProfile = async (req, res) => {
       }
       doctor.licenseNo = cleanLicense;
     }
-    // ---------------- CNIC FRONT ----------------
+    //  CNIC FRONT 
     if (req.files?.cnicFront?.[0]) {
       const frontResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
@@ -124,7 +124,7 @@ export const updateDoctorProfile = async (req, res) => {
       doctor.identityVerification.status = "Pending";
     }
 
-    // ---------------- CNIC BACK ----------------
+    //  CNIC BACK 
     if (req.files?.cnicBack?.[0]) {
       const backResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
@@ -162,7 +162,7 @@ export const updateDoctorProfile = async (req, res) => {
     });
   }
 };
-// -------------------------------------Education
+// -----Education
 // ADD EDUCATION
 export const addDoctorEducation = async (req, res) => {
   try {
@@ -222,7 +222,7 @@ export const deleteDoctorEducation = async (req, res) => {
   }
 };
 
-// -------------------------------Experience
+// ---------------Experience
 // ADD EXPERIENCE
 export const addDoctorExperience = async (req, res) => {
   try {

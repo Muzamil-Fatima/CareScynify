@@ -6,10 +6,9 @@ import ProfileDropdown from "./ProfileDropdown";
 import GlobalSearch from "./GlobalSearch";
 import useGlobalSearch from "../../hooks/doctor/useGlobalSearch";
 import { useGlobalSearchContext } from "../../context/doctor/GlobalSearchContext";
-
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import NotificationBell from "../notification/NotificationBell";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-
+import NotificationDrawer from "../notification/NotificationDrawer";
 const TopBar = () => {
   const { user, logout } = useAuth() || {};
 
@@ -91,36 +90,13 @@ const TopBar = () => {
       )}
 
       {/* RIGHT SIDE ACTIONS */}
+      {/* RIGHT SIDE ACTIONS */}
       <div className="flex items-center gap-2 ml-auto">
         {/* Notifications */}
-        <button
-          type="button"
-          className="
-            p-2
-            text-slate-500
-            hover:text-purple-600
-            hover:bg-purple-50
-            rounded-xl
-            transition
-            relative
-          "
-        >
-          <NotificationsOutlinedIcon fontSize="small" />
-
-          <span
-            className="
-              absolute
-              top-2
-              right-2
-              w-2
-              h-2
-              bg-pink-500
-              rounded-full
-              ring-2
-              ring-white
-            "
-          />
-        </button>
+        <div className="relative">
+          <NotificationBell />
+          <NotificationDrawer />
+        </div>
 
         {/* Profile */}
         <div className="relative" ref={dropdownRef}>
@@ -128,19 +104,19 @@ const TopBar = () => {
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
             className={`
-              p-2
-              rounded-xl
-              transition-all
-              duration-200
-              flex
-              items-center
-              justify-center
-              ${
-                isDropdownOpen
-                  ? "bg-purple-600 text-white shadow-md shadow-purple-200"
-                  : "bg-purple-50 text-purple-700 hover:bg-purple-100"
-              }
-            `}
+        p-2
+        rounded-xl
+        transition-all
+        duration-200
+        flex
+        items-center
+        justify-center
+        ${
+          isDropdownOpen
+            ? "bg-purple-600 text-white shadow-md shadow-purple-200"
+            : "bg-purple-50 text-purple-700 hover:bg-purple-100"
+        }
+      `}
           >
             <PersonOutlinedIcon />
           </button>

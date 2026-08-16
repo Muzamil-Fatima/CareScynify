@@ -15,9 +15,9 @@ const LabTestProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ===========================
+  
   // Get All Lab Tests
-  // ===========================
+  
 
   const getLabTests = useCallback(async () => {
     try {
@@ -38,9 +38,9 @@ const LabTestProvider = ({ children }) => {
     }
   }, []);
 
-  // ===========================
+  
   // Create Lab Test
-  // ===========================
+  
 
   const createTest = useCallback(async (data) => {
     try {
@@ -66,9 +66,9 @@ const LabTestProvider = ({ children }) => {
     }
   }, []);
 
-  // ===========================
+  
   // Update Lab Test
-  // ===========================
+  
 
   const updateTest = useCallback(async (id, data) => {
     try {
@@ -96,9 +96,9 @@ const LabTestProvider = ({ children }) => {
     }
   }, []);
 
-  // ===========================
+  
   // Delete Lab Test
-  // ===========================
+  
 
   const deleteTest = useCallback(async (id) => {
     try {

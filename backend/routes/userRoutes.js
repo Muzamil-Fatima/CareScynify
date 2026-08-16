@@ -12,8 +12,7 @@ const router = express.Router();
 
 router.put("/profile", protect, upload.single("avatar"), updateUserProfile);
 router.get("/profile", protect, getUserProfile);
-// --------------------------------------------------- Language
-// // Update doctor languages
+ // Update doctor languages
 router.post("/languages", protect, addLanguage);
 router.put("/languages/:id", protect, updateLanguage);
 router.delete("/languages/:id", protect, deleteLanguage);

@@ -37,7 +37,7 @@ const Pharmacy = () => {
 
   const isPharmacy = filters.searchType === "pharmacy";
 
-  /* ---------------- Search ---------------- */
+  /*  Search  */
 
   const handleSearch = useCallback((value) => {
     setFilters((prev) => ({
@@ -50,7 +50,7 @@ const Pharmacy = () => {
     setFilters(initialFilters);
   };
 
-  /* ---------------- Filter Chips ---------------- */
+  /*  Filter Chips  */
 
   const filterChips = [];
 
@@ -87,12 +87,12 @@ const Pharmacy = () => {
           : "💊 No Prescription",
     });
 
-  /* ---------------- Pharmacy ---------------- */
+  /*  Pharmacy  */
 
   const { pharmacies, loading, error, pagination, page, setPage } =
     usePharmacies(filters);
 
-  /* ---------------- Medicines ---------------- */
+  /*  Medicines  */
 
   const {
     medicines,
@@ -103,7 +103,7 @@ const Pharmacy = () => {
     setPage: setMedicinePage,
   } = useMedicine(filters);
 
-  /* ---------------- Current State ---------------- */
+  /*  Current State  */
 
   const currentLoading = isPharmacy ? loading : medicineLoading;
 

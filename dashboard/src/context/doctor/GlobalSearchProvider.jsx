@@ -23,9 +23,9 @@ const GlobalSearchProvider = ({ children }) => {
     [currentPath],
   );
 
-  // ---------------------------------------
+  
   // Clear search value
-  // ---------------------------------------
+  
   const clearSearch = useCallback(() => {
     setSearchValues((prev) => {
       // Nothing to clear

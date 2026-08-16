@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { useState } from "react";
 
@@ -22,8 +22,10 @@ import DrDashboard from "./pages/doctor/DrDashboard.jsx";
 import Patients from "./pages/doctor/DrPatients.jsx";
 import Appointment from "./pages/doctor/DrAppointment.jsx";
 import PatientProfile from "./pages/doctor/PatientProfile.jsx";
+import ReportViewer from "./components/doctor/PatientProfile/reports/ReportViewer.jsx";
 import VideoConsultation from "./pages/doctor/VideoConsultation.jsx";
 import WorkPlaceSchedule from "./components/doctor/workPlace/WorkPlaceSchedule.jsx";
+import Chatbot from "./pages/doctor/Chatbot.jsx";
 // pharmacy route
 import PharmacyDashboard from "./pages/pharmacy/Dashboard.jsx";
 import Medicines from "./pages/pharmacy/Medicines.jsx";
@@ -54,7 +56,7 @@ function App() {
   const showVerificationBanner = user && user.accountVerified === false;
   return (
     <>
-      {!isSettingsPage }
+      {!isSettingsPage}
 
       {showVerificationBanner && <VerificationBanner />}
       <div
@@ -117,9 +119,15 @@ function App() {
                 path="/doctor/patient/profile/:patientId"
                 element={<PatientProfile />}
               />
+              <Route path="/report-viewer/:reportId" element={<ReportViewer />} />
+           
               <Route
                 path="/video/:appointmentId"
                 element={<VideoConsultation />}
+              />
+              <Route
+                path="/doctor/chatbot"
+                element={user?.role === "doctor" ? <Chatbot /> : null}
               />
               {/* setting */}
               <Route path="/settings" element={<SettingsLayout />}>
