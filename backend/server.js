@@ -1,13 +1,14 @@
 import cors from "cors";
+import path from "path";
+import http from "http";
+import express from "express";
+import passport from "passport";
+import { fileURLToPath } from "url";
+import cookiesParser from "cookie-parser";
+
 import "dotenv/config";
 import "./config/passport.js";
-import passport from "passport";
-import express from "express";
-import cookiesParser from "cookie-parser";
-import http from "http";
 import { initSocket } from "./config/socket.js";
-import path from "path";
-import { fileURLToPath } from "url";
 //Files connection
 import connectDB from "./config/database.js";
 import connectCloudinary from "./config/cloudinary.js";

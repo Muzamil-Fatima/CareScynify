@@ -47,8 +47,8 @@ const Navbar = () => {
           to="/"
           className="flex text-2xl font-bold bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent"
         >
-          <span className="flex items-center justify-center w-9 h-9 rounded-lg bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500 mr-2">
-            <Activity className="w-4 h-4 text-white" strokeWidth={2.4} />
+          <span className="flex items-center justify-center rounded-lg  mr-2">
+            <img src="/pwa-512x512.png" alt="CareScynify" className="w-6 h-6" />
           </span>
           <span> CareScynify</span>
         </Link>

@@ -6,7 +6,7 @@ import {
   getPrescriptionById,
   getPrescriptionByAppointment,
   getPatientPrescriptions,
-} from "../api/PrescriptionApi";
+} from "../api/doctor/PrescriptionApi";
 
 const usePrescription = () => {
   const [loading, setLoading] = useState(false);

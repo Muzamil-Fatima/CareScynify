@@ -1,6 +1,6 @@
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import { Toaster } from "react-hot-toast";
 import { useState } from "react";
+import { Toaster } from "react-hot-toast";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import TopBar from "./components/layout/TopBar.jsx";
 import SideBar from "./components/layout/sidebar/SideBar.jsx";
