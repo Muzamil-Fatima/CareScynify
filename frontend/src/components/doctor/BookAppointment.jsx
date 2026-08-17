@@ -222,13 +222,13 @@ const BookAppointment = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-6">
+    <div className="min-h-screen bg-gray-50 px-3 sm:px-4 py-5 sm:py-8">
+      <div className="w-full max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-4 sm:p-6 space-y-5 sm:space-y-6">
         {/* HEADER */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <img
             src={doctor?.user?.avatar?.url}
-            className="w-16 h-16 rounded-full object-cover border border-gray-200"
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover border border-gray-200 shrink-0"
             alt="doctor"
           />
           <div>
@@ -238,7 +238,7 @@ const BookAppointment = () => {
         </div>
 
         {/* APPOINTMENT TYPE */}
-        <div className="flex bg-gray-100 p-1 rounded-xl w-fit">
+        <div className="flex w-full sm:w-fit bg-gray-100 p-1 rounded-xl">
           <button
             disabled={!canOnline}
             onClick={() => {
@@ -247,7 +247,7 @@ const BookAppointment = () => {
               setSelectedConsultationType("online");
               setBookingError("");
             }}
-            className={`px-4 py-2 rounded-lg text-sm transition ${
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm transition ${
               selectedConsultationType === "online"
                 ? "bg-white shadow text-purple-600"
                 : canOnline
@@ -299,7 +299,7 @@ const BookAppointment = () => {
         </div>
 
         {/* DATE */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3">
           <button
             onClick={() => setOffset((p) => Math.max(p - 5, 0))}
             className="p-2 rounded-full bg-gray-100"
@@ -316,7 +316,7 @@ const BookAppointment = () => {
                   setTime("");
                   setBookingError("");
                 }}
-                className={`flex-1 px-2 py-2 rounded-lg text-sm border transition ${
+                className={`flex-1 min-w-0 px-1 sm:px-2 py-2 rounded-lg text-[11px] sm:text-sm border transition ${
                   date === d.value
                     ? "bg-purple-600 text-white border-purple-600"
                     : "bg-gray-50 text-gray-700 border-gray-200"
@@ -386,7 +386,7 @@ const BookAppointment = () => {
                           {session}
                         </h3>
 
-                        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                        <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 gap-2">
                           {items.map((slot, i) => (
                             <button
                               key={i}
@@ -419,7 +419,7 @@ const BookAppointment = () => {
                                   setTime("");
                                 }
                               }}
-                              className={`px-3 py-2 rounded-lg text-sm border transition ${
+                              className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm border transition ${
                                 selectedSlot === slot.label
                                   ? "bg-purple-600 text-white border-purple-600"
                                   : "bg-gray-50 text-gray-700 border-gray-200 hover:bg-gray-100"
@@ -442,7 +442,7 @@ const BookAppointment = () => {
         <button
           onClick={handleBook}
           disabled={!selectedSlot || bookingLoading || !workplace}
-          className="w-full bg-purple-600 hover:bg-purple-700 transition text-white py-3 rounded-xl disabled:opacity-50 font-medium shadow-sm"
+          className="w-full bg-purple-600 hover:bg-purple-700 transition text-white py-3 rounded-xl disabled:opacity-50 font-medium text-sm sm:text-base shadow-sm"
         >
           {bookingLoading ? "Booking..." : "Book Appointment"}
         </button>

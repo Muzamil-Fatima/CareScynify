@@ -31,15 +31,16 @@ const SPECIALIZATIONS = [
 
 export default function Specializations() {
   return (
-    <section className="bg-linear-to-b from-purple-50 to-white py-20 md:py-28">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
+    <section className="bg-linear-to-b from-purple-50 to-white py-16 sm:py-20 md:py-28">
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10">
         {/* Heading */}
-        <div className="max-w-xl mb-14">
+        <div className="max-w-xl mb-10 sm:mb-14">
           <span className="text-xs font-semibold uppercase tracking-widest text-purple-600">
             Specializations
           </span>
 
-          <h2 className="mt-3 text-3xl md:text-4xl font-bold text-gray-900">
+          <h2 className="mt-3 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
             Every specialty, one search away.
           </h2>
 
@@ -50,7 +51,7 @@ export default function Specializations() {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
           {SPECIALIZATIONS.map((item) => {
             const Icon = item.icon;
 
@@ -58,13 +59,13 @@ export default function Specializations() {
               <Link
                 key={item.name}
                 to={`/doctor?specialization=${encodeURIComponent(item.name)}`}
-                className="group flex items-center gap-4 rounded-2xl border border-purple-100 bg-white p-5 shadow-sm hover:-translate-y-1 hover:border-purple-300 hover:shadow-lg transition-all duration-300"
+                className="group flex items-center gap-3 sm:gap-4 rounded-2xl border border-purple-100 bg-white p-3 sm:p-5 shadow-sm hover:-translate-y-1 hover:border-purple-300 hover:shadow-lg transition-all duration-300"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 group-hover:bg-linear-to-r group-hover:from-purple-500 group-hover:via-violet-500 group-hover:to-indigo-500 group-hover:text-white transition-all duration-300">
+                <div className="flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-purple-100 text-purple-600 group-hover:bg-linear-to-r group-hover:from-purple-500 group-hover:via-violet-500 group-hover:to-indigo-500 group-hover:text-white transition-all duration-300">
                   <Icon sx={{ fontSize: 22 }} />
                 </div>
 
-                <span className="text-sm font-semibold text-gray-800 group-hover:text-purple-700 transition-colors">
+                <span className="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-purple-700 transition-colors">
                   {item.name}
                 </span>
               </Link>

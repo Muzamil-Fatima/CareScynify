@@ -10,22 +10,24 @@ const DoctorCard = ({ doctor }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-5 hover:shadow-xl transition border border-gray-100">
+    <div className="bg-white rounded-2xl shadow-md p-4 sm:p-5 hover:shadow-xl transition border border-gray-100">
       {/* Avatar */}
-     {doctor.user?.avatar?.url ? (
-  <img
-    src={doctor.user.avatar.url}
-    alt={doctor.user?.name}
-    className="w-26 h-26 rounded-full object-cover"
-  />
-) : (
-  <div className="w-26 h-26 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-    👤
-  </div>
-)}
+      {doctor.user?.avatar?.url ? (
+        <img
+          src={doctor.user.avatar.url}
+          alt={doctor.user?.name}
+          className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mx-auto"
+        />
+      ) : (
+        <div className="w-26 h-26 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+          👤
+        </div>
+      )}
 
       {/* Name */}
-      <h2 className="text-lg font-semibold text-center">{doctor.user?.name}</h2>
+      <h2 className="text-base sm:text-lg font-semibold text-center wrap-break-word">
+        {doctor.user?.name}
+      </h2>
 
       {/* Specialization */}
       <p className="text-center text-blue-600 font-medium">
@@ -52,7 +54,7 @@ const DoctorCard = ({ doctor }) => {
           .map((item, i) => (
             <span
               key={i}
-              className="rounded-full bg-purple-50 px-3 py-1 text-xs font-medium text-purple-600"
+              className="rounded-full bg-purple-50 px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium text-purple-600"
             >
               {item}
             </span>
@@ -62,7 +64,7 @@ const DoctorCard = ({ doctor }) => {
       {/* Button */}
       <button
         onClick={handleClick}
-        className="mt-4 w-full cursor-pointer bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700"
+        className="mt-4 w-full cursor-pointer bg-purple-600 text-white py-2.5 rounded-lg text-sm sm:text-base hover:bg-purple-700 transition-colors"
       >
         View Profile
       </button>

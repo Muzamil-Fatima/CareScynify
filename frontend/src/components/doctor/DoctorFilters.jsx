@@ -41,7 +41,7 @@ const DoctorFilters = ({ onFilterChange }) => {
     filters.available;
 
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-sm">
+    <div className="rounded-2xl bg-white p-4 sm:p-5 shadow-sm">
       {/* Header */}
       <div className="mb-6 flex items-center gap-2">
         <FilterAltOutlinedIcon className="text-purple-600" />

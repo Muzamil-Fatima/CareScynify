@@ -21,14 +21,13 @@ const quickFilters = [
 const DoctorSearchBar = ({ onSearch }) => {
   const [query, setQuery] = useState("");
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
-useEffect(() => {
-  const timer = setTimeout(() => {
-    onSearch?.(query.trim());
-  }, 500);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onSearch?.(query.trim());
+    }, 500);
 
-  return () => clearTimeout(timer);
-
-}, [query, onSearch]);
+    return () => clearTimeout(timer);
+  }, [query, onSearch]);
   useEffect(() => {
     const interval = setInterval(() => {
       setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
@@ -62,8 +61,8 @@ useEffect(() => {
   return (
     <div className="space-y-3">
       {/* Search Box */}
-      <div className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm transition-all duration-300 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-100">
-        <SearchOutlinedIcon className="text-gray-500" />
+      <div className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-3 sm:px-4 py-3 shadow-sm transition-all duration-300 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-100">
+        <SearchOutlinedIcon className="text-gray-500 shrink-0" />
 
         <input
           type="text"
@@ -71,13 +70,13 @@ useEffect(() => {
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholders[placeholderIndex]}
-          className="flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-500 outline-none"
+          className="min-w-0 flex-1 bg-transparent text-sm text-gray-700 placeholder:text-gray-500 outline-none"
         />
 
         {query && (
           <button
             onClick={clearSearch}
-            className="rounded-full p-1 hover:bg-gray-100"
+            className="shrink-0 rounded-full p-1 hover:bg-gray-100"
           >
             <CloseOutlinedIcon className="text-gray-500" />
           </button>
@@ -92,13 +91,13 @@ useEffect(() => {
       </div>
 
       {/* Quick Filters */}
-      <div className="flex flex-wrap gap-2">
+      <div className="rounded-full border border-purple-200 bg-purple-50 px-2.5 sm:px-3 py-1 text-xs font-medium text-purple-700 transition hover:bg-purple-100">
         {quickFilters.map((item) => (
           <button
             key={item}
-          onClick={() => {
-  setQuery(item);
-}}
+            onClick={() => {
+              setQuery(item);
+            }}
             className="rounded-full border border-purple-200 bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 transition hover:bg-purple-100"
           >
             {item}

@@ -7,6 +7,7 @@ import DoctorFilters from "../../components/doctor/DoctorFilters";
 import DoctorList from "../../components/doctor/DoctorList";
 import { useDoctor } from "../../hooks/useDoctor";
 import Pagination from "../../components/common/Pagination";
+
 const initialFilters = {
   specialty: "",
   location: "",
@@ -25,12 +26,14 @@ const Doctor = () => {
 
   const { doctors, loading, error, pagination, page, setPage } =
     useDoctor(filters);
+
   const handleSearch = useCallback((value) => {
     setFilters((prev) => ({
       ...prev,
       search: value,
     }));
   }, []);
+
   const clearFilters = () => {
     setFilters(initialFilters);
   };
@@ -44,12 +47,14 @@ const Doctor = () => {
       label: filters.specialty,
     });
   }
+
   if (filters.location) {
     filterChips.push({
       key: "location",
       label: `📍 ${filters.location}`,
     });
   }
+
   if (filters.rating) {
     filterChips.push({
       key: "rating",
@@ -63,6 +68,7 @@ const Doctor = () => {
       label: `${filters.experience}+ Years`,
     });
   }
+
   if (filters.fee) {
     const feeLabels = {
       low: "Under 1000",
@@ -75,6 +81,7 @@ const Doctor = () => {
       label: `💰 ${feeLabels[filters.fee]}`,
     });
   }
+
   if (filters.available) {
     filterChips.push({
       key: "available",
@@ -83,16 +90,19 @@ const Doctor = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Find Doctors</h1>
-        <p className="text-gray-500 mt-1">
+      <div className="mb-5 sm:mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+          Find Doctors
+        </h1>
+
+        <p className="text-sm sm:text-base text-gray-500 mt-1">
           Search experienced doctors and book appointments easily.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-5 sm:gap-6">
         {/* Desktop Filters */}
         <aside className="hidden lg:block">
           <div className="sticky top-24 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -101,75 +111,104 @@ const Doctor = () => {
         </aside>
 
         {/* Main Content */}
-        <main className="lg:col-span-3">
-          {/* Search + Mobile Filter */}
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1">
-              <DoctorSearchBar onSearch={handleSearch} />
-            </div>
+        <main className="lg:col-span-3 min-w-0">
+          {/* =========================
+              MOBILE / DESKTOP SEARCH AREA
+          ========================== */}
 
-            {/* Mobile Filter Button */}
-            <button
-              onClick={() => setShowFilters(true)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white shadow-sm hover:bg-gray-50"
-            >
-              <TuneIcon fontSize="small" />
-              Filters
-            </button>
-          </div>
+          <div className="w-full mb-5">
+            {/* Row 1: Search + Filter */}
+            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2 sm:gap-3">
+              {/* Search Box */}
+              <div className="min-w-0 w-full">
+                <DoctorSearchBar onSearch={handleSearch} />
+              </div>
 
-          {/* Active Filter Chips */}
-          {filterChips.length > 0 && (
-            <div className="flex flex-wrap items-center gap-2 mb-5">
-              {filterChips.map((chip) => (
-                <button
-                  key={chip.key}
-                  onClick={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      [chip.key]: chip.key === "available" ? false : "",
-                    }))
-                  }
-                  className="flex items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-700 hover:bg-purple-200 transition"
-                >
-                  {chip.label}
-                  <span className="text-base leading-none">&times;</span>
-                </button>
-              ))}
-
+              {/* Mobile Filter Button */}
               <button
-                onClick={clearFilters}
-                className="text-sm font-medium text-red-600 hover:underline"
+                onClick={() => setShowFilters(true)}
+                className="lg:hidden h-11 shrink-0 flex items-center justify-center gap-2 px-3 sm:px-4 rounded-lg border border-gray-300 bg-white shadow-sm hover:bg-gray-50 transition"
               >
-                Clear All
+                <TuneIcon fontSize="small" />
+                <span>Filters</span>
               </button>
             </div>
-          )}
 
-          {/* Result Count */}
+            {/* =========================
+                Row 2: ACTIVE FILTER CHIPS
+            ========================== */}
+
+            {filterChips.length > 0 && (
+              <div className="w-full mt-3">
+                <div className="w-full flex flex-wrap items-center gap-2">
+                  {filterChips.map((chip) => (
+                    <button
+                      key={chip.key}
+                      onClick={() =>
+                        setFilters((prev) => ({
+                          ...prev,
+                          [chip.key]:
+                            chip.key === "available" ? false : "",
+                        }))
+                      }
+                      className="flex items-center gap-1.5 rounded-full bg-purple-100 px-3 py-1.5 text-xs sm:text-sm font-medium text-purple-700 hover:bg-purple-200 transition"
+                    >
+                      <span>{chip.label}</span>
+
+                      <span className="text-sm leading-none">
+                        &times;
+                      </span>
+                    </button>
+                  ))}
+
+                  <button
+                    onClick={clearFilters}
+                    className="text-xs sm:text-sm font-medium text-red-600 hover:underline px-1"
+                  >
+                    Clear All
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* =========================
+              RESULT COUNT
+          ========================== */}
+
           {!loading && !error && (
             <div className="mb-4 text-sm text-gray-500">
-              {doctors.length} Doctor{doctors.length !== 1 && "s"} Found
+              {doctors.length} Doctor
+              {doctors.length !== 1 && "s"} Found
             </div>
           )}
 
-          {/* Loading */}
+          {/* =========================
+              LOADING
+          ========================== */}
+
           {loading && doctors.length === 0 && (
-            <div className="rounded-xl border bg-white py-16 text-center text-gray-500">
+            <div className="w-full rounded-xl border border-gray-200 bg-white py-16 text-center text-gray-500">
               Loading doctors...
             </div>
           )}
 
-          {/* Error */}
+          {/* =========================
+              ERROR
+          ========================== */}
+
           {error && (
-            <div className="rounded-xl border bg-white py-16 text-center text-red-500">
+            <div className="w-full rounded-xl border border-red-300 bg-white py-16 text-center text-red-500">
               {error}
             </div>
           )}
 
-          {/* Empty State */}
+          {/* =========================
+              EMPTY STATE
+          ========================== */}
+
           {!loading && !error && doctors.length === 0 && (
-            <div className="rounded-xl border bg-white py-16 px-6 text-center">
+            <div className="w-full rounded-xl border border-gray-200 bg-white py-16 px-6 text-center">
               <h2 className="text-xl font-semibold text-gray-800">
                 No Doctors Found
               </h2>
@@ -187,13 +226,18 @@ const Doctor = () => {
             </div>
           )}
 
-          {/* Doctor List */}
+          {/* =========================
+              DOCTOR LIST
+          ========================== */}
+
           {!error && doctors.length > 0 && (
             <>
-              <div className="min-h-[900px]">
+              <div className="w-full min-h-[900px]">
                 <DoctorList
                   doctors={doctors}
-                  onViewProfile={(doctor) => navigate(`/doctor/${doctor._id}`)}
+                  onViewProfile={(doctor) =>
+                    navigate(`/doctor/${doctor._id}`)
+                  }
                 />
               </div>
 
@@ -207,17 +251,25 @@ const Doctor = () => {
         </main>
       </div>
 
-      {/* Mobile Filter Drawer */}
+      {/* =========================
+          MOBILE FILTER DRAWER
+      ========================== */}
+
       {showFilters && (
         <>
+          {/* Overlay */}
           <div
             className="fixed inset-0 z-40 bg-black/40 lg:hidden"
             onClick={() => setShowFilters(false)}
           />
 
+          {/* Drawer */}
           <div className="fixed top-0 left-0 z-50 h-full w-80 max-w-[90%] overflow-y-auto bg-white shadow-xl lg:hidden">
+            {/* Drawer Header */}
             <div className="flex items-center justify-between border-b p-4">
-              <h2 className="text-lg font-semibold">Filters</h2>
+              <h2 className="text-lg font-semibold">
+                Filters
+              </h2>
 
               <button
                 onClick={() => setShowFilters(false)}
@@ -227,6 +279,7 @@ const Doctor = () => {
               </button>
             </div>
 
+            {/* Filters */}
             <div className="p-5">
               <DoctorFilters
                 onFilterChange={(newFilters) => {

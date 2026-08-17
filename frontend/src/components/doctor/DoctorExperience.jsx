@@ -7,9 +7,9 @@ const DoctorExperience = ({ doctor }) => {
   const experienceList = doctor?.experienceDetails || [];
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm">
 
-      <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800 mb-5">
+      <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-800 mb-5">
         <WorkOutlineOutlinedIcon fontSize="small" />
         Experience
       </h2>
@@ -25,7 +25,7 @@ const DoctorExperience = ({ doctor }) => {
 
               <span className="absolute -left-[7px] top-1 w-3 h-3 bg-purple-600 rounded-full"></span>
 
-              <h3 className="text-md font-semibold text-gray-800">
+              <h3 className="text-sm sm:text-md font-semibold text-gray-800">
                 {exp.role}
               </h3>
 
@@ -39,7 +39,7 @@ const DoctorExperience = ({ doctor }) => {
                 {exp.duration}
               </p>
 
-              <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+              <p className="text-xs sm:text-sm text-gray-600 mt-2 leading-relaxed wrap-break-word">
                 {exp.description}
               </p>
 

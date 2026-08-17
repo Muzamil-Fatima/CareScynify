@@ -17,7 +17,7 @@ const VerificationBanner = () => {
   };
 
   return (
-    <div className="bg-red-500/70 text-white text-center py-2 text-sm">
+    <div className="bg-red-500/70 text-white text-center px-4 py-2 text-xs sm:text-sm leading-5">
       Your email is not verified.
       <span
         onClick={handleResendVerification}

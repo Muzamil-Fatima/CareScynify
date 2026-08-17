@@ -21,21 +21,21 @@ const REVIEWS = [
 
 export default function Testimonials() {
   return (
-    <section className="bg-linear-to-b from-purple-50 to-white py-20 md:py-28">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
+    <section className="bg-linear-to-b from-purple-50 to-white py-16 sm:py-20 md:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10">
         <span className="text-xs font-semibold uppercase tracking-widest text-purple-600">
           Trusted by patients & doctors
         </span>
 
-        <h2 className="mt-3 text-3xl md:text-4xl font-bold text-gray-900 mb-14 max-w-lg">
+        <h2 className="mt-3 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-10 sm:mb-14 max-w-lg">
           What people are saying.
         </h2>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-5 md:gap-6">
           {REVIEWS.map((r) => (
             <div
               key={r.name}
-              className="bg-white border border-purple-100 rounded-2xl p-7 shadow-sm hover:shadow-lg transition-all duration-300"
+              className="bg-white border border-purple-100 rounded-2xl p-5 sm:p-7 shadow-sm hover:shadow-lg transition-all duration-300"
             >
               <div className="flex gap-1 text-amber-400 mb-4">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -48,7 +48,7 @@ export default function Testimonials() {
                 ))}
               </div>
 
-              <p className="text-gray-600 leading-7 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 leading-7 mb-6">
                 "{r.text}"
               </p>
 

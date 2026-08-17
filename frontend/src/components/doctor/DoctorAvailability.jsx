@@ -22,18 +22,18 @@ const DoctorAvailability = ({ doctor }) => {
     };
   });
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm">
       {/* Header */}
-      <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800 mb-4">
+      <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-800 mb-4">
         <EventAvailableOutlinedIcon fontSize="small" />
         Availability
       </h2>
-      <div className="flex gap-2 mb-5 overflow-x-auto">
+      <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
         {workplaces.map((place) => (
           <button
             key={place._id}
             onClick={() => setSelectedWorkplace(place)}
-            className={`px-4 py-2 rounded-lg text-sm whitespace-nowrap ${
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm whitespace-nowrap ${
               selectedWorkplace?._id === place._id
                 ? "bg-purple-600 text-white"
                 : "bg-gray-100 text-gray-700"
@@ -48,7 +48,7 @@ const DoctorAvailability = ({ doctor }) => {
         {schedule.map((item, index) => (
           <div
             key={index}
-            className={`flex items-center justify-between p-3 rounded-xl border ${
+            className={`flex items-center justify-between gap-2 p-3 rounded-xl border ${
               item.available
                 ? "bg-green-50 border-green-100"
                 : "bg-gray-50 border-gray-100"
@@ -58,14 +58,14 @@ const DoctorAvailability = ({ doctor }) => {
             <div className="font-medium text-gray-700">{item.day}</div>
 
             {/* Time */}
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600">
               <AccessTimeOutlinedIcon fontSize="small" />
               {item.time}
             </div>
 
             {/* Status */}
             <span
-              className={`text-xs px-3 py-1 rounded-full font-medium ${
+              className={`text-[10px] sm:text-xs px-2 sm:px-3 py-1 rounded-full font-medium whitespace-nowrap ${
                 item.available
                   ? "bg-green-100 text-green-700"
                   : "bg-gray-200 text-gray-600"

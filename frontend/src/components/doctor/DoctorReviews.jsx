@@ -72,13 +72,13 @@ const DoctorReviews = ({ reviews = [] }) => {
     return data;
   }, [reviews, selectedRating, search, sortBy]);
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm space-y-5">
+    <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-5">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold text-gray-800">Patient Reviews</h2>
 
         {/* Rating Summary */}
-        <div className="flex items-center gap-3 mt-2">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-2">
           <span className="text-2xl font-bold text-gray-800">
             {avgRating.toFixed(1)}
           </span>
@@ -90,7 +90,7 @@ const DoctorReviews = ({ reviews = [] }) => {
           </span>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mt-5 sm:mt-6">
         {/* Left */}
         <div>
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
@@ -108,14 +108,14 @@ const DoctorReviews = ({ reviews = [] }) => {
                 onClick={() =>
                   setSelectedRating(selectedRating === star ? 0 : star)
                 }
-                className={`flex items-center gap-3 mb-3 cursor-pointer rounded-lg p-2 transition
+                className={`flex items-center gap-2 sm:gap-3 mb-3 cursor-pointer rounded-lg p-2 transition
             ${
               selectedRating === star
                 ? "bg-yellow-50 border border-yellow-300"
                 : "hover:bg-gray-50"
             }`}
               >
-                <span className="w-14 font-medium text-gray-700">
+                <span className="w-12 sm:w-14 shrink-0 font-medium text-gray-700 text-sm sm:text-base">
                   {star} Star
                 </span>
 
@@ -178,7 +178,7 @@ const DoctorReviews = ({ reviews = [] }) => {
               className="border border-gray-100 rounded-xl p-4 bg-gray-50"
             >
               {/* Name + Verified */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <p className="font-medium text-gray-800">
                   {review.patient?.name || "Anonymous"}
                 </p>
@@ -190,7 +190,9 @@ const DoctorReviews = ({ reviews = [] }) => {
               <div className="flex mt-1">{renderStars(review.rating)}</div>
 
               {/* Comment */}
-              <p className="text-sm text-gray-600 mt-2">{review.comment}</p>
+              <p className="text-sm text-gray-600 leading-6 mt-2 wrap-break-word">
+  {review.comment}
+</p>
 
               {/* Date */}
               <p className="text-xs text-gray-400 mt-2">

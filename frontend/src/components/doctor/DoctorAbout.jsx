@@ -5,15 +5,15 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 
 const DoctorAbout = ({ doctor }) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm space-y-5">
+    <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-5 shadow-sm space-y-5">
       {/* About */}
       <div>
-        <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-800">
+        <h2 className="flex items-center gap-2 text-base sm:text-lg font-semibold text-gray-800">
           <InfoOutlinedIcon fontSize="small" />
           About Doctor
         </h2>
 
-        <p className="text-sm text-gray-600 mt-2 leading-relaxed">
+        <p className="text-xs sm:text-sm text-gray-600 mt-2 leading-relaxed wrap-break-word">
           {doctor?.about || "No information available"}
         </p>
       </div>
@@ -25,7 +25,7 @@ const DoctorAbout = ({ doctor }) => {
           Education
         </h2>
 
-        <ul className="text-sm text-gray-600 mt-2 space-y-1 list-disc ml-5">
+        <ul className="text-xs sm:text-sm text-gray-600 mt-2 space-y-1 list-disc ml-5 wrap-break-word">
           {doctor?.education?.length > 0 ? (
             doctor.education.map((edu) => (
               <li key={edu._id}>
@@ -50,7 +50,7 @@ const DoctorAbout = ({ doctor }) => {
             doctor.user.languages.map((lang) => (
               <span
                 key={lang._id}
-                className="px-3 py-1 bg-gray-100 rounded-full text-sm"
+                className="px-2.5 sm:px-3 py-1 bg-gray-100 rounded-full text-xs sm:text-sm"
               >
                 {lang.language}
               </span>

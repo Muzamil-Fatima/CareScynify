@@ -24,6 +24,7 @@ import patientsRoutes from "./routes/patientsRoutes.js";
 import appointmentRoutes from "./routes/appointmentRoutes.js";
 import symptomRoutes from "./routes/symptomRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import patientChatbotRoutes from "./routes/../routes/chatbot/patientChatbotRoutes.js";
 // doctor routes
 import doctorRoutes from "./routes/doctor/doctorRoutes.js";
 import prescriptionRoutes from "./routes/doctor/prescriptionRoutes.js";
@@ -113,6 +114,8 @@ app.use("/api/doctors", publicDoctorRoutes);
 // public lab routes
 app.use("/api/labs", publicLabRoutes);
 app.use("/api/lab/test", publicLabTestRoutes);
+// chatbot
+app.use("/api/patient/chatbot", patientChatbotRoutes);
 // ========================================= dr router
 app.use("/api/doctor", doctorRoutes);
 // report router

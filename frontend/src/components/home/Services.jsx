@@ -54,15 +54,15 @@ const SERVICES = [
 
 export default function Services() {
   return (
-    <section className="bg-linear-to-b from-white to-purple-50 py-20 md:py-28">
-      <div className="max-w-7xl mx-auto px-6 md:px-10">
+    <section className="bg-linear-to-b from-white to-purple-50 py-16 sm:py-20 md:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10">
         {/* Heading */}
-        <div className="max-w-xl mb-16">
+        <div className="max-w-xl mb-10 sm:mb-16">
           <span className="text-xs font-semibold uppercase tracking-widest text-purple-600">
             What CareScynify Covers
           </span>
 
-          <h2 className="mt-3 text-3xl md:text-4xl font-bold text-gray-900">
+          <h2 className="mt-3 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
             Three services. One continuous record.
           </h2>
 
@@ -80,7 +80,7 @@ export default function Services() {
             return (
               <div
                 key={service.tag}
-                className="grid md:grid-cols-[auto_1fr_auto] gap-8 items-center rounded-3xl border border-purple-100 bg-white p-8 md:p-10 shadow-sm hover:-translate-y-1 hover:border-purple-300 hover:shadow-xl transition-all duration-300"
+                className="grid md:grid-cols-[auto_1fr_auto] gap-6 md:gap-8 items-center rounded-3xl border border-purple-100 bg-white p-6 sm:p-8 md:p-10 shadow-sm hover:-translate-y-1 hover:border-purple-300 hover:shadow-xl transition-all duration-300"
               >
                 {/* Icon */}
                 <div
@@ -95,7 +95,7 @@ export default function Services() {
                     {service.tag}
                   </p>
 
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3">
                     {service.title}
                   </h3>
 
@@ -119,7 +119,7 @@ export default function Services() {
                 {/* CTA */}
                 <Link
                   to={service.to}
-                  className="group inline-flex items-center justify-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-6 py-3 font-medium text-purple-700 hover:bg-purple-600 hover:text-white hover:border-purple-600 transition-all duration-300"
+                  className="group inline-flex w-full md:w-auto items-center justify-center gap-2 rounded-full border border-purple-200 bg-purple-50 px-6 py-3 font-medium text-purple-700 hover:bg-purple-600 hover:text-white hover:border-purple-600 transition-all duration-300"
                 >
                   {service.cta}
                   <ArrowOutwardIcon

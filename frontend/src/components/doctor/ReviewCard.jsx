@@ -15,10 +15,10 @@ const ReviewCard = ({ review }) => {
   };
 
   return (
-    <div className="bg-gray-50 border border-gray-100 rounded-xl p-4 space-y-2">
+    <div className="bg-gray-50 border border-gray-100 rounded-xl p-3 sm:p-4 space-y-2">
       
       {/* Name + Verified */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <p className="font-medium text-gray-800">
           {review?.name || "Patient Name"}
         </p>
@@ -32,7 +32,7 @@ const ReviewCard = ({ review }) => {
       </div>
 
       {/* Comment */}
-      <p className="text-sm text-gray-600 leading-relaxed">
+      <p className="text-sm text-gray-600 leading-6 wrap-break-word">
         {review?.comment ||
           "This is a sample review about the doctor experience and treatment quality."}
       </p>

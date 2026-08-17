@@ -1,30 +1,25 @@
-
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 export default function Hero() {
   return (
     <section className="relative bg-linear-to-br from-purple-50 via-white to-indigo-50 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 pt-16 md:pt-24 pb-20 grid md:grid-cols-2 gap-14 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 pt-12 sm:pt-16 md:pt-24 pb-16 sm:pb-20 grid md:grid-cols-2 gap-10 md:gap-14 items-center">
         {/* Left: copy */}
         <div>
-          <span className="inline-block font-['IBM_Plex_Mono'] text-xs tracking-widest uppercase text-purple-700 bg-white border border-purple-200 px-3 py-1 rounded-full mb-6">
+          <span className="inline-block max-w-full font-['IBM_Plex_Mono'] text-[10px] sm:text-xs tracking-widest uppercase text-purple-700 bg-white border border-purple-200 px-3 py-1 rounded-full mb-5 sm:mb-6">
             Doctors · Labs · Pharmacy — one platform
           </span>
 
-          <h1 className="font-['Fraunces'] text-4xl md:text-6xl leading-[1.05] text-gray-900">
-            Care that reads
-            <br />
-            your{" "}
+          <h1 className="font-['Fraunces'] text-3xl sm:text-4xl md:text-6xl leading-[1.08] text-gray-900">
+            Care that reads your{" "}
             <span className="italic bg-linear-to-r from-purple-600 via-violet-500 to-indigo-500 bg-clip-text text-transparent">
               vitals
             </span>
-            ,
-            <br />
-            not just your file.
+            , not just your file.
           </h1>
 
-          <p className="mt-6 text-lg text-gray-600 max-w-md">
+          <p className="mt-5 sm:mt-6 text-base sm:text-lg text-gray-600 max-w-md leading-7">
             Book a doctor, order lab tests, and get medicines delivered — all
             tracked in one place, so nothing about your health gets lost in the
             gaps.
@@ -48,7 +43,7 @@ export default function Hero() {
           </div>
 
           {/* Trust row */}
-          <div className="mt-12 flex flex-wrap gap-x-10 gap-y-4 font-['IBM_Plex_Mono']">
+          <div className="mt-10 sm:mt-12 flex flex-wrap gap-x-6 sm:gap-x-10 gap-y-4 font-['IBM_Plex_Mono']">
             <div>
               <p className="text-2xl text-gray-900">2,400+</p>
               <p className="text-xs uppercase tracking-wide text-gray-500">
@@ -84,9 +79,7 @@ export default function Hero() {
               Dr. Amina Raza
             </p>
 
-            <p className="text-sm text-gray-500">
-              Cardiology · Today, 4:30 PM
-            </p>
+            <p className="text-sm text-gray-500">Cardiology · Today, 4:30 PM</p>
 
             <div className="mt-4 flex items-center gap-2 text-purple-600 text-sm">
               <CheckCircle2 className="w-4 h-4" />
@@ -100,13 +93,9 @@ export default function Hero() {
               Lab Report
             </p>
 
-            <p className="mt-2 font-['Fraunces'] text-xl">
-              CBC Panel
-            </p>
+            <p className="mt-2 font-['Fraunces'] text-xl">CBC Panel</p>
 
-            <p className="text-sm text-purple-100">
-              All markers within range
-            </p>
+            <p className="text-sm text-purple-100">All markers within range</p>
 
             <div className="mt-4 h-10">
               <svg

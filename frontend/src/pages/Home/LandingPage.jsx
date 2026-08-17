@@ -10,7 +10,7 @@ import CTA from "../../components/home/CTA";
 
 export default function LandingPage() {
   return (
-    <div className="font-['IBM_Plex_Sans']">
+    <div className=" w-full overflow-x-hidden">
       <Hero />
       <PulseDivider />
       <Specializations />
@@ -19,7 +19,6 @@ export default function LandingPage() {
       <HowItWorks />
       <Testimonials />
       <CTA />
-      {/* <Footer /> */}
     </div>
   );
 }

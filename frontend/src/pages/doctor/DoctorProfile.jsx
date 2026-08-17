@@ -21,7 +21,7 @@ const DoctorProfile = () => {
   // loading  skeleton
   if (!doctor && loading) {
     return (
-      <div className="text-center py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="animate-pulse space-y-4">
           <div className="h-32 bg-gray-200 rounded-xl"></div>
           <div className="h-10 bg-gray-200 rounded"></div>
@@ -36,21 +36,21 @@ const DoctorProfile = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
       {/* HEADER */}
       <DoctorProfileHeader
         doctor={doctor}
-          onBook={() =>
-    navigate(`/doctor/${id}/book`, {
-      state: { doctor }
-    })
-  }
+        onBook={() =>
+          navigate(`/doctor/${id}/book`, {
+            state: { doctor },
+          })
+        }
       />
 
       {/* MAIN LAYOUT */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6 mt-5 sm:mt-6">
         {/* LEFT SIDE */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-5 sm:space-y-6">
           <DoctorExperience doctor={doctor} />
           <DoctorAbout doctor={doctor} />
           <DoctorReviews reviews={reviews} />
@@ -58,7 +58,7 @@ const DoctorProfile = () => {
 
         {/* RIGHT SIDE */}
         <div className="lg:col-span-1">
-          <div className="sticky top-6">
+          <div className="sticky top-20">
             <DoctorAvailability doctor={doctor} />
           </div>
         </div>
