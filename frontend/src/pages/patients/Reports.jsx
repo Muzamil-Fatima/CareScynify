@@ -15,22 +15,27 @@ const Reports = () => {
   const [uploadStatus, setUploadStatus] = useState(null);
 
   const queryClient = useQueryClient();
-const {
-  data,
-  isLoading,
-  error,
-} = useQuery({
-  queryKey: ["reports"],
-  queryFn: getReports,
-  staleTime: 0,
-  refetchOnWindowFocus: true,
-});
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["reports"],
+    queryFn: getReports,
+    staleTime: 0,
+    refetchOnWindowFocus: true,
+  });
 
+  // 1. Prescriptions ko map karke category aur uniform file link assign kiya
+  const prescriptionsList = (data?.prescriptions || []).map((p) => ({
+    ...p,
+    category: "Prescription",
+    title: p.prescriptionId || "Doctor Prescription",
+    pdfUrl: p.pdfUrl,
+  }));
 
-const reports = [
-  ...(data?.reports || []),
-  ...(data?.labReports || []),
-];
+  // 2. Teeno arrays ko combine kar diya
+  const reports = [
+    ...(data?.reports || []),
+    ...(data?.labReports || []),
+    ...prescriptionsList,
+  ];
 
   // LOADING STATE
   if (isLoading) {
@@ -42,45 +47,39 @@ const reports = [
     return <div className="p-6">Failed to load reports</div>;
   }
 
-  // FILTER REPORTS
- const filteredReports =
-  activeTab === "All Reports"
-    ? reports
-    : activeTab === "Lab Reports"
-    ? reports.filter((report) => report.pdfUrl)
-    : activeTab === "Uploaded Reports"
-    ? reports.filter((report) => report.fileUrl)
-    : activeTab === "Doctor Prescriptions"
-    ? reports.filter(
-        (report) => report.category === "Prescription"
-      )
-    : [];
+  // 3. Proper tab filtering
+  const filteredReports =
+    activeTab === "All Reports"
+      ? reports
+      : activeTab === "Lab Reports"
+        ? reports.filter((report) => report.category === "Lab")
+        : activeTab === "Uploaded Reports"
+          ? reports.filter((report) => report.fileUrl)
+          : activeTab === "Doctor Prescriptions"
+            ? reports.filter((report) => report.category === "Prescription")
+            : [];
 
   // DOWNLOAD REPORT
-const handleDownload = (report) => {
-  const url = report.fileUrl || report.pdfUrl;
+  const handleDownload = (report) => {
+    const url = report.fileUrl || report.pdfUrl;
 
-  if (!url) return;
+    if (!url) return;
 
-  const link = document.createElement("a");
-  link.href = url;
-  link.target = "_blank";
-  link.rel = "noopener";
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
 
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-};
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
 
   // UPLOAD REPORT
   const handleUpload = async (file, category) => {
     if (!file) return;
 
-    const allowedTypes = [
-      "application/pdf",
-      "image/png",
-      "image/jpeg",
-    ];
+    const allowedTypes = ["application/pdf", "image/png", "image/jpeg"];
 
     if (!allowedTypes.includes(file.type)) {
       toast.error("Only PDF, JPG, PNG allowed");
@@ -106,7 +105,6 @@ const handleDownload = (report) => {
 
       await addReport(formData);
 
-      // Refresh reports after upload
       queryClient.invalidateQueries({
         queryKey: ["reports"],
       });
@@ -140,6 +138,7 @@ const handleDownload = (report) => {
         return "bg-yellow-100 text-yellow-700";
 
       case "Completed":
+      case "issued":
         return "bg-green-100 text-green-700";
 
       case "Failed":
@@ -175,10 +174,7 @@ const handleDownload = (report) => {
       />
 
       {/* TABS */}
-      <ReportTabs
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
+      <ReportTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {/* REPORT CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -188,7 +184,7 @@ const handleDownload = (report) => {
               key={report._id}
               report={report}
               getStatusStyle={getStatusStyle}
-              onClick={() => handleDownload(report)}
+              onDownload={handleDownload}
             />
           ))
         ) : (

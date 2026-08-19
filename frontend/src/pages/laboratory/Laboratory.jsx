@@ -89,18 +89,18 @@ const Laboratory = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-5 lg:px-6 py-4 sm:py-5 lg:py-6 overflow-x-hidden">
       {/* Header */}
 
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">Find Laboratories</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Find Laboratories</h1>
 
-        <p className="text-gray-500 mt-1">
+        <p className="text-sm sm:text-base text-gray-500 mt-1">
           Search nearby laboratories and book diagnostic tests easily.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6">
         {/* Filters */}
         <aside className="hidden lg:block">
           <div className="sticky top-24 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -156,17 +156,17 @@ const Laboratory = () => {
           </div>
         </aside>
 
-        <main className="lg:col-span-3">
+        <main className="lg:col-span-3 min-w-0">
           {/* Search */}
 
-          <div className="flex items-center gap-3 mb-5">
-            <div className="flex-1">
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-5 w-full">
+            <div className="flex-1 min-w-0">
               <LabSearchBar onSearch={handleSearch} />
             </div>
 
             <button
               onClick={() => setShowFilters(true)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 bg-white"
+              className="lg:hidden shrink-0 flex items-center gap-2 px-3 sm:px-4 h-10 sm:h-11 rounded-lg border border-gray-200 bg-white text-sm whitespace-nowrap"
             >
               <TuneIcon fontSize="small" />
               Filters
@@ -176,7 +176,7 @@ const Laboratory = () => {
           {/* Chips */}
 
           {filterChips.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-5">
+            <div className="flex flex-wrap items-center gap-2 mb-4 sm:mb-5">
               {filterChips.map((chip) => (
                 <button
                   key={chip.key}
@@ -199,7 +199,7 @@ const Laboratory = () => {
           )}
 
           {!currentLoading && !currentError && (
-            <div className="mb-4 text-sm text-gray-500">
+            <div className="mb-3 sm:mb-4 text-xs sm:text-sm text-gray-500">
               {filters.searchType === "laboratory" ? (
                 <>
                   {laboratories.length} Laborator
@@ -215,13 +215,13 @@ const Laboratory = () => {
           )}
 
           {currentLoading && (
-            <div className="bg-white border  border-gray-200 rounded-xl py-16 text-center">
+            <div className="bg-white border border-gray-200 rounded-xl py-12 sm:py-16 px-4 text-center">
               {isLaboratory ? "Loading laboratories..." : "Loading tests..."}
             </div>
           )}
 
           {currentError && (
-            <div className="bg-white border border-gray-200  rounded-xl py-16 text-center text-red-500">
+            <div className="bg-white border border-gray-200 rounded-xl py-12 sm:py-16 px-4 text-center text-red-500 wrap-break-word">
               {currentError}
             </div>
           )}
@@ -231,7 +231,7 @@ const Laboratory = () => {
             (filters.searchType === "laboratory"
               ? laboratories.length === 0
               : (tests?.length || 0) === 0) && (
-              <div className="bg-white border border-gray-200  rounded-xl py-16 text-center">
+              <div className="bg-white border border-gray-200 rounded-xl py-12 sm:py-16 px-4 text-center">
                 <h2 className="text-xl font-semibold">
                   {filters.searchType === "laboratory"
                     ? "No Laboratories Found"
@@ -254,7 +254,7 @@ const Laboratory = () => {
           {!currentError &&
             (isLaboratory ? laboratories.length > 0 : tests.length > 0) && (
               <>
-                <div className="min-h-[900px]">
+                <div className="w-full min-w-0">
                   {filters.searchType === "laboratory" ? (
                     <LabList
                       laboratories={laboratories}
@@ -267,11 +267,13 @@ const Laboratory = () => {
                   )}
                 </div>
 
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={currentPagination?.totalPages || 1}
-                  onPageChange={currentSetPage}
-                />
+             <div className="mt-5 sm:mt-6 overflow-x-auto">
+  <Pagination
+    currentPage={currentPage}
+    totalPages={currentPagination?.totalPages || 1}
+    onPageChange={currentSetPage}
+  />
+</div>
               </>
             )}
         </main>
@@ -286,8 +288,8 @@ const Laboratory = () => {
             onClick={() => setShowFilters(false)}
           />
 
-          <div className="fixed left-0 top-0 h-full w-80 bg-white z-50 lg:hidden">
-            <div className="p-5">
+          <div className="fixed left-0 top-0 h-dvh w-[85%] max-w-sm bg-white z-50 lg:hidden flex flex-col shadow-xl">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5">
               {isLaboratory ? (
                 <LabFilters
                   onFilterChange={(newFilters) => {

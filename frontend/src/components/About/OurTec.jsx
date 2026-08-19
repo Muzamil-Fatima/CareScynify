@@ -2,7 +2,7 @@ import React from "react";
 
 const OurTec = () => {
   return (
-    <div className="grid md:grid-cols-2 gap-10 py-16">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 py-10 md:py-16">
 
       <div className="p-8 rounded-2xl bg-linear-to-br from-purple-50 to-white shadow-lg border">
         <h2 className="text-2xl font-bold mb-3">Our Mission</h2>

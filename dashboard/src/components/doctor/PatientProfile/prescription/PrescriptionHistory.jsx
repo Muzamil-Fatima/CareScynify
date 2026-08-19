@@ -1,4 +1,5 @@
 import React from "react";
+
 import PrescriptionHistoryCard from "./PrescriptionHistoryCard";
 
 import HistoryRoundedIcon from "@mui/icons-material/HistoryRounded";
@@ -7,7 +8,7 @@ import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 const PrescriptionHistory = ({
   prescriptions = [],
   loading = false,
-  onView,
+  onDelete,
 }) => {
   if (loading) {
     return (
@@ -16,7 +17,10 @@ const PrescriptionHistory = ({
           <div className="h-6 w-56 rounded bg-slate-200"></div>
 
           {[1, 2, 3].map((item) => (
-            <div key={item} className="h-24 rounded-xl bg-slate-100"></div>
+            <div
+              key={item}
+              className="h-24 rounded-xl bg-slate-100"
+            />
           ))}
         </div>
       </div>
@@ -25,7 +29,8 @@ const PrescriptionHistory = ({
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm">
-      {/* Header */}
+      {/* HEADER */}
+
       <div className="flex items-center gap-3 mb-6">
         <div className="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center">
           <HistoryRoundedIcon className="text-purple-600" />
@@ -37,12 +42,13 @@ const PrescriptionHistory = ({
           </h2>
 
           <p className="text-sm text-slate-500">
-            View the patient's prescription history.
+            View or delete the patient's previous prescriptions.
           </p>
         </div>
       </div>
 
-      {/* Empty */}
+      {/* EMPTY */}
+
       {prescriptions.length === 0 ? (
         <div className="border-2 border-dashed border-slate-200 rounded-2xl py-12 text-center">
           <DescriptionRoundedIcon
@@ -64,7 +70,7 @@ const PrescriptionHistory = ({
             <PrescriptionHistoryCard
               key={item._id}
               prescription={item}
-              onView={onView}
+              onDelete={onDelete}
             />
           ))}
         </div>

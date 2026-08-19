@@ -5,7 +5,6 @@ import {
   getPrescriptionByAppointment,
   getPatientPrescriptions,
   getPrescriptionById,
-  deletePrescription,
   getMyPrescriptions,
   getMyPrescriptionById,
 } from "../../controllers/doctor/prescriptionController.js";
@@ -40,8 +39,5 @@ router.get("/:prescriptionId", protect, getPrescriptionById);
 
 // Update
 router.put("/:prescriptionId", protect, updatePrescription);
-
-// Delete
-router.delete("/:prescriptionId", protect, deletePrescription);
 
 export default router;

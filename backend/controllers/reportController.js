@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Report from "../models/reportModel.js";
 import LabReport from "../models/laboratory/LabReport.js";
+import Prescription from "../models/doctor/PrescriptionModel.js";
 import Patient from "../models/patientModel.js";
 import { generateMedicalExplanation } from "../services/ai/reportExplainService.js";
 import cloudinary from "../utils/cloudinary.js";
@@ -87,24 +88,32 @@ export const addReport = async (req, res) => {
   }
 };
 
-// get reports
+
+// get reports (User Reports, Lab Reports, and Prescription PDFs)
 export const getReports = async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.userId || req.user?._id || req.user?.id;
 
-    // User uploaded reports
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User authentication required.",
+      });
+    }
+
+    // 1. User uploaded reports
     const userReports = await Report.find({
       userId: userId,
     }).sort({
       createdAt: -1,
     });
 
+    // 2. Patient Profile check & Lab Reports
     const patient = await Patient.findOne({
       userId: userId,
     });
 
     let labReports = [];
-
     if (patient) {
       labReports = await LabReport.find({
         patientId: patient._id,
@@ -121,17 +130,29 @@ export const getReports = async (req, res) => {
       }));
     }
 
-    res.status(200).json({
+    // 3. Fetch ONLY Prescription PDFs
+    const prescriptions = await Prescription.find({
+      userId: userId,
+    })
+      .select("prescriptionId pdfUrl createdAt status")
+      .sort({
+        createdAt: -1,
+      })
+      .lean();
+
+    return res.status(200).json({
+      success: true,
       reports: userReports,
       labReports: labReports,
+      prescriptions: prescriptions,
     });
   } catch (err) {
-    res.status(500).json({
-      message: err.message,
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Internal Server Error",
     });
   }
 };
-
 // GET SINGLE REPORT
 
 export const getReportById = async (req, res) => {

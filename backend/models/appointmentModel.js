@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
+import generateCustomId from "../utils/generateCustomId.js";
+import Counter from "./Counter.js";
 const appointmentSchema = new mongoose.Schema(
   {
+    appointmentId: {
+      type: String,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -67,5 +72,23 @@ appointmentSchema.index(
     },
   },
 );
+appointmentSchema.pre("validate", async function (next) {
+  if (!this.appointmentId) {
+    const year = new Date().getFullYear().toString().slice(-2);
+
+    const key = `APT-${year}-${this.doctorId.toString()}`;
+
+    const counter = await Counter.findOneAndUpdate(
+      { key },
+      { $inc: { seq: 1 } },
+      {
+        new: true,
+        upsert: true,
+      },
+    );
+
+    this.appointmentId = `APT${year}${String(counter.seq).padStart(5, "0")}`;
+  }
+});
 export const Appointment = mongoose.model("Appointment", appointmentSchema);
 export default Appointment;

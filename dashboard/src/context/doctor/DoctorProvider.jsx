@@ -20,6 +20,7 @@ const DoctorProvider = ({ children }) => {
     user: {},
     doctor: {
       specialization: "",
+      digitalSignature: "",
       qualifications: "",
       about: "",
       licenseNo: "",
@@ -34,8 +35,10 @@ const DoctorProvider = ({ children }) => {
   const [isDirty, setIsDirty] = useState(false);
   const [conflicts, setConflicts] = useState({});
   const [isSaving, setIsSaving] = useState(false);
+  const [signatureFile, setSignatureFile] = useState(null);
   const [activeWorkplaceId, setActiveWorkplaceId] = useState("all");
   const profileRef = useRef(profile);
+  const signatureFileRef = useRef(null);
   const saveProfileRef = useRef(null);
   const workplace = useDoctorWorkplace(profile, setProfile);
   const consultationHours = useConsultationHours(
@@ -49,6 +52,9 @@ const DoctorProvider = ({ children }) => {
   useEffect(() => {
     profileRef.current = profile;
   }, [profile]);
+  useEffect(() => {
+    signatureFileRef.current = signatureFile;
+  }, [signatureFile]);
   // FETCH PROFILE
   useEffect(() => {
     let isMounted = true;
@@ -62,7 +68,12 @@ const DoctorProvider = ({ children }) => {
           user: data?.user || {},
           doctor: {
             _id: data?.doctor?._id || null,
+            drId: data?.doctor?.drId || "",
             specialization: data?.doctor?.specialization || "",
+            digitalSignature: data?.doctor?.digitalSignature || {
+              url: "",
+              publicId: "",
+            },
             qualifications: data?.doctor?.qualifications || "",
             licenseNo: data?.doctor?.licenseNo || "",
             experience: data?.doctor?.experience || "",
@@ -88,7 +99,7 @@ const DoctorProvider = ({ children }) => {
     };
   }, []);
 
-  // SAVE PROFILE (stable ref-based function)
+  // SAVE PROFILE
   useEffect(() => {
     saveProfileRef.current = async () => {
       const requestId = ++requestIdRef.current;
@@ -99,21 +110,84 @@ const DoctorProvider = ({ children }) => {
         const currentProfile = profileRef.current;
 
         const payload = {
-          ...currentProfile.user,
-          ...currentProfile.doctor,
+          name: currentProfile.user?.name,
+          email: currentProfile.user?.email,
+          phone: currentProfile.user?.phone,
+          address: currentProfile.user?.address,
+          dob: currentProfile.user?.dob,
+          cnic: currentProfile.user?.cnic,
+
+          specialization: currentProfile.doctor?.specialization,
+          experience: currentProfile.doctor?.experience,
+          qualifications: currentProfile.doctor?.qualifications,
+          licenseNo: currentProfile.doctor?.licenseNo,
+          about: currentProfile.doctor?.about,
+          treatableConditions: currentProfile.doctor?.treatableConditions,
         };
 
-        const res = await updateDoctorProfile(payload);
+        let res;
 
-        // ignore old responses
+        // DIGITAL SIGNATURE
+        if (signatureFileRef.current) {
+          const formData = new FormData();
+
+          Object.entries(payload).forEach(([key, value]) => {
+            if (value === undefined || value === null) return;
+
+            if (Array.isArray(value)) {
+              formData.append(key, JSON.stringify(value));
+            } else {
+              formData.append(key, value);
+            }
+          });
+
+          formData.append("digitalSignature", signatureFileRef.current);
+
+          res = await updateDoctorProfile(formData);
+        } else {
+          // NORMAL PROFILE UPDATE
+          res = await updateDoctorProfile(payload);
+        }
+
+        // Ignore old responses
         if (requestId !== requestIdRef.current) return;
 
         if (res?.success) {
           setIsDirty(false);
+          setSignatureFile(null);
+
+          // Update returned doctor data locally
+          if (res.doctor) {
+            setProfile((prev) => ({
+              ...prev,
+              doctor: {
+                ...prev.doctor,
+                ...res.doctor,
+              },
+            }));
+          }
+
+          // Update returned user data if backend returns it
+          if (res.user) {
+            setProfile((prev) => ({
+              ...prev,
+              user: {
+                ...prev.user,
+                ...res.user,
+              },
+            }));
+          }
+
           toast.success(res.message || "Profile updated successfully");
         }
       } catch (err) {
-        toast.error(err?.response?.data?.message || "Profile update failed");
+        console.error("Profile update error:", err);
+
+        toast.error(
+          err?.response?.data?.message ||
+            err?.message ||
+            "Profile update failed",
+        );
       } finally {
         setIsSaving(false);
       }
@@ -277,6 +351,8 @@ const DoctorProvider = ({ children }) => {
         setIsDirty,
         saveProfile: () => saveProfileRef.current?.(),
         workplace,
+        signatureFile,
+        setSignatureFile,
         consultationHours,
         conflicts,
         setConflicts,

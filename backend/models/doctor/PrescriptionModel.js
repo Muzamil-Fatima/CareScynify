@@ -1,58 +1,76 @@
 import mongoose from "mongoose";
-import Medicine from "../pharmacy/Medicine.js";
 import Counter from "../Counter.js";
-const PrescriptionSchema = new mongoose.Schema(
+
+const prescriptionSchema = new mongoose.Schema(
   {
+    // CUSTOM PRESCRIPTION ID
     prescriptionId: {
       type: String,
+      required: true,
+      unique: true,
       index: true,
     },
+    // PDF
+    pdfUrl: {
+      type: String,
+      default: "",
+    },
+    // APPOINTMENT
     appointmentId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Appointment",
       required: true,
       unique: true,
+      index: true,
     },
-
+    // PATIENT USER
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
-
+    // PATIENT
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Patient",
       required: true,
+      index: true,
     },
-
+    // DOCTOR
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
       required: true,
+      index: true,
     },
-
+    // WORKPLACE
     workplaceId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Workplace",
       required: true,
     },
-
+    // MEDICAL CONTENT
     diagnosis: {
       type: String,
-      trim: true,
       default: "",
     },
-
     symptoms: {
       type: [String],
       default: [],
     },
 
-    // medicines: {
-    //   type: [Medicine],
-    //   default: [],
-    // },
+    medicines: {
+      type: [
+        {
+          medicine: { type: String, default: "" },
+          dosage: { type: String, default: "" },
+          frequency: { type: String, default: "" },
+          duration: { type: String, default: "" },
+          instructions: { type: String, default: "" },
+        },
+      ],
+      default: [],
+    },
 
     labTests: {
       type: [String],
@@ -61,7 +79,6 @@ const PrescriptionSchema = new mongoose.Schema(
 
     advice: {
       type: String,
-      trim: true,
       default: "",
     },
 
@@ -73,18 +90,25 @@ const PrescriptionSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["draft", "issued", "dispensed"],
-      default: "draft",
+      default: "issued",
     },
   },
+  {
+    timestamps: true,
+    versionKey: false,
 
-  { timestamps: true, versionKey: false },
+    // Force MongoDB collection name.
+    collection: "prescriptions",
+  },
 );
-PrescriptionSchema.index({ doctorId: 1, prescriptionId: 1 }, { unique: true });
-PrescriptionSchema.pre("validate", async function (next) {
+
+// GENERATE CUSTOM PRESCRIPTION ID
+
+prescriptionSchema.pre("validate", async function (next) {
   if (!this.prescriptionId) {
     const year = new Date().getFullYear().toString().slice(-2);
 
-    const key = `RX-${year}-${this.doctorId.toString()}`;
+    const key = `PRS-${year}-${this.doctorId.toString()}`;
 
     const counter = await Counter.findOneAndUpdate(
       { key },
@@ -95,9 +119,14 @@ PrescriptionSchema.pre("validate", async function (next) {
       },
     );
 
-    this.prescriptionId = `RX${year}${String(counter.seq).padStart(5, "0")}`;
+    this.prescriptionId = `PRS${year}${String(counter.seq).padStart(5, "0")}`;
   }
 });
 
-const Prescription = mongoose.model("Prescription", PrescriptionSchema);
+// MODEL
+
+const Prescription =
+  mongoose.models.Prescription ||
+  mongoose.model("Prescription", prescriptionSchema);
+
 export default Prescription;

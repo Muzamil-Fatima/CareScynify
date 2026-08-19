@@ -10,7 +10,7 @@ import { updateUserProfile } from "../../api/userApi";
 import { useDoctor } from "../../context/doctor/DoctorContext";
 
 const AddNewDr = () => {
-  const { profile, setProfile, setIsDirty } = useDoctor();
+  const { profile, setProfile} = useDoctor();
 
   const fileInputRef = useRef(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -19,34 +19,60 @@ const AddNewDr = () => {
     fileInputRef.current.click();
   };
 
+  // const handleFileChange = async (e) => {
+  //   const file = e.target.files[0];
+  //   if (!file) return;
+
+  //   setSelectedFile(file);
+
+  //   const formData = new FormData();
+  //   formData.append("avatar", file);
+
+  //   try {
+  //     const res = await updateUserProfile(formData);
+
+  //     // update only user avatar locally
+  //     setProfile((prev) => ({
+  //       ...prev,
+  //       user: {
+  //         ...prev.user,
+  //         avatar: res.user.avatar,
+  //       },
+  //     }));
+
+  //     setIsDirty(true);
+  //     toast.success("Profile image updated");
+  //   } catch (error) {
+  //     console.error(error);
+  //     toast.error("Image upload failed");
+  //   }
+  // };
   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const file = e.target.files[0];
+  if (!file) return;
 
-    setSelectedFile(file);
+  setSelectedFile(file);
 
-    const formData = new FormData();
-    formData.append("avatar", file);
+  const formData = new FormData();
+  formData.append("avatar", file);
 
-    try {
-      const res = await updateUserProfile(formData);
+  try {
+    const res = await updateUserProfile(formData);
 
-      // update only user avatar locally
-      setProfile((prev) => ({
-        ...prev,
-        user: {
-          ...prev.user,
-          avatar: res.user.avatar,
-        },
-      }));
+    setProfile((prev) => ({
+      ...prev,
+      user: {
+        ...prev.user,
+        avatar: res.user.avatar,
+      },
+    }));
 
-      setIsDirty(true);
-      toast.success("Profile image updated");
-    } catch (error) {
-      console.error(error);
-      toast.error("Image upload failed");
-    }
-  };
+    toast.success("Profile image updated");
+  } catch (error) {
+    console.error(error);
+    toast.error("Image upload failed");
+  }
+};
   const avatarSrc = selectedFile
     ? URL.createObjectURL(selectedFile)
     : profile?.user?.avatar?.url  || "";

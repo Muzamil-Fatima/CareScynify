@@ -39,6 +39,7 @@ router.put(
   upload.fields([
     { name: "cnicFront", maxCount: 1 },
     { name: "cnicBack", maxCount: 1 },
+    { name: "digitalSignature", maxCount: 1 },
   ]),
   updateDoctorProfile,
 );

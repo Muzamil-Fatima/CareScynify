@@ -45,6 +45,8 @@ import LabReports from "./pages/laboratory/LabReports.jsx";
 import LabReportDetails from "./pages/laboratory/LabReportDetails.jsx";
 // admin
 import AdminDashboard from "./pages/admin/AdminDashboard.jsx";
+import AdminUsers from "./pages/admin/AdminUsers.jsx";
+import RequestToVerify from "./pages/admin/RequestToVerify.jsx";
 function App() {
   const [isOpen, setIsOpen] = useState(true);
   const [activeSidebar, setActiveSidebar] = useState("");
@@ -119,8 +121,11 @@ function App() {
                 path="/doctor/patient/profile/:patientId"
                 element={<PatientProfile />}
               />
-              <Route path="/report-viewer/:reportId" element={<ReportViewer />} />
-           
+              <Route
+                path="/report-viewer/:reportId"
+                element={<ReportViewer />}
+              />
+
               <Route
                 path="/video/:appointmentId"
                 element={<VideoConsultation />}
@@ -172,6 +177,10 @@ function App() {
 
               {/* admin */}
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+              <Route path="/admin/users" element={<AdminUsers />} />
+
+              <Route path="/admin/verification" element={<RequestToVerify />} />
             </Routes>
           </div>
         </div>

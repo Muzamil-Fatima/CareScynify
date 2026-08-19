@@ -13,18 +13,18 @@ const AboutUs = () => {
           About CareScynify
         </span>
 
-        <h1 className="text-4xl md:text-6xl font-extrabold mt-6 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold mt-5 sm:mt-6 leading-tight bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
           Building Future Healthcare Tech
         </h1>
 
-        <p className="mt-4 text-gray-600 max-w-2xl mx-auto text-lg">
+        <p className="mt-4 text-gray-600 max-w-2xl mx-auto text-sm sm:text-base md:text-lg leading-relaxed">
           A smart ecosystem connecting patients, doctors, and healthcare systems
           with modern AI-powered solutions and real-time digital care.
         </p>
       </div>
 
       {/* WHO WE ARE */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 px-6 md:px-16 items-center py-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 px-4 sm:px-6 md:px-16 items-center py-8 md:py-10">
 
         <div className="relative">
           <img
@@ -52,7 +52,7 @@ const AboutUs = () => {
             patients and healthcare providers.
           </p>
 
-          <div className="flex gap-3 pt-4">
+          <div className="flex flex-col xs:flex-row sm:flex-row gap-3 pt-4">
             <button className="px-6 py-2 rounded-xl bg-purple-600 text-white hover:bg-purple-700 transition">
               Learn More
             </button>

@@ -6,22 +6,16 @@ import {
   extractDoctorName,
 } from "../../utils/patientChatbot/chatbotIntent.js";
 
-// ======================================================
 // MAIN CHATBOT SERVICE
-// ======================================================
 
 export const processChatbotMessage = async ({ message, patientId }) => {
   const normalizedMessage = message.toLowerCase().trim();
 
-  // ====================================================
   // 1. DETECT INTENT
-  // ====================================================
 
   const intent = detectIntent(normalizedMessage);
 
-  // ====================================================
   // 2. GREETING
-  // ====================================================
 
   if (intent === "GREETING") {
     return {
@@ -36,9 +30,7 @@ export const processChatbotMessage = async ({ message, patientId }) => {
     };
   }
 
-  // ====================================================
   // 3. HELP
-  // ====================================================
 
   if (intent === "HELP") {
     return {
@@ -49,16 +41,12 @@ export const processChatbotMessage = async ({ message, patientId }) => {
     };
   }
 
-  // ====================================================
   // 4. FIND DOCTOR / CHECK AVAILABILITY
-  // ====================================================
 
   if (intent === "FIND_DOCTOR" || intent === "CHECK_AVAILABILITY") {
     const specialty = extractSpecialty(normalizedMessage);
 
-    // --------------------------------------------------
     // Specialty not detected
-    // --------------------------------------------------
 
     if (!specialty) {
       return {
@@ -76,15 +64,11 @@ export const processChatbotMessage = async ({ message, patientId }) => {
       };
     }
 
-    // --------------------------------------------------
     // Find doctors from REAL DATABASE
-    // --------------------------------------------------
 
     const doctors = await findDoctorsBySpecialty(specialty);
 
-    // --------------------------------------------------
     // No doctor found
-    // --------------------------------------------------
 
     if (!doctors.length) {
       return {
@@ -94,9 +78,7 @@ export const processChatbotMessage = async ({ message, patientId }) => {
       };
     }
 
-    // --------------------------------------------------
     // Doctors found
-    // --------------------------------------------------
 
     return {
       type: "doctors",
@@ -106,9 +88,7 @@ export const processChatbotMessage = async ({ message, patientId }) => {
     };
   }
 
-  // ====================================================
   // 5. SPECIFIC DOCTOR SEARCH
-  // ====================================================
 
   if (intent === "DOCTOR_INFO") {
     const doctorName = extractDoctorName(normalizedMessage);
@@ -138,9 +118,7 @@ export const processChatbotMessage = async ({ message, patientId }) => {
     };
   }
 
-  // ====================================================
   // 6. CHECK SLOTS
-  // ====================================================
 
   if (intent === "CHECK_SLOTS") {
     return {
@@ -151,9 +129,7 @@ export const processChatbotMessage = async ({ message, patientId }) => {
     };
   }
 
-  // ====================================================
   // 7. BOOK APPOINTMENT
-  // ====================================================
 
   if (intent === "BOOK_APPOINTMENT") {
     return {
@@ -164,9 +140,7 @@ export const processChatbotMessage = async ({ message, patientId }) => {
     };
   }
 
-  // ====================================================
   // 8. FALLBACK
-  // ====================================================
 
   return {
     type: "message",
@@ -176,9 +150,7 @@ export const processChatbotMessage = async ({ message, patientId }) => {
   };
 };
 
-// ======================================================
 // FIND DOCTORS BY SPECIALIZATION
-// ======================================================
 
 const findDoctorsBySpecialty = async (specialty) => {
   try {
@@ -270,9 +242,7 @@ const findDoctorsBySpecialty = async (specialty) => {
   }
 };
 
-// ======================================================
 // FIND SPECIFIC DOCTOR BY NAME
-// ======================================================
 
 const findDoctorByName = async (doctorName) => {
   try {

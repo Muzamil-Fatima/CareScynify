@@ -38,6 +38,16 @@ const drSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
+    digitalSignature: {
+      url: {
+        type: String,
+        default: "",
+      },
+      publicId: {
+        type: String,
+        default: "",
+      },
+    },
     workplaces: [
       {
         name: String,

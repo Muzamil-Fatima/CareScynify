@@ -23,7 +23,6 @@ const uploadPdfToCloudinary = (buffer) => {
   });
 };
 // Create Report
-// Create Report
 export const createLabReport = async (req, res) => {
   try {
     const { sampleId, results, overallRemarks } = req.body;

@@ -25,7 +25,8 @@ import DescriptionIcon from "@mui/icons-material/Description";
 // admin
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import VerifiedUserRoundedIcon from "@mui/icons-material/VerifiedUserRounded";
 export const menuByRole = {
   doctor: [
     {
@@ -162,58 +163,18 @@ export const menuByRole = {
       icon: <DashboardIcon />,
       title: "Overview",
     },
-    {
-      name: "Request to Verify",
-      path: "/admin/verify/person",
-      icon: <BadgeOutlinedIcon />,
-      title: "Request to Verify",
-    },
 
     {
-      name: "Notifications",
-      path: "/admin/notification",
-      icon: <NotificationsNoneOutlinedIcon />,
-      title: "Notifications",
+      name: "Users",
+      path: "/admin/users",
+      icon: <PeopleAltRoundedIcon />,
+      title: "Manage Users",
     },
     {
-      id: "dr",
-      name: "Doctor",
-      path: "/doctor",
-      icon: <MedicalServicesIcon />,
-      title: "Doctor",
-    },
-    {
-      name: "Patients",
-      path: "/patients",
-      icon: <PeopleIcon />,
-      title: "Patients",
-    },
-    {
-      id: "lab",
-      name: "Laboratory",
-      path: "/laboratory",
-      icon: <ScienceIcon />,
-      title: "Laboratory",
-    },
-    {
-      id: "lab",
-      name: "Pharmacy",
-      path: "/pharmacy",
-      icon: <MedicationIcon />,
-      title: "pharmacy",
-    },
-    {
-      id: "settings",
-      name: "Setting",
-      path: "/settings",
-      icon: <SettingsIcon />,
-      title: "Setting",
-    },
-    {
-      name: "Logout",
-      path: "/login",
-      icon: <LogoutIcon />,
-      title: "Logout",
+      name: "Verification Requests",
+      path: "/admin/verification",
+      icon: <VerifiedUserRoundedIcon />,
+      title: "Verification Requests",
     },
   ],
 };

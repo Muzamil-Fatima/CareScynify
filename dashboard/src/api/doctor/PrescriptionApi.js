@@ -12,12 +12,6 @@ export const updatePrescription = async (prescriptionId, data) => {
   return res.data;
 };
 
-// Delete
-export const deletePrescription = async (prescriptionId) => {
-  const res = await api.delete(`/api/prescription/${prescriptionId}`);
-  return res.data;
-};
-
 // Get by ID
 export const getPrescriptionById = async (prescriptionId) => {
   const res = await api.get(`/api/prescription/${prescriptionId}`);

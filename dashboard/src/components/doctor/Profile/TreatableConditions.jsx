@@ -70,7 +70,7 @@ const TreatableConditions = ({ value = [], onChange }) => {
   };
 
   return (
-    <div className="mt-4 mb-2 w-full max-w-2xl">
+    <div className="mt-4 mb-2  max-w-2xl">
       <label className="mb-2 block font-medium text-gray-700">
         Treatable Conditions
       </label>

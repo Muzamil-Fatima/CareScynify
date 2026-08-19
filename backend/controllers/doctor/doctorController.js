@@ -1,3 +1,4 @@
+// **************
 import Doctor from "../../models/doctor/doctorModel.js";
 import User from "../../models/user.js";
 import cloudinary from "../../utils/cloudinary.js";
@@ -46,7 +47,7 @@ export const updateDoctorProfile = async (req, res) => {
       doctor = new Doctor({ userId });
     }
 
-    //  USER FIELDS 
+    //  USER FIELDS
     const { name, email, phone, address, avatar, dob, cnic } = req.body;
 
     if (name !== undefined) user.name = name;
@@ -59,7 +60,7 @@ export const updateDoctorProfile = async (req, res) => {
 
     await user.save();
 
-    //  DOCTOR FIELDS 
+    //  DOCTOR FIELDS
     const {
       specialization,
       experience,
@@ -100,7 +101,7 @@ export const updateDoctorProfile = async (req, res) => {
       }
       doctor.licenseNo = cleanLicense;
     }
-    //  CNIC FRONT 
+    //  CNIC FRONT
     if (req.files?.cnicFront?.[0]) {
       const frontResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
@@ -124,12 +125,12 @@ export const updateDoctorProfile = async (req, res) => {
       doctor.identityVerification.status = "Pending";
     }
 
-    //  CNIC BACK 
-    if (req.files?.cnicBack?.[0]) {
-      const backResult = await new Promise((resolve, reject) => {
+    // DIGITAL SIGNATURE
+    if (req.files?.digitalSignature?.[0]) {
+      const signatureResult = await new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           {
-            folder: "doctor-verification/cnic",
+            folder: "doctor-signatures",
             resource_type: "image",
           },
           (error, result) => {
@@ -138,12 +139,15 @@ export const updateDoctorProfile = async (req, res) => {
           },
         );
 
-        streamifier.createReadStream(req.files.cnicBack[0].buffer).pipe(stream);
+        streamifier
+          .createReadStream(req.files.digitalSignature[0].buffer)
+          .pipe(stream);
       });
 
-      doctor.identityVerification.cnicBack = backResult.secure_url;
-
-      doctor.identityVerification.status = "Pending";
+      doctor.digitalSignature = {
+        url: signatureResult.secure_url,
+        publicId: signatureResult.public_id,
+      };
     }
 
     await doctor.save();
@@ -162,7 +166,7 @@ export const updateDoctorProfile = async (req, res) => {
     });
   }
 };
-// -----Education
+// ----------------------Education
 // ADD EDUCATION
 export const addDoctorEducation = async (req, res) => {
   try {

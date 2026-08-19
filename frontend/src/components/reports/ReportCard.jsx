@@ -1,10 +1,13 @@
+import React from "react";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { useNavigate } from "react-router-dom";
-const ReportCard = ({ report, getStatusStyle, handleDownload }) => {
+
+const ReportCard = ({ report, getStatusStyle, onDownload }) => {
   const navigate = useNavigate();
+
   return (
-    <div className="bg-white border rounded-2xl p-5">
+    <div className="bg-white border border-gray-200 rounded-2xl p-5">
       <div className="flex gap-3 mb-4">
         <div className="p-2 bg-purple-100 rounded-xl">
           <DescriptionOutlinedIcon />
@@ -51,15 +54,8 @@ const ReportCard = ({ report, getStatusStyle, handleDownload }) => {
         </span>
 
         <button
-          onClick={() =>
-            handleDownload(
-              report.fileUrl || report.pdfUrl,
-              report.title ||
-                report.reportName ||
-                `${report.results?.[0]?.testName || "Lab"} Report`,
-            )
-          }
-          className="text-purple-600 flex gap-1"
+          onClick={() => onDownload(report)}
+          className="text-purple-600 flex gap-1 hover:text-purple-800"
         >
           <DownloadOutlinedIcon />
           Download
