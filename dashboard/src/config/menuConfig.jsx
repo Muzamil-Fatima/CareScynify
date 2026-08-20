@@ -1,10 +1,6 @@
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import PeopleIcon from "@mui/icons-material/People";
-import EventIcon from "@mui/icons-material/Event";
 import ScienceIcon from "@mui/icons-material/Science";
-import SettingsIcon from "@mui/icons-material/Settings";
-import LogoutIcon from "@mui/icons-material/Logout";
 import MedicationIcon from "@mui/icons-material/Medication";
 // doctor
 import ScheduleIcon from "@mui/icons-material/Schedule";
@@ -158,10 +154,10 @@ export const menuByRole = {
   ],
   admin: [
     {
-      name: "Overview",
+      name: "Dashboard",
       path: "/admin/dashboard",
       icon: <DashboardIcon />,
-      title: "Overview",
+      title: "Dashboard",
     },
 
     {

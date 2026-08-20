@@ -3,10 +3,32 @@ import React from "react";
 import AdminStatsCards from "../../components/admin/dashboard/AdminStatsCards";
 import RegistrationChart from "../../components/admin/dashboard/RegistrationChart";
 import PendingVerifications from "../../components/admin/dashboard/PendingVerifications";
-import RecentActivity from "../../components/admin/dashboard//RecentActivity";
-import PlatformStats from "../../components/admin/dashboard//PlatformStats";
+import PlatformStats from "../../components/admin/dashboard/PlatformStats";
+
+import useAdminDashboard from "../../hooks/admin/useAdminDashboard";
 
 const AdminDashboard = () => {
+  const { dashboardData, period, loading, error, changePeriod } =
+    useAdminDashboard(7);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-full items-center justify-center bg-slate-50">
+        <p className="text-sm text-slate-500">Loading dashboard...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-full bg-slate-50 p-6">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-red-600">
+          {error}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-full w-full bg-slate-50">
       <div className="mx-auto w-full max-w-400 space-y-6 p-4 sm:p-6 lg:p-8">
@@ -22,19 +44,25 @@ const AdminDashboard = () => {
         </div>
 
         {/* Statistics Cards */}
-        <AdminStatsCards />
+        <AdminStatsCards stats={dashboardData?.stats} />
 
         {/* Registration Chart */}
-        <RegistrationChart />
+        <RegistrationChart
+          registrationOverview={dashboardData?.registrationOverview}
+          period={period}
+          onPeriodChange={changePeriod}
+        />
 
         {/* Pending Verifications */}
-        <PendingVerifications />
-
-        {/* Recent Activity */}
-        <RecentActivity />
+        <PendingVerifications
+          data={dashboardData?.pendingVerificationSummary}
+        />
 
         {/* Platform Statistics */}
-        <PlatformStats />
+        <PlatformStats
+          data={dashboardData?.platformDistribution}
+          growth={dashboardData?.platformGrowth}
+        />
       </div>
     </div>
   );

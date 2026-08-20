@@ -53,6 +53,10 @@ import labAddPatientRoutes from "./routes/laboratory/labAddPatientRoutes.js";
 import labSampleRoutes from "./routes/laboratory/labSampleRoutes.js";
 import labReportRoutes from "./routes/laboratory/labReportRoutes.js";
 import labDashboardRoutes from "./routes/laboratory/labDashboardRoutes.js";
+// admin
+import adminRoutes from "./routes/admin/adminRoutes.js";
+import adminUserRoutes from "./routes/admin/adminUserRoutes.js"
+import adminVerificationRoutes from "./routes/admin/adminVerificationRoutes.js"
 //Configuration
 connectDB();
 connectCloudinary();
@@ -149,6 +153,10 @@ app.use("/api/lab/patients", labAddPatientRoutes);
 app.use("/api/lab-samples", labSampleRoutes);
 app.use("/api/lab-reports", labReportRoutes);
 app.use("/api/lab/dashboard", labDashboardRoutes);
+// ======================================================== Admin
+app.use("/api/admin", adminRoutes);
+app.use("/api/admin/users", adminUserRoutes);
+app.use("/api/admin/verified", adminVerificationRoutes);
 // server listen
 const server = http.createServer(app);
 

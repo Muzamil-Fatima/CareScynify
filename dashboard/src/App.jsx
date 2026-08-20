@@ -177,9 +177,7 @@ function App() {
 
               {/* admin */}
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
-
               <Route path="/admin/users" element={<AdminUsers />} />
-
               <Route path="/admin/verification" element={<RequestToVerify />} />
             </Routes>
           </div>

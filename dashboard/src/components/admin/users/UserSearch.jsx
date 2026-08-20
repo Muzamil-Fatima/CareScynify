@@ -44,10 +44,7 @@ const UserSearch = ({
         {/* Search Info */}
         <div className="hidden items-center gap-2 text-xs text-gray-500 sm:flex">
           <span className="h-2 w-2 rounded-full bg-emerald-500" />
-
-          <span>
-            Search by name, email or user ID
-          </span>
+          <span>Search by name, email or user ID</span>
         </div>
       </div>
     </div>

@@ -1,94 +1,57 @@
-import React, { useMemo, useState } from "react";
+
+import React, { useCallback, useEffect, useState } from "react";
 
 import UserSearch from "../../components/admin/users/UserSearch";
 import UserFilters from "../../components/admin/users/UserFilters";
 import UserTable from "../../components/admin/users/UserTable";
 import UserDetailsModal from "../../components/admin/users/UserDetailsModal";
 
+import useAdminUser from "../../hooks/admin/useAdminUsers";
+
 const AdminUsers = () => {
-  /* ----------------------------------
-     Demo Users
-     Replace with API data later
-  ----------------------------------- */
+  /* 
+     ADMIN USER HOOK
+   */
 
-  const [users, setUsers] = useState([
-    {
-      _id: "USR001",
-      name: "Ahmed Khan",
-      email: "ahmed@example.com",
-      phone: "+92 300 1234567",
-      role: "doctor",
-      verificationStatus: "verified",
-      status: "active",
-      isVerified: true,
-      createdAt: "2026-08-10T10:30:00.000Z",
-      cnic: "35202-1234567-1",
-      gender: "male",
-      address: "Gujranwala, Punjab",
-    },
-    {
-      _id: "USR002",
-      name: "Fatima Ali",
-      email: "fatima@example.com",
-      phone: "+92 301 9876543",
-      role: "patient",
-      verificationStatus: "verified",
-      status: "active",
-      isVerified: true,
-      createdAt: "2026-08-08T12:20:00.000Z",
-      cnic: "35202-7654321-2",
-      gender: "female",
-      address: "Lahore, Punjab",
-    },
-    {
-      _id: "USR003",
-      name: "Usman Medical Store",
-      email: "usmanpharmacy@example.com",
-      phone: "+92 302 5556677",
-      role: "pharmacy",
-      verificationStatus: "pending",
-      status: "active",
-      isVerified: false,
-      createdAt: "2026-08-05T09:15:00.000Z",
-      address: "Gujranwala, Punjab",
-    },
-    {
-      _id: "USR004",
-      name: "City Diagnostic Lab",
-      email: "citylab@example.com",
-      phone: "+92 303 1112233",
-      role: "laboratory",
-      verificationStatus: "pending",
-      status: "active",
-      isVerified: false,
-      createdAt: "2026-08-03T14:45:00.000Z",
-      address: "Gujranwala, Punjab",
-    },
-    {
-      _id: "USR005",
-      name: "Bilal Ahmed",
-      email: "bilal@example.com",
-      phone: "+92 304 7778899",
-      role: "patient",
-      verificationStatus: "rejected",
-      status: "suspended",
-      isVerified: false,
-      createdAt: "2026-07-29T16:10:00.000Z",
-      cnic: "35202-9876543-3",
-      gender: "male",
-      address: "Wazirabad, Punjab",
-    },
-  ]);
+  const {
+    users,
+    selectedUser,
+    stats,
+    pagination,
+    loading,
+    actionLoading,
+    error,
 
-  /* ----------------------------------
-     Search
-  ----------------------------------- */
+    fetchUsers,
+    fetchUserById,
+    fetchUserStats,
+
+    handleVerifyUser,
+    handleRejectUser,
+    handleSuspendUser,
+    handleActivateUser,
+    handleToggleUserStatus,
+    handleDeleteUser,
+    handleRestoreUser,
+
+    clearSelectedUser,
+    clearError,
+  } = useAdminUser();
+
+  /* 
+     SEARCH
+   */
 
   const [search, setSearch] = useState("");
 
-  /* ----------------------------------
-     Filters
-  ----------------------------------- */
+  /* 
+     FILTERS
+
+     These values match backend exactly:
+       role
+       verificationStatus
+       status
+   */
 
   const [filters, setFilters] = useState({
     role: "all",
@@ -96,203 +59,758 @@ const AdminUsers = () => {
     status: "all",
   });
 
-  /* ----------------------------------
-     Modal
-  ----------------------------------- */
+  /* 
+     MODAL
+   */
 
-  const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  /* ----------------------------------
-     Search Handler
-  ----------------------------------- */
+  /* 
+     INITIAL LOAD
+   */
 
-  const handleSearchChange = (value) => {
-    setSearch(value);
-  };
-
-  const clearSearch = () => {
-    setSearch("");
-  };
-
-  /* ----------------------------------
-     Filter Handler
-  ----------------------------------- */
-
-  const handleFilterChange = (field, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const resetFilters = () => {
-    setFilters({
+  useEffect(() => {
+    fetchUsers({
+      page: 1,
+      limit: pagination.rowsPerPage || 10,
+      search: "",
       role: "all",
       verificationStatus: "all",
       status: "all",
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    });
+
+    fetchUserStats();
+  }, []);
+
+  /* 
+     FETCH USERS WITH CURRENT FILTERS
+   */
+
+  const loadUsers = useCallback(
+    ({
+      page = 1,
+      limit = pagination.rowsPerPage || 10,
+      searchValue = search,
+      filterValues = filters,
+    } = {}) => {
+      return fetchUsers({
+        page,
+        limit,
+
+        search:
+          typeof searchValue === "string"
+            ? searchValue.trim()
+            : "",
+
+        role: filterValues.role || "all",
+
+        verificationStatus:
+          filterValues.verificationStatus || "all",
+
+        status:
+          filterValues.status || "all",
+
+        sortBy: "createdAt",
+        sortOrder: "desc",
+      });
+    },
+    [
+      fetchUsers,
+      pagination.rowsPerPage,
+      search,
+      filters,
+    ],
+  );
+
+  /* 
+     SEARCH CHANGE
+   */
+
+  const handleSearchChange = (value) => {
+    setSearch(value);
+
+    loadUsers({
+      page: 1,
+      limit: pagination.rowsPerPage || 10,
+      searchValue: value,
+      filterValues: filters,
     });
   };
 
-  /* ----------------------------------
-     Filtered Users
-  ----------------------------------- */
+  /* 
+     CLEAR SEARCH
+   */
 
-  const filteredUsers = useMemo(() => {
-    const searchValue = search.trim().toLowerCase();
+  const clearSearch = () => {
+    setSearch("");
 
-    return users.filter((user) => {
-      /* Search */
-      const matchesSearch =
-        !searchValue ||
-        user.name?.toLowerCase().includes(searchValue) ||
-        user.email?.toLowerCase().includes(searchValue) ||
-        user._id?.toLowerCase().includes(searchValue) ||
-        user.phone?.toLowerCase().includes(searchValue);
+    loadUsers({
+      page: 1,
+      limit: pagination.rowsPerPage || 10,
+      searchValue: "",
+      filterValues: filters,
+    });
+  };
 
-      /* Role */
-      const matchesRole =
-        filters.role === "all" ||
-        user.role?.toLowerCase() === filters.role.toLowerCase();
+  /* 
+     FILTER CHANGE
+   */
 
-      /* Verification */
-      const matchesVerification =
-        filters.verificationStatus === "all" ||
-        user.verificationStatus?.toLowerCase() ===
-          filters.verificationStatus.toLowerCase();
+  const handleFilterChange = (field, value) => {
+    const newFilters = {
+      ...filters,
+      [field]: value,
+    };
 
-      /* Account Status */
-      const matchesStatus =
-        filters.status === "all" ||
-        user.status?.toLowerCase() === filters.status.toLowerCase();
+    setFilters(newFilters);
 
-      return (
-        matchesSearch && matchesRole && matchesVerification && matchesStatus
+    loadUsers({
+      page: 1,
+      limit: pagination.rowsPerPage || 10,
+      searchValue: search,
+      filterValues: newFilters,
+    });
+  };
+
+  /* 
+     RESET FILTERS
+   */
+
+  const resetFilters = () => {
+    const defaultFilters = {
+      role: "all",
+      verificationStatus: "all",
+      status: "all",
+    };
+
+    setFilters(defaultFilters);
+
+    loadUsers({
+      page: 1,
+      limit: pagination.rowsPerPage || 10,
+      searchValue: search,
+      filterValues: defaultFilters,
+    });
+  };
+
+  /* 
+     CLEAR EVERYTHING
+   */
+
+  const clearAll = () => {
+    const defaultFilters = {
+      role: "all",
+      verificationStatus: "all",
+      status: "all",
+    };
+
+    setSearch("");
+    setFilters(defaultFilters);
+
+    loadUsers({
+      page: 1,
+      limit: pagination.rowsPerPage || 10,
+      searchValue: "",
+      filterValues: defaultFilters,
+    });
+  };
+
+  /* 
+     ROWS PER PAGE
+   */
+
+  const handleRowsPerPageChange = (value) => {
+    const limit = Number(value) || 10;
+
+    loadUsers({
+      page: 1,
+      limit,
+      searchValue: search,
+      filterValues: filters,
+    });
+  };
+
+  /* 
+     PREVIOUS PAGE
+   */
+
+  const handlePreviousPage = () => {
+    if (!pagination.hasPreviousPage) {
+      return;
+    }
+
+    const previousPage =
+      Math.max(
+        Number(pagination.currentPage || 1) - 1,
+        1,
       );
+
+    loadUsers({
+      page: previousPage,
+      limit: pagination.rowsPerPage || 10,
+      searchValue: search,
+      filterValues: filters,
     });
-  }, [users, search, filters]);
-
-  /* ----------------------------------
-     View User
-  ----------------------------------- */
-
-  const handleViewUser = (user) => {
-    setSelectedUser(user);
-    setIsModalOpen(true);
   };
 
-  /* ----------------------------------
-     Close Modal
-  ----------------------------------- */
+  /* 
+     NEXT PAGE
+   */
+
+  const handleNextPage = () => {
+    if (!pagination.hasNextPage) {
+      return;
+    }
+
+    const nextPage =
+      Number(pagination.currentPage || 1) + 1;
+
+    loadUsers({
+      page: nextPage,
+      limit: pagination.rowsPerPage || 10,
+      searchValue: search,
+      filterValues: filters,
+    });
+  };
+
+  /* 
+     VIEW USER
+
+     Backend:
+       GET /api/admin/users/:id
+
+     Important:
+     Use Mongo _id first.
+     Backend also supports custom numeric userId.
+   */
+
+  const handleViewUser = async (user) => {
+    if (!user) return;
+
+    const id =
+      user._id ||
+      user.userId;
+
+    if (!id) {
+      console.error(
+        "Cannot view user: User ID missing",
+        user,
+      );
+
+      return;
+    }
+
+    try {
+      await fetchUserById(id);
+
+      setIsModalOpen(true);
+    } catch (err) {
+      console.error(
+        "Failed to fetch user details:",
+        err,
+      );
+    }
+  };
+
+  /* 
+     CLOSE MODAL
+   */
 
   const handleCloseModal = () => {
-    setSelectedUser(null);
     setIsModalOpen(false);
+    clearSelectedUser();
   };
 
-  /* ----------------------------------
-     Verify User
-  ----------------------------------- */
+  /* 
+     VERIFY USER
 
-  const handleVerifyUser = (user) => {
+     Backend:
+       PATCH /api/admin/users/:id/verify
+   */
+
+  const handleVerify = async (user) => {
     if (!user) return;
 
-    setUsers((prevUsers) =>
-      prevUsers.map((item) =>
-        item._id === user._id
-          ? {
-              ...item,
-              verificationStatus: "verified",
-              isVerified: true,
-            }
-          : item,
-      ),
-    );
+    const id =
+      user._id ||
+      user.userId;
 
-    setSelectedUser((prev) =>
-      prev
-        ? {
-            ...prev,
-            verificationStatus: "verified",
-            isVerified: true,
-          }
-        : prev,
-    );
+    if (!id) return;
+
+    try {
+      await handleVerifyUser(id);
+
+      /*
+        Refresh current page because verificationStatus
+        can affect the active verification filter.
+      */
+
+      await loadUsers({
+        page: pagination.currentPage || 1,
+        limit: pagination.rowsPerPage || 10,
+        searchValue: search,
+        filterValues: filters,
+      });
+
+      await fetchUserStats();
+    } catch (err) {
+      console.error(
+        "Verify user failed:",
+        err,
+      );
+    }
   };
 
-  /* ----------------------------------
-     Suspend / Activate User
-  ----------------------------------- */
+  /* 
+     REJECT USER
 
-  const handleSuspendUser = (user) => {
+     Backend:
+       PATCH /api/admin/users/:id/reject
+   */
+
+  const handleReject = async (user) => {
     if (!user) return;
 
-    const newStatus =
-      user.status?.toLowerCase() === "active" ? "suspended" : "active";
+    const id =
+      user._id ||
+      user.userId;
 
-    setUsers((prevUsers) =>
-      prevUsers.map((item) =>
-        item._id === user._id
-          ? {
-              ...item,
-              status: newStatus,
-            }
-          : item,
-      ),
-    );
+    if (!id) return;
 
-    setSelectedUser((prev) =>
-      prev
-        ? {
-            ...prev,
-            status: newStatus,
-          }
-        : prev,
-    );
+    try {
+      await handleRejectUser(id);
+
+      await loadUsers({
+        page: pagination.currentPage || 1,
+        limit: pagination.rowsPerPage || 10,
+        searchValue: search,
+        filterValues: filters,
+      });
+
+      await fetchUserStats();
+    } catch (err) {
+      console.error(
+        "Reject user failed:",
+        err,
+      );
+    }
   };
 
-  /* ----------------------------------
-     Statistics
-  ----------------------------------- */
+  /* 
+     SUSPEND USER
 
-  const totalUsers = users.length;
+     Backend:
+       PATCH /api/admin/users/:id/suspend
+   */
 
-  const activeUsers = users.filter(
-    (user) => user.status?.toLowerCase() === "active",
-  ).length;
+  const handleSuspend = async (user) => {
+    if (!user) return;
 
-  const pendingUsers = users.filter(
-    (user) => user.verificationStatus?.toLowerCase() === "pending",
-  ).length;
+    const id =
+      user._id ||
+      user.userId;
 
-  const suspendedUsers = users.filter(
-    (user) => user.status?.toLowerCase() === "suspended",
-  ).length;
+    if (!id) return;
+
+    try {
+      await handleSuspendUser(id);
+
+      await loadUsers({
+        page: pagination.currentPage || 1,
+        limit: pagination.rowsPerPage || 10,
+        searchValue: search,
+        filterValues: filters,
+      });
+
+      await fetchUserStats();
+    } catch (err) {
+      console.error(
+        "Suspend user failed:",
+        err,
+      );
+    }
+  };
+
+  /* 
+     ACTIVATE USER
+
+     Backend:
+       PATCH /api/admin/users/:id/activate
+   */
+
+  const handleActivate = async (user) => {
+    if (!user) return;
+
+    const id =
+      user._id ||
+      user.userId;
+
+    if (!id) return;
+
+    try {
+      await handleActivateUser(id);
+
+      await loadUsers({
+        page: pagination.currentPage || 1,
+        limit: pagination.rowsPerPage || 10,
+        searchValue: search,
+        filterValues: filters,
+      });
+
+      await fetchUserStats();
+    } catch (err) {
+      console.error(
+        "Activate user failed:",
+        err,
+      );
+    }
+  };
+
+  /* 
+     TOGGLE STATUS
+
+     Backend:
+       PATCH /api/admin/users/:id/status
+   */
+
+  const handleToggleStatus = async (user) => {
+    if (!user) return;
+
+    const id =
+      user._id ||
+      user.userId;
+
+    if (!id) return;
+
+    try {
+      await handleToggleUserStatus(id);
+
+      await loadUsers({
+        page: pagination.currentPage || 1,
+        limit: pagination.rowsPerPage || 10,
+        searchValue: search,
+        filterValues: filters,
+      });
+
+      await fetchUserStats();
+    } catch (err) {
+      console.error(
+        "Toggle user status failed:",
+        err,
+      );
+    }
+  };
+
+  /* 
+     DELETE USER
+
+     Backend:
+       DELETE /api/admin/users/:id
+
+     Backend does NOT return deleted user.
+   */
+
+  const handleDelete = async (user) => {
+    if (!user) return;
+
+    const id =
+      user._id ||
+      user.userId;
+
+    if (!id) return;
+
+    try {
+      await handleDeleteUser(id);
+
+      setIsModalOpen(false);
+
+      /*
+        Refetch current page because backend uses
+        server-side pagination.
+      */
+
+      await loadUsers({
+        page: pagination.currentPage || 1,
+        limit: pagination.rowsPerPage || 10,
+        searchValue: search,
+        filterValues: filters,
+      });
+
+      await fetchUserStats();
+    } catch (err) {
+      console.error(
+        "Delete user failed:",
+        err,
+      );
+    }
+  };
+
+  /* 
+     RESTORE USER
+
+     Backend:
+       PATCH /api/admin/users/:id/restore
+
+     Restored users are not automatically inserted
+     into current list by hook.
+   */
+
+  const handleRestore = async (user) => {
+    if (!user) return;
+
+    const id =
+      user._id ||
+      user.userId;
+
+    if (!id) return;
+
+    try {
+      await handleRestoreUser(id);
+
+      await loadUsers({
+        page: pagination.currentPage || 1,
+        limit: pagination.rowsPerPage || 10,
+        searchValue: search,
+        filterValues: filters,
+      });
+
+      await fetchUserStats();
+    } catch (err) {
+      console.error(
+        "Restore user failed:",
+        err,
+      );
+    }
+  };
+
+  /* 
+     STATISTICS
+
+     Backend:
+       GET /api/admin/users/stats
+
+     Response:
+       {
+         totalUsers,
+         activeUsers,
+         suspendedUsers,
+         inactiveUsers,
+         verifiedUsers,
+         pendingUsers,
+         rejectedUsers,
+         byRole
+       }
+   */
+
+  const totalUsers =
+    Number(stats?.totalUsers) || 0;
+
+  const activeUsers =
+    Number(stats?.activeUsers) || 0;
+
+  const pendingUsers =
+    Number(stats?.pendingUsers) || 0;
+
+  const suspendedUsers =
+    Number(stats?.suspendedUsers) || 0;
+
+  const verifiedUsers =
+    Number(stats?.verifiedUsers) || 0;
+
+  const rejectedUsers =
+    Number(stats?.rejectedUsers) || 0;
+
+  /* 
+     PAGINATION INFO
+   */
+
+  const totalItems =
+    Number(pagination?.totalItems) || 0;
+
+  const currentPage =
+    Number(pagination?.currentPage) || 1;
+
+  const rowsPerPage =
+    Number(pagination?.rowsPerPage) || 10;
+
+  const totalPages =
+    Number(pagination?.totalPages) || 1;
+
+  const startItem =
+    totalItems === 0
+      ? 0
+      : (currentPage - 1) *
+          rowsPerPage +
+        1;
+
+  const endItem =
+    totalItems === 0
+      ? 0
+      : Math.min(
+          currentPage * rowsPerPage,
+          totalItems,
+        );
+
+  /* 
+     FILTER / SEARCH ACTIVE
+   */
+
+  const hasActiveFilters =
+    Boolean(search.trim()) ||
+    filters.role !== "all" ||
+    filters.verificationStatus !== "all" ||
+    filters.status !== "all";
+
+  /* 
+     LOADING SCREEN
+   */
+
+  if (
+    loading &&
+    users.length === 0 &&
+    !selectedUser
+  ) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+              Users
+            </h1>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Manage registered users, verification,
+              and account status across CareScynify.
+            </p>
+          </div>
+
+          <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <div className="text-center">
+              <div className="mx-auto h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+
+              <p className="mt-4 text-sm font-medium text-gray-700">
+                Loading users...
+              </p>
+
+              <p className="mt-1 text-xs text-gray-400">
+                Please wait
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* 
+     ERROR
+   */
+
+  if (
+    error &&
+    users.length === 0 &&
+    !loading
+  ) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+              Users
+            </h1>
+
+            <p className="mt-1 text-sm text-gray-500">
+              Manage registered users, verification,
+              and account status across CareScynify.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-red-200 bg-white p-8 text-center shadow-sm">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-50">
+              <span className="text-xl text-red-600">
+                !
+              </span>
+            </div>
+
+            <h2 className="mt-4 text-lg font-semibold text-gray-900">
+              Failed to load users
+            </h2>
+
+            <p className="mx-auto mt-2 max-w-md text-sm text-gray-500">
+              {error}
+            </p>
+
+            <button
+              type="button"
+              onClick={() => {
+                clearError();
+
+                loadUsers({
+                  page: 1,
+                  limit:
+                    pagination.rowsPerPage ||
+                    10,
+                  searchValue: search,
+                  filterValues: filters,
+                });
+
+                fetchUserStats();
+              }}
+              className="mt-5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* 
+     RENDER
+   */
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
-        {/* ----------------------------------
-            Page Header
-        ----------------------------------- */}
+
+        {/* =====================================================
+            PAGE HEADER
+        ===================================================== */}
 
         <div className="mb-6">
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900">
-            Users
-          </h1>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+                Users
+              </h1>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Manage registered users, verification, and account status across
-            CareScynify.
-          </p>
+              <p className="mt-1 text-sm text-gray-500">
+                Manage registered users, verification,
+                and account status across CareScynify.
+              </p>
+            </div>
+
+            {loading && users.length > 0 && (
+              <div className="flex items-center gap-2 text-xs font-medium text-blue-600">
+                <span className="h-3 w-3 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600" />
+
+                Updating...
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* ----------------------------------
-            Statistics
-        ----------------------------------- */}
+        {/* =====================================================
+            STATISTICS
+        ===================================================== */}
 
         <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+
           {/* Total */}
+
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
               Total Users
@@ -302,10 +820,13 @@ const AdminUsers = () => {
               {totalUsers}
             </p>
 
-            <p className="mt-1 text-xs text-gray-500">All registered users</p>
+            <p className="mt-1 text-xs text-gray-500">
+              All registered users
+            </p>
           </div>
 
           {/* Active */}
+
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
               Active
@@ -315,10 +836,13 @@ const AdminUsers = () => {
               {activeUsers}
             </p>
 
-            <p className="mt-1 text-xs text-gray-500">Active accounts</p>
+            <p className="mt-1 text-xs text-gray-500">
+              Active accounts
+            </p>
           </div>
 
           {/* Pending */}
+
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
               Pending
@@ -328,10 +852,13 @@ const AdminUsers = () => {
               {pendingUsers}
             </p>
 
-            <p className="mt-1 text-xs text-gray-500">Awaiting verification</p>
+            <p className="mt-1 text-xs text-gray-500">
+              Awaiting verification
+            </p>
           </div>
 
           {/* Suspended */}
+
           <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
             <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
               Suspended
@@ -341,25 +868,83 @@ const AdminUsers = () => {
               {suspendedUsers}
             </p>
 
-            <p className="mt-1 text-xs text-gray-500">Suspended accounts</p>
+            <p className="mt-1 text-xs text-gray-500">
+              Suspended accounts
+            </p>
           </div>
         </div>
 
-        {/* ----------------------------------
-            Search
-        ----------------------------------- */}
+        {/* =====================================================
+            OPTIONAL VERIFICATION SUMMARY
+        ===================================================== */}
+
+        <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-3">
+
+          <div className="rounded-xl border border-emerald-100 bg-emerald-50 p-4">
+            <p className="text-xs font-medium text-emerald-700">
+              Verified Users
+            </p>
+
+            <p className="mt-1 text-xl font-bold text-emerald-800">
+              {verifiedUsers}
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-amber-100 bg-amber-50 p-4">
+            <p className="text-xs font-medium text-amber-700">
+              Pending Verification
+            </p>
+
+            <p className="mt-1 text-xl font-bold text-amber-800">
+              {pendingUsers}
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-red-100 bg-red-50 p-4">
+            <p className="text-xs font-medium text-red-700">
+              Rejected Users
+            </p>
+
+            <p className="mt-1 text-xl font-bold text-red-800">
+              {rejectedUsers}
+            </p>
+          </div>
+        </div>
+
+        {/* =====================================================
+            SEARCH
+        ===================================================== */}
 
         <div className="mb-4">
           <UserSearch
             value={search}
             onChange={handleSearchChange}
             onClear={clearSearch}
+
+            rowsPerPage={rowsPerPage}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalItems}
+            startItem={startItem}
+            endItem={endItem}
+
+            onRowsPerPageChange={
+              handleRowsPerPageChange
+            }
+
+            onPreviousPage={
+              handlePreviousPage
+            }
+
+            onNextPage={
+              handleNextPage
+            }
           />
         </div>
 
-        {/* ----------------------------------
-            Filters
-        ----------------------------------- */}
+        {/* =====================================================
+            FILTERS
+        ===================================================== */}
 
         <div className="mb-6">
           <UserFilters
@@ -369,53 +954,100 @@ const AdminUsers = () => {
           />
         </div>
 
-        {/* ----------------------------------
-            Results Info
-        ----------------------------------- */}
+        {/* =====================================================
+            ERROR WHILE REFRESHING
+        ===================================================== */}
 
-        <div className="mb-3 flex items-center justify-between">
+        {error && users.length > 0 && (
+          <div className="mb-4 flex items-center justify-between rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+            <p className="text-sm text-red-700">
+              {error}
+            </p>
+
+            <button
+              type="button"
+              onClick={clearError}
+              className="text-xs font-semibold text-red-700 hover:text-red-900"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
+        {/* =====================================================
+            RESULTS INFO
+        ===================================================== */}
+
+        <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-gray-500">
             Showing{" "}
             <span className="font-semibold text-gray-800">
-              {filteredUsers.length}
+              {startItem}
             </span>{" "}
-            of <span className="font-semibold text-gray-800">{totalUsers}</span>{" "}
+            -{" "}
+            <span className="font-semibold text-gray-800">
+              {endItem}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-gray-800">
+              {totalItems}
+            </span>{" "}
             users
           </p>
 
-          {(search ||
-            filters.role !== "all" ||
-            filters.verificationStatus !== "all" ||
-            filters.status !== "all") && (
+          {hasActiveFilters && (
             <button
               type="button"
-              onClick={() => {
-                clearSearch();
-                resetFilters();
-              }}
-              className="text-xs font-medium text-blue-600 transition hover:text-blue-700"
+              onClick={clearAll}
+              className="w-fit text-xs font-medium text-blue-600 transition hover:text-blue-700"
             >
               Clear all
             </button>
           )}
         </div>
 
-        {/* ----------------------------------
-            Users Table
-        ----------------------------------- */}
+        {/* =====================================================
+            USERS TABLE
+        ===================================================== */}
 
-        <UserTable users={filteredUsers} onViewUser={handleViewUser} />
+        <div className="relative">
+          {loading && users.length > 0 && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center rounded-2xl bg-white/60 backdrop-blur-[1px]">
+              <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-md">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600" />
 
-        {/* ----------------------------------
-            User Details Modal
-        ----------------------------------- */}
+                Loading...
+              </div>
+            </div>
+          )}
+
+          <UserTable
+            users={users}
+            onViewUser={handleViewUser}
+          />
+        </div>
+
+        {/* =====================================================
+            USER DETAILS MODAL
+        ===================================================== */}
 
         <UserDetailsModal
           user={selectedUser}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          onVerify={handleVerifyUser}
-          onSuspend={handleSuspendUser}
+
+          onVerify={handleVerify}
+          onReject={handleReject}
+
+          onSuspend={handleSuspend}
+          onActivate={handleActivate}
+          onToggleStatus={handleToggleStatus}
+
+          onDelete={handleDelete}
+          onRestore={handleRestore}
+
+          loading={loading}
+          actionLoading={actionLoading}
         />
       </div>
     </div>

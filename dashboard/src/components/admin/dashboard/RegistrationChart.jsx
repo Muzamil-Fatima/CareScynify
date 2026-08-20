@@ -1,4 +1,6 @@
+
 import React from "react";
+
 import {
   ResponsiveContainer,
   LineChart,
@@ -10,59 +12,23 @@ import {
   Legend,
 } from "recharts";
 
-const registrationData = [
-  {
-    month: "Feb",
-    patients: 420,
-    doctors: 48,
-    pharmacies: 22,
-    laboratories: 14,
-  },
-  {
-    month: "Mar",
-    patients: 580,
-    doctors: 62,
-    pharmacies: 28,
-    laboratories: 18,
-  },
-  {
-    month: "Apr",
-    patients: 720,
-    doctors: 75,
-    pharmacies: 35,
-    laboratories: 21,
-  },
-  {
-    month: "May",
-    patients: 860,
-    doctors: 91,
-    pharmacies: 42,
-    laboratories: 27,
-  },
-  {
-    month: "Jun",
-    patients: 980,
-    doctors: 108,
-    pharmacies: 49,
-    laboratories: 31,
-  },
-  {
-    month: "Jul",
-    patients: 1150,
-    doctors: 124,
-    pharmacies: 58,
-    laboratories: 36,
-  },
-  {
-    month: "Aug",
-    patients: 1320,
-    doctors: 141,
-    pharmacies: 67,
-    laboratories: 42,
-  },
-];
+const RegistrationChart = ({
+  registrationOverview = {},
+  period = 7,
+  onPeriodChange,
+}) => {
+  const registrationData = Array.isArray(registrationOverview?.data)
+    ? registrationOverview.data
+    : [];
 
-const RegistrationChart = () => {
+  const handlePeriodChange = (event) => {
+    const selectedPeriod = Number(event.target.value);
+
+    if (typeof onPeriodChange === "function") {
+      onPeriodChange(selectedPeriod);
+    }
+  };
+
   return (
     <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
       {/* Header */}
@@ -95,141 +61,156 @@ const RegistrationChart = () => {
             focus:ring-2
             focus:ring-blue-100
           "
-          defaultValue="7"
+          value={period}
+          onChange={handlePeriodChange}
         >
-          <option value="7">Last 7 Months</option>
-          <option value="12">Last 12 Months</option>
-          <option value="30">Last 30 Days</option>
+          <option value={7}>Last 7 Months</option>
+          <option value={12}>Last 12 Months</option>
         </select>
       </div>
 
       {/* Chart */}
       <div className="h-87.5 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={registrationData}
-            margin={{
-              top: 10,
-              right: 10,
-              left: -15,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid
-              strokeDasharray="3 3"
-              vertical={false}
-              stroke="#e2e8f0"
-            />
+        {registrationData.length > 0 ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={registrationData}
+              margin={{
+                top: 10,
+                right: 10,
+                left: -15,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#e2e8f0"
+              />
 
-            <XAxis
-              dataKey="month"
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fill: "#64748b",
-                fontSize: 12,
-              }}
-              dy={10}
-            />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fill: "#64748b",
+                  fontSize: 12,
+                }}
+                dy={10}
+              />
 
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{
-                fill: "#64748b",
-                fontSize: 12,
-              }}
-            />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fill: "#64748b",
+                  fontSize: 12,
+                }}
+                allowDecimals={false}
+              />
 
-            <Tooltip
-              contentStyle={{
-                border: "1px solid #e2e8f0",
-                borderRadius: "12px",
-                backgroundColor: "#ffffff",
-                boxShadow: "0 8px 24px rgba(15, 23, 42, 0.08)",
-              }}
-              labelStyle={{
-                color: "#0f172a",
-                fontWeight: 600,
-                marginBottom: 6,
-              }}
-            />
+              <Tooltip
+                contentStyle={{
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "12px",
+                  backgroundColor: "#ffffff",
+                  boxShadow: "0 8px 24px rgba(15, 23, 42, 0.08)",
+                }}
+                labelStyle={{
+                  color: "#0f172a",
+                  fontWeight: 600,
+                  marginBottom: 6,
+                }}
+              />
 
-            <Legend
-              verticalAlign="top"
-              align="right"
-              height={45}
-              iconType="circle"
-              wrapperStyle={{
-                fontSize: "12px",
-              }}
-            />
+              <Legend
+                verticalAlign="top"
+                align="right"
+                height={45}
+                iconType="circle"
+                wrapperStyle={{
+                  fontSize: "12px",
+                }}
+              />
 
-            <Line
-              type="monotone"
-              dataKey="patients"
-              name="Patients"
-              stroke="#2563eb"
-              strokeWidth={3}
-              dot={{
-                r: 4,
-                strokeWidth: 2,
-                fill: "#ffffff",
-              }}
-              activeDot={{
-                r: 6,
-              }}
-            />
+              <Line
+                type="monotone"
+                dataKey="patients"
+                name="Patients"
+                stroke="#2563eb"
+                strokeWidth={3}
+                dot={{
+                  r: 4,
+                  strokeWidth: 2,
+                  fill: "#ffffff",
+                }}
+                activeDot={{
+                  r: 6,
+                }}
+              />
 
-            <Line
-              type="monotone"
-              dataKey="doctors"
-              name="Doctors"
-              stroke="#10b981"
-              strokeWidth={3}
-              dot={{
-                r: 4,
-                strokeWidth: 2,
-                fill: "#ffffff",
-              }}
-              activeDot={{
-                r: 6,
-              }}
-            />
+              <Line
+                type="monotone"
+                dataKey="doctors"
+                name="Doctors"
+                stroke="#10b981"
+                strokeWidth={3}
+                dot={{
+                  r: 4,
+                  strokeWidth: 2,
+                  fill: "#ffffff",
+                }}
+                activeDot={{
+                  r: 6,
+                }}
+              />
 
-            <Line
-              type="monotone"
-              dataKey="pharmacies"
-              name="Pharmacies"
-              stroke="#8b5cf6"
-              strokeWidth={3}
-              dot={{
-                r: 4,
-                strokeWidth: 2,
-                fill: "#ffffff",
-              }}
-              activeDot={{
-                r: 6,
-              }}
-            />
+              <Line
+                type="monotone"
+                dataKey="pharmacies"
+                name="Pharmacies"
+                stroke="#8b5cf6"
+                strokeWidth={3}
+                dot={{
+                  r: 4,
+                  strokeWidth: 2,
+                  fill: "#ffffff",
+                }}
+                activeDot={{
+                  r: 6,
+                }}
+              />
 
-            <Line
-              type="monotone"
-              dataKey="laboratories"
-              name="Laboratories"
-              stroke="#f59e0b"
-              strokeWidth={3}
-              dot={{
-                r: 4,
-                strokeWidth: 2,
-                fill: "#ffffff",
-              }}
-              activeDot={{
-                r: 6,
-              }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+              <Line
+                type="monotone"
+                dataKey="laboratories"
+                name="Laboratories"
+                stroke="#f59e0b"
+                strokeWidth={3}
+                dot={{
+                  r: 4,
+                  strokeWidth: 2,
+                  fill: "#ffffff",
+                }}
+                activeDot={{
+                  r: 6,
+                }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <div className="text-center">
+              <p className="text-sm font-medium text-slate-500">
+                No registration data available
+              </p>
+
+              <p className="mt-1 text-xs text-slate-400">
+                Registration data will appear here once available.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

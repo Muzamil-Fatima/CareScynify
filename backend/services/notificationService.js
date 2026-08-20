@@ -1,4 +1,3 @@
-
 import Notification from "../models/notification.js";
 import sendEmail from "./emailService.js";
 import User from "../models/User.js";
@@ -6,12 +5,10 @@ import { getIO } from "../config/socket.js";
 
 console.log(
   "NOTIFICATION TYPE ENUM:",
-  Notification.schema.path("type").enumValues
+  Notification.schema.path("type").enumValues,
 );
 
-
 // CREATE NOTIFICATION
-
 
 export const createNotification = async ({
   recipient,
@@ -25,16 +22,14 @@ export const createNotification = async ({
   try {
     // Get recipient
     const user = await User.findById(recipient).select(
-      "email notificationSettings"
+      "email notificationSettings",
     );
 
     if (!user) {
       throw new Error("Recipient user not found");
     }
 
-    
     // GET USER PREFERENCE
-    
 
     const preference = user.notificationSettings?.get
       ? user.notificationSettings.get(type)
@@ -43,9 +38,7 @@ export const createNotification = async ({
     const systemEnabled = preference?.system ?? true;
     const emailEnabled = preference?.email ?? true;
 
-    
     // CREATE IN-APP NOTIFICATION
-    
 
     let notification = null;
 
@@ -60,33 +53,24 @@ export const createNotification = async ({
         relatedType,
         isRead: false,
 
-        channels: emailEnabled
-          ? ["in_app", "email"]
-          : ["in_app"],
+        channels: emailEnabled ? ["in_app", "email"] : ["in_app"],
       });
 
-      
       // REAL-TIME SOCKET NOTIFICATION
-      
 
       try {
         const io = getIO();
 
         io.to(`user:${recipient.toString()}`).emit(
           "notification",
-          notification
+          notification,
         );
       } catch (socketError) {
-        console.error(
-          "Notification socket emit error:",
-          socketError.message
-        );
+        console.error("Notification socket emit error:", socketError.message);
       }
     }
 
-    
     // SEND EMAIL
-    
 
     if (emailEnabled && user.email) {
       await sendEmail({
@@ -103,9 +87,7 @@ export const createNotification = async ({
   }
 };
 
-
 // GET USER NOTIFICATIONS
-
 
 export const getUserNotifications = async (userId) => {
   return await Notification.find({
@@ -115,9 +97,7 @@ export const getUserNotifications = async (userId) => {
     .lean();
 };
 
-
 // MARK ONE NOTIFICATION AS READ
-
 
 export const markAsRead = async (notificationId, userId) => {
   const notification = await Notification.findOneAndUpdate(
@@ -130,7 +110,7 @@ export const markAsRead = async (notificationId, userId) => {
     },
     {
       new: true,
-    }
+    },
   );
 
   if (!notification) {
@@ -140,9 +120,7 @@ export const markAsRead = async (notificationId, userId) => {
   return notification;
 };
 
-
 // MARK ALL NOTIFICATIONS AS READ
-
 
 export const markAllAsRead = async (userId) => {
   await Notification.updateMany(
@@ -152,18 +130,13 @@ export const markAllAsRead = async (userId) => {
     },
     {
       isRead: true,
-    }
+    },
   );
 };
 
-
 // DELETE NOTIFICATION
 
-
-export const deleteNotification = async (
-  notificationId,
-  userId
-) => {
+export const deleteNotification = async (notificationId, userId) => {
   const notification = await Notification.findOneAndDelete({
     _id: notificationId,
     recipient: userId,
