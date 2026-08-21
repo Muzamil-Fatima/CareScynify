@@ -1,4 +1,4 @@
-// Testimonials.jsx
+
 import { Star } from "lucide-react";
 
 const REVIEWS = [
