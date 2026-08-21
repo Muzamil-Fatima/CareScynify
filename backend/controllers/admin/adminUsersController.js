@@ -10,22 +10,6 @@ import Patient from "../../models/patientModel.js";
    Helper Functions
  */
 
-/**
- * Convert role-specific verification data into
- * one common verificationStatus for frontend.
- *
- * Patient:
- *    User.accountVerified
- *
- * Doctor:
- *    Doctor.identityVerification.status
- *
- * Pharmacy:
- *    Pharmacy.verificationStatus
- *
- * Laboratory:
- *    Laboratory.verificationStatus
- */
 const getVerificationStatus = (user, profile = null) => {
   const role = user.role?.toLowerCase();
 
