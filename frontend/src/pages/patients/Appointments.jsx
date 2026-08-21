@@ -1,9 +1,9 @@
 import { useState } from "react";
 
 import AppointmentCard from "../../components/appointment/AppointmentCard";
-import { useAppointment } from "../../hooks/useAppointments";
 import Search from "../../components/SearchBox";
 
+import { useAppointment } from "../../hooks/useAppointments";
 const Appointments = () => {
   const [active, setActive] = useState("all");
 
