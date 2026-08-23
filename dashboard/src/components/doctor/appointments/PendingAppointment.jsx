@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import useDoctorAppointments from "../../../hooks/useDoctorAppointments";
-
-import MoreVertIcon from "@mui/icons-material/MoreVert";
+import DoctorContext from "../../../context/doctor/DoctorContext";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 const PendingAppointment = () => {
-  const { appointments, loading, updateStatus } = useDoctorAppointments();
+  const { activeWorkplaceId } = useContext(DoctorContext);
+  const { appointments, loading, updateStatus } =
+    useDoctorAppointments(activeWorkplaceId);
   const navigate = useNavigate();
   const [timeFormat, setTimeFormat] = useState("12h");
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -17,7 +18,6 @@ const PendingAppointment = () => {
   const [openStatus, setOpenStatus] = useState(false);
   const [openTime, setOpenTime] = useState(false);
   const [openStatusMenu, setOpenStatusMenu] = useState(null);
-
   // Status Counts
   const cancelledCount = appointments.filter(
     (item) => item.status === "cancelled",
@@ -49,7 +49,7 @@ const PendingAppointment = () => {
   };
   // Filter
   const filteredAppointments = appointments.filter(
-    (item) => item.status === "pending" || item.status === "cancelled",
+    (item) => item.status === "pending",
   );
   const totalPages = Math.ceil(filteredAppointments.length / rowsPerPage);
 
@@ -69,7 +69,9 @@ const PendingAppointment = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="text-gray-600">Total: {appointments.length}</div>
+            <div className="text-gray-600">
+              Total: {filteredAppointments.length}
+            </div>
 
             <button className="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center">
               <EventAvailableIcon fontSize="small" />
@@ -177,7 +179,7 @@ const PendingAppointment = () => {
                         </div>
                       )}
                     </th>
-                    <th className="px-4 py-3 text-center">Verified</th>
+                    {/* <th className="px-4 py-3 text-center">Verified</th> */}
                   </tr>
                 </thead>
 
@@ -193,10 +195,11 @@ const PendingAppointment = () => {
                     </tr>
                   ) : (
                     paginatedAppointments.map((item, index) => {
-                      const user = item.patientId;
+                      const patient = item.patientId;
+                      const user = patient?.userId;
                       return (
                         <tr
-                          onDoubleClick={() => openPatientProfile(user?._id)}
+                          onDoubleClick={() => openPatientProfile(item)}
                           key={item._id}
                           className={`border-b border-gray-100 ${
                             index % 2 !== 0 ? "bg-gray-50" : ""
@@ -205,18 +208,21 @@ const PendingAppointment = () => {
                           {/* Patient */}
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
-                              {user?.avatar ? (
+                              {user?.avatar?.url ? (
                                 <img
-                                  src={user.avatar}
-                                  className="w-9 h-9 rounded-full"
+                                  src={user.avatar.url}
+                                  alt={user?.name}
+                                  className="w-9 h-9 rounded-full object-cover"
                                 />
                               ) : (
-                                <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <div className="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center cursor-pointer ">
                                   {user?.name?.charAt(0) || "P"}
                                 </div>
                               )}
 
-                              <span>{user?.name || "Unknown"}</span>
+                              <span className="cursor-pointer">
+                                {user?.name || "Unknown"}
+                              </span>
                             </div>
                           </td>
                           {/* Email */}
@@ -292,7 +298,7 @@ const PendingAppointment = () => {
                           </td>
 
                           {/* Verify */}
-                          <td className="px-4 py-3 text-center relative"></td>
+                          {/* <td className="px-4 py-3 text-center relative"></td> */}
                         </tr>
                       );
                     })
@@ -305,8 +311,11 @@ const PendingAppointment = () => {
             <div className="px-4 py-4 flex justify-between items-center">
               <p className="text-gray-600">
                 {(currentPage - 1) * rowsPerPage + 1} -
-                {Math.min(currentPage * rowsPerPage, appointments.length)} of{" "}
-                {appointments.length}
+                {Math.min(
+                  currentPage * rowsPerPage,
+                  filteredAppointments.length,
+                )}{" "}
+                of {filteredAppointments.length}
               </p>
 
               <div className="flex items-center gap-4">

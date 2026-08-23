@@ -194,7 +194,7 @@ export const createPrescription = async (req, res) => {
       followUpDate,
     } = req.body;
 
-    // Validation doctorId
+    // VALIDATION
 
     if (!appointmentId || !patientId || !workplaceId) {
       return res.status(400).json({
@@ -224,7 +224,7 @@ export const createPrescription = async (req, res) => {
       });
     }
 
-    // Logged-in Doctor doctorId
+    // LOGGED-IN DOCTOR
 
     const doctor = await getLoggedInDoctor(req);
 
@@ -235,7 +235,7 @@ export const createPrescription = async (req, res) => {
       });
     }
 
-    // Patient doctorId
+    // PATIENT
 
     const patientUserId = await getPatientUserId(patientId);
 
@@ -246,7 +246,7 @@ export const createPrescription = async (req, res) => {
       });
     }
 
-    // Workplace doctorId
+    // WORKPLACE
 
     const workplace = getDoctorWorkplace(doctor, workplaceId);
 
@@ -257,7 +257,7 @@ export const createPrescription = async (req, res) => {
       });
     }
 
-    //  Existing Prescription doctorId
+    // CHECK EXISTING PRESCRIPTION
 
     const existingPrescription = await Prescription.findOne({
       appointmentId,
@@ -271,105 +271,87 @@ export const createPrescription = async (req, res) => {
       });
     }
 
-    //  Normalize Incoming Medical Data doctorId
+    // NORMALIZE DATA
 
     const normalizedDiagnosis = diagnosis?.trim() || "";
+
     const normalizedSymptoms = normalizeStringArray(symptoms);
+
     const normalizedMedicines = normalizeMedicines(medicines);
+
     const normalizedLabTests = normalizeStringArray(labTests);
+
     const normalizedAdvice = advice?.trim() || "";
+
     const normalizedFollowUpDate = followUpDate || null;
 
-    // Temporary Prescription For PDF doctorId
+    // SAVE PRESCRIPTION FIRST
 
-    const prescriptionForPdf = new Prescription({
+    const prescription = await Prescription.create({
       appointmentId,
-
-      //  This is PATIENT'S User ID.
-
       userId: patientUserId,
-
       patientId,
-
       doctorId: doctor._id,
-
       workplaceId,
-
       diagnosis: normalizedDiagnosis,
       symptoms: normalizedSymptoms,
       medicines: normalizedMedicines,
       labTests: normalizedLabTests,
       advice: normalizedAdvice,
       followUpDate: normalizedFollowUpDate,
-
       pdfUrl: "",
     });
 
-    //  Generate Custom Prescription ID  doctorId
+    // GENERATE PDF
 
-    await prescriptionForPdf.validate();
+    try {
+      await populatePrescriptionForPdf(prescription);
 
-    //  Populate PDF Data doctorId
+      const pdfData = prescription.toObject();
 
-    await populatePrescriptionForPdf(prescriptionForPdf);
+      pdfData.workplace = workplace;
 
-    //  Attach Workplace doctorId
+      const generatedPdf = await generatePrescriptionPdf(pdfData);
 
-    const pdfData = prescriptionForPdf.toObject();
-    pdfData.workplace = workplace;
+      const pdfBuffer = normalizePdfBuffer(generatedPdf);
 
-    const generatedPdf = await generatePrescriptionPdf(pdfData);
+      if (!pdfBuffer || pdfBuffer.length === 0) {
+        throw new Error(
+          "Prescription PDF generator did not return a valid PDF buffer.",
+        );
+      }
 
-    const pdfBuffer = normalizePdfBuffer(generatedPdf);
+      // UPLOAD PDF
 
-    if (!pdfBuffer || pdfBuffer.length === 0) {
-      throw new Error(
-        "Prescription PDF generator did not return a valid PDF buffer.",
+      const pdfUrl = await uploadPdfToCloudinary(
+        pdfBuffer,
+        `${prescription.prescriptionId}.pdf`,
       );
+
+      // UPDATE PDF URL
+
+      prescription.pdfUrl = pdfUrl;
+
+      await prescription.save();
+    } catch (pdfError) {
+      console.error("Prescription PDF generation/upload failed:", pdfError);
+
+      // Prescription is already saved.
+      // PDF failure should not delete prescription.
     }
 
-    // Upload PDF doctorId
+    // FINAL RESPONSE
 
-    const pdfUrl = await uploadPdfToCloudinary(
-      pdfBuffer,
-      `${prescriptionForPdf.prescriptionId}.pdf`,
-    );
-
-    //  SAVE PRESCRIPTION doctorId
-
-    const prescription = await Prescription.create({
-      prescriptionId: prescriptionForPdf.prescriptionId,
-
-      pdfUrl,
-
-      appointmentId,
-
-      //  PATIENT USER ID
-
-      userId: patientUserId,
-
-      patientId,
-
-      doctorId: doctor._id,
-
-      workplaceId,
-
-      diagnosis: normalizedDiagnosis,
-      symptoms: normalizedSymptoms,
-      medicines: normalizedMedicines,
-      labTests: normalizedLabTests,
-      advice: normalizedAdvice,
-      followUpDate: normalizedFollowUpDate,
-    });
-
-    //  Response doctorId
+    const savedPrescription = await Prescription.findById(prescription._id);
 
     return res.status(201).json({
       success: true,
       message: "Prescription created successfully.",
-      prescription,
+      prescription: savedPrescription,
     });
   } catch (error) {
+    console.error("CREATE PRESCRIPTION ERROR:", error);
+
     return res.status(500).json({
       success: false,
       message: error?.message || "Internal Server Error",

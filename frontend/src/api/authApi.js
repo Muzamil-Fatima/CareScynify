@@ -50,10 +50,18 @@ export const resendResetOtp = async (data) => {
   return res.data;
 };
 //
+
 // 2 factor authentication
-//
+
+// TOGGLE 2FA ON/OFF
 export const toggle2FA = async () => {
-  const res = await api.put("/api/auth/toggle-two-factor");
+  const res = await api.patch("/api/auth/toggle-2fa");
+  return res.data;
+};
+
+// VERIFY 2FA OTP
+export const verifyTwoFactorOTP = async (data) => {
+  const res = await api.post("/api/auth/verify-2fa", data);
   return res.data;
 };
 //

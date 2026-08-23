@@ -1,8 +1,22 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+
 import { Send } from "lucide-react";
 
 const ChatInput = ({ onSend, loading = false }) => {
   const [message, setMessage] = useState("");
+  const inputRef = useRef(null);
+  const shouldFocusRef = useRef(false);
+
+  // Focus input after AI response/loading finishes
+  useEffect(() => {
+    if (!loading && shouldFocusRef.current) {
+      shouldFocusRef.current = false;
+
+      requestAnimationFrame(() => {
+        inputRef.current?.focus();
+      });
+    }
+  }, [loading]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -14,9 +28,14 @@ const ChatInput = ({ onSend, loading = false }) => {
     }
 
     try {
-      await onSend(trimmedMessage);
+      // Tell the component to focus after loading finishes
+      shouldFocusRef.current = true;
+
       setMessage("");
+
+      await onSend(trimmedMessage);
     } catch (error) {
+      shouldFocusRef.current = false;
       console.error("Chat send error:", error);
     }
   };
@@ -37,6 +56,7 @@ const ChatInput = ({ onSend, loading = false }) => {
         {/* Input */}
         <div className="flex-1">
           <textarea
+            ref={inputRef}
             value={message}
             onChange={(event) => setMessage(event.target.value)}
             onKeyDown={handleKeyDown}

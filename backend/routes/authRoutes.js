@@ -16,12 +16,14 @@ import {
   resendResetPasswordOTP,
   deleteAccount,
   changePassword,
+  verifyTwoFactorOTP,
 } from "../controllers/authController.js";
 const router = express.Router();
 
 // routes
 router.post("/", signup);
 router.post("/login", login);
+router.post("/verify-2fa", verifyTwoFactorOTP);
 router.get("/verify/:token", verifyEmail);
 router.get("/logout", logoutCurrentUser);
 router.post("/forgot-password", forgotPassword);
@@ -30,34 +32,50 @@ router.post("/reset-password", resetPassword);
 router.post("/resend-reset-otp", resendResetPasswordOTP);
 router.put("/change-password", protect, changePassword);
 router.patch("/toggle-2fa", protect, toggleTwoFactor);
-router.delete("/delete-account", deleteAccount);
+router.delete("/delete-account", protect, deleteAccount);
 router.post("/resend-verification", protect, resendVerification);
-// Google OAuth routes
+// -------------------- GOOGLE OAUTH --------------------
+
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] }),
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+    prompt: "select_account",
+  }),
 );
 router.get(
   "/google/callback",
   passport.authenticate("google", {
-    failureRedirect: "/",
+    failureRedirect: `${process.env.FRONTEND_URL}/login?error=google_failed`,
     session: false,
   }),
   (req, res) => {
     try {
-      // use generateToken to create JWT and set Cookie
+      if (!req.user?._id) {
+        return res.redirect(
+          `${process.env.FRONTEND_URL}/login?error=google_failed`,
+        );
+      }
+
+      // Generate JWT and set cookie
       const token = generateToken(res, req.user._id);
-      // redirect to frontend
-      res.redirect(`${process.env.FRONTEND_URL}/oauth-success?token=${token}`);
+
+      // Redirect frontend
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/oauth-success?token=${token}`,
+      );
     } catch (error) {
-      // console.log("Google Login error:", error);
-      res.redirect(`${process.env.FRONTEND_URL}/login?error=google_failed`);
+      console.error("Google callback error:", error);
+
+      return res.redirect(
+        `${process.env.FRONTEND_URL}/login?error=google_failed`,
+      );
     }
   },
 );
+
 // Current user info
 router.get("/me", protect, (req, res) => {
   res.json({ success: true, user: req.user });
 });
-// your routes here
 export default router;

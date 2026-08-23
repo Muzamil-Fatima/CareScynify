@@ -1,11 +1,10 @@
 import React from "react";
 
 import VisibilityRoundedIcon from "@mui/icons-material/VisibilityRounded";
-import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
 
-const PrescriptionHistoryCard = ({ prescription, onDelete }) => {
+const PrescriptionHistoryCard = ({ prescription}) => {
   const {
     diagnosis,
     advice,
@@ -21,16 +20,11 @@ const PrescriptionHistoryCard = ({ prescription, onDelete }) => {
     dispensed: "bg-blue-100 text-blue-700",
   };
 
-  const handleDelete = () => {
-    if (!prescription?._id) return;
-
-    onDelete?.(prescription._id);
-  };
+ 
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md hover:border-purple-300 transition-all">
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-        ==== LEFT CONTENT ====
         <div className="flex-1 min-w-0 space-y-4">
           {/* STATUS + DATE */}
 
@@ -114,17 +108,6 @@ const PrescriptionHistoryCard = ({ prescription, onDelete }) => {
             </button>
           )}
 
-          {/* DELETE */}
-
-          <button
-            type="button"
-            onClick={handleDelete}
-            title="Delete Prescription"
-            aria-label="Delete Prescription"
-            className="w-11 h-11 flex items-center justify-center rounded-xl bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 hover:border-red-300 transition"
-          >
-            <DeleteOutlineRoundedIcon fontSize="small" />
-          </button>
         </div>
       </div>
     </div>

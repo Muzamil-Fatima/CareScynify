@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-
+import { toggle2FA } from "../../../api/authApi";
+import toast from "react-hot-toast";
 const Security = () => {
   // PASSWORD VISIBILITY STATES
   const [showCurrent, setShowCurrent] = useState(false);
@@ -10,11 +11,33 @@ const Security = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   // 2FA STATE
-  const [twoFactor, setTwoFactor] = useState(true);
+  const [twoFactor, setTwoFactor] = useState(false);
+  const [loading2FA, setLoading2FA] = useState(false);
+  const handleToggle2FA = async () => {
+    if (loading2FA) return;
 
+    try {
+      setLoading2FA(true);
+
+      const res = await toggle2FA();
+
+      if (res.success) {
+        setTwoFactor(res.twoFactorEnabled);
+
+        toast.success(
+          res.twoFactorEnabled
+            ? "Two-factor authentication enabled"
+            : "Two-factor authentication disabled",
+        );
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update 2FA");
+    } finally {
+      setLoading2FA(false);
+    }
+  };
   return (
     <div className="p-6 space-y-6">
-
       {/* HEADER */}
       <div>
         <h1 className="text-2xl font-semibold text-gray-800">
@@ -27,10 +50,8 @@ const Security = () => {
 
       {/* GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
         {/* CHANGE PASSWORD */}
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-
           <div className="flex items-center gap-2 mb-4">
             <LockOutlinedIcon className="text-purple-600" />
             <h2 className="text-lg font-semibold text-gray-800">
@@ -39,7 +60,6 @@ const Security = () => {
           </div>
 
           <div className="space-y-3">
-
             {/* CURRENT PASSWORD */}
             <div className="relative">
               <input
@@ -104,13 +124,11 @@ const Security = () => {
             <button className="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-xl py-2 transition">
               Update Password
             </button>
-
           </div>
         </div>
 
         {/* TWO FACTOR AUTH */}
         <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-
           <div className="flex items-center gap-2 mb-4">
             <LockOutlinedIcon className="text-purple-600" />
             <h2 className="text-lg font-semibold text-gray-800">
@@ -123,28 +141,29 @@ const Security = () => {
           </p>
 
           <div className="flex items-center justify-between">
-            <span className="text-gray-700 text-sm">
-              Enable 2FA
-            </span>
+            <span className="text-gray-700 text-sm">Enable 2FA</span>
 
             <button
-              onClick={() => setTwoFactor(!twoFactor)}
+              type="button"
+              onClick={handleToggle2FA}
+              disabled={loading2FA}
               className={`w-12 h-6 rounded-full relative p-0.5 transition-colors duration-200 cursor-pointer
-                ${twoFactor ? "bg-purple-600" : "bg-gray-300"}`}
+    ${twoFactor ? "bg-purple-600" : "bg-gray-300"}
+    ${loading2FA ? "opacity-50 cursor-not-allowed" : ""}
+  `}
             >
               <span
                 className={`w-5 h-5 bg-white rounded-full block shadow-sm transition-transform duration-200
-                ${twoFactor ? "translate-x-6" : "translate-x-0"}`}
+      ${twoFactor ? "translate-x-6" : "translate-x-0"}
+    `}
               />
             </button>
           </div>
         </div>
-
       </div>
 
       {/* SECURITY TIPS */}
       <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-
         <h2 className="text-lg font-semibold text-gray-800 mb-2">
           Security Tips
         </h2>
@@ -155,9 +174,7 @@ const Security = () => {
           <li>• Enable 2FA for better protection</li>
           <li>• Regularly update your password</li>
         </ul>
-
       </div>
-
     </div>
   );
 };

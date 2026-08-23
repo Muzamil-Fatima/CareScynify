@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsActiveOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -11,16 +11,18 @@ import { AuthContext } from "../../context/auth/AuthContext";
 import { deleteAccount } from "../../api/authApi";
 const Settings = () => {
   const [emailNotif, setEmailNotif] = useState(true);
-  const [smsNotif, setSmsNotif] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
   const handleDeleteAccount = async () => {
     try {
       await deleteAccount();
 
       toast.success("Account deleted successfully");
 
-      logout();
+      await logout();
+
+      navigate("/", { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || "Failed to delete account");
     }
@@ -69,16 +71,6 @@ const Settings = () => {
                 className="w-5 h-5 accent-purple-600"
               />
             </div>
-
-            <div className="flex justify-between items-center">
-              <span className="text-gray-700">SMS Notifications</span>
-              <input
-                type="checkbox"
-                checked={smsNotif}
-                onChange={() => setSmsNotif(!smsNotif)}
-                className="w-5 h-5 accent-purple-600"
-              />
-            </div>
           </div>
         </div>
 
@@ -103,19 +95,6 @@ const Settings = () => {
             </button>
           </div>
         </div>
-
-        {/* PRIVACY */}
-        <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-          <h2 className="text-lg font-semibold mb-3">Privacy</h2>
-
-          <p className="text-sm text-gray-600 mb-4">
-            Control how your medical data is shared with doctors and clinics.
-          </p>
-
-          <button className="text-purple-600 font-medium hover:underline">
-            Manage Privacy Settings →
-          </button>
-        </div>
       </div>
 
       {/* DANGER ZONE */}
@@ -126,10 +105,16 @@ const Settings = () => {
           Once you delete your account, it cannot be recovered.
         </p>
 
-        <button className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl">
+        <button
+          type="button"
+          onClick={() => setShowDeleteModal(true)}
+          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl"
+        >
           <LogoutOutlinedIcon fontSize="small" />
           Delete Account
         </button>
+
+        {/* DELETE CONFIRMATION MODAL */}
         {showDeleteModal && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
             <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md">
@@ -143,53 +128,24 @@ const Settings = () => {
               </p>
 
               <div className="flex justify-end gap-3">
-                {/* NO BUTTON */}
+                {/* NO */}
                 <button
+                  type="button"
                   onClick={() => setShowDeleteModal(false)}
                   className="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-sm"
                 >
                   No
                 </button>
 
-                {/* YES BUTTON */}
+                {/* YES */}
                 <button
-                  onClick={() => setShowDeleteModal(true)}
+                  type="button"
+                  onClick={handleDeleteAccount}
                   className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl"
                 >
                   <LogoutOutlinedIcon fontSize="small" />
-                  Delete Account
+                  Yes, Delete
                 </button>
-                {showDeleteModal && (
-                  <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-                    <div className="bg-white p-6 rounded-xl shadow-lg w-[90%] max-w-md">
-                      <h2 className="text-lg font-semibold mb-2">
-                        Delete Account
-                      </h2>
-
-                      <p className="text-sm text-gray-600 mb-6">
-                        This action cannot be undone.
-                      </p>
-
-                      <div className="flex justify-end gap-3">
-                        {/* NO */}
-                        <button
-                          onClick={() => setShowDeleteModal(false)}
-                          className="px-4 py-2 bg-gray-200 rounded-lg"
-                        >
-                          No
-                        </button>
-
-                        {/* YES */}
-                        <button
-                          onClick={handleDeleteAccount} // ✅ FIX HERE
-                          className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                        >
-                          Yes, Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>

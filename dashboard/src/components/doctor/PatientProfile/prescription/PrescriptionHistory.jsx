@@ -8,7 +8,6 @@ import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 const PrescriptionHistory = ({
   prescriptions = [],
   loading = false,
-  onDelete,
 }) => {
   if (loading) {
     return (
@@ -42,7 +41,7 @@ const PrescriptionHistory = ({
           </h2>
 
           <p className="text-sm text-slate-500">
-            View or delete the patient's previous prescriptions.
+            View the patient's previous prescriptions.
           </p>
         </div>
       </div>
@@ -70,7 +69,6 @@ const PrescriptionHistory = ({
             <PrescriptionHistoryCard
               key={item._id}
               prescription={item}
-              onDelete={onDelete}
             />
           ))}
         </div>

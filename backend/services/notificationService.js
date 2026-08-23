@@ -3,10 +3,10 @@ import sendEmail from "./emailService.js";
 import User from "../models/User.js";
 import { getIO } from "../config/socket.js";
 
-console.log(
-  "NOTIFICATION TYPE ENUM:",
-  Notification.schema.path("type").enumValues,
-);
+// console.log(
+//   "NOTIFICATION TYPE ENUM:",
+//   Notification.schema.path("type").enumValues,
+// );
 
 // CREATE NOTIFICATION
 

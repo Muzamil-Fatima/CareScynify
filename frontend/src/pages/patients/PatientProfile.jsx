@@ -59,7 +59,7 @@ const PatientProfile = () => {
             src={
               selectedFile
                 ? URL.createObjectURL(selectedFile)
-                : profile?.user?.avatar || ""
+                : profile?.user?.avatar?.url || ""
             }
             sx={{ width: 140, height: 140 }}
           >

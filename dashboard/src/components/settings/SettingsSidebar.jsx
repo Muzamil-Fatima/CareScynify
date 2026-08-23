@@ -19,9 +19,12 @@ const SettingsSidebar = ({ setActiveSidebar, isOpen, setIsOpen }) => {
     >
       <div className="flex h-16 items-center border-b border-purple-50/80 px-2">
         {isOpen && (
-          <span className="ml-2 text-base font-extrabold tracking-tight bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent">
+          <NavLink
+            to="/doctor/dashboard"
+            className="ml-2 text-base font-extrabold tracking-tight bg-linear-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent"
+          >
             CareScynify
-          </span>
+          </NavLink>
         )}
 
         <div className={`flex items-center justify-center w-full`}>

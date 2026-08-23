@@ -28,6 +28,8 @@ import Forget from "./pages/Auth/Forget";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import VerificationBanner from "./components/common/VerificationBanner";
+import VerifyTwoFactor from "./pages/Auth/VerifyTwoFactor";
+import OAuthSuccess from "./pages/Auth/OAuthSuccess";
 //  App Pages
 import PatientProfile from "./pages/patients/PatientProfile";
 import Dashboard from "./pages/patients/Dashboard";
@@ -86,7 +88,10 @@ function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-success" element={<OrderSuccess />} />
           <Route path="/order-success/:orderId" element={<OrderSuccess />} />
-          <Route path="/lab-booking/my-tests/:id" element={<TestBookSuccess />} />
+          <Route
+            path="/lab-booking/my-tests/:id"
+            element={<TestBookSuccess />}
+          />
 
           {/* AUTH ROUTES */}
           <Route path="/login" element={<Login />} />
@@ -94,6 +99,8 @@ function App() {
           <Route path="/forget-password" element={<Forget />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-2fa" element={<VerifyTwoFactor />} />
+          <Route path="/oauth-success" element={<OAuthSuccess />} />
         </Route>
 
         {/* APP AREA (Sidebar system) */}

@@ -99,16 +99,16 @@ const usePrescription = () => {
         followUpDate: data?.followUpDate || "",
       };
 
-      /*
-       * Remove undefined values.
-       * This prevents accidentally sending undefined
-       * fields to the backend.
-       */
-      Object.keys(payload).forEach((key) => {
-        if (payload[key] === undefined) {
-          delete payload[key];
-        }
-      });
+      // /*
+      //  * Remove undefined values.
+      //  * This prevents accidentally sending undefined
+      //  * fields to the backend.
+      //  */
+      // Object.keys(payload).forEach((key) => {
+      //   if (payload[key] === undefined) {
+      //     delete payload[key];
+      //   }
+      // });
 
       const res = await updatePrescription(prescriptionId, payload);
 

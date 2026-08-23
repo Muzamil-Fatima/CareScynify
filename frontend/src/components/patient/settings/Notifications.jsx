@@ -5,7 +5,6 @@ import NotificationsActiveOutlinedIcon from "@mui/icons-material/NotificationsAc
 import EventAvailableOutlinedIcon from "@mui/icons-material/EventAvailableOutlined";
 import MonitorHeartOutlinedIcon from "@mui/icons-material/MonitorHeartOutlined";
 import BiotechOutlinedIcon from "@mui/icons-material/BiotechOutlined";
-import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";

@@ -25,6 +25,19 @@ const Login = () => {
         { withCredentials: true },
       );
 
+      // -------------------- 2FA REQUIRED --------------------
+      if (res.data.twoFactorRequired) {
+        localStorage.setItem("twoFactorEmail", res.data.email);
+
+        toast.success("OTP sent to your email");
+
+        // Go to 2FA OTP page
+        window.location.href = "/verify-2fa";
+
+        return;
+      }
+
+      // -------------------- NORMAL LOGIN --------------------
       const role = res.data.role || "patient";
 
       login({
@@ -36,18 +49,19 @@ const Login = () => {
 
       toast.success(`${res.data.name} login successfully.`);
 
-      //  CROSS-APP REDIRECT
+      // CROSS-APP REDIRECT
       const roleRoutes = {
         patient: "http://localhost:5173/",
         doctor: "http://localhost:5174/doctor/dashboard",
         pharmacy: "http://localhost:5174/pharmacy/dashboard",
         laboratory: "http://localhost:5174/lab/dashboard",
-        admin:"http://localhost:5174/admin/dashboard",
+        admin: "http://localhost:5174/admin/dashboard",
       };
 
       window.location.href = roleRoutes[role] || "http://localhost:5173/";
     } catch (error) {
       console.error(error);
+
       toast.error(error.response?.data?.message || "Failed to login");
     }
   };

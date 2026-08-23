@@ -55,6 +55,7 @@ const signup = asyncHandler(async (req, res) => {
     message: "Signup successful! Check email to verify account.",
   });
 });
+
 const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
 
@@ -75,12 +76,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
     });
   }
 
-  const dashboardRoles = [
-    "doctor",
-    "laboratory",
-    "pharmacy",
-    "admin",
-  ];
+  const dashboardRoles = ["doctor", "laboratory", "pharmacy", "admin"];
 
   const frontendUrl = dashboardRoles.includes(user.role)
     ? process.env.DASHBOARD_URL
@@ -161,34 +157,141 @@ const resendVerification = asyncHandler(async (req, res) => {
 });
 
 // - login
+// const login = asyncHandler(async (req, res) => {
+//   const { email, password } = req.body;
+
+//   const existingUsr = await User.findOne({ email });
+
+//   if (!existingUsr) {
+//     return res.status(401).json({ message: "User not found" });
+//   }
+
+//   const isPasswordValid = await bcrypt.compare(password, existingUsr.password);
+
+//   if (!isPasswordValid) {
+//     return res.status(401).json({ message: "Invalid Password" });
+//   }
+//   if (existingUsr.isDeleted) {
+//     return res.status(403).json({
+//       message: "Account is deleted",
+//     });
+//   }
+
+//   const token = generateToken(res, existingUsr._id);
+
+//   res.status(200).json({
+//     _id: existingUsr._id,
+//     name: existingUsr.name,
+//     email: existingUsr.email,
+//     role: existingUsr.role,
+//     accountVerified: existingUsr.accountVerified,
+//     token,
+//   });
+// });
+// -------------------- Login --------------------
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const existingUsr = await User.findOne({ email });
 
   if (!existingUsr) {
-    return res.status(401).json({ message: "User not found" });
+    return res.status(401).json({
+      message: "User not found",
+    });
   }
 
   const isPasswordValid = await bcrypt.compare(password, existingUsr.password);
 
   if (!isPasswordValid) {
-    return res.status(401).json({ message: "Invalid Password" });
+    return res.status(401).json({
+      message: "Invalid Password",
+    });
   }
+
   if (existingUsr.isDeleted) {
     return res.status(403).json({
       message: "Account is deleted",
     });
   }
 
+  // -------------------- 2FA --------------------
+  if (existingUsr.twoFactorEnabled) {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    existingUsr.twoFactorOTP = otp;
+    existingUsr.twoFactorOTPExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    await existingUsr.save({
+      validateBeforeSave: false,
+    });
+
+    try {
+      await sendEmail({
+        to: existingUsr.email,
+        subject: "CareScynify - Two-Factor Authentication Code",
+        html: `
+          <div style="font-family: Arial, sans-serif;">
+            <h2>Two-Factor Authentication</h2>
+
+            <p>Hello ${existingUsr.name},</p>
+
+            <p>
+              Someone is trying to log in to your CareScynify account.
+            </p>
+
+            <p>Your verification code is:</p>
+
+            <h1 style="letter-spacing: 8px;">
+              ${otp}
+            </h1>
+
+            <p>
+              This code will expire in 10 minutes.
+            </p>
+
+            <p>
+              If you did not try to log in, please secure your account.
+            </p>
+          </div>
+        `,
+      });
+    } catch (error) {
+      existingUsr.twoFactorOTP = undefined;
+      existingUsr.twoFactorOTPExpire = undefined;
+
+      await existingUsr.save({
+        validateBeforeSave: false,
+      });
+
+      return res.status(500).json({
+        message: "Failed to send 2FA OTP",
+      });
+    }
+
+    // IMPORTANT:
+    // Do NOT generate JWT here.
+    // User must verify OTP first.
+
+    return res.status(200).json({
+      success: true,
+      twoFactorRequired: true,
+      message: "2FA OTP sent to your email",
+      email: existingUsr.email,
+    });
+  }
+
+  // -------------------- Normal Login --------------------
+  // If 2FA is disabled, login normally.
+
   const token = generateToken(res, existingUsr._id);
 
-  res.status(200).json({
+  return res.status(200).json({
     _id: existingUsr._id,
     name: existingUsr.name,
     email: existingUsr.email,
     role: existingUsr.role,
     accountVerified: existingUsr.accountVerified,
+    twoFactorRequired: false,
     token,
   });
 });
@@ -330,7 +433,7 @@ const toggleTwoFactor = async (req, res) => {
       twoFactorEnabled: user.twoFactorEnabled,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     res.status(500).json({
       message: "Server Error",
@@ -338,42 +441,109 @@ const toggleTwoFactor = async (req, res) => {
   }
 };
 
+// -------------------- Verify 2FA OTP --------------------
+const verifyTwoFactorOTP = asyncHandler(async (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({
+      success: false,
+      message: "Email and OTP are required",
+    });
+  }
+
+  const user = await User.findOne({
+    email,
+    twoFactorOTP: otp.toString(),
+    twoFactorOTPExpire: {
+      $gt: Date.now(),
+    },
+  });
+
+  if (!user) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid or expired 2FA OTP",
+    });
+  }
+
+  // OTP is valid, so remove it
+  user.twoFactorOTP = undefined;
+  user.twoFactorOTPExpire = undefined;
+
+  await user.save({
+    validateBeforeSave: false,
+  });
+
+  // Now authentication is completely successful.
+  // Generate the real JWT only after 2FA verification.
+  const token = generateToken(res, user._id);
+
+  return res.status(200).json({
+    success: true,
+    message: "2FA verification successful",
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    accountVerified: user.accountVerified,
+    token,
+  });
+});
 const deleteAccount = async (req, res) => {
   try {
+    if (!req.user?._id) {
+      return res.status(401).json({
+        success: false,
+        message: "User is not authenticated",
+      });
+    }
+
     const userId = req.user._id;
+
+    // console.log("User ID:", userId);
 
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({
+        success: false,
         message: "User not found",
       });
     }
 
-    //  Cancel all user appointments
+    // console.log("User found:", user.email);
+
+    // Cancel user's appointments
     await Appointment.updateMany(
       { user: userId },
       {
-        status: "cancelled",
-        cancelledBy: "user_deleted_account",
-        cancelledAt: new Date(),
+        $set: {
+          status: "cancelled",
+          cancelledBy: "user_deleted_account",
+          cancelledAt: new Date(),
+        },
       },
     );
 
-    //Soft delete user (NEW APPROACH)
+    // console.log("Appointments updated");
+
+    // Soft delete user
     user.isDeleted = true;
     user.deletedAt = new Date();
-    user.status = "inactive"; // optional but recommended
+    user.status = "inactive";
 
     await user.save();
 
+    // console.log("User soft deleted successfully");
+
     return res.status(200).json({
+      success: true,
       message: "Account deleted successfully",
     });
   } catch (error) {
-    // console.log("DELETE ACCOUNT ERROR:", error);
-
     return res.status(500).json({
+      success: false,
       message: "Server error",
       error: error.message,
     });
@@ -409,8 +579,146 @@ const changePassword = asyncHandler(async (req, res) => {
   });
 });
 // -------------------- Google Authentication Handle
+// -------------------- Continue with Google --------------------
 
-// --- export controllers
+const googleLogin = asyncHandler(async (req, res) => {
+  try {
+    // Google profile should be available from Google authentication middleware
+    const googleUser = req.user;
+
+    if (!googleUser) {
+      return res.status(401).json({
+        success: false,
+        message: "Google authentication failed",
+      });
+    }
+
+    // Get Google account information
+    const googleId = googleUser.id || googleUser.sub || googleUser.googleId;
+
+    const email = googleUser.email || googleUser.emails?.[0]?.value;
+
+    const name =
+      googleUser.name ||
+      googleUser.displayName ||
+      `${googleUser.given_name || ""} ${googleUser.family_name || ""}`.trim();
+
+    const avatar = googleUser.picture || googleUser.photos?.[0]?.value || null;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Google account email is required",
+      });
+    }
+
+    // Find existing user
+
+    let user = await User.findOne({ email });
+
+    // Existing account
+
+    if (user) {
+      // Deleted account cannot login
+      if (user.isDeleted) {
+        return res.status(403).json({
+          success: false,
+          message: "Account is deleted",
+        });
+      }
+
+      // If this is an existing manual account,
+      // connect Google authentication to it.
+      if (!user.authProvider) {
+        user.authProvider = "google";
+      }
+
+      // If user already has a manual account,
+      // don't overwrite their password.
+      if (user.authProvider === "manual") {
+        return res.status(400).json({
+          success: false,
+          message:
+            "An account already exists with this email. Please login with your email and password.",
+        });
+      }
+
+      // Update Google ID if you have this field
+      if (googleId && !user.googleId) {
+        user.googleId = googleId;
+      }
+
+      // Keep account verified because Google verified the email
+      user.accountVerified = true;
+
+      // Update avatar only if your schema supports it
+      // and your avatar field expects a string.
+      //
+      // If your avatar field is an object, don't use this directly.
+      // user.avatar = avatar;
+
+      await user.save({
+        validateBeforeSave: false,
+      });
+
+      // Generate JWT
+      const token = generateToken(res, user._id);
+
+      return res.status(200).json({
+        success: true,
+        message: "Google login successful",
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        accountVerified: user.accountVerified,
+        twoFactorRequired: false,
+        token,
+      });
+    }
+
+    // New Google account
+
+    user = await User.create({
+      name: name || "Google User",
+      email,
+      role: "patient",
+
+      // IMPORTANT:
+      // Do NOT provide password here.
+      authProvider: "google",
+
+      // Google already verified the email
+      accountVerified: true,
+
+      ...(googleId ? { googleId } : {}),
+    });
+
+    // Generate JWT
+    const token = generateToken(res, user._id);
+
+    return res.status(201).json({
+      success: true,
+      message: "Google account created successfully",
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      accountVerified: user.accountVerified,
+      twoFactorRequired: false,
+      token,
+    });
+  } catch (error) {
+    console.error("GOOGLE LOGIN ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Google authentication failed",
+      error: error.message,
+    });
+  }
+});
+// export controllers
 export {
   signup,
   login,
@@ -424,4 +732,6 @@ export {
   deleteAccount,
   changePassword,
   resendVerification,
+  verifyTwoFactorOTP,
+  googleLogin,
 };

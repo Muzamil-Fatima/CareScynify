@@ -48,7 +48,8 @@ export const processDoctorDocument = async ({ doctorId, filePath }) => {
         maxContentLength: Infinity,
         maxBodyLength: Infinity,
 
-        timeout: 600000,
+        // timeout: 600000,
+        timeout:900000,
       },
     );
 
@@ -93,7 +94,6 @@ export const processDoctorDocument = async ({ doctorId, filePath }) => {
 };
 
 // ASK DOCTOR MEDIBOT
-
 export const askDoctorChatbot = async ({ doctorId, question }) => {
   try {
     if (!doctorId) {
@@ -105,6 +105,7 @@ export const askDoctorChatbot = async ({ doctorId, question }) => {
     }
 
     console.log("==============================================");
+    
     console.log("SENDING CHAT REQUEST TO AI");
     console.log("Doctor ID:", doctorId);
     console.log("Question:", question);
@@ -123,6 +124,7 @@ export const askDoctorChatbot = async ({ doctorId, question }) => {
 
         // Chat request timeout
         timeout: 120000,
+        // timeout: 190000,
       },
     );
 

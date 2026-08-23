@@ -23,6 +23,10 @@ const TopBar = () => {
   const userName = user?.name || "Dr. Alex Taylor";
   const userEmail = user?.email || "alex.taylor@carescynify.com";
 
+  const avatarUrl =
+    typeof user?.avatar === "string" ? user.avatar : user?.avatar?.url;
+
+  const firstLetter = user?.name?.trim()?.charAt(0)?.toUpperCase() || "U";
   // Search configuration
   const searchConfig = useGlobalSearch();
 
@@ -90,7 +94,6 @@ const TopBar = () => {
       )}
 
       {/* RIGHT SIDE ACTIONS */}
-      {/* RIGHT SIDE ACTIONS */}
       <div className="flex items-center gap-2 ml-auto">
         {/* Notifications */}
         <div className="relative">
@@ -103,22 +106,28 @@ const TopBar = () => {
           <button
             type="button"
             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className={`
-        p-2
-        rounded-xl
-        transition-all
-        duration-200
-        flex
-        items-center
-        justify-center
-        ${
-          isDropdownOpen
-            ? "bg-purple-600 text-white shadow-md shadow-purple-200"
-            : "bg-purple-50 text-purple-700 hover:bg-purple-100"
-        }
-      `}
+            className="
+    rounded-full
+    transition-all
+    duration-200
+    flex
+    items-center
+    justify-center
+    hover:scale-105
+    focus:outline-none
+  "
           >
-            <PersonOutlinedIcon />
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt={userName}
+                className="w-10 h-10 rounded-full object-cover transition-transform duration-200"
+              />
+            ) : (
+              <span className="w-10 h-10 rounded-xl flex items-center justify-center font-semibold">
+                {firstLetter}
+              </span>
+            )}
           </button>
 
           <ProfileDropdown

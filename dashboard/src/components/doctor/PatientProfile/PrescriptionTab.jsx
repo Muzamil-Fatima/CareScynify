@@ -47,14 +47,8 @@ const PrescriptionTab = () => {
   const { patient, appointmentId } = usePatient();
   const { profile } = useDoctor();
 
-  const {
-    loading,
-    history,
-    create,
-    update,
-    loadHistory,
-    loadByAppointment,
-  } = usePrescription();
+  const { loading, history, create, update, loadHistory, loadByAppointment } =
+    usePrescription();
 
   const { appointments = [] } = useDoctorAppointments("all");
 
@@ -95,7 +89,7 @@ const PrescriptionTab = () => {
   );
 
   const appointmentCustomId = currentAppointment?.appointmentId || "";
-
+ 
   /*
    
    * WORKPLACE

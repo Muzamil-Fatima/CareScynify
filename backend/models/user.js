@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema(
     name: { type: String, trim: true, required: [true, "Name is required"] },
     password: {
       type: String,
-      required: true,
+      required: function () {
+        return this.authProvider === "manual";
+      },
       minlength: [8, "Password must be at least 8 characters long"],
     },
     email: {
@@ -40,8 +42,18 @@ const userSchema = new mongoose.Schema(
     verificationCodeExpire: Date,
     resetPasswordOTP: String,
     resetPasswordExpire: Date,
-    googleId: { type: String, trim: true },
-    authProvider: { type: String, trim: true },
+    googleId: {
+      type: String,
+      trim: true,
+      unique: true,
+      sparse: true,
+    },
+    authProvider: {
+      type: String,
+      enum: ["manual", "google"],
+      default: "manual",
+      trim: true,
+    },
 
     // verificationCode: Number,
     avatar: {
@@ -68,20 +80,30 @@ const userSchema = new mongoose.Schema(
     ],
     role: {
       type: String,
-      enum: ["admin","doctor", "pharmacy", "laboratory", "patient"],
+      enum: ["admin", "doctor", "pharmacy", "laboratory", "patient"],
       default: "patient",
       required: true,
     },
+
     twoFactorEnabled: {
       type: Boolean,
       default: false,
+    },
+
+    twoFactorOTP: {
+      type: String,
+      default: null,
+    },
+
+    twoFactorOTPExpire: {
+      type: Date,
+      default: null,
     },
     isDeleted: {
       type: Boolean,
       default: false,
     },
     deletedAt: Date,
- 
 
     isProfileCompleted: {
       type: Boolean,

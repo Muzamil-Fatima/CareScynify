@@ -5,13 +5,15 @@ import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 
 const ChatWindow = ({ messages = [], onSend, loading = false }) => {
-  const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   // Scroll to latest message
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "smooth",
-    });
+    const container = messagesContainerRef.current;
+
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, [messages, loading]);
 
   return (
@@ -43,7 +45,10 @@ const ChatWindow = ({ messages = [], onSend, loading = false }) => {
 
       {/* MESSAGES */}
 
-      <div className="flex-1 overflow-y-auto bg-linear-to-b from-violet-50/40 to-gray-50 px-6 py-6">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto bg-linear-to-b from-violet-50/40 to-gray-50 px-6 py-6"
+      >
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
             {/* AI Icon */}
@@ -120,8 +125,6 @@ const ChatWindow = ({ messages = [], onSend, loading = false }) => {
                 </div>
               </div>
             )}
-
-            <div ref={messagesEndRef} />
           </div>
         )}
       </div>

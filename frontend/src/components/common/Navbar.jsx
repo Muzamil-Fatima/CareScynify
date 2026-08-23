@@ -24,8 +24,11 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
     .trim();
 
   const isPatient = userRole === "patient";
-  const { cartCount } = useCartContext();
 
+  const avatarUrl =
+    typeof user?.avatar === "string" ? user.avatar : user?.avatar?.url || "";
+
+  const { cartCount } = useCartContext();
   // true only when rendered inside AppLayout (dashboard pages)
   const showSidebarToggle = typeof setIsSidebarOpen === "function";
 
@@ -123,8 +126,16 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                 </div>
 
                 <Link to="/profile">
-                  <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold shadow-sm hover:scale-105 transition">
-                    {user?.name?.charAt(0).toUpperCase() || "U"}
+                  <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold shadow-sm hover:scale-105 transition overflow-hidden">
+                    {avatarUrl ? (
+                      <img
+                        src={avatarUrl}
+                        alt={user?.name || "Profile"}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      user?.name?.charAt(0).toUpperCase() || "U"
+                    )}
                   </div>
                 </Link>
               </div>
@@ -150,11 +161,18 @@ const Navbar = ({ isSidebarOpen, setIsSidebarOpen }) => {
         {/* Mobile: profile avatar (all patient pages) + menu/sidebar toggle */}
         <div className="md:hidden flex items-center gap-2 shrink-0">
           {isPatient && (
-            <Link
-              to="/profile"
-              className="w-9 h-9 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-sm shrink-0"
-            >
-              {user?.name?.charAt(0).toUpperCase() || "U"}
+            <Link to="/profile">
+              <div className="w-10 h-10 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold shadow-sm hover:scale-105 transition overflow-hidden">
+                {avatarUrl ? (
+                  <img
+                    src={avatarUrl}
+                    alt={user?.name || "Profile"}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  user?.name?.charAt(0).toUpperCase() || "U"
+                )}
+              </div>
             </Link>
           )}
 
