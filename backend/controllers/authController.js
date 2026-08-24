@@ -119,7 +119,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
   return res.redirect(`${frontendUrl}/?verified=true`);
 });
-// -------------------- Resend Verification Email
+//  Resend Verification Email
 const resendVerification = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -188,7 +188,7 @@ const resendVerification = asyncHandler(async (req, res) => {
 //     token,
 //   });
 // });
-// -------------------- Login --------------------
+//  Login 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
@@ -214,7 +214,7 @@ const login = asyncHandler(async (req, res) => {
     });
   }
 
-  // -------------------- 2FA --------------------
+  //  2FA 
   if (existingUsr.twoFactorEnabled) {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -280,7 +280,7 @@ const login = asyncHandler(async (req, res) => {
     });
   }
 
-  // -------------------- Normal Login --------------------
+  //  Normal Login 
   // If 2FA is disabled, login normally.
 
   const token = generateToken(res, existingUsr._id);
@@ -295,7 +295,7 @@ const login = asyncHandler(async (req, res) => {
     token,
   });
 });
-// ---------------------------- logout user
+//  logout user
 const logoutCurrentUser = asyncHandler(async (req, res) => {
   res.clearCookie("jwt", {
     httpOnly: true,
@@ -307,7 +307,7 @@ const logoutCurrentUser = asyncHandler(async (req, res) => {
     message: "Logout Successfully",
   });
 });
-// -------------------- Forgot Password --------------------
+//  Forgot Password 
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
   const user = await User.findOne({ email, accountVerified: true });
@@ -341,8 +341,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
   }
 });
 
-// -------------------- Reset Password---------------------
-// -------------------- Reset Password --------------------
+//  Reset Password 
 const resetPassword = asyncHandler(async (req, res) => {
   const { password, resetToken } = req.body;
 
@@ -433,8 +432,7 @@ const resendResetPasswordOTP = asyncHandler(async (req, res) => {
     message: `Password reset OTP sent to ${user.email} successfully.`,
   });
 });
-// -------------------- Verify OTP
-// -------------------- Verify Password Reset OTP --------------------
+//  Verify Password Reset OTP 
 const verifyOtp = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
@@ -460,7 +458,6 @@ const verifyOtp = asyncHandler(async (req, res) => {
   }
 
   // Create a SEPARATE password-reset token.
-  // Do NOT use generateToken() because that creates the login JWT cookie.
   const resetToken = jwt.sign(
     {
       id: user._id,
@@ -521,7 +518,7 @@ const toggleTwoFactor = async (req, res) => {
   }
 };
 
-// -------------------- Verify 2FA OTP --------------------
+//  Verify 2FA OTP 
 const verifyTwoFactorOTP = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
 
@@ -658,8 +655,8 @@ const changePassword = asyncHandler(async (req, res) => {
     message: "Password updated successfully",
   });
 });
-// -------------------- Google Authentication Handle
-// -------------------- Continue with Google --------------------
+//  Google Authentication Handle
+//  Continue with Google 
 
 const googleLogin = asyncHandler(async (req, res) => {
   try {

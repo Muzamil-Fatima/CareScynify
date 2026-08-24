@@ -26,7 +26,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
   if (cnic !== undefined) user.cnic = cnic;
   if (dob !== undefined) user.dob = dob;
 
-  // ---------------- AVATAR UPLOAD ----------------
+  //  AVATAR UPLOAD 
   if (req.file && req.file.buffer) {
     // Delete old avatar
     if (user.avatar?.publicId) {
@@ -88,7 +88,7 @@ export const verifyMobileNumber = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
-// --------------------------------------Languages
+// ------Languages
 // add language
 export const addLanguage = async (req, res) => {
   try {

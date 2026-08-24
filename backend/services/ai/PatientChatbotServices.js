@@ -169,9 +169,7 @@ const findDoctorsBySpecialty = async (specialty) => {
       .lean();
 
     return doctors.map((doctor) => {
-      // ----------------------------------------------
       // Get only active/usable workplaces
-      // ----------------------------------------------
 
       const workplaces = (doctor.workplaces || []).map((workplace) => ({
         id: workplace._id,
@@ -193,23 +191,17 @@ const findDoctorsBySpecialty = async (specialty) => {
         slots: workplace.slots || {},
       }));
 
-      // ----------------------------------------------
       // Get fee from first workplace
-      // ----------------------------------------------
 
       const firstWorkplace = workplaces[0];
 
       const consultationFee = firstWorkplace?.appointmentFee ?? 0;
 
-      // ----------------------------------------------
       // Get avatar
-      // ----------------------------------------------
 
       const profileImage = doctor.userId?.avatar?.url || null;
 
-      // ----------------------------------------------
       // Return chatbot doctor object
-      // ----------------------------------------------
 
       return {
         id: doctor._id,
@@ -246,9 +238,7 @@ const findDoctorsBySpecialty = async (specialty) => {
 
 const findDoctorByName = async (doctorName) => {
   try {
-    // ----------------------------------------------
     // Find doctors and populate User
-    // ----------------------------------------------
 
     const doctors = await Doctor.find({
       status: "active",
@@ -259,9 +249,7 @@ const findDoctorByName = async (doctorName) => {
       )
       .lean();
 
-    // ----------------------------------------------
     // Search doctor name from User.name
-    // ----------------------------------------------
 
     const normalizedDoctorName = doctorName.toLowerCase().trim();
 
@@ -269,17 +257,13 @@ const findDoctorByName = async (doctorName) => {
       item.userId?.name?.toLowerCase().includes(normalizedDoctorName),
     );
 
-    // ----------------------------------------------
     // Doctor not found
-    // ----------------------------------------------
 
     if (!doctor) {
       return null;
     }
 
-    // ----------------------------------------------
     // Format workplaces
-    // ----------------------------------------------
 
     const workplaces = (doctor.workplaces || []).map((workplace) => ({
       id: workplace._id,
@@ -301,15 +285,11 @@ const findDoctorByName = async (doctorName) => {
       slots: workplace.slots || {},
     }));
 
-    // ----------------------------------------------
     // First workplace
-    // ----------------------------------------------
 
     const firstWorkplace = workplaces[0];
 
-    // ----------------------------------------------
     // Return doctor
-    // ----------------------------------------------
 
     return {
       id: doctor._id,

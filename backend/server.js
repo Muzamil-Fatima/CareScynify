@@ -39,6 +39,7 @@ import profileRoutes from "./routes/pharmacy/profileRoutes.js";
 import cartRoutes from "./routes/pharmacy/cartRoutes.js";
 import pharmacyOrderRoutes from "./routes/pharmacy/pharmacyOrderRoutes.js";
 import pharmacyDashboardRoutes from "./routes/pharmacy/pharmacyDashboardRoutes.js";
+import directSaleRoutes from "./routes/pharmacy/directSaleRoutes.js";
 // website
 import publicDoctorRoutes from "./routes/userSite/publicDoctorRoutes.js";
 import publicPharmacyRoutes from "./routes/userSite/publicPharmacyRoutes.js";
@@ -146,6 +147,7 @@ app.use("/api/cart", cartRoutes);
 // Pharmacy Order Routes
 app.use("/api/pharmacy/orders", pharmacyOrderRoutes);
 app.use("/api/pharmacy/dashboard", pharmacyDashboardRoutes);
+app.use("/api/direct-sales", directSaleRoutes);
 // =======================================================Lab
 app.use("/api/laboratory", labProfileRoutes);
 app.use("/api/lab-tests", labTestRoutes);

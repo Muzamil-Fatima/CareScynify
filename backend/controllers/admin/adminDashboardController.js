@@ -6,17 +6,12 @@ import Pharmacy from "../../models/pharmacy/pharmacyModel.js";
 import Laboratory from "../../models/laboratory/labModel.js";
 import Patient from "../../models/patientModel.js";
 
-/**
- * Safely get a registered mongoose model.
- * This prevents the dashboard from crashing if
- * Appointment or Prescription model has not been imported yet.
- */
 const getRegisteredModel = (modelName) => {
   return mongoose.models[modelName] || null;
 };
 
-/**
- * Get start of current month
+/* 
+ Get start of current month
  */
 const getCurrentMonthStart = () => {
   const date = new Date();

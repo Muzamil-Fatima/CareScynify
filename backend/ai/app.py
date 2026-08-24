@@ -21,34 +21,19 @@ from langchain_community.vectorstores import FAISS
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from huggingface_hub import HfApi
-
-
-
 # ENVIRONMENT
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 load_dotenv(BASE_DIR / ".env")
-
 HF_TOKEN = os.getenv("HF_TOKEN")
-
 if not HF_TOKEN:
     raise RuntimeError(
         "HF_TOKEN is missing from backend/.env"
     )
-
-
-
 # FASTAPI
-
-
 app = FastAPI(
     title="CareScynify MediBot AI",
     version="1.0.0",
 )
-
-
 
 # VALIDATION EXCEPTION HANDLER
 
@@ -66,71 +51,45 @@ async def validation_exception_handler(request, exc):
         status_code=422,
         content={"detail": "Invalid request format or corrupted file upload"},
     )
-
-
-
 # PATHS
-
-
 AI_DIR = Path(__file__).resolve().parent
-
 VECTORSTORE_DIR = AI_DIR / "vectorstore"
-
 VECTORSTORE_DIR.mkdir(
     parents=True,
     exist_ok=True,
 )
-
-
-
 # EMBEDDING MODEL
-
-
 embedding_model = HuggingFaceEmbeddings(
     model_name="sentence-transformers/all-MiniLM-L6-v2"
 )
-
-
-
 # HUGGINGFACE MODEL DISCOVERY
-
-
 FALLBACK_REPO_IDS = [
     "Qwen/Qwen3-4B-Instruct-2507",
     "deepseek-ai/DeepSeek-V3-0324",
     "meta-llama/Llama-3.2-3B-Instruct",
 ]
-
-
 def find_live_chat_model():
 
     api = HfApi(
         token=HF_TOKEN
     )
-
     try:
-
         models = api.list_models(
             filter="text-generation",
             sort="trending_score",
             limit=20,
             expand="inferenceProviderMapping",
         )
-
         for model in models:
-
             mapping = getattr(
                 model,
                 "inference_provider_mapping",
                 None,
             )
-
             if mapping:
-
                 provider = list(
                     mapping.keys()
                 )[0]
-
                 return (
                     model.id,
                     provider,
@@ -170,9 +129,9 @@ def load_llm_with_fallback():
         find_live_chat_model()
     )
 
-    # -------------------------------------------------------
+    
     # AUTO DISCOVERED MODEL
-    # -------------------------------------------------------
+    
 
     if repo_id:
 
@@ -195,9 +154,9 @@ def load_llm_with_fallback():
                 f"{error}"
             )
 
-    # -------------------------------------------------------
+    
     # FALLBACK MODELS
-    # -------------------------------------------------------
+    
 
     for repo_id in FALLBACK_REPO_IDS:
 
@@ -272,119 +231,73 @@ chain = (
     | llm
     | StrOutputParser()
 )
-
-
-
 # REQUEST MODELS
-
-
 class ChatRequest(BaseModel):
 
     doctorId: str
     question: str
-
-
-
 # HELPER
-
-
 def get_doctor_vectorstore_path(
     doctor_id,
 ):
-
     return (
         VECTORSTORE_DIR
         / f"doctor_{doctor_id}"
     )
-
-
-
 # PROCESS PDF
-
-
 @app.post("/process-document")
 async def process_document(
     doctorId: str = Form(...),
     file: UploadFile = File(...),
 ):
-
     temp_pdf = None
 
     try:
-
-        # ---------------------------------------------------
         # LOG REQUEST
-        # ---------------------------------------------------
-
         print(
             "=============================================="
         )
-
         print(
             f"[INFO] Processing PDF for doctor: "
             f"{doctorId}"
         )
-
         print(
             f"[INFO] Received file: "
             f"{file.filename}"
         )
-
         print(
             f"[INFO] Content type: "
             f"{file.content_type}"
         )
-
         print(
             "=============================================="
         )
-
-        # ---------------------------------------------------
         # VALIDATE DOCTOR ID
-        # ---------------------------------------------------
-
         if not doctorId.strip():
-
             raise HTTPException(
                 status_code=400,
                 detail="Doctor ID is required",
             )
-
-        # ---------------------------------------------------
         # VALIDATE FILE
-        # ---------------------------------------------------
-
         if not file:
-
             raise HTTPException(
                 status_code=400,
                 detail="PDF file is required",
             )
-
-        # ---------------------------------------------------
         # VALIDATE PDF EXTENSION
-        # ---------------------------------------------------
-
         if not file.filename:
-
             raise HTTPException(
                 status_code=400,
                 detail="PDF filename is missing",
             )
-
         if not file.filename.lower().endswith(
             ".pdf"
         ):
-
             raise HTTPException(
                 status_code=400,
                 detail="Only PDF files are allowed",
             )
-
-        # ---------------------------------------------------
         # CREATE TEMPORARY PDF
-        # ---------------------------------------------------
-
         temp_file = tempfile.NamedTemporaryFile(
             delete=False,
             suffix=".pdf",
@@ -392,9 +305,9 @@ async def process_document(
 
         temp_pdf = temp_file.name
 
-        # ---------------------------------------------------
+        
         # SAVE UPLOADED FILE
-        # ---------------------------------------------------
+        
 
         with open(
             temp_pdf,
@@ -413,9 +326,9 @@ async def process_document(
             f"{temp_pdf}"
         )
 
-        # ---------------------------------------------------
+        
         # READ PDF
-        # ---------------------------------------------------
+        
 
         print(
             "[INFO] Reading PDF..."
@@ -438,9 +351,9 @@ async def process_document(
             f"{len(documents)}"
         )
 
-        # ---------------------------------------------------
+        
         # SPLIT TEXT
-        # ---------------------------------------------------
+        
 
         print(
             "[INFO] Splitting PDF into chunks..."
@@ -468,9 +381,9 @@ async def process_document(
             f"{len(chunks)}"
         )
 
-        # ---------------------------------------------------
+        
         # DOCTOR VECTOR STORE PATH
-        # ---------------------------------------------------
+        
 
         vectorstore_path = (
             get_doctor_vectorstore_path(
@@ -483,9 +396,9 @@ async def process_document(
             f"{vectorstore_path}"
         )
 
-        # ---------------------------------------------------
+        
         # EXISTING VECTOR STORE
-        # ---------------------------------------------------
+        
 
         if vectorstore_path.exists():
 
@@ -513,9 +426,9 @@ async def process_document(
                 chunks
             )
 
-        # ---------------------------------------------------
+        
         # NEW VECTOR STORE
-        # ---------------------------------------------------
+        
 
         else:
 
@@ -529,9 +442,9 @@ async def process_document(
                 embedding_model,
             )
 
-        # ---------------------------------------------------
+        
         # SAVE VECTOR STORE
-        # ---------------------------------------------------
+        
 
         db.save_local(
             str(vectorstore_path)
@@ -553,9 +466,9 @@ async def process_document(
             "=============================================="
         )
 
-        # ---------------------------------------------------
+        
         # RESPONSE
-        # ---------------------------------------------------
+        
 
         return {
             "success": True,
@@ -596,9 +509,9 @@ async def process_document(
 
     finally:
 
-        # ---------------------------------------------------
+        
         # DELETE TEMPORARY PDF
-        # ---------------------------------------------------
+        
 
         if (
             temp_pdf
@@ -623,9 +536,9 @@ async def process_document(
                     f"temporary PDF: {error}"
                 )
 
-        # ---------------------------------------------------
+        
         # CLOSE UPLOAD
-        # ---------------------------------------------------
+        
 
         try:
 
@@ -647,9 +560,9 @@ def chat(
 
     try:
 
-        # ---------------------------------------------------
+        
         # VALIDATE QUESTION
-        # ---------------------------------------------------
+        
 
         question = request.question.strip()
 
@@ -660,9 +573,9 @@ def chat(
                 detail="Question is required",
             )
 
-        # ---------------------------------------------------
+        
         # VALIDATE DOCTOR ID
-        # ---------------------------------------------------
+        
 
         if not request.doctorId.strip():
 
@@ -688,9 +601,9 @@ def chat(
             "=============================================="
         )
 
-        # ---------------------------------------------------
+        
         # DOCTOR VECTOR STORE
-        # ---------------------------------------------------
+        
 
         vectorstore_path = (
             get_doctor_vectorstore_path(
@@ -698,9 +611,9 @@ def chat(
             )
         )
 
-        # ---------------------------------------------------
+        
         # NO KNOWLEDGE BASE
-        # ---------------------------------------------------
+        
 
         if not vectorstore_path.exists():
 
@@ -712,9 +625,9 @@ def chat(
                 ),
             }
 
-        # ---------------------------------------------------
+        
         # LOAD VECTOR STORE
-        # ---------------------------------------------------
+        
 
         print(
             "[INFO] Loading doctor vector store..."
@@ -726,9 +639,9 @@ def chat(
             allow_dangerous_deserialization=True,
         )
 
-        # ---------------------------------------------------
+        
         # SEARCH RELEVANT DOCUMENTS
-        # ---------------------------------------------------
+        
 
         print(
             "[INFO] Searching knowledge base..."
@@ -739,9 +652,9 @@ def chat(
             k=3,
         )
 
-        # ---------------------------------------------------
+        
         # NO RELEVANT DOCUMENTS
-        # ---------------------------------------------------
+        
 
         if not docs:
 
@@ -753,18 +666,18 @@ def chat(
                 ),
             }
 
-        # ---------------------------------------------------
+        
         # CREATE CONTEXT
-        # ---------------------------------------------------
+        
 
         context = "\n\n".join(
             doc.page_content
             for doc in docs
         )
 
-        # ---------------------------------------------------
+        
         # GENERATE ANSWER
-        # ---------------------------------------------------
+        
 
         print(
             "[INFO] Generating AI answer..."
@@ -781,9 +694,9 @@ def chat(
             "[SUCCESS] AI answer generated"
         )
 
-        # ---------------------------------------------------
+        
         # RESPONSE
-        # ---------------------------------------------------
+        
 
         return {
             "success": True,
@@ -803,28 +716,15 @@ def chat(
         print(
             "[ERROR] Chat failed:"
         )
-
-        print(
-            str(error)
-        )
-
-        print(
-            "=============================================="
-        )
-
+        print(str(error))
+        print("==============================================")
         raise HTTPException(
             status_code=500,
             detail=str(error),
         )
-
-
-
 # HEALTH CHECK
-
-
 @app.get("/")
 def health_check():
-
     return {
         "success": True,
         "service": "CareScynify MediBot AI",
