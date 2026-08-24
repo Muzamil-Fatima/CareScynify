@@ -2,14 +2,18 @@ import React, { useState } from "react";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import VisibilityOffOutlinedIcon from "@mui/icons-material/VisibilityOffOutlined";
-import { toggle2FA } from "../../../api/authApi";
+import { toggle2FA, changePassword } from "../../../api/authApi";
 import toast from "react-hot-toast";
 const Security = () => {
   // PASSWORD VISIBILITY STATES
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
+  const [loadingPassword, setLoadingPassword] = useState(false);
   // 2FA STATE
   const [twoFactor, setTwoFactor] = useState(false);
   const [loading2FA, setLoading2FA] = useState(false);
@@ -34,6 +38,45 @@ const Security = () => {
       toast.error(error.response?.data?.message || "Failed to update 2FA");
     } finally {
       setLoading2FA(false);
+    }
+  };
+  const handleChangePassword = async () => {
+    if (loadingPassword) return;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error("Please fill all password fields");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New password and confirm password do not match");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast.error("New password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      setLoadingPassword(true);
+
+      const res = await changePassword({
+        currentPassword,
+        newPassword,
+      });
+
+      if (res.success) {
+        toast.success(res.message || "Password updated successfully");
+
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to update password");
+    } finally {
+      setLoadingPassword(false);
     }
   };
   return (
@@ -65,17 +108,20 @@ const Security = () => {
               <input
                 type={showCurrent ? "text" : "password"}
                 placeholder="Current Password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
                 className="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-2 text-sm pr-10 outline-none focus:border-purple-500 focus:bg-white transition"
               />
+
               <button
                 type="button"
                 onClick={() => setShowCurrent(!showCurrent)}
                 className="absolute right-3 top-2.5 text-gray-500 hover:text-purple-600"
               >
                 {showCurrent ? (
-                  <VisibilityOffOutlinedIcon fontSize="small" />
-                ) : (
                   <VisibilityOutlinedIcon fontSize="small" />
+                ) : (
+                  <VisibilityOffOutlinedIcon fontSize="small" />
                 )}
               </button>
             </div>
@@ -85,17 +131,20 @@ const Security = () => {
               <input
                 type={showNew ? "text" : "password"}
                 placeholder="New Password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
                 className="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-2 text-sm pr-10 outline-none focus:border-purple-500 focus:bg-white transition"
               />
+
               <button
                 type="button"
                 onClick={() => setShowNew(!showNew)}
                 className="absolute right-3 top-2.5 text-gray-500 hover:text-purple-600"
               >
                 {showNew ? (
-                  <VisibilityOffOutlinedIcon fontSize="small" />
+                <VisibilityOutlinedIcon fontSize="small" />
                 ) : (
-                  <VisibilityOutlinedIcon fontSize="small" />
+                  <VisibilityOffOutlinedIcon fontSize="small" />
                 )}
               </button>
             </div>
@@ -105,24 +154,32 @@ const Security = () => {
               <input
                 type={showConfirm ? "text" : "password"}
                 placeholder="Confirm Password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 className="w-full border border-gray-200 bg-gray-50 rounded-xl px-4 py-2 text-sm pr-10 outline-none focus:border-purple-500 focus:bg-white transition"
               />
+
               <button
                 type="button"
                 onClick={() => setShowConfirm(!showConfirm)}
                 className="absolute right-3 top-2.5 text-gray-500 hover:text-purple-600"
               >
                 {showConfirm ? (
-                  <VisibilityOffOutlinedIcon fontSize="small" />
-                ) : (
                   <VisibilityOutlinedIcon fontSize="small" />
+                ) : (
+                  <VisibilityOffOutlinedIcon fontSize="small" />
                 )}
               </button>
             </div>
 
             {/* BUTTON */}
-            <button className="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-xl py-2 transition">
-              Update Password
+            <button
+              type="button"
+              onClick={handleChangePassword}
+              disabled={loadingPassword}
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-xl py-2 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loadingPassword ? "Updating..." : "Update Password"}
             </button>
           </div>
         </div>

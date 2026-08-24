@@ -61,14 +61,23 @@ const Settings = () => {
             <h2 className="text-lg font-semibold">Notifications</h2>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
+          <div>
+            <div className="space-x-7">
               <span className="text-gray-700">Email Notifications</span>
               <input
                 type="checkbox"
                 checked={emailNotif}
                 onChange={() => setEmailNotif(!emailNotif)}
-                className="w-5 h-5 accent-purple-600"
+                className="w-5 h-5 accent-purple-600 mt-1.5"
+              />
+            </div>
+            <div className="space-x-4">
+              <span className="text-gray-700">System Notifications</span>
+              <input
+                type="checkbox"
+                checked={emailNotif}
+                onChange={() => setEmailNotif(!emailNotif)}
+                className="w-5 h-5 accent-purple-600 mt-1.5"
               />
             </div>
           </div>

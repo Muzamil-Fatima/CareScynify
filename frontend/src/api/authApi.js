@@ -89,3 +89,9 @@ export const deleteAccount = async () => {
   const res = await api.delete("/api/auth/delete-account");
   return res.data;
 };
+
+// CHANGE PASSWORD
+export const changePassword = async (data) => {
+  const res = await api.put("/api/auth/change-password", data);
+  return res.data;
+};
