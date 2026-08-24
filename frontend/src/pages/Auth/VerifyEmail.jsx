@@ -45,9 +45,10 @@ const VerifyEmail = () => {
       });
 
       if (response?.success) {
-        toast.success("OTP verified successfully");
-        // const resetToken = response.data.resetToken; // temporary token
-        localStorage.setItem("resetToken", response.data.resetToken);
+        toast.success(response.message || "OTP verified successfully");
+
+        localStorage.setItem("resetToken", response.resetToken);
+
         navigate("/reset-password");
       }
     } catch (error) {
@@ -68,7 +69,7 @@ const VerifyEmail = () => {
       if (res.data.success) {
         toast.success("OTP sent again successfully.");
 
-        // Optional: clear old OTP inputs
+        //  clear old OTP inputs
         setOtp(["", "", "", "", "", ""]);
         inputRef.current[0]?.focus();
       }

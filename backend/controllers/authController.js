@@ -342,25 +342,72 @@ const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 // -------------------- Reset Password---------------------
+// -------------------- Reset Password --------------------
 const resetPassword = asyncHandler(async (req, res) => {
-  const token = req.headers.authorization?.split(" ")[1]; // "Bearer <token>"
-  if (!token) {
-    res.status(401);
-    throw new Error("Token missing");
+  const { password, resetToken } = req.body;
+
+  if (!password) {
+    return res.status(400).json({
+      success: false,
+      message: "New password is required",
+    });
   }
-  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+  if (!resetToken) {
+    return res.status(401).json({
+      success: false,
+      message: "Password reset token is missing",
+    });
+  }
+
+  let decoded;
+
+  try {
+    decoded = jwt.verify(
+      resetToken,
+      process.env.JWT_SECRET_KEY
+    );
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "Password reset token is invalid or expired",
+    });
+  }
+
+  // Make sure this token can ONLY be used for password reset.
+  if (decoded.purpose !== "password-reset") {
+    return res.status(401).json({
+      success: false,
+      message: "Invalid password reset token",
+    });
+  }
+
   const user = await User.findById(decoded.id);
+
   if (!user) {
-    res.status(404);
-    throw new Error("User not found");
+    return res.status(404).json({
+      success: false,
+      message: "User not found",
+    });
   }
-  //  Hash the new password before saving
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  user.password = hashedPassword;
+
+  if (user.isDeleted) {
+    return res.status(403).json({
+      success: false,
+      message: "Account is deleted",
+    });
+  }
+
+  // Hash new password
+  user.password = await bcrypt.hash(password, 10);
+
   await user.save();
-  res.status(200).json({ success: true, message: "Password reset successful" });
+
+  return res.status(200).json({
+    success: true,
+    message: "Password reset successful",
+  });
 });
-// -------------------- Resend password reset otp
 // Resend Reset Password OTP
 const resendResetPasswordOTP = asyncHandler(async (req, res) => {
   const { email } = req.body;
@@ -387,23 +434,56 @@ const resendResetPasswordOTP = asyncHandler(async (req, res) => {
   });
 });
 // -------------------- Verify OTP
+// -------------------- Verify Password Reset OTP --------------------
 const verifyOtp = asyncHandler(async (req, res) => {
   const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({
+      success: false,
+      message: "Email and OTP are required",
+    });
+  }
+
   const user = await User.findOne({
     email,
     resetPasswordOTP: otp.toString(),
     resetPasswordExpire: { $gt: Date.now() },
+    accountVerified: true,
   });
+
   if (!user) {
-    res.status(400);
-    throw new Error("Invalid or expired OTP");
+    return res.status(400).json({
+      success: false,
+      message: "Invalid or expired OTP",
+    });
   }
-  // OTP is valid, generate a token or allow password reset
-  const token = generateToken(res, user._id); // sets cookies + return token
-  res.status(200).json({
+
+  // Create a SEPARATE password-reset token.
+  // Do NOT use generateToken() because that creates the login JWT cookie.
+  const resetToken = jwt.sign(
+    {
+      id: user._id,
+      purpose: "password-reset",
+    },
+    process.env.JWT_SECRET_KEY,
+    {
+      expiresIn: "15m",
+    },
+  );
+
+  // OTP has already been verified, so remove it.
+  user.resetPasswordOTP = undefined;
+  user.resetPasswordExpire = undefined;
+
+  await user.save({
+    validateBeforeSave: false,
+  });
+
+  return res.status(200).json({
     success: true,
-    message: "OTP verified successfully.",
-    resetToken: token,
+    message: "OTP verified successfully",
+    resetToken,
   });
 });
 // 2 factor authentication
