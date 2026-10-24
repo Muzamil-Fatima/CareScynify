@@ -1,7 +1,6 @@
 import React from "react";
 
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
 
 const MedicineHeader = () => {
   return (

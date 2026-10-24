@@ -8,7 +8,7 @@ import cloudinary from "../../utils/cloudinary.js";
 import streamifier from "streamifier";
 
 import generatePrescriptionPdf from "../../utils/generatePrescriptionPdf.js";
-
+import { generateMedicalExplanation } from "../../services/ai/reportExplainService.js";
 const uploadPdfToCloudinary = (buffer, prescriptionId) => {
   return new Promise((resolve, reject) => {
     if (!buffer || !Buffer.isBuffer(buffer) || buffer.length === 0) {
@@ -180,6 +180,184 @@ const populatePrescriptionForPdf = async (prescription) => {
 
 //  CREATE PRESCRIPTION doctorId
 
+// export const createPrescription = async (req, res) => {
+//   try {
+//     const {
+//       appointmentId,
+//       patientId,
+//       workplaceId,
+//       diagnosis,
+//       symptoms,
+//       medicines,
+//       labTests,
+//       advice,
+//       followUpDate,
+//     } = req.body;
+
+//     // VALIDATION
+
+//     if (!appointmentId || !patientId || !workplaceId) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Appointment, patient and workplace are required.",
+//       });
+//     }
+
+//     if (!mongoose.Types.ObjectId.isValid(appointmentId)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid appointment ID.",
+//       });
+//     }
+
+//     if (!mongoose.Types.ObjectId.isValid(patientId)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid patient ID.",
+//       });
+//     }
+
+//     if (!mongoose.Types.ObjectId.isValid(workplaceId)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid workplace ID.",
+//       });
+//     }
+
+//     // LOGGED-IN DOCTOR
+
+//     const doctor = await getLoggedInDoctor(req);
+
+//     if (!doctor) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Doctor not found.",
+//       });
+//     }
+
+//     // PATIENT
+
+//     const patientUserId = await getPatientUserId(patientId);
+
+//     if (!patientUserId) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Patient user account not found.",
+//       });
+//     }
+
+//     // WORKPLACE
+
+//     const workplace = getDoctorWorkplace(doctor, workplaceId);
+
+//     if (!workplace) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Workplace not found for this doctor.",
+//       });
+//     }
+
+//     // CHECK EXISTING PRESCRIPTION
+
+//     const existingPrescription = await Prescription.findOne({
+//       appointmentId,
+//     });
+
+//     if (existingPrescription) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Prescription already exists for this appointment.",
+//         prescription: existingPrescription,
+//       });
+//     }
+
+//     // NORMALIZE DATA
+
+//     const normalizedDiagnosis = diagnosis?.trim() || "";
+
+//     const normalizedSymptoms = normalizeStringArray(symptoms);
+
+//     const normalizedMedicines = normalizeMedicines(medicines);
+
+//     const normalizedLabTests = normalizeStringArray(labTests);
+
+//     const normalizedAdvice = advice?.trim() || "";
+
+//     const normalizedFollowUpDate = followUpDate || null;
+
+//     // SAVE PRESCRIPTION FIRST
+
+//     const prescription = await Prescription.create({
+//       appointmentId,
+//       userId: patientUserId,
+//       patientId,
+//       doctorId: doctor._id,
+//       workplaceId,
+//       diagnosis: normalizedDiagnosis,
+//       symptoms: normalizedSymptoms,
+//       medicines: normalizedMedicines,
+//       labTests: normalizedLabTests,
+//       advice: normalizedAdvice,
+//       followUpDate: normalizedFollowUpDate,
+//       pdfUrl: "",
+//     });
+
+//     // GENERATE PDF
+
+//     try {
+//       await populatePrescriptionForPdf(prescription);
+
+//       const pdfData = prescription.toObject();
+
+//       pdfData.workplace = workplace;
+
+//       const generatedPdf = await generatePrescriptionPdf(pdfData);
+
+//       const pdfBuffer = normalizePdfBuffer(generatedPdf);
+
+//       if (!pdfBuffer || pdfBuffer.length === 0) {
+//         throw new Error(
+//           "Prescription PDF generator did not return a valid PDF buffer.",
+//         );
+//       }
+
+//       // UPLOAD PDF
+
+//       const pdfUrl = await uploadPdfToCloudinary(
+//         pdfBuffer,
+//         `${prescription.prescriptionId}.pdf`,
+//       );
+
+//       // UPDATE PDF URL
+
+//       prescription.pdfUrl = pdfUrl;
+
+//       await prescription.save();
+//     } catch (pdfError) {
+//       console.error("Prescription PDF generation/upload failed:", pdfError);
+
+//       // Prescription is already saved.
+//       // PDF failure should not delete prescription.
+//     }
+
+//     // FINAL RESPONSE
+
+//     const savedPrescription = await Prescription.findById(prescription._id);
+
+//     return res.status(201).json({
+//       success: true,
+//       message: "Prescription created successfully.",
+//       prescription: savedPrescription,
+//     });
+//   } catch (error) {
+//     console.error("CREATE PRESCRIPTION ERROR:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: error?.message || "Internal Server Error",
+//     });
+//   }
+// };
 export const createPrescription = async (req, res) => {
   try {
     const {
@@ -300,6 +478,7 @@ export const createPrescription = async (req, res) => {
       advice: normalizedAdvice,
       followUpDate: normalizedFollowUpDate,
       pdfUrl: "",
+      explanation: "",
     });
 
     // GENERATE PDF
@@ -333,8 +512,29 @@ export const createPrescription = async (req, res) => {
       prescription.pdfUrl = pdfUrl;
 
       await prescription.save();
+
+      // AI MEDICAL EXPLANATION
+
+      try {
+        const explanation = await generateMedicalExplanation(
+          pdfUrl,
+          "application/pdf",
+        );
+
+        prescription.explanation = explanation;
+
+        await prescription.save();
+      } catch (aiError) {
+        console.error(
+          "Prescription AI explanation failed:",
+          aiError?.message || aiError,
+        );
+      }
     } catch (pdfError) {
-      console.error("Prescription PDF generation/upload failed:", pdfError);
+      console.error(
+        "Prescription PDF generation/upload failed:",
+        pdfError,
+      );
 
       // Prescription is already saved.
       // PDF failure should not delete prescription.
@@ -342,7 +542,9 @@ export const createPrescription = async (req, res) => {
 
     // FINAL RESPONSE
 
-    const savedPrescription = await Prescription.findById(prescription._id);
+    const savedPrescription = await Prescription.findById(
+      prescription._id,
+    );
 
     return res.status(201).json({
       success: true,
@@ -361,11 +563,155 @@ export const createPrescription = async (req, res) => {
 
 //  UPDATE PRESCRIPTION doctorId
 
+// export const updatePrescription = async (req, res) => {
+//   try {
+//     const { prescriptionId } = req.params;
+
+//     // Doctor  doctorId
+
+//     const doctor = await getLoggedInDoctor(req);
+
+//     if (!doctor) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Doctor not found.",
+//       });
+//     }
+
+//     //  Validate ID doctorId
+
+//     if (!mongoose.Types.ObjectId.isValid(prescriptionId)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid prescription ID.",
+//       });
+//     }
+
+//     //  Find Prescription doctorId
+
+//     const prescription = await Prescription.findOne({
+//       _id: prescriptionId,
+//       doctorId: doctor._id,
+//     });
+
+//     if (!prescription) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Prescription not found.",
+//       });
+//     }
+
+//     //  Workplace  doctorId
+
+//     const workplace = getDoctorWorkplace(doctor, prescription.workplaceId);
+
+//     if (!workplace) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Workplace not found for this doctor.",
+//       });
+//     }
+
+//     // Request Data doctorId
+
+//     const { diagnosis, symptoms, medicines, labTests, advice, followUpDate } =
+//       req.body;
+
+//     // Normalize Incoming Medical Data doctorId
+
+//     const normalizedDiagnosis = diagnosis?.trim() || "";
+//     const normalizedSymptoms = normalizeStringArray(symptoms);
+//     const normalizedMedicines = normalizeMedicines(medicines);
+//     const normalizedLabTests = normalizeStringArray(labTests);
+//     const normalizedAdvice = advice?.trim() || "";
+//     const normalizedFollowUpDate = followUpDate || null;
+
+//     // doctorId Apply Updated Fields To Prescription
+
+//     prescription.diagnosis = normalizedDiagnosis;
+//     prescription.symptoms = normalizedSymptoms;
+//     prescription.medicines = normalizedMedicines;
+//     prescription.labTests = normalizedLabTests;
+//     prescription.advice = normalizedAdvice;
+//     prescription.followUpDate = normalizedFollowUpDate;
+
+//     // Temporary PDF Prescription doctorId
+
+//     const prescriptionForPdf = new Prescription({
+//       prescriptionId: prescription.prescriptionId,
+
+//       pdfUrl: prescription.pdfUrl,
+
+//       appointmentId: prescription.appointmentId,
+
+//       userId: prescription.userId,
+
+//       patientId: prescription.patientId,
+
+//       doctorId: prescription.doctorId,
+
+//       workplaceId: prescription.workplaceId,
+
+//       diagnosis: normalizedDiagnosis,
+//       symptoms: normalizedSymptoms,
+//       medicines: normalizedMedicines,
+//       labTests: normalizedLabTests,
+//       advice: normalizedAdvice,
+//       followUpDate: normalizedFollowUpDate,
+//     });
+
+//     //Populate
+
+//     await populatePrescriptionForPdf(prescriptionForPdf);
+
+//     // Workplace For PDF
+
+//     const pdfData = prescriptionForPdf.toObject();
+//     pdfData.workplace = workplace;
+
+//     const generatedPdf = await generatePrescriptionPdf(pdfData);
+
+//     const pdfBuffer = normalizePdfBuffer(generatedPdf);
+
+//     if (!pdfBuffer || pdfBuffer.length === 0) {
+//       throw new Error(
+//         "Updated prescription PDF generator did not return a valid PDF buffer.",
+//       );
+//     }
+
+//     //  Upload New PDF
+//     // doctorId
+
+//     const pdfUrl = await uploadPdfToCloudinary(
+//       pdfBuffer,
+//       `${prescription.prescriptionId}.pdf`,
+//     );
+
+//     // Update MongoDB doctorId
+
+//     prescription.pdfUrl = pdfUrl;
+
+//     const savedPrescription = await prescription.save();
+
+//     //  Response doctorId
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Prescription updated successfully.",
+//       prescription: savedPrescription,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: error?.message || "Internal Server Error",
+//     });
+//   }
+// };
 export const updatePrescription = async (req, res) => {
   try {
     const { prescriptionId } = req.params;
 
-    // Doctor  doctorId
+    // Doctor
 
     const doctor = await getLoggedInDoctor(req);
 
@@ -376,7 +722,7 @@ export const updatePrescription = async (req, res) => {
       });
     }
 
-    //  Validate ID doctorId
+    // Validate ID
 
     if (!mongoose.Types.ObjectId.isValid(prescriptionId)) {
       return res.status(400).json({
@@ -385,7 +731,7 @@ export const updatePrescription = async (req, res) => {
       });
     }
 
-    //  Find Prescription doctorId
+    // Find Prescription
 
     const prescription = await Prescription.findOne({
       _id: prescriptionId,
@@ -399,9 +745,12 @@ export const updatePrescription = async (req, res) => {
       });
     }
 
-    //  Workplace  doctorId
+    // Workplace
 
-    const workplace = getDoctorWorkplace(doctor, prescription.workplaceId);
+    const workplace = getDoctorWorkplace(
+      doctor,
+      prescription.workplaceId,
+    );
 
     if (!workplace) {
       return res.status(404).json({
@@ -410,21 +759,32 @@ export const updatePrescription = async (req, res) => {
       });
     }
 
-    // Request Data doctorId
+    // Request Data
 
-    const { diagnosis, symptoms, medicines, labTests, advice, followUpDate } =
-      req.body;
+    const {
+      diagnosis,
+      symptoms,
+      medicines,
+      labTests,
+      advice,
+      followUpDate,
+    } = req.body;
 
-    // Normalize Incoming Medical Data doctorId
+    // Normalize Incoming Medical Data
 
     const normalizedDiagnosis = diagnosis?.trim() || "";
+
     const normalizedSymptoms = normalizeStringArray(symptoms);
+
     const normalizedMedicines = normalizeMedicines(medicines);
+
     const normalizedLabTests = normalizeStringArray(labTests);
+
     const normalizedAdvice = advice?.trim() || "";
+
     const normalizedFollowUpDate = followUpDate || null;
 
-    // doctorId Apply Updated Fields To Prescription
+    // Apply Updated Fields To Prescription
 
     prescription.diagnosis = normalizedDiagnosis;
     prescription.symptoms = normalizedSymptoms;
@@ -433,7 +793,7 @@ export const updatePrescription = async (req, res) => {
     prescription.advice = normalizedAdvice;
     prescription.followUpDate = normalizedFollowUpDate;
 
-    // Temporary PDF Prescription doctorId
+    // Temporary PDF Prescription
 
     const prescriptionForPdf = new Prescription({
       prescriptionId: prescription.prescriptionId,
@@ -451,20 +811,28 @@ export const updatePrescription = async (req, res) => {
       workplaceId: prescription.workplaceId,
 
       diagnosis: normalizedDiagnosis,
+
       symptoms: normalizedSymptoms,
+
       medicines: normalizedMedicines,
+
       labTests: normalizedLabTests,
+
       advice: normalizedAdvice,
+
       followUpDate: normalizedFollowUpDate,
+
+      explanation: "",
     });
 
-    //Populate
+    // Populate
 
     await populatePrescriptionForPdf(prescriptionForPdf);
 
     // Workplace For PDF
 
     const pdfData = prescriptionForPdf.toObject();
+
     pdfData.workplace = workplace;
 
     const generatedPdf = await generatePrescriptionPdf(pdfData);
@@ -477,21 +845,38 @@ export const updatePrescription = async (req, res) => {
       );
     }
 
-    //  Upload New PDF
-    // doctorId
+    // Upload New PDF
 
     const pdfUrl = await uploadPdfToCloudinary(
       pdfBuffer,
       `${prescription.prescriptionId}.pdf`,
     );
 
-    // Update MongoDB doctorId
+    // Update MongoDB
 
     prescription.pdfUrl = pdfUrl;
 
+    // AI MEDICAL EXPLANATION
+
+    try {
+      const explanation = await generateMedicalExplanation(
+        pdfUrl,
+        "application/pdf",
+      );
+
+      prescription.explanation = explanation;
+    } catch (aiError) {
+      console.error(
+        "Updated prescription AI explanation failed:",
+        aiError?.message || aiError,
+      );
+    }
+
+    // Save Updated Prescription
+
     const savedPrescription = await prescription.save();
 
-    //  Response doctorId
+    // Response
 
     return res.status(200).json({
       success: true,
@@ -499,6 +884,8 @@ export const updatePrescription = async (req, res) => {
       prescription: savedPrescription,
     });
   } catch (error) {
+    console.error("UPDATE PRESCRIPTION ERROR:", error);
+
     return res.status(500).json({
       success: false,
       message: error?.message || "Internal Server Error",

@@ -13,7 +13,6 @@ const VideoHeader = ({
       <div className="flex items-center justify-between bg-linear-to-b from-black/70 via-black/40 to-transparent px-4 py-4 sm:px-6">
         {/* Left */}
         <div className="flex min-w-0 items-center gap-3">
-    
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-600/90 shadow-lg">
             <VideocamRoundedIcon className="text-white" />
           </div>

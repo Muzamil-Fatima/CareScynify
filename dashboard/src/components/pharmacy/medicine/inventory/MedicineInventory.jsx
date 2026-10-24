@@ -1,6 +1,7 @@
 import React from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+
 import { useMedicine } from "../../../../context/pharmacy/MedicineContext";
 
 import InventorySearch from "./InventorySearch";
@@ -11,19 +12,22 @@ import EmptyInventory from "./EmptyInventory";
 
 const MedicineInventory = ({ medicines = [], onView }) => {
   const { removeMedicine } = useMedicine();
+
   const navigate = useNavigate();
+
   const hasMedicines = medicines.length > 0;
 
   const handleDelete = async (medicine) => {
-    console.log("handleDelete called", medicine);
-
     try {
       await removeMedicine(medicine._id);
+
       toast.success("Medicine deleted successfully.");
     } catch (error) {
-      console.error(error);
+      console.error("Delete medicine error:", error);
+
       toast.error(
-        error?.response?.data?.message || "Failed to delete medicine.",
+        error?.response?.data?.message ||
+          "Failed to delete medicine."
       );
     }
   };
@@ -42,13 +46,13 @@ const MedicineInventory = ({ medicines = [], onView }) => {
           </h2>
 
           <p className="text-sm text-slate-500">
-            Search, manage, update and monitor all medicines available in your
-            pharmacy.
+            Search, manage, update and monitor all medicines available in
+            your pharmacy.
           </p>
         </div>
       </div>
 
-      {/* Search & Filters */}
+      {/* Search */}
       <div className="px-4 py-4 sm:px-6 sm:py-5 border-b border-slate-100">
         <InventorySearch />
       </div>
@@ -57,7 +61,7 @@ const MedicineInventory = ({ medicines = [], onView }) => {
       <div className="p-6">
         {hasMedicines ? (
           <>
-            {/* Desktop Table */}
+            {/* Desktop */}
             <div className="hidden lg:block">
               <InventoryTable
                 medicines={medicines}
@@ -67,7 +71,7 @@ const MedicineInventory = ({ medicines = [], onView }) => {
               />
             </div>
 
-            {/* Mobile Cards */}
+            {/* Mobile */}
             <div className="grid gap-5 lg:hidden">
               {medicines.map((medicine) => (
                 <InventoryCard

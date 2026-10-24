@@ -62,7 +62,9 @@ const LaboratoryDetail = () => {
         <LaboratoryServices laboratory={laboratory} />
 
         {/* Laboratory Tests */}
-        <LaboratoryTests tests={tests} />
+        <div id="lab-tests">
+          <LaboratoryTests tests={tests} />
+        </div>
       </div>
     </div>
   );

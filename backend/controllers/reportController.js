@@ -89,7 +89,6 @@ export const addReport = async (req, res) => {
   }
 };
 
-
 // get reports (User Reports, Lab Reports, and Prescription PDFs)
 export const getReports = async (req, res) => {
   try {
@@ -135,7 +134,7 @@ export const getReports = async (req, res) => {
     const prescriptions = await Prescription.find({
       userId: userId,
     })
-      .select("prescriptionId pdfUrl createdAt status")
+      .select("prescriptionId pdfUrl explanation createdAt status")
       .sort({
         createdAt: -1,
       })

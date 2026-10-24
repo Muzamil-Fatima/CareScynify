@@ -1,18 +1,20 @@
 import React from "react";
+
 import {
   AudioTrack,
   VideoTrack,
   useParticipantTracks,
 } from "@livekit/components-react";
+
 import { Track } from "livekit-client";
 
-const ParticipantView = ({ participant }) => {
+const ParticipantView = ({
+  participant,
+  cameraTrack,
+  isScreenShare = false,
+}) => {
   const tracks = useParticipantTracks(
     [
-      {
-        source: Track.Source.Camera,
-        withPlaceholder: true,
-      },
       {
         source: Track.Source.Microphone,
         withPlaceholder: false,
@@ -21,23 +23,19 @@ const ParticipantView = ({ participant }) => {
     participant.identity
   );
 
-  const cameraTrack = tracks.find(
-    (track) => track.source === Track.Source.Camera
-  );
-
   const microphoneTrack = tracks.find(
     (track) => track.source === Track.Source.Microphone
   );
 
   const participantName =
-    participant.name || participant.identity || "Participant";
-
-  const isCameraEnabled = Boolean(cameraTrack?.publication?.isSubscribed);
+    participant?.name ||
+    participant?.identity ||
+    "Participant";
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gray-900">
-      {/* Camera */}
-      {cameraTrack && isCameraEnabled ? (
+      {/* Camera / Screen Share */}
+      {cameraTrack ? (
         <VideoTrack
           trackRef={cameraTrack}
           className="h-full w-full object-cover"
@@ -56,7 +54,7 @@ const ParticipantView = ({ participant }) => {
             </p>
 
             <p className="mt-1 text-xs text-gray-400">
-              Camera is off
+              {isScreenShare ? "Screen share unavailable" : "Camera is off"}
             </p>
           </div>
         </div>

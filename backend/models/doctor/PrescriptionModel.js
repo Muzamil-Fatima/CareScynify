@@ -15,6 +15,10 @@ const prescriptionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    explanation: {
+      type: String,
+      default: "",
+    },
     // APPOINTMENT
     appointmentId: {
       type: mongoose.Schema.Types.ObjectId,

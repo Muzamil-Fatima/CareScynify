@@ -43,9 +43,9 @@ const AppointmentCard = ({
         className="flex items-center gap-3 w-full xl:w-[30%] min-w-0"
       >
         <div className="w-11 h-11 shrink-0 rounded-full overflow-hidden border flex items-center justify-center bg-violet-100 text-violet-700 font-bold text-sm cursor-pointer">
-          {user?.avatar ? (
+          {user?.avatar?.url ? (
             <img
-              src={user.avatar}
+              src={user.avatar?.url}
               alt={user.name}
               className="w-full h-full object-cover"
             />
@@ -64,7 +64,7 @@ const AppointmentCard = ({
           </h3>
 
           <p className="text-sm text-slate-500 truncate cursor-pointer">
-            {user?.phone || "-"}
+            +{user?.phone || "-"}
           </p>
         </div>
       </div>

@@ -1,3 +1,4 @@
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import {
@@ -39,32 +40,39 @@ export const useCart = () => {
   }, []);
 
   // Add Medicine
-  const addMedicineToCart = useCallback(async (medicineId, quantity = 1) => {
-    try {
-      setLoading(true);
-      setError("");
+  const addMedicineToCart = useCallback(
+    async (medicineId, quantity = 1) => {
+      try {
+        setLoading(true);
+        setError("");
 
-      const data = await addToCart({
-        medicineId,
-        quantity,
-      });
+        const data = await addToCart({
+          medicineId,
+          quantity,
+        });
 
-      setCart(
-        data?.cart || {
-          items: [],
-          totalAmount: 0,
-        },
-      );
+        // IMPORTANT:
+        // Update the shared cart state immediately.
+        setCart(
+          data?.cart || {
+            items: [],
+            totalAmount: 0,
+          },
+        );
 
-      return data;
-    } catch (err) {
-      setError(err?.response?.data?.message || "Failed to add medicine.");
+        return data;
+      } catch (err) {
+        setError(
+          err?.response?.data?.message || "Failed to add medicine.",
+        );
 
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   // Update Quantity
   const updateQuantity = useCallback(
@@ -72,7 +80,7 @@ export const useCart = () => {
       try {
         setError("");
 
-        // instant UI update
+        // Instant UI update
         setCart((prev) => {
           const items = prev.items.map((item) => {
             const id = item?.medicineId?._id || item?.medicineId;
@@ -91,7 +99,10 @@ export const useCart = () => {
           return {
             ...prev,
             items,
-            totalAmount: items.reduce((sum, item) => sum + item.subtotal, 0),
+            totalAmount: items.reduce(
+              (sum, item) => sum + item.subtotal,
+              0,
+            ),
           };
         });
 
@@ -99,7 +110,10 @@ export const useCart = () => {
       } catch (err) {
         await fetchCart();
 
-        setError(err?.response?.data?.message || "Failed to update quantity.");
+        setError(
+          err?.response?.data?.message ||
+            "Failed to update quantity.",
+        );
 
         throw err;
       }
@@ -113,18 +127,30 @@ export const useCart = () => {
       try {
         setCart((prev) => ({
           ...prev,
-
           items: prev.items.filter(
             (item) =>
-              (item?.medicineId?._id || item?.medicineId) !== medicineId,
+              (item?.medicineId?._id || item?.medicineId) !==
+              medicineId,
           ),
         }));
 
         await removeCartItem(medicineId);
+
+        // Make sure totalAmount is also correct after removing.
+        setCart((prev) => ({
+          ...prev,
+          totalAmount: prev.items.reduce(
+            (sum, item) => sum + item.subtotal,
+            0,
+          ),
+        }));
       } catch (err) {
         await fetchCart();
 
-        setError(err?.response?.data?.message || "Failed to remove item.");
+        setError(
+          err?.response?.data?.message ||
+            "Failed to remove item.",
+        );
       }
     },
     [fetchCart],
@@ -142,22 +168,40 @@ export const useCart = () => {
     } catch (err) {
       await fetchCart();
 
-      setError(err?.response?.data?.message || "Failed to clear cart.");
+      setError(
+        err?.response?.data?.message ||
+          "Failed to clear cart.",
+      );
     }
   }, [fetchCart]);
 
-  const cartItems = useMemo(() => cart?.items || [], [cart]);
+  // Cart Items
+  const cartItems = useMemo(
+    () => cart?.items || [],
+    [cart],
+  );
 
+  // Cart Count
   const cartCount = useMemo(
-    () => cartItems.reduce((total, item) => total + item.quantity, 0),
+    () =>
+      cartItems.reduce(
+        (total, item) => total + Number(item?.quantity || 0),
+        0,
+      ),
     [cartItems],
   );
 
+  // Subtotal
   const subtotal = useMemo(
-    () => cartItems.reduce((total, item) => total + item.subtotal, 0),
+    () =>
+      cartItems.reduce(
+        (total, item) => total + Number(item?.subtotal || 0),
+        0,
+      ),
     [cartItems],
   );
 
+  // Initial Cart Fetch
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
@@ -165,21 +209,14 @@ export const useCart = () => {
   return {
     cart,
     cartItems,
-
     cartCount,
     subtotal,
-
     loading,
     error,
-
     fetchCart,
-
     addMedicineToCart,
-
     updateQuantity,
-
     removeFromCart,
-
     clearCartItems,
   };
 };

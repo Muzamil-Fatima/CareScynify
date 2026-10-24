@@ -8,7 +8,7 @@ const OrdersToolbar = ({
   search = "",
   onSearchChange,
   onRefresh,
-  onExport,
+  // onExport,
 }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
@@ -36,13 +36,13 @@ const OrdersToolbar = ({
             <span>Refresh</span>
           </button>
 
-          <button
+          {/* <button
             onClick={onExport}
             className="flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-3 font-medium text-white transition hover:bg-purple-700"
           >
             <DownloadRoundedIcon />
             <span>Export</span>
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

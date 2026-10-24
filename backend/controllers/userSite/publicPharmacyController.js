@@ -7,20 +7,26 @@ export const getAllPharmacies = async (req, res) => {
       verificationStatus: "verified",
     })
       .select(
-        "pharmacyName ownerName address city province logo coverImage pharmacyType homeDelivery isOpen acceptPrescription cashOnDelivery description"
+        "pharmacyName ownerName address city province logo coverImage pharmacyType homeDelivery isOpen acceptPrescription cashOnDelivery description userId"
       )
-      .sort({ createdAt: -1 });
+      .populate("userId", "name email phone avatar")
+      .sort({ createdAt: -1 })
+      .lean();
 
+    const formattedPharmacies = pharmacies.map((pharmacy) => ({
+      ...pharmacy,
+      user: pharmacy.userId,
+    }));
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      count: pharmacies.length,
-      pharmacies,
+      count: formattedPharmacies.length,
+      pharmacies: formattedPharmacies,
     });
-
-
   } catch (error) {
-    res.status(500).json({
+    console.error("Get All Pharmacies Error:", error);
+
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -29,12 +35,12 @@ export const getAllPharmacies = async (req, res) => {
 // get pharmacy by id 
 export const getPharmacyById = async (req, res) => {
   try {
-
     const pharmacy = await Pharmacy.findOne({
       _id: req.params.id,
       verificationStatus: "verified",
-    });
-
+    })
+      .populate("userId", "name email phone avatar")
+      .lean();
 
     if (!pharmacy) {
       return res.status(404).json({
@@ -43,20 +49,24 @@ export const getPharmacyById = async (req, res) => {
       });
     }
 
+    const formattedPharmacy = {
+      ...pharmacy,
+      user: pharmacy.userId,
+    };
+
+    delete formattedPharmacy.userId;
 
     res.status(200).json({
       success: true,
-      pharmacy,
+      pharmacy: formattedPharmacy,
     });
-
-
   } catch (error) {
+    console.error("Get Pharmacy By ID Error:", error);
 
     res.status(500).json({
       success: false,
       message: error.message,
     });
-
   }
 };
 // Search Pharmacies

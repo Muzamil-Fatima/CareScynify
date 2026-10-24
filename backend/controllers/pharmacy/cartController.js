@@ -1,6 +1,9 @@
 import Cart from "../../models/pharmacy/Cart.js";
+
 import Medicine from "../../models/pharmacy/Medicine.js";
+
 import Patient from "../../models/patientModel.js";
+
 // get cart item
 export const getCart = async (req, res) => {
   try {
@@ -42,12 +45,15 @@ export const getCart = async (req, res) => {
     });
   }
 };
+
 // addToCart
 export const addToCart = async (req, res) => {
   try {
     const { medicineId, quantity } = req.body;
 
-    const patient = await Patient.findOne({ userId: req.user._id });
+    const patient = await Patient.findOne({
+      userId: req.user._id,
+    });
 
     if (!patient) {
       return res.status(404).json({
@@ -65,7 +71,9 @@ export const addToCart = async (req, res) => {
       });
     }
 
-    let cart = await Cart.findOne({ patientId: patient._id });
+    let cart = await Cart.findOne({
+      patientId: patient._id,
+    });
 
     if (!cart) {
       cart = new Cart({
@@ -81,6 +89,7 @@ export const addToCart = async (req, res) => {
 
     if (itemIndex > -1) {
       cart.items[itemIndex].quantity += quantity;
+
       cart.items[itemIndex].subtotal =
         cart.items[itemIndex].quantity * cart.items[itemIndex].price;
     } else {
@@ -99,6 +108,9 @@ export const addToCart = async (req, res) => {
 
     await cart.save();
 
+    // Populate medicine details before sending cart
+    await cart.populate("items.medicineId");
+
     res.status(200).json({
       success: true,
       message: "Medicine added to cart.",
@@ -113,10 +125,12 @@ export const addToCart = async (req, res) => {
     });
   }
 };
+
 // updateCartItem
 export const updateCartItem = async (req, res) => {
   try {
     const { medicineId } = req.params;
+
     const { quantity } = req.body;
 
     if (!quantity || quantity < 1) {
@@ -160,6 +174,7 @@ export const updateCartItem = async (req, res) => {
     }
 
     item.quantity = quantity;
+
     item.subtotal = item.price * quantity;
 
     cart.totalAmount = cart.items.reduce(
@@ -168,6 +183,9 @@ export const updateCartItem = async (req, res) => {
     );
 
     await cart.save();
+
+    // Populate medicine details before sending cart
+    await cart.populate("items.medicineId");
 
     res.status(200).json({
       success: true,
@@ -183,6 +201,7 @@ export const updateCartItem = async (req, res) => {
     });
   }
 };
+
 // removeCartItem
 export const removeCartItem = async (req, res) => {
   try {
@@ -232,6 +251,9 @@ export const removeCartItem = async (req, res) => {
 
     await cart.save();
 
+    // Populate medicine details before sending cart
+    await cart.populate("items.medicineId");
+
     res.status(200).json({
       success: true,
       message: "Medicine removed from cart.",
@@ -246,6 +268,7 @@ export const removeCartItem = async (req, res) => {
     });
   }
 };
+
 // clearCart
 export const clearCart = async (req, res) => {
   try {
@@ -272,9 +295,13 @@ export const clearCart = async (req, res) => {
     }
 
     cart.items = [];
+
     cart.totalAmount = 0;
 
     await cart.save();
+
+    // Populate medicine details before sending cart
+    await cart.populate("items.medicineId");
 
     res.status(200).json({
       success: true,

@@ -20,9 +20,9 @@ const PharmacyProfile = ({ pharmacy }) => {
         <div className="flex flex-col items-center gap-6 md:flex-row">
           {/* Logo */}
 
-          {pharmacy.logo ? (
+          {pharmacy.user?.avatar?.url ? (
             <img
-              src={pharmacy.logo}
+              src={pharmacy.user.avatar.url}
               alt={pharmacy.pharmacyName}
               className="h-32 w-32 rounded-full object-cover"
             />
@@ -90,11 +90,29 @@ const PharmacyProfile = ({ pharmacy }) => {
             {/* Buttons */}
 
             <div className="mt-5 flex flex-wrap justify-center gap-3 md:justify-start">
-              <button className="rounded-lg bg-purple-600 px-5 py-2 text-white transition hover:bg-purple-700">
+              <button
+                onClick={() => {
+                  document
+                    .getElementById("pharmacy-medicines")
+                    ?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "start",
+                    });
+                }}
+                className="rounded-lg bg-purple-600 px-5 py-2 text-white transition hover:bg-purple-700 cursor-pointer"
+              >
                 View Medicines
               </button>
 
-              <button className="rounded-lg border border-gray-300 px-5 py-2 transition hover:bg-gray-100">
+              <button
+                onClick={() => {
+                  document.getElementById("pharmacy-contact")?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }}
+                className="rounded-lg border border-gray-300 px-5 py-2 transition hover:bg-gray-100 cursor-pointer"
+              >
                 Contact Pharmacy
               </button>
             </div>
@@ -120,7 +138,10 @@ const PharmacyProfile = ({ pharmacy }) => {
         {/* Contact */}
 
         <div>
-          <h2 className="mb-3 text-lg font-semibold text-gray-800">
+          <h2
+            id="pharmacy-contact"
+            className="mb-3 text-lg font-semibold text-gray-800"
+          >
             Contact Information
           </h2>
 
@@ -191,9 +212,7 @@ const PharmacyProfile = ({ pharmacy }) => {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500">
-            Operating hours not available.
-          </p>
+          <p className="text-gray-500">Operating hours not available.</p>
         )}
       </div>
     </div>

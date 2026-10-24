@@ -155,9 +155,9 @@ export const useOrders = () => {
     fetchOrders();
   };
 
-  const handleExport = () => {
-    console.log("Export Orders");
-  };
+  // const handleExport = () => {
+  //   console.log("Export Orders");
+  // };
 
   return {
     // Data
@@ -198,7 +198,7 @@ export const useOrders = () => {
     fetchOrders,
     handleRefresh,
     handleRetry,
-    handleExport,
+    // handleExport,
 
     // Setter (needed after update/cancel)
     setOrders,

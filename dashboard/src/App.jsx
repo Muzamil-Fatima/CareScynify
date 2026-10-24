@@ -32,7 +32,9 @@ import Medicines from "./pages/pharmacy/Medicines.jsx";
 import AddMedicine from "./pages/pharmacy/AddMedicine.jsx";
 import Orders from "./pages/pharmacy/Orders.jsx";
 import PharmacyProfile from "./pages/pharmacy/PharmacyProfile.jsx";
-
+import DirectSalesHistory from "./pages/pharmacy/DirectSalesHistory.jsx";
+import DirectSale from "./pages/pharmacy/DirectSale.jsx";
+import DirectSaleInvoice from "./pages/pharmacy/DirectSaleInvoice.jsx";
 // Lab route
 import LabDashboard from "./pages/laboratory/LabDashboard.jsx";
 import LabTestProcess from "./pages/laboratory/LabTestProcess.jsx";
@@ -156,6 +158,25 @@ function App() {
               <Route path="/pharmacy/order" element={<Orders />} />
               <Route path="/pharmacy/order/:orderId" element={<Orders />} />
               <Route path="/pharmacy/profile" element={<PharmacyProfile />} />
+              <Route
+                path="/pharmacy/direct-sales"
+                element={<DirectSalesHistory />}
+              />
+
+              <Route
+                path="/pharmacy/direct-sales/new"
+                element={<DirectSale />}
+              />
+
+              <Route
+                path="/pharmacy/direct-sales/:id"
+                element={<DirectSale />}
+              />
+
+              <Route
+                path="/pharmacy/direct-sales/:id/invoice"
+                element={<DirectSaleInvoice />}
+              />
               {/* Lab  */}
               <Route path="/lab/dashboard" element={<LabDashboard />} />
               <Route path="/lab/profile" element={<LabProfile />} />

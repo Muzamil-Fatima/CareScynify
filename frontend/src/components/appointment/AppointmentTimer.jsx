@@ -1,60 +1,105 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
 
 const getTimeLeft = (date, time) => {
-  if (!date || !time) return null;
+  if (!date || !time) return "";
 
   try {
-    const baseDate = new Date(date);
-    if (isNaN(baseDate.getTime())) return "Invalid date";
+    const dateString =
+      typeof date === "string"
+        ? date.split("T")[0]
+        : new Date(date).toISOString().split("T")[0];
 
-    let [hours, minutes] = time.split(":").map(Number);
+    const [year, month, day] = dateString.split("-").map(Number);
 
-    const appointment = new Date(baseDate);
-    appointment.setUTCHours(hours, minutes, 0, 0);
+    const [hours, minutes] = time.split(":").map(Number);
+
+    if (
+      !year ||
+      !month ||
+      !day ||
+      Number.isNaN(hours) ||
+      Number.isNaN(minutes)
+    ) {
+      return "Invalid time";
+    }
+
+    // Use local browser time
+    const appointment = new Date(year, month - 1, day, hours, minutes, 0, 0);
+
+    if (Number.isNaN(appointment.getTime())) {
+      return "Invalid time";
+    }
 
     const diff = appointment.getTime() - Date.now();
 
-    if (diff <= 0) return "Started";
+    if (diff <= 0) {
+      return "Started";
+    }
 
-    const h = Math.floor(diff / (1000 * 60 * 60));
-    const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const s = Math.floor((diff % (1000 * 60)) / 1000);
+    const totalSeconds = Math.floor(diff / 1000);
 
-    if (h > 0) return `Starts in ${h}h ${m}m ${s}s`;
+    const hoursLeft = Math.floor(totalSeconds / 3600);
 
-    return `Starts in ${m}m ${s}s`;
-  } catch (err) {
-    toast.error("Error calculating time left", err);
+    const minutesLeft = Math.floor((totalSeconds % 3600) / 60);
+
+    const secondsLeft = totalSeconds % 60;
+
+    if (hoursLeft > 0) {
+      return `Starts in ${hoursLeft}h ${minutesLeft}m ${secondsLeft}s`;
+    }
+
+    if (minutesLeft > 0) {
+      return `Starts in ${minutesLeft}m ${secondsLeft}s`;
+    }
+
+    return `Starts in ${secondsLeft}s`;
+  } catch (error) {
+    console.error("Error calculating appointment time:", error);
+
     return "Invalid time";
   }
 };
 
 const AppointmentTimer = ({ date, time, status }) => {
-  const [timer, setTimer] = useState("");
+  const [timer, setTimer] = useState(() =>
+    status === "cancelled" || status === "completed"
+      ? ""
+      : getTimeLeft(date, time),
+  );
 
   useEffect(() => {
-    if (status === "cancelled" || status === "completed") return;
+    if (status === "cancelled" || status === "completed") {
+      return;
+    }
 
-    const update = () => {
+    const interval = setInterval(() => {
       setTimer(getTimeLeft(date, time));
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
     };
-
-    update();
-    const interval = setInterval(update, 1000);
-
-    return () => clearInterval(interval);
   }, [date, time, status]);
 
   if (status === "cancelled") {
     return (
-      <div className="text-red-500 font-medium">
-        Appointment Cancelled
-      </div>
+      <div className="font-medium text-red-500">Appointment Cancelled</div>
     );
   }
 
-  return <div className="text-purple-600 font-medium">{timer}</div>;
+  if (status === "completed") {
+    return (
+      <div className="font-medium text-blue-600">Appointment Completed</div>
+    );
+  }
+
+  if (timer === "Started") {
+    return (
+      <div className="font-medium text-green-600">Appointment Started</div>
+    );
+  }
+
+  return <div className="font-medium text-purple-600">{timer}</div>;
 };
 
 export default AppointmentTimer;

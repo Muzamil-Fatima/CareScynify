@@ -38,7 +38,7 @@ const Orders = () => {
     startItem,
     endItem,
     handleRefresh,
-    handleExport,
+    // handleExport,
     handleRetry,
     selectedOrder,
     showDetails,
@@ -64,7 +64,7 @@ const Orders = () => {
         search={search}
         onSearchChange={setSearch}
         onRefresh={handleRefresh}
-        onExport={handleExport}
+        // onExport={handleExport}
       />
 
       <OrdersFilters

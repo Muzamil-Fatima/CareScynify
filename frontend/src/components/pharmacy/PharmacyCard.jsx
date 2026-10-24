@@ -11,9 +11,9 @@ const PharmacyCard = ({ pharmacy }) => {
   return (
     <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-md transition hover:shadow-xl">
       {/* Logo */}
-      {pharmacy.logo ? (
+      {pharmacy.user?.avatar?.url ? (
         <img
-          src={pharmacy.logo}
+          src={pharmacy.user.avatar.url}
           alt={pharmacy.pharmacyName}
           className="mx-auto h-26 w-26 rounded-full object-cover"
         />

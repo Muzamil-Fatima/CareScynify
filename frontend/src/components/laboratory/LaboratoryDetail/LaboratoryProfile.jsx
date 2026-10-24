@@ -76,11 +76,27 @@ const LaboratoryProfile = ({ laboratory }) => {
               )}
             </div>
             <div className="flex flex-wrap gap-3 mt-5 justify-center md:justify-start">
-              <button className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg transition">
+              <button
+                onClick={() => {
+                  document.getElementById("lab-tests")?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-lg transition"
+              >
                 View Tests
               </button>
 
-              <button className="border border-gray-300 hover:bg-gray-100 px-5 py-2 rounded-lg transition">
+              <button
+                onClick={() => {
+                  document.getElementById("lab-contact")?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }}
+                className="border border-gray-300 hover:bg-gray-100 px-5 py-2 rounded-lg transition"
+              >
                 Contact Laboratory
               </button>
             </div>
@@ -103,7 +119,10 @@ const LaboratoryProfile = ({ laboratory }) => {
 
         {/* Contact */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-800 mb-3">
+          <h2
+            id="lab-contact"
+            className="text-lg font-semibold text-gray-800 mb-3"
+          >
             Contact Information
           </h2>
 

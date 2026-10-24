@@ -60,7 +60,9 @@ const PharmacyDetail = () => {
         <PharmacyServices pharmacy={pharmacy} />
 
         {/* Pharmacy Medicines */}
-        <PharmacyMedicines medicines={medicines} />
+        <div id="pharmacy-medicines">
+          <PharmacyMedicines medicines={medicines} />
+        </div>
       </div>
     </div>
   );

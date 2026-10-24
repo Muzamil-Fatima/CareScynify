@@ -1,12 +1,23 @@
-
-import React from "react";
+import React, { useEffect } from "react";
 
 import MedicationRoundedIcon from "@mui/icons-material/MedicationRounded";
 import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
 import WarningAmberRoundedIcon from "@mui/icons-material/WarningAmberRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 
-const MedicineStats = ({ stats }) => {
+import { useMedicine } from "../../../context/pharmacy/MedicineContext";
+
+const MedicineStats = () => {
+  const {
+    stats,
+    fetchMedicineStats,
+    statsLoading,
+  } = useMedicine();
+
+  useEffect(() => {
+    fetchMedicineStats();
+  }, [fetchMedicineStats]);
+
   const cards = [
     {
       title: "Total Medicines",
@@ -58,7 +69,7 @@ const MedicineStats = ({ stats }) => {
                 <h2
                   className={`mt-2 text-2xl sm:text-3xl font-bold ${card.valueColor}`}
                 >
-                  {card.value}
+                  {statsLoading ? "..." : card.value}
                 </h2>
 
                 <p className="mt-1 text-xs sm:text-sm text-slate-500">
@@ -72,7 +83,8 @@ const MedicineStats = ({ stats }) => {
               >
                 {React.cloneElement(card.icon, {
                   sx: {
-                    fontSize: window.innerWidth < 640 ? 24 : 28,
+                    fontSize:
+                      window.innerWidth < 640 ? 24 : 28,
                   },
                 })}
               </div>

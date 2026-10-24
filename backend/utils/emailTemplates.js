@@ -6,7 +6,8 @@ export const verificationEmail = (name, verifyUrl) => {
         style="
           font-size: 32px; 
           font-weight: 800; 
-          background: linear-gradient(to right, #6366f1, #a855f7, #ec4899); 
+          background: linear-gradient(to right, #6366f1, #a855f7, #ec4899)
+          ; 
           -webkit-background-clip: text; 
           -webkit-text-fill-color: transparent; 
           margin-bottom: 20px;

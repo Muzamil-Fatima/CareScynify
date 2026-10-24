@@ -1,21 +1,33 @@
+
 import React, { useEffect, useState } from "react";
+
 import { useParams } from "react-router-dom";
+
 import { toast } from "react-toastify";
+
 import { useMedicineDetails } from "../../hooks/pharmacy/useMedicineDetails";
-import { useCart } from "../../hooks/pharmacy/useCart";
+
+import { useCartContext } from "../../context/pharmacy/CartContext";
+
 import MedicineGallery from "../../components/pharmacy/medicineDetails/MedicineGallery";
+
 import MedicineInfo from "../../components/pharmacy/medicineDetails/MedicineInfo";
+
 import QuantitySelector from "../../components/pharmacy/medicineDetails/QuantitySelector";
+
 import AddToCart from "../../components/pharmacy/medicineDetails/AddToCart";
+
 import RelatedMedicines from "../../components/pharmacy/medicineDetails/RelatedMedicines";
 
-import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 const MedicineDetails = () => {
   const { id } = useParams();
-  const { addMedicineToCart } = useCart();
+
+  const { addMedicineToCart } = useCartContext();
+
   const { medicine, loading, error } = useMedicineDetails(id);
 
   const [quantity, setQuantity] = useState(1);
+
   const [cartLoading, setCartLoading] = useState(false);
 
   // Empty for now until related medicine API is available
@@ -52,6 +64,7 @@ const MedicineDetails = () => {
       setCartLoading(false);
     }
   };
+
   if (loading) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-20">
@@ -63,7 +76,9 @@ const MedicineDetails = () => {
 
             <div className="space-y-5">
               <div className="h-10 rounded bg-gray-200"></div>
+
               <div className="h-8 w-40 rounded bg-gray-200"></div>
+
               <div className="h-60 rounded bg-gray-200"></div>
             </div>
           </div>
@@ -101,6 +116,7 @@ const MedicineDetails = () => {
 
           <div className="space-y-6">
             <MedicineInfo medicine={medicine} />
+
             <div className="flex flex-row gap-6 ml-6">
               <QuantitySelector
                 quantity={quantity}
@@ -119,7 +135,6 @@ const MedicineDetails = () => {
         </div>
 
         {/* Description */}
-
         <section className="mt-12 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
           <h2 className="mb-4 text-2xl font-bold">Description</h2>
 
@@ -129,7 +144,6 @@ const MedicineDetails = () => {
         </section>
 
         {/* Related Medicines */}
-
         <div className="mt-10">
           <RelatedMedicines
             medicines={relatedMedicines}

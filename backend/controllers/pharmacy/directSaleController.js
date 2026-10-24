@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 import Medicine from "../../models/pharmacy/Medicine.js";
-import Pharmacy from "../../models/pharmacy/PharmacyModel.js";
+import Pharmacy from "../../models/pharmacy/pharmacyModel.js";
 import DirectSale from "../../models/pharmacy/DirectSale.js";
 
 /**
@@ -30,10 +30,7 @@ const generateInvoiceNumber = async () => {
   let nextNumber = 1;
 
   if (lastSale?.invoiceNumber) {
-    const lastNumber = parseInt(
-      lastSale.invoiceNumber.split("-").pop(),
-      10,
-    );
+    const lastNumber = parseInt(lastSale.invoiceNumber.split("-").pop(), 10);
 
     if (!Number.isNaN(lastNumber)) {
       nextNumber = lastNumber + 1;
@@ -69,9 +66,7 @@ export const createDirectSale = async (req, res) => {
       notes,
     } = req.body;
 
-    // -----------------------------
     // Basic validation
-    // -----------------------------
 
     if (!pharmacyId) {
       return res.status(400).json({
@@ -94,9 +89,7 @@ export const createDirectSale = async (req, res) => {
       });
     }
 
-    // -----------------------------
     // Validate pharmacy
-    // -----------------------------
 
     const pharmacy = await Pharmacy.findById(pharmacyId);
 
@@ -107,36 +100,26 @@ export const createDirectSale = async (req, res) => {
       });
     }
 
-    // -----------------------------
     // Validate discount and tax
-    // -----------------------------
 
     const discountAmount = Number(discount);
     const taxAmount = Number(tax);
 
-    if (
-      Number.isNaN(discountAmount) ||
-      discountAmount < 0
-    ) {
+    if (Number.isNaN(discountAmount) || discountAmount < 0) {
       return res.status(400).json({
         success: false,
         message: "Invalid discount amount.",
       });
     }
 
-    if (
-      Number.isNaN(taxAmount) ||
-      taxAmount < 0
-    ) {
+    if (Number.isNaN(taxAmount) || taxAmount < 0) {
       return res.status(400).json({
         success: false,
         message: "Invalid tax amount.",
       });
     }
 
-    // -----------------------------
     // Process medicines
-    // -----------------------------
 
     const saleItems = [];
     let subtotal = 0;
@@ -159,15 +142,11 @@ export const createDirectSale = async (req, res) => {
         saleQuantity <= 0 ||
         !Number.isInteger(saleQuantity)
       ) {
-        throw new Error(
-          "Medicine quantity must be a positive whole number.",
-        );
+        throw new Error("Medicine quantity must be a positive whole number.");
       }
 
-      // -----------------------------
       // Find medicine belonging
       // to this pharmacy
-      // -----------------------------
 
       const medicine = await Medicine.findOne({
         _id: medicineId,
@@ -180,19 +159,13 @@ export const createDirectSale = async (req, res) => {
         );
       }
 
-      // -----------------------------
       // Check active medicine
-      // -----------------------------
 
       if (!medicine.isActive) {
-        throw new Error(
-          `${medicine.name} is currently inactive.`,
-        );
+        throw new Error(`${medicine.name} is currently inactive.`);
       }
 
-      // -----------------------------
       // Check stock
-      // -----------------------------
 
       if (medicine.stock < saleQuantity) {
         throw new Error(
@@ -200,25 +173,19 @@ export const createDirectSale = async (req, res) => {
         );
       }
 
-      // -----------------------------
       // Calculate item total
-      // -----------------------------
 
       const unitPrice = Number(medicine.unitPrice);
 
       if (Number.isNaN(unitPrice) || unitPrice < 0) {
-        throw new Error(
-          `Invalid unit price for ${medicine.name}.`,
-        );
+        throw new Error(`Invalid unit price for ${medicine.name}.`);
       }
 
       const itemTotal = unitPrice * saleQuantity;
 
       subtotal += itemTotal;
 
-      // -----------------------------
       // Save medicine snapshot
-      // -----------------------------
 
       saleItems.push({
         medicineId: medicine._id,
@@ -229,38 +196,26 @@ export const createDirectSale = async (req, res) => {
         totalPrice: itemTotal,
       });
 
-      // -----------------------------
       // Decrease inventory
-      // -----------------------------
 
       medicine.stock -= saleQuantity;
 
       await medicine.save();
     }
 
-    // -----------------------------
     // Calculate final total
-    // -----------------------------
 
-    const totalAmount =
-      subtotal - discountAmount + taxAmount;
+    const totalAmount = subtotal - discountAmount + taxAmount;
 
     if (totalAmount < 0) {
-      throw new Error(
-        "Discount cannot be greater than the sale amount.",
-      );
+      throw new Error("Discount cannot be greater than the sale amount.");
     }
 
-    // -----------------------------
     // Generate invoice number
-    // -----------------------------
 
-    const invoiceNumber =
-      await generateInvoiceNumber();
+    const invoiceNumber = await generateInvoiceNumber();
 
-    // -----------------------------
     // Create DirectSale
-    // -----------------------------
 
     const directSale = await DirectSale.create({
       pharmacyId,
@@ -272,22 +227,16 @@ export const createDirectSale = async (req, res) => {
       totalAmount,
       paymentMethod,
       paymentStatus,
-      customerName:
-        customerName?.trim() || "Walk-in Customer",
-      customerPhone:
-        customerPhone?.trim() || undefined,
+      customerName: customerName?.trim() || "Walk-in Customer",
+      customerPhone: customerPhone?.trim() || undefined,
       notes: notes?.trim() || undefined,
       saleDate: new Date(),
       status: "Completed",
     });
 
-    // -----------------------------
     // Get complete created sale
-    // -----------------------------
 
-    const createdSale = await DirectSale.findById(
-      directSale._id,
-    )
+    const createdSale = await DirectSale.findById(directSale._id)
       .populate(
         "pharmacyId",
         "pharmacyName ownerName address city phone alternatePhone",
@@ -297,9 +246,7 @@ export const createDirectSale = async (req, res) => {
         "name genericName brand category strength manufacturer",
       );
 
-    // -----------------------------
     // Return response
-    // -----------------------------
 
     return res.status(201).json({
       success: true,
@@ -307,16 +254,11 @@ export const createDirectSale = async (req, res) => {
       sale: createdSale,
     });
   } catch (error) {
-    console.error(
-      "Create Direct Sale Error:",
-      error,
-    );
+    console.error("Create Direct Sale Error:", error);
 
     return res.status(400).json({
       success: false,
-      message:
-        error.message ||
-        "Failed to create direct sale.",
+      message: error.message || "Failed to create direct sale.",
     });
   }
 };
@@ -343,16 +285,10 @@ export const getDirectSales = async (req, res) => {
 
     const filter = {};
 
-    // -----------------------------
     // Pharmacy filter
-    // -----------------------------
 
     if (pharmacyId) {
-      if (
-        !mongoose.Types.ObjectId.isValid(
-          pharmacyId,
-        )
-      ) {
+      if (!mongoose.Types.ObjectId.isValid(pharmacyId)) {
         return res.status(400).json({
           success: false,
           message: "Invalid pharmacy ID.",
@@ -362,25 +298,19 @@ export const getDirectSales = async (req, res) => {
       filter.pharmacyId = pharmacyId;
     }
 
-    // -----------------------------
     // Status filter
-    // -----------------------------
 
     if (status) {
       filter.status = status;
     }
 
-    // -----------------------------
     // Payment status filter
-    // -----------------------------
 
     if (paymentStatus) {
       filter.paymentStatus = paymentStatus;
     }
 
-    // -----------------------------
     // Invoice search
-    // -----------------------------
 
     if (search?.trim()) {
       filter.invoiceNumber = {
@@ -389,44 +319,29 @@ export const getDirectSales = async (req, res) => {
       };
     }
 
-    // -----------------------------
     // Pagination
-    // -----------------------------
 
-    const pageNumber = Math.max(
-      Number(page),
-      1,
-    );
+    const pageNumber = Math.max(Number(page), 1);
 
-    const limitNumber = Math.min(
-      Math.max(Number(limit), 1),
-      100,
-    );
+    const limitNumber = Math.min(Math.max(Number(limit), 1), 100);
 
-    const skip =
-      (pageNumber - 1) * limitNumber;
+    const skip = (pageNumber - 1) * limitNumber;
 
-    // -----------------------------
     // Get sales
-    // -----------------------------
 
-    const [sales, total] =
-      await Promise.all([
-        DirectSale.find(filter)
-          .populate(
-            "pharmacyId",
-            "pharmacyName ownerName address city",
-          )
-          .populate(
-            "items.medicineId",
-            "name genericName brand category strength",
-          )
-          .sort({ createdAt: -1 })
-          .skip(skip)
-          .limit(limitNumber),
+    const [sales, total] = await Promise.all([
+      DirectSale.find(filter)
+        .populate("pharmacyId", "pharmacyName ownerName address city")
+        .populate(
+          "items.medicineId",
+          "name genericName brand category strength",
+        )
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limitNumber),
 
-        DirectSale.countDocuments(filter),
-      ]);
+      DirectSale.countDocuments(filter),
+    ]);
 
     return res.status(200).json({
       success: true,
@@ -435,16 +350,11 @@ export const getDirectSales = async (req, res) => {
         total,
         page: pageNumber,
         limit: limitNumber,
-        totalPages: Math.ceil(
-          total / limitNumber,
-        ),
+        totalPages: Math.ceil(total / limitNumber),
       },
     });
   } catch (error) {
-    console.error(
-      "Get Direct Sales Error:",
-      error,
-    );
+    console.error("Get Direct Sales Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -456,10 +366,7 @@ export const getDirectSales = async (req, res) => {
 /**
  * Get one Direct Sale by ID
  */
-export const getDirectSaleById = async (
-  req,
-  res,
-) => {
+export const getDirectSaleById = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -492,10 +399,7 @@ export const getDirectSaleById = async (
       sale,
     });
   } catch (error) {
-    console.error(
-      "Get Direct Sale By ID Error:",
-      error,
-    );
+    console.error("Get Direct Sale By ID Error:", error);
 
     return res.status(500).json({
       success: false,
@@ -512,10 +416,7 @@ export const getDirectSaleById = async (
  * required by the frontend to display or generate
  * the invoice/receipt.
  */
-export const generateInvoice = async (
-  req,
-  res,
-) => {
+export const generateInvoice = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -545,8 +446,7 @@ export const generateInvoice = async (
 
     return res.status(200).json({
       success: true,
-      message:
-        "Invoice data generated successfully.",
+      message: "Invoice data generated successfully.",
 
       invoice: {
         invoiceNumber: sale.invoiceNumber,
@@ -575,10 +475,7 @@ export const generateInvoice = async (
       },
     });
   } catch (error) {
-    console.error(
-      "Generate Invoice Error:",
-      error,
-    );
+    console.error("Generate Invoice Error:", error);
 
     return res.status(500).json({
       success: false,

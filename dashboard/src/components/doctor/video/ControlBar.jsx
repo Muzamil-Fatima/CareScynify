@@ -1,12 +1,9 @@
 import React from "react";
+
 import {
   useLocalParticipant,
   useRoomContext,
 } from "@livekit/components-react";
-import {
-  Track,
-  RoomEvent,
-} from "livekit-client";
 
 import MicRoundedIcon from "@mui/icons-material/MicRounded";
 import MicOffRoundedIcon from "@mui/icons-material/MicOffRounded";
@@ -17,6 +14,7 @@ import CallEndRoundedIcon from "@mui/icons-material/CallEndRounded";
 
 const ControlBar = ({ onLeave }) => {
   const room = useRoomContext();
+
   const { localParticipant } = useLocalParticipant();
 
   const isMicrophoneEnabled =
@@ -31,17 +29,25 @@ const ControlBar = ({ onLeave }) => {
   const toggleMicrophone = async () => {
     if (!localParticipant) return;
 
-    await localParticipant.setMicrophoneEnabled(
-      !isMicrophoneEnabled
-    );
+    try {
+      await localParticipant.setMicrophoneEnabled(
+        !isMicrophoneEnabled
+      );
+    } catch (error) {
+      console.error("Microphone error:", error);
+    }
   };
 
   const toggleCamera = async () => {
     if (!localParticipant) return;
 
-    await localParticipant.setCameraEnabled(
-      !isCameraEnabled
-    );
+    try {
+      await localParticipant.setCameraEnabled(
+        !isCameraEnabled
+      );
+    } catch (error) {
+      console.error("Camera error:", error);
+    }
   };
 
   const toggleScreenShare = async () => {
@@ -58,9 +64,14 @@ const ControlBar = ({ onLeave }) => {
 
   const handleLeave = async () => {
     try {
-      await room.disconnect();
+      if (room) {
+        await room.disconnect();
+      }
     } catch (error) {
-      console.error("Error leaving video consultation:", error);
+      console.error(
+        "Error leaving video consultation:",
+        error
+      );
     } finally {
       if (onLeave) {
         onLeave();
@@ -76,6 +87,11 @@ const ControlBar = ({ onLeave }) => {
           type="button"
           onClick={toggleMicrophone}
           title={
+            isMicrophoneEnabled
+              ? "Turn microphone off"
+              : "Turn microphone on"
+          }
+          aria-label={
             isMicrophoneEnabled
               ? "Turn microphone off"
               : "Turn microphone on"
@@ -102,6 +118,11 @@ const ControlBar = ({ onLeave }) => {
               ? "Turn camera off"
               : "Turn camera on"
           }
+          aria-label={
+            isCameraEnabled
+              ? "Turn camera off"
+              : "Turn camera on"
+          }
           className={`flex h-11 w-11 items-center justify-center rounded-full transition ${
             isCameraEnabled
               ? "bg-white/10 text-white hover:bg-white/20"
@@ -124,6 +145,11 @@ const ControlBar = ({ onLeave }) => {
               ? "Stop screen sharing"
               : "Share screen"
           }
+          aria-label={
+            isScreenShareEnabled
+              ? "Stop screen sharing"
+              : "Share screen"
+          }
           className={`hidden h-11 w-11 items-center justify-center rounded-full transition sm:flex ${
             isScreenShareEnabled
               ? "bg-blue-600 text-white hover:bg-blue-700"
@@ -141,6 +167,7 @@ const ControlBar = ({ onLeave }) => {
           type="button"
           onClick={handleLeave}
           title="Leave consultation"
+          aria-label="Leave consultation"
           className="flex h-11 w-14 items-center justify-center rounded-full bg-red-600 text-white transition hover:bg-red-700 active:scale-95"
         >
           <CallEndRoundedIcon />
